@@ -1,13 +1,13 @@
 import { axiosInstance } from "./axiosInstance";
 
-export const getTodosBySpace = async (
+export const getTodosCount = async (
   url: string,
   year: string,
   month: string,
   ) => {
   try {
     const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/todos?date=${year}-${month}`);
+      .get(`/api/sharedspaces/${url}/todos/count?date=${year}-${month}`);
       
     return data;
   } catch (err: any) {
