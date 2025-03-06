@@ -1,13 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { getTodosBySpace } from 'Api/todosApi';
+import { getTodosCount } from 'Api/todosApi';
 import { GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { TTodo } from 'Typings/types';
 import { useAppSelector } from './reduxHooks';
 
 export type TTodosList = {
-  [key: string]: TTodo[]
+  [key: string]: number,
 };
 
 type UseTodosListReturnType = {
@@ -30,7 +29,7 @@ const useTodosList = (): UseTodosListReturnType => {
     error,
   } = useQuery({
     queryKey: [GET_TODOS_LIST_KEY],
-    queryFn: () => getTodosBySpace(url, calendarYear, calendarMonth),
+    queryFn: () => getTodosCount(url, calendarYear, calendarMonth),
     refetchOnWindowFocus: false,
   });
 
