@@ -14,7 +14,7 @@ import { Menu, MenuItem } from '@mui/material';
 import { deleteTodo } from 'Api/todosApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
+import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
 import useUser from 'Hooks/useUser';
 
 const TodoDetail: FC = () => {
@@ -37,6 +37,7 @@ const TodoDetail: FC = () => {
       url,
     )
     dispatch(closeModal());
+    await qc.refetchQueries([GET_TODOS_KEY]);
     await qc.refetchQueries([GET_TODOS_LIST_KEY]);
   };
   
