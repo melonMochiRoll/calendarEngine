@@ -17,11 +17,12 @@ export const getTodoHeight = (startTime: string, endTime: string) => {
   const [ startTime_hour, startTime_minute ] = startTime.split(':');
   const [ endTime_hour, endTime_minute ] = endTime.split(':');
 
-  const ratio =
-    (Number(`${endTime_hour === '0' || endTime_hour === '00' ? '24' : endTime_hour}`) - Number(startTime_hour)) * 6 +
-    (Number(endTime_minute) - Number(startTime_minute)) / 10;
+  const height =
+    ((Number(`${endTime_hour === '0' || endTime_hour === '00' ? '24' : endTime_hour}`) - Number(startTime_hour)) * 6 +
+    (Number(endTime_minute) - Number(startTime_minute)) / 10)
+    * tenMinuteHeight;
 
-  return ratio * tenMinuteHeight;
+  return height > 30 ? height : 30;
 };
 
 export const timeToDayjs = (time: string) => {
