@@ -37,3 +37,9 @@ export const getTodoHeight = (startTime: string, endTime: string) => {
 
   return ratio * tenMinuteHeight;
 };
+
+export const timeToDayjs = (time: string) => {
+  const [ hour, minute ] = time.split(':');
+  
+  return dayjs().hour(+hour).minute(+minute);
+};
