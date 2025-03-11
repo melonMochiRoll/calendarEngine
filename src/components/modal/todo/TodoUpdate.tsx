@@ -142,15 +142,6 @@ const TodoUpdate: FC = () => {
       });
     }
 
-    const diffMinute = dayjs_endTime.diff(dayjs_startTime, 'minute');
-
-    if (diffMinute < 30) {
-      return setError({
-        isError: true,
-        message: keepMininumTime,
-      });
-    }
-
     updateTodo(
       todoId,
       newDescription,
