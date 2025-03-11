@@ -11,12 +11,14 @@ interface TodoItemProps {
   todo: TTodo;
   todoHeight: number;
   bgColor: string;
+  hideEndTime?: boolean;
 };
 
 const TodoItem: FC<TodoItemProps> = ({
   todo,
   todoHeight,
   bgColor,
+  hideEndTime = false,
 }) => {
   const dispatch = useAppDispatch();
   const { description, endTime } = todo;
@@ -28,17 +30,18 @@ const TodoItem: FC<TodoItemProps> = ({
 
   return (
     <Article
-      todoHeight={todoHeight > TODO_MAX_HEIGHT ? TODO_MAX_HEIGHT : todoHeight}
-      borderBottomColor={bgColor}>
+      todoHeight={todoHeight > TODO_MAX_HEIGHT ? TODO_MAX_HEIGHT : todoHeight}>
       <Left>
-        <TimeDiv>
-          <TimeSpan>{renderTime(endTime)}</TimeSpan>
-        </TimeDiv>
+        {!hideEndTime &&
+          <TimeDiv borderBottomColor={bgColor}>
+            <TimeSpan>{renderTime(endTime)}</TimeSpan>
+          </TimeDiv>}
       </Left>
       <Right>
         <DescriptionDiv
           onClick={() => onClickDescription()}
-          bgColor={bgColor}>
+          bgColor={bgColor}
+          borderBottomColor={bgColor}>
           <DescriptionSpan>{description}</DescriptionSpan>
         </DescriptionDiv>
       </Right>
@@ -48,11 +51,10 @@ const TodoItem: FC<TodoItemProps> = ({
 
 export default TodoItem;
 
-const Article = styled.article<{ todoHeight: number, borderBottomColor: string }>`
+const Article = styled.article<{ todoHeight: number }>`
   display: flex;
   width: 100%;
   height: ${({ todoHeight }) => todoHeight}px;
-  border-bottom: 1px solid ${({ borderBottomColor }) => borderBottomColor};
 `;
 
 const Left = styled.div`
@@ -72,13 +74,14 @@ const Right = styled.div`
   background-color: var(--white);
 `;
 
-const TimeDiv = styled.div`
+const TimeDiv = styled.div<{ borderBottomColor: string }>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
   width: 100%;
   height: 100%;
+  border-bottom: 1px solid ${({ borderBottomColor }) => borderBottomColor};
 `;
 
 const TimeSpan = styled.span`
@@ -87,7 +90,7 @@ const TimeSpan = styled.span`
   font-weight: 500;
 `;
 
-const DescriptionDiv = styled.div<{ bgColor: string }>`
+const DescriptionDiv = styled.div<{ bgColor: string, borderBottomColor: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -95,6 +98,7 @@ const DescriptionDiv = styled.div<{ bgColor: string }>`
   height: 100%;
   padding: 0 10px;
   background-color: ${({ bgColor }) => bgColor ? bgColor : ''};
+  border-bottom: 1px solid ${({ borderBottomColor }) => borderBottomColor};
   cursor: pointer;
 `;
 
