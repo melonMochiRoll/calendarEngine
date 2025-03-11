@@ -2,20 +2,18 @@ import React, { FC, Fragment } from 'react';
 import styled from '@emotion/styled';
 import TodoNull from 'Components/todo/TodoNull';
 import { TTodo } from 'Typings/types';
-import useTodosList from 'Hooks/useTodosList';
-import { useAppSelector } from 'Hooks/reduxHooks';
 import TodoItem from './TodoItem';
 import { TODO_PALETTE } from 'Lib/calendarConstants';
-import { getTodoHeight, renderTime } from 'Lib/utilFunction';
+import { getTodoHeight, renderTime, timeToDayjs } from 'Lib/utilFunction';
 import TodoBlank from './TodoBlank';
+import useTodos from 'Hooks/useTodos';
 
 interface TodoListProps {};
 
 const TodoList: FC<TodoListProps> = ({}) => {
-  const { data: todosData } = useTodosList();
-  const { todoTime } = useAppSelector(state => state.todoTime);
+  const { data: todosData } = useTodos();
 
-  if (!todosData[todoTime] || !todosData[todoTime]?.length) {
+  if (!todosData || !todosData.length) {
     return (
       <Block>
         <TodoNull />
@@ -27,38 +25,55 @@ const TodoList: FC<TodoListProps> = ({}) => {
     <Block>
       <ListHeader>
         <TimeDiv>
-          <TimeSpan>{renderTime(todosData[todoTime][0]?.startTime)}</TimeSpan>
+          <TimeSpan>{renderTime(todosData[0]?.startTime)}</TimeSpan>
         </TimeDiv>
       </ListHeader>
       <ListBody>
         {
-          todosData[todoTime].map((todo: TTodo, idx: number) => {
-            const { endTime } = todo;
-            const isNotLastTodo = idx !== todosData[todoTime].length - 1;
+          todosData.map((todo: TTodo, idx: number) => {
+            if (todosData.length === idx + 1) {
+              return (
+                <TodoItem
+                  key={todo.id}
+                  todo={todo}
+                  todoHeight={getTodoHeight(todo.startTime, todo.endTime)}
+                  bgColor={TODO_PALETTE[idx % 7]} />
+              );
+            }
 
-            if (isNotLastTodo) {
-              const { startTime: nextTodoStartTime } = todosData[todoTime][idx + 1];
-              const hasTimeGap = endTime !== nextTodoStartTime;
+            const nextTodo = todosData[idx + 1];
 
-              if (hasTimeGap) {
-                return (
-                  <Fragment key={todo.id}>
-                    <TodoItem
-                      todo={todo}
-                      bgColor={TODO_PALETTE[idx % 7]} />
-                    <TodoBlank
-                      blankHeight={getTodoHeight(endTime, nextTodoStartTime)}
-                      nextTodoStartTime={nextTodoStartTime}
-                      borderBottomColor={TODO_PALETTE[(idx + 1) % 7]} />
-                  </Fragment>
-                );
-              }
+            if (timeToDayjs(todo.endTime) < timeToDayjs(nextTodo.startTime)) {
+              return (
+                <Fragment key={todo.id}>
+                  <TodoItem
+                    todo={todo}
+                    todoHeight={getTodoHeight(todo.startTime, todo.endTime)}
+                    bgColor={TODO_PALETTE[idx % 7]} />
+                  <TodoBlank
+                    blankHeight={getTodoHeight(todo.endTime, nextTodo.startTime)}
+                    nextTodoStartTime={nextTodo.startTime}
+                    borderBottomColor={TODO_PALETTE[(idx + 1) % 7]} />
+                </Fragment>
+              );
+            }
+
+            if (timeToDayjs(todo.endTime) > timeToDayjs(nextTodo.startTime)) {
+              return (
+                <TodoItem
+                  key={todo.id}
+                  todo={todo}
+                  todoHeight={getTodoHeight(todo.startTime, todo.endTime)}
+                  bgColor={TODO_PALETTE[idx % 7]}
+                  hideEndTime={true} />
+              );
             }
 
             return (
               <TodoItem
                 key={todo.id}
                 todo={todo}
+                todoHeight={getTodoHeight(todo.startTime, todo.endTime)}
                 bgColor={TODO_PALETTE[idx % 7]} />
             );
           })
