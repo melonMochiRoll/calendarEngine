@@ -11,13 +11,11 @@ import { closeModal, closeNestedModal } from 'Features/modalSlice';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import useUser from 'Hooks/useUser';
-import useTodosList from 'Hooks/useTodosList';
 import { TODO_MAX_SIZE } from 'Lib/calendarConstants';
-import { getByteSize, isOverlapping } from 'Lib/utilFunction';
-import { checkContent, defaultToastOption, keepMininumTime, overlappingErrorMessage, successMessage, waitingMessage } from 'Lib/noticeConstants';
-import { GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
+import { getByteSize } from 'Lib/utilFunction';
+import { checkContent, defaultToastOption, keepMininumTime, successMessage, waitingMessage } from 'Lib/noticeConstants';
+import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
 import TextButton from 'Components/common/TextButton';
-import { TTodo } from 'Typings/types';
 import { updateTodo } from 'Api/todosApi';
 import { toast } from 'react-toastify';
 
@@ -33,8 +31,6 @@ const TodoUpdate: FC = () => {
 
   const { url = '' } = useParams();
   const { userData } = useUser();
-  const { data: todosData } = useTodosList();
-  const { todoTime } = useAppSelector(state => state.todoTime);
 
   const [ start_hour, start_minute ] = todo?.startTime.split(':') || [ '', '00' ];
   const [ end_hour, end_minute ] = todo?.endTime.split(':') || [ '', '00' ];
@@ -146,21 +142,6 @@ const TodoUpdate: FC = () => {
       });
     }
 
-    const isOverlappingResult = todosData[todoTime]?.reduce((acc: boolean, todo: TTodo) => {
-      if (acc || todo.id === todoId) {
-        return acc;
-      }
-
-      return isOverlapping(startTimeFormat, endTimeFormat, todo.startTime, todo.endTime) ? true : false;
-    }, false);
-
-    if (isOverlappingResult) {
-      return setError({
-        isError: true,
-        message: overlappingErrorMessage,
-      });
-    }
-
     const diffMinute = dayjs_endTime.diff(dayjs_startTime, 'minute');
 
     if (diffMinute < 30) {
@@ -190,6 +171,7 @@ const TodoUpdate: FC = () => {
       setDescription(description);
       dispatch(closeModal());
       dispatch(closeNestedModal());
+      await qc.refetchQueries([GET_TODOS_KEY]);
       await qc.refetchQueries([GET_TODOS_LIST_KEY]);
       toast.success(successMessage, {
         ...defaultToastOption,

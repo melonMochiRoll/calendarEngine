@@ -14,11 +14,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import useUser from 'Hooks/useUser';
 import { createTodo } from 'Api/todosApi';
-import { GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
-import { checkContent, defaultToastOption, keepMininumTime, overlappingErrorMessage, successMessage, waitingMessage } from 'Lib/noticeConstants';
-import useTodosList from 'Hooks/useTodosList';
-import { getByteSize, isOverlapping } from 'Lib/utilFunction';
-import { TTodo } from 'Typings/types';
+import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
+import { checkContent, defaultToastOption, keepMininumTime, successMessage, waitingMessage } from 'Lib/noticeConstants';
+import { getByteSize } from 'Lib/utilFunction';
 import { toast } from 'react-toastify';
 
 const TodoInput: FC = () => {
@@ -33,7 +31,6 @@ const TodoInput: FC = () => {
 
   const { url = '' } = useParams();
   const { userData } = useUser();
-  const { data: todosData } = useTodosList();
   const { todoTime } = useAppSelector(state => state.todoTime);
 
   const initialTime = { hour: '', minute: '00' };
@@ -136,21 +133,6 @@ const TodoInput: FC = () => {
       });
     }
 
-    const isOverlappingResult = todosData[todoTime]?.reduce((acc: boolean, todo: TTodo) => {
-      if (acc) {
-        return acc;
-      }
-
-      return isOverlapping(startTimeFormat, endTimeFormat, todo.startTime, todo.endTime) ? true : false;
-    }, false);
-
-    if (isOverlappingResult) {
-      return setError({
-        isError: true,
-        message: overlappingErrorMessage,
-      });
-    }
-
     const diffMinute = dayjs_endTime.diff(dayjs_startTime, 'minute');
 
     if (diffMinute < 30) {
@@ -173,6 +155,7 @@ const TodoInput: FC = () => {
       setEndTime(initialTime);
       setDescription('');
       dispatch(closeModal());
+      await qc.refetchQueries([GET_TODOS_KEY]);
       await qc.refetchQueries([GET_TODOS_LIST_KEY]);
       toast.success(successMessage, {
         ...defaultToastOption,
