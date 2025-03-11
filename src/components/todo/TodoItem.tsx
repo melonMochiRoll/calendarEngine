@@ -4,21 +4,22 @@ import { ModalName, TTodo } from 'Typings/types';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
 import { setTodoDetail } from 'Features/todoDetailSlice';
-import { getTodoHeight, renderTime } from 'Lib/utilFunction';
+import { renderTime } from 'Lib/utilFunction';
 import { TODO_MAX_HEIGHT } from 'Lib/calendarConstants';
 
 interface TodoItemProps {
   todo: TTodo;
+  todoHeight: number;
   bgColor: string;
 };
 
 const TodoItem: FC<TodoItemProps> = ({
   todo,
+  todoHeight,
   bgColor,
 }) => {
   const dispatch = useAppDispatch();
-  const { description, startTime, endTime } = todo;
-  const todoHeight = getTodoHeight(startTime, endTime); 
+  const { description, endTime } = todo;
 
   const onClickDescription = () => {
     dispatch(setTodoDetail(todo));
