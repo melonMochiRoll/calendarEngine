@@ -16,6 +16,8 @@ import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
 import useUser from 'Hooks/useUser';
+import { toast } from 'react-toastify';
+import { defaultToastOption, successMessage } from 'Lib/noticeConstants';
 
 const TodoDetail: FC = () => {
   const qc = useQueryClient();
@@ -39,6 +41,9 @@ const TodoDetail: FC = () => {
     dispatch(closeModal());
     await qc.refetchQueries([GET_TODOS_KEY]);
     await qc.refetchQueries([GET_TODOS_LIST_KEY]);
+    toast.success(successMessage, {
+      ...defaultToastOption,
+    });
   };
   
   return (
