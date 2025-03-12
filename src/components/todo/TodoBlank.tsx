@@ -76,5 +76,5 @@ const DescriptionDiv = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  background-color: var(--dark-gray);
+  background-color: var(--black);
 `;
