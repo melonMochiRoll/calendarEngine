@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { ModalName, TTodo } from 'Typings/types';
 import { useAppDispatch } from 'Hooks/reduxHooks';
@@ -6,6 +6,9 @@ import { openModal } from 'Features/modalSlice';
 import { setTodoDetail } from 'Features/todoDetailSlice';
 import { renderTime } from 'Lib/utilFunction';
 import { TODO_MAX_HEIGHT } from 'Lib/calendarConstants';
+import ClockIcon from '@mui/icons-material/AccessTime';
+import DescriptionIcon from '@mui/icons-material/Description';
+import PencilIcon from '@mui/icons-material/Create';
 
 interface TodoItemProps {
   todo: TTodo;
@@ -22,10 +25,19 @@ const TodoItem: FC<TodoItemProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { description, endTime } = todo;
+  const [ hover, setHover ] = useState({ visible: false, x: 0, y: 0 });
 
   const onClickDescription = () => {
     dispatch(setTodoDetail(todo));
     dispatch(openModal(ModalName.TODO_DETAIL));
+  };
+
+  const onEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    setHover({ visible: true, x: e.clientX, y: e.clientY });
+  };
+
+  const onLeave = () => {
+    setHover({ visible: false, x: 0, y: 0 });
   };
 
   return (
@@ -37,7 +49,9 @@ const TodoItem: FC<TodoItemProps> = ({
             <TimeSpan>{renderTime(endTime)}</TimeSpan>
           </TimeDiv>}
       </Left>
-      <Right>
+      <Right
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}>
         <DescriptionDiv
           onClick={() => onClickDescription()}
           bgColor={bgColor}
@@ -45,6 +59,25 @@ const TodoItem: FC<TodoItemProps> = ({
           <DescriptionSpan>{description}</DescriptionSpan>
         </DescriptionDiv>
       </Right>
+      {
+        hover.visible &&
+        <HoverDiv
+          x={hover.x}
+          y={hover.y}>
+            <FlexDiv>
+              <ClockIcon fontSize='small' />
+              <span>{`${renderTime(todo.startTime)} ~ ${renderTime(todo.endTime)}`}</span>
+            </FlexDiv>
+            <FlexDiv>
+              <DescriptionIcon fontSize='small' />
+              <span>{todo.description}</span>
+            </FlexDiv>
+            <FlexDiv>
+              <PencilIcon fontSize='small' />
+              <span>{`${todo.Author.email}`}</span>
+            </FlexDiv>
+        </HoverDiv>
+      }
     </Article>
   );
 };
@@ -106,6 +139,30 @@ const DescriptionSpan = styled.span`
   color: var(--white);
   font-size: 22px;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const HoverDiv = styled.div<{ x: number, y: number }>`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  left: ${({x}) => x + 15}px;
+  top: ${({y}) => y + 15}px;
+  padding: 10px 15px;
+  color: var(--white);
+  border: 1px solid var(--gray-7);
+  border-radius: 15px;
+  background-color: var(--dark-gray);
+  gap: 5px;
+  z-index: 1;
+`;
+
+const FlexDiv = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 7px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
