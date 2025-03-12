@@ -92,6 +92,7 @@ const Block = styled.div`
   padding: 30px 10px;
   margin-bottom: 30px;
   flex-direction: column;
+  background-color: var(--black);
   overflow: auto;
 `;
 
