@@ -30,3 +30,15 @@ export const timeToDayjs = (time: string) => {
   
   return dayjs().hour(+hour).minute(+minute);
 };
+
+export const formatDateTime = (date: string) => {
+  if (!date) return '';
+  
+  const splited = date.split(/[:-TZ]/);
+
+  if (splited.length < 5) {
+    return date;
+  }
+
+  return [ splited[0], splited.slice(1, 3).join(':') ].join(' ');
+};
