@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/CloseRounded';
 import ClockIcon from '@mui/icons-material/AccessTime';
 import DescriptionIcon from '@mui/icons-material/Description';
 import PencilIcon from '@mui/icons-material/Create';
-import dayjs from 'dayjs';
 import MenuIcon from '@mui/icons-material/MoreHoriz';
 import { NestedModalName } from 'Typings/types';
 import useMenu from 'Hooks/useMenu';
@@ -18,6 +17,7 @@ import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
 import useUser from 'Hooks/useUser';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Lib/noticeConstants';
+import { formatDateTime } from 'Lib/utilFunction';
 
 const TodoDetail: FC = () => {
   const qc = useQueryClient();
@@ -25,6 +25,10 @@ const TodoDetail: FC = () => {
   const { url = '' } = useParams();
   const { todo } = useAppSelector(state => state.todoDetail);
   const { hasPermission } = useUser();
+
+  if (!todo) {
+    return <></>;
+  }
 
   const {
     anchorEl,
@@ -105,11 +109,11 @@ const TodoDetail: FC = () => {
           </Content>
           <Content>
             <PencilIcon />
-            <ContentSpan>{`${todo?.Author.email}, ${dayjs(todo?.createdAt).format('YYYY-MM-DD HH:mm')}`}</ContentSpan>
+            <ContentSpan>{`${todo?.Author.email}, ${formatDateTime(todo?.createdAt)}`}</ContentSpan>
           </Content>
         </DetailDiv>
         <UpdateAtDiv>
-          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor.email}, ${dayjs(todo?.updatedAt).format('YYYY-MM-DD HH:mm')}`}</LastupdatedAt>}
+          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor.email}, ${formatDateTime(todo?.updatedAt)}`}</LastupdatedAt>}
         </UpdateAtDiv>
       </Main>
     </Block>
