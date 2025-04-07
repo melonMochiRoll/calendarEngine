@@ -74,8 +74,8 @@ export type TLocalTodo = {
   id: string,
   contents: string,
   isComplete: boolean,
-  date: Date,
-  createdAt: Date,
+  date: string,
+  createdAt: string,
 };
 
 export type TTodo = {
@@ -84,9 +84,9 @@ export type TTodo = {
   startTime: string,
   endTime: string,
   date: string,
-  createdAt: Date,
-  updatedAt: Date,
-  deletedAt: Date | null,
+  createdAt: string,
+  updatedAt: string,
+  deletedAt: string | null,
   AuthorId: number,
   EditorId: number | null,
   SharedspaceId: number,
@@ -108,8 +108,8 @@ export type TSharedspaceMembers = {
   SharedspaceId: number,
   UserId: number,
   RoleId: number,
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: string,
+  updatedAt: string,
   Role: {
     name: string,
   }
@@ -119,9 +119,9 @@ export type TSharedspace = {
   id: number,
   name: string,
   private: boolean,
-  createdAt: Date,
-  updatedAt: Date,
-  deletedAt: Date | null,
+  createdAt: string,
+  updatedAt: string,
+  deletedAt: string | null,
   OwnerId: number,
   url: string,
 };
@@ -163,7 +163,7 @@ export type TSearchUsers = Pick<TUser, 'id' | 'email' | 'profileImage'> &
 export type TJoinRequest = {
   id: number,
   RequestorId: number,
-  createdAt: Date,
+  createdAt: string,
   message: string,
   Requestor: Pick<TUser, 'email' | 'profileImage'>,
 };
@@ -173,9 +173,9 @@ export type TChat = {
   content: string;
   SenderId: number | null;
   SharedspaceId: number;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 };
 
 export type TChatList = Pick<TChat,
