@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import dayjs from 'dayjs';
 
 interface DateSeparatorProps {
-  date: Date,
+  date: string,
 }
 
 const DateSeparator: FC<DateSeparatorProps> = ({ date }) => {
@@ -13,7 +12,7 @@ const DateSeparator: FC<DateSeparatorProps> = ({ date }) => {
         <Top></Top>
         <Bottom></Bottom>
       </Rapper>
-      <Timestamp>{dayjs(date).format('YYYY년 MM월 DD일')}</Timestamp>
+      <Timestamp>{date}</Timestamp>
       <Rapper>
         <Top></Top>
         <Bottom></Bottom>
