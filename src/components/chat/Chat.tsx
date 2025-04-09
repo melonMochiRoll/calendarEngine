@@ -3,6 +3,8 @@ import styled from '@emotion/styled';
 import { TChatList } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import useMenu from 'Hooks/useMenu';
 import { defaultToastOption, muiMenuDefaultSx, waitingMessage } from 'Lib/noticeConstants';
@@ -29,6 +31,13 @@ const Chat: FC<ChatProps> = ({
   const { userData } = useUser();
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ newContent, onChangeNewContent ] = useInput(chat.content);
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  const localTimeZone = dayjs.tz.guess();
+
+  if (!chat) {
+    return <></>;
+  }
 
   const {
     anchorEl,
@@ -74,7 +83,7 @@ const Chat: FC<ChatProps> = ({
       <Right>
         <Top>
           <ProfileName>{chat.Sender.email}</ProfileName>
-          <Timestamp>{dayjs(chat.createdAt).format('A hh:mm')}</Timestamp>
+          <Timestamp>{dayjs(chat.createdAt).tz(localTimeZone).format('A hh:mm')}</Timestamp>
           {isUpdated && <UpdatedSpan>수정됨</UpdatedSpan>}
         </Top>
         <Bottom>

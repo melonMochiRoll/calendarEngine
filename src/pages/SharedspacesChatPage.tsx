@@ -6,6 +6,8 @@ import Chat from 'Components/chat/Chat';
 import { ChatsCommandList, TChatList, TChats } from 'Typings/types';
 import DateSeparator from 'Components/chat/DateSeparator';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import useChats from 'Hooks/useChats';
 import SkeletonChatList from 'Components/skeleton/SkeletonChatList';
 import { createSharedspaceChats, getSharedspaceChats } from 'Api/sharedspacesApi';
@@ -22,12 +24,16 @@ import AddPhotoIcon from '@mui/icons-material/AddPhotoAlternate';
 import ImagePreviewer from 'Components/chat/ImagePreviewer';
 import { toast } from 'react-toastify';
 import { defaultToastOption, imageTooLargeMessage, muiMenuDefaultSx, tooManyImagesMessage, waitingMessage } from 'Lib/noticeConstants';
+import { formatDate } from 'Lib/utilFunction';
 
 const SharedspacesChatPage: FC = () => {
   const { url } = useParams();
   const qc = useQueryClient();
   const { socket } = useSocket();
   const { data: chatList, isLoading, offset, setOffset } = useChats();
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  const localTimeZone = dayjs.tz.guess();
 
   const [ chat, onChangeChat, setChat ] = useInput('');
   const [ files, setFiles ] = useState<File[]>([]);
@@ -250,7 +256,7 @@ const SharedspacesChatPage: FC = () => {
 
               const hasDateSeparator =
                 (idx >= chatList.chats.length - 1 && !chatList.hasMoreData) ||
-                (idx < chatList.chats.length - 1 && dayjs(chat.createdAt).format('DD') !== dayjs(chatList.chats[idx + 1].createdAt).format('DD'));
+                (idx < chatList.chats.length - 1 && dayjs(chat.createdAt).tz(localTimeZone).format('DD') !== dayjs(chatList.chats[idx + 1].createdAt).tz(localTimeZone).format('DD'));
 
               if (hasDateSeparator) {
                 return (
@@ -258,7 +264,7 @@ const SharedspacesChatPage: FC = () => {
                     <Chat
                       key={chat.id}
                       chat={chat} />
-                    <DateSeparator date={chat.createdAt} />
+                    <DateSeparator date={formatDate(dayjs(chat.createdAt).tz(localTimeZone).format())} />
                   </Fragment>
                 );
               }
