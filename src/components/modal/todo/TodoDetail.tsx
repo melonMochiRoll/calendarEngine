@@ -18,6 +18,9 @@ import useUser from 'Hooks/useUser';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Lib/noticeConstants';
 import { formatDateTime } from 'Lib/utilFunction';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
 const TodoDetail: FC = () => {
   const qc = useQueryClient();
@@ -25,6 +28,9 @@ const TodoDetail: FC = () => {
   const { url = '' } = useParams();
   const { todo } = useAppSelector(state => state.todoDetail);
   const { hasPermission } = useUser();
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  const localTimeZone = dayjs.tz.guess();
 
   if (!todo) {
     return <></>;
@@ -109,11 +115,11 @@ const TodoDetail: FC = () => {
           </Content>
           <Content>
             <PencilIcon />
-            <ContentSpan>{`${todo?.Author.email}, ${formatDateTime(todo?.createdAt)}`}</ContentSpan>
+            <ContentSpan>{`${todo?.Author.email}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
           </Content>
         </DetailDiv>
         <UpdateAtDiv>
-          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor.email}, ${formatDateTime(todo?.updatedAt)}`}</LastupdatedAt>}
+          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor.email}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
         </UpdateAtDiv>
       </Main>
     </Block>
