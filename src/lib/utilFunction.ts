@@ -34,11 +34,16 @@ export const timeToDayjs = (time: string) => {
 export const formatDateTime = (date: string) => {
   if (!date) return '';
   
-  const splited = date.split(/[:-TZ]/);
+  const splited = date.split(/[:-T+Z]/);
 
-  if (splited.length < 5) {
-    return date;
-  }
-
-  return [ splited[0], splited.slice(1, 3).join(':') ].join(' ');
+  return `${splited[0]} ${splited[1]}:${splited[2]}`;
 };
+
+// export const formatDate = (date: string) => {
+//   if (!date) return '';
+
+//   const splited = date.split(/[-T]/);
+//   console.log(date);
+
+//   return `${splited[0]}년 ${splited[1]}월 ${splited[2]}일`;
+// };
