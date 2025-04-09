@@ -39,11 +39,10 @@ export const formatDateTime = (date: string) => {
   return `${splited[0]} ${splited[1]}:${splited[2]}`;
 };
 
-// export const formatDate = (date: string) => {
-//   if (!date) return '';
+export const formatDate = (date: string) => {
+  if (!date) return '';
 
-//   const splited = date.split(/[-T]/);
-//   console.log(date);
+  const splited = date.split(/[-T]/);
 
-//   return `${splited[0]}년 ${splited[1]}월 ${splited[2]}일`;
-// };
+  return `${splited[0]}년 ${splited[1]}월 ${splited[2]}일`;
+};
