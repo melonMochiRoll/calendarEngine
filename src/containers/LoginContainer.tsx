@@ -76,18 +76,14 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
       .then(() => {
         navigate('/');
       })
-      .catch(() => {
+      .catch((errorMessage) => {
         setErrors({
-          email: '이메일 혹은 비밀번호를 확인해주세요',
+          email: errorMessage,
           password: '',
         });
       });
 
   }, [email, password]);
-
-  const goBack = () => {
-    navigate(-1);
-  };
   
   return (
     <LoginForm

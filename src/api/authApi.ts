@@ -1,11 +1,16 @@
+import { AxiosError } from "axios";
 import { axiosInstance } from "./axiosInstance";
+import { waitingMessage } from "Lib/noticeConstants";
 
 export const login = async (email: string, password: string) => {
   try {
     await axiosInstance
       .post('/api/auth/login', { username: email, password });
   } catch (err) {
-    return Promise.reject(err);
+    if (err instanceof AxiosError) {
+      return Promise.reject(err.response?.data?.message);
+    }
+    return Promise.reject(waitingMessage);
   }
 };
 
