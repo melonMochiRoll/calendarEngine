@@ -34,13 +34,15 @@ const JoinRequestSender: FC = () => {
       RoleName,
       message,
     )
-    .then(() => {
-      toast.success(successMessage, {
-        ...defaultToastOption,
+      .then(() => {
+        toast.success(successMessage, {
+          ...defaultToastOption,
+        });
+        dispatch(closeModal());
+      })
+      .catch((errorMessage) => {
+        setError(errorMessage);
       });
-      dispatch(closeModal());
-    })
-    .catch(() => setError(waitingMessage));
   };
 
   return (
