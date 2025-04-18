@@ -73,8 +73,8 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
     }
   
     login(emailConfirmResult.email, passwordConfirmResult.password)
-      .then(async () => {
-        navigate(-1);
+      .then(() => {
+        navigate('/');
       })
       .catch(() => {
         setErrors({
