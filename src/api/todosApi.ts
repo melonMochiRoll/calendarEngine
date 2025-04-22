@@ -1,9 +1,13 @@
 import { axiosInstance } from "./axiosInstance";
 
 export const getTodosByDate = async (
-  url: string,
+  url: string | undefined,
   date: string,
 ) => {
+  if (!url) {
+    return;
+  }
+
   try {
     const { data } = await axiosInstance
       .get(`/api/sharedspaces/${url}/todos?date=${date}`);
@@ -15,10 +19,14 @@ export const getTodosByDate = async (
 };
 
 export const getTodosCount = async (
-  url: string,
+  url: string | undefined,
   year: string,
   month: string,
   ) => {
+  if (!url) {
+    return;
+  }
+
   try {
     const { data } = await axiosInstance
       .get(`/api/sharedspaces/${url}/todos/count?date=${year}-${month}`);
@@ -89,12 +97,14 @@ export const deleteTodo = async (
 };
 
 export const searchTodos = async (
-  url: string,
+  url: string | undefined,
   query: string,
   offset: number = 1,
   limit: number = 10,
 ) => {
-  if (!query) return;
+  if (!url || !query) {
+    return;
+  }
   
   try {
     const { data } = await axiosInstance.get(
