@@ -1,7 +1,11 @@
 import { TSharedspaceMembersRoles } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
 
-export const getSharedspace = async (url: string) => {
+export const getSharedspace = async (url: string | undefined) => {
+  if (!url) {
+    return;
+  }
+
   try {
     const { data } = await axiosInstance
       .get(`/api/sharedspaces/${url}/view`);
