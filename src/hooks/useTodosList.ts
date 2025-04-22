@@ -9,14 +9,8 @@ export type TTodosList = {
   [key: string]: number,
 };
 
-type UseTodosListReturnType = {
-  data: TTodosList,
-  isLoading: boolean,
-  error: unknown,
-}
-
-const useTodosList = (): UseTodosListReturnType => {
-  const { url = '' } = useParams();
+const useTodosList = () => {
+  const { url: _url } = useParams();
   const {
     calendarYear,
     calendarMonth,
@@ -27,21 +21,21 @@ const useTodosList = (): UseTodosListReturnType => {
     isLoading,
     refetch,
     error,
-  } = useQuery({
+  } = useQuery<TTodosList>({
     queryKey: [GET_TODOS_LIST_KEY],
-    queryFn: () => getTodosCount(url, calendarYear, calendarMonth),
+    queryFn: () => getTodosCount(_url, calendarYear, calendarMonth),
     refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
     refetch();
-  }, [url, calendarYear, calendarMonth]);
+  }, [_url, calendarYear, calendarMonth]);
 
   return {
     data,
     isLoading,
     error,
-  };
+  } as const;
 };
 
 export default useTodosList;

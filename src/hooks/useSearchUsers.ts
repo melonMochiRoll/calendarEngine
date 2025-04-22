@@ -5,19 +5,14 @@ import { searchUsers } from "Api/usersApi";
 import { useEffect } from "react";
 import { SEARCH_USERS_KEY } from "Lib/queryKeys";
 
-type TUseSearchUsersReturnType = {
-  data: TSearchUsers[],
-  isLoading: boolean,
-};
-
-const useSearchUsers = (): TUseSearchUsersReturnType => {
+const useSearchUsers = () => {
   const { query } = useAppSelector(state => state.searchUsers);
 
   const {
     data,
     isLoading,
     refetch,
-  } = useQuery({
+  } = useQuery<TSearchUsers[]>({
     queryKey: [SEARCH_USERS_KEY],
     queryFn: () => searchUsers(query),
     refetchOnWindowFocus: false,
@@ -30,7 +25,7 @@ const useSearchUsers = (): TUseSearchUsersReturnType => {
   return {
     data,
     isLoading
-  };
+  } as const;
 };
 
 export default useSearchUsers;

@@ -6,14 +6,8 @@ import { TTodo } from 'Typings/types';
 import { getTodosByDate } from 'Api/todosApi';
 import { GET_TODOS_KEY } from 'Lib/queryKeys';
 
-type UseTodosReturnType = {
-  data: TTodo[],
-  isLoading: boolean,
-  error: unknown,
-}
-
-const useTodos = (): UseTodosReturnType => {
-  const { url = '' } = useParams();
+const useTodos = () => {
+  const { url: _url } = useParams();
   const { todoTime } = useAppSelector(state => state.todoTime);
   
   const {
@@ -21,21 +15,21 @@ const useTodos = (): UseTodosReturnType => {
     isLoading,
     refetch,
     error,
-  } = useQuery({
+  } = useQuery<TTodo[]>({
     queryKey: [GET_TODOS_KEY],
-    queryFn: () => getTodosByDate(url, todoTime),
+    queryFn: () => getTodosByDate(_url, todoTime),
     refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
     refetch();
-  }, [url, todoTime]);
+  }, [_url, todoTime]);
 
   return {
     data,
     isLoading,
     error,
-  };
+  } as const;
 };
 
 export default useTodos;

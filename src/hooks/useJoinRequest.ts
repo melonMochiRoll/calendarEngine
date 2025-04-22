@@ -5,31 +5,26 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { TJoinRequest } from "Typings/types";
 
-type TUseMyJoinRequestReturntype = {
-  data: TJoinRequest[],
-  isLoading: boolean,
-}
-
-const useJoinRequest = (): TUseMyJoinRequestReturntype => {
-  const { url = '' } = useParams();
+const useJoinRequest = () => {
+  const { url: _url } = useParams();
   const {
     data,
     refetch,
     isLoading,
-  } = useQuery({
+  } = useQuery<TJoinRequest[]>({
     queryKey: [GET_JOINREQUEST_KEY],
-    queryFn: () => getJoinRequest(url),
+    queryFn: () => getJoinRequest(_url),
     refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
     refetch();
-  }, [url]);
+  }, [_url]);
 
   return {
     data,
     isLoading,
-  }
+  } as const
 };
 
 export default useJoinRequest;

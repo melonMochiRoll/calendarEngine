@@ -1,13 +1,6 @@
 import { useState } from "react";
 
-type TUseMenuReturnType = {
-  anchorEl: null | HTMLElement,
-  open: boolean,
-  onOpen: (e: any) => void,
-  onClose: () => void,
-};
-
-const useMenu = (): TUseMenuReturnType => {
+const useMenu = () => {
   const [ anchorEl, setAnchorEl ] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -24,7 +17,7 @@ const useMenu = (): TUseMenuReturnType => {
     open,
     onOpen,
     onClose,
-  };
+  } as const;
 };
 
 export default useMenu;

@@ -5,22 +5,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TChats } from "Typings/types";
 
-type TUseChatsReturnType = {
-  data: TChats,
-  isLoading: boolean,
-  offset: number,
-  setOffset: React.Dispatch<React.SetStateAction<number>>,
-};
-
-const useChats = (): TUseChatsReturnType => {
+const useChats = () => {
   const { url: _url } = useParams();
   const [ offset, setOffset ] = useState(1);
   const {
     data,
     isLoading,
     refetch,
-    error,
-  } = useQuery({
+  } = useQuery<TChats>({
     queryKey: [GET_SHAREDSPACE_CHATS_KEY],
     queryFn: () => getSharedspaceChats(_url, offset),
     refetchOnWindowFocus: false,
@@ -35,7 +27,7 @@ const useChats = (): TUseChatsReturnType => {
     isLoading,
     offset,
     setOffset,
-  };
+  } as const;
 };
 
 export default useChats;

@@ -6,14 +6,7 @@ import { TSearchTodos } from "Typings/types";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "./reduxHooks";
 
-type TUseSearchReturnData = {
-  data: TSearchTodos[],
-  isLoading: boolean,
-  canLoadMore: boolean,
-  nextOffset: () => void,
-};
-
-const useSearchTodos = (): TUseSearchReturnData => {
+const useSearchTodos = () => {
   const qc = useQueryClient();
   const { url = '' } = useParams();
   const { query } = useAppSelector(state => state.searchTodos);
@@ -22,10 +15,10 @@ const useSearchTodos = (): TUseSearchReturnData => {
   const [ canLoadMore, setCanLoadMore ] = useState(true);
 
   const {
-    data,
+    data = [],
     refetch,
     isLoading,
-  } = useQuery({
+  } = useQuery<TSearchTodos[]>({
     queryKey: [SEARCH_TODOS_KEY],
     queryFn: () => searchTodos(url, query),
     refetchOnWindowFocus: false,
@@ -68,7 +61,7 @@ const useSearchTodos = (): TUseSearchReturnData => {
     isLoading,
     canLoadMore,
     nextOffset: () => setOffset(prev => prev + 1),
-  };
+  } as const;
 };
 
 export default useSearchTodos;

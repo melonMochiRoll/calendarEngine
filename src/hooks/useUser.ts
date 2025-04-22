@@ -2,26 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import { getUser } from 'Api/usersApi';
 import { GET_USER_KEY } from 'Lib/queryKeys';
 import { useParams } from 'react-router-dom';
-import { SharedspaceMembersRoles, TSharedspace, TSharedspaceMembers, TUser } from 'Typings/types';
+import { SharedspaceMembersRoles, TSharedspace, TUser } from 'Typings/types';
 
-type UseUserReturnType = {
-  userData: TUser,
-  refetch: () => void,
-  isLoading: boolean,
-  isLogin: boolean,
-  isNotLogin: boolean,
-  isOwner: (url?: string) => boolean,
-  hasPermission: (url?: string) => boolean,
-  getRoleName: (url?: string) => string,
-};
-
-const useUser = (): UseUserReturnType => {
-  const { url: _url = '' } = useParams();
+const useUser = () => {
+  const { url: _url } = useParams();
   const {
     data: userData,
     refetch,
     isLoading,
-  } = useQuery({
+  } = useQuery<TUser>({
     queryKey: [GET_USER_KEY],
     queryFn: () => getUser(),
     refetchOnWindowFocus: false,
@@ -73,7 +62,7 @@ const useUser = (): UseUserReturnType => {
     isOwner,
     hasPermission,
     getRoleName,
-  };
+  } as const;
 };
 
 export default useUser;

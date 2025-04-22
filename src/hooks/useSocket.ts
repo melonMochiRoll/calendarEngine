@@ -2,11 +2,7 @@ import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 
-type TUseSocketReturnType = {
-  socket: Socket | null,
-};
-
-const useSocket = (): TUseSocketReturnType => {
+const useSocket = () => {
   const { url = '' } = useParams();
   const socketRef = useRef<Socket>();
   const isDevelopment = process.env.REACT_APP_NODE_ENV === 'development';
@@ -24,7 +20,7 @@ const useSocket = (): TUseSocketReturnType => {
     return { socket: null };
   }
 
-  return { socket: socketRef.current };
+  return { socket: socketRef.current } as const;
 };
 
 export default useSocket;
