@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const useDoubleClick = (onClickEvent: Function) => {
-  const [ click, setClick ] = useState(0);
+  const [ click, _setClick ] = useState(0);
 
   useEffect(() => {
     if (click > 1) {
@@ -9,7 +9,7 @@ const useDoubleClick = (onClickEvent: Function) => {
     }
 
     const interval = setTimeout(() => {
-      setClick(0);
+      _setClick(0);
     }, 250);
 
     return () => {
@@ -17,7 +17,7 @@ const useDoubleClick = (onClickEvent: Function) => {
     };
   }, [click]);
 
-  return () => setClick(prev => prev + 1);
+  return () => _setClick(prev => prev + 1);
 };
 
 export default useDoubleClick;
