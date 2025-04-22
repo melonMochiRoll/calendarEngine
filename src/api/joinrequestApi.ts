@@ -3,8 +3,12 @@ import { axiosInstance } from "./axiosInstance";
 import { waitingMessage } from "Lib/noticeConstants";
 
 export const getJoinRequest = async (
-  url: string,
+  url: string | undefined,
 ) => {
+  if (!url) {
+    return;
+  }
+
   try {
     const { data } = await axiosInstance
       .get(`api/sharedspaces/${url}/joinrequest`);
