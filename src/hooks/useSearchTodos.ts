@@ -8,7 +8,7 @@ import { useAppSelector } from "./reduxHooks";
 
 const useSearchTodos = () => {
   const qc = useQueryClient();
-  const { url = '' } = useParams();
+  const { url: _url } = useParams();
   const { query } = useAppSelector(state => state.searchTodos);
 
   const [ offset, setOffset ] = useState(1);
@@ -20,7 +20,7 @@ const useSearchTodos = () => {
     isLoading,
   } = useQuery<TSearchTodos[]>({
     queryKey: [SEARCH_TODOS_KEY],
-    queryFn: () => searchTodos(url, query),
+    queryFn: () => searchTodos(_url, query),
     refetchOnWindowFocus: false,
   });
 
@@ -46,7 +46,7 @@ const useSearchTodos = () => {
 
   useEffect(() => {
     if (offset > 1) {
-      searchTodos(url, query, offset)
+      searchTodos(_url, query, offset)
         .then(res => {
           if (res?.length < 10) {
             setCanLoadMore(false);
