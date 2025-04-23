@@ -20,6 +20,7 @@
       "Containers/*": ["src/containers/*"],
       "Features/*": ["src/features/*"],
       "Hooks/*": ["src/hooks/*"],
+      "Layouts/*": ["src/layouts/*"],
       "Lib/*": ["src/lib/*"],
       "Pages/*": ["src/pages/*"],
       "Routes/*": ["src/routes/*"],

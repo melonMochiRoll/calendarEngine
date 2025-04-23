@@ -26,6 +26,7 @@ module.exports = {
       Containers: path.resolve(__dirname, 'src/containers/'),
       Features: path.resolve(__dirname, 'src/features/'),
       Hooks: path.resolve(__dirname, 'src/hooks/'),
+      Layouts: path.resolve(__dirname, 'src/layouts/'),
       Lib: path.resolve(__dirname, 'src/lib/'),
       Pages: path.resolve(__dirname, 'src/pages/'),
       Routes: path.resolve(__dirname, 'src/routes/'),
