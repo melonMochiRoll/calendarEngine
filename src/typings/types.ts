@@ -2,10 +2,8 @@
 export type InputTypeAttribute = 'button' | 'checkbox' | 'color' | 'date' | 'datetime-local' | 'email' | 'file' | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | 'range' | 'reset' | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week';
 
 export type TErrorResponse = {
-  error: string,
   message: string,
   path: string,
-  statusCode: number,
   timestamp: string,
 };
 
