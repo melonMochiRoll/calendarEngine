@@ -1,11 +1,12 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import { PATHS } from 'Constants/paths';
 
 const MainPage = React.lazy(() => import('../pages/MainPage'));
-const SubscribedSpacesPage = React.lazy(() => import('../pages/SubscribedSpacesPage'));
 const LoginPage = React.lazy(() => import('../pages/LoginPage'));
 const JoinPage = React.lazy(() => import('../pages/JoinPage'));
 const SharedspacesPage = React.lazy(() => import('../pages/SharedspacesPage'));
+const SharedspacesLayout = React.lazy(() => import('../containers/SharedspacesLayout'));
 const SharedspacesViewPage = React.lazy(() => import('../pages/SharedspacesViewPage'));
 const SharedspacesChatPage = React.lazy(() => import('../pages/SharedspacesChatPage'));
 const NotFoundPage = React.lazy(() => import('../pages/NotFoundPage'));
@@ -14,45 +15,40 @@ const ForbiddenPage = React.lazy(() => import('../pages/ForbiddenPage'));
 
 const MainRouter = createBrowserRouter([
   {
-    path: '/',
+    path: PATHS.HOME,
     element: <MainPage />,
     children: [
       {
-        path: '/login',
+        path: PATHS.LOGIN,
         element: <LoginPage />,
       },
       {
-        path: '/join',
+        path: PATHS.JOIN,
         element: <JoinPage />,
       },
       {
-        path: '/sharedspaces/subscribed',
-        element: <SubscribedSpacesPage />,
-      },
-      {
-        path: '/sharedspaces',
-        element: <SharedspacesPage />,
+        path: PATHS.SHAREDSPACE,
         children: [
+          { index: true, element: <SharedspacesPage /> },
           {
-            path: 'view/:url',
-            element: <SharedspacesViewPage />
-          },
-          {
-            path: 'chat/:url',
-            element: <SharedspacesChatPage />
-          },
+            element: <SharedspacesLayout />,
+            children: [
+              { path: 'view/:url', element: <SharedspacesViewPage /> },
+              { path: 'chat/:url', element: <SharedspacesChatPage /> },
+            ],
+          }
         ],
       },
       {
-        path: 'forbidden',
+        path: PATHS.FORBIDDEN,
         element: <ForbiddenPage />,
       },
       {
-        path: 'not-found',
+        path: PATHS.NOTFOUND,
         element: <NotFoundPage />,
       },
       {
-        path: 'internal',
+        path: PATHS.INTERNAL,
         element: <InternalServerErrorPage />,
       },
       {
