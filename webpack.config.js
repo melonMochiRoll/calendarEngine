@@ -22,6 +22,7 @@ module.exports = {
     alias: {
       Api: path.resolve(__dirname, 'src/api/'),
       Components: path.resolve(__dirname, 'src/components/'),
+      Constants: path.resolve(__dirname, 'src/constants/'),
       Containers: path.resolve(__dirname, 'src/containers/'),
       Features: path.resolve(__dirname, 'src/features/'),
       Hooks: path.resolve(__dirname, 'src/hooks/'),
@@ -68,7 +69,7 @@ module.exports = {
     },
     historyApiFallback: true,
     open: true,
-    port: 9000,
+    port: 9001,
   },
   plugins: [
     new HtmlWebpackPlugin({

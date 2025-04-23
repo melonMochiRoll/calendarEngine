@@ -16,6 +16,7 @@
     "paths": {
       "Api/*": ["src/api/*"],
       "Components/*": ["src/components/*"],
+      "Constants/*": ["src/constants/*"],
       "Containers/*": ["src/containers/*"],
       "Features/*": ["src/features/*"],
       "Hooks/*": ["src/hooks/*"],
