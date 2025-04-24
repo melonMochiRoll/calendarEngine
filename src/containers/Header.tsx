@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import RenderUserProfile from 'Components/auth/RenderUserProfile';
 import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
 import { useNavigate } from 'react-router-dom';
+import { PATHS } from 'Constants/paths';
 
 interface HeaderProps {};
 
@@ -14,7 +15,7 @@ const Header: FC<HeaderProps> = ({}) => {
       <Left>
         <FlexBox>
           <SatelliteIcon
-            onClick={() => navigate('/sharedspaces/subscribed')}
+            onClick={() => navigate(PATHS.SHAREDSPACE)}
             fontSize='large'
             sx={{ color: 'var(--blue)', cursor: 'pointer', marginRight: '10px' }}/>
         </FlexBox>

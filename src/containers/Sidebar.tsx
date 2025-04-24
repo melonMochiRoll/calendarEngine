@@ -10,6 +10,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import MailIcon from '@mui/icons-material/Mail';
 import MailReadIcon from '@mui/icons-material/MarkEmailRead';
 import useUser from 'Hooks/useUser';
+import { PATHS } from 'Constants/paths';
 
 const Sidebar: FC = () => {
   const navigate = useNavigate();
@@ -21,13 +22,13 @@ const Sidebar: FC = () => {
   
   return (
     <Block>
-      <IconButton onClick={() => navigate(`/sharedspaces/view/${url}`)}>
+      <IconButton onClick={() => navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`)}>
         <Icon active={pageName === 'view'}>
           <HomeIcon fontSize='large' />
         </Icon>
         <span>홈</span>
       </IconButton>
-      <IconButton onClick={() => navigate(`/sharedspaces/chat/${url}`)}>
+      <IconButton onClick={() => navigate(`${PATHS.SHAREDSPACE_CHAT}/${url}`)}>
         <Icon active={pageName === 'chat'}>
           <ChatIcon />
         </Icon>

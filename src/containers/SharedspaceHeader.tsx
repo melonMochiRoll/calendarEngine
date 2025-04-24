@@ -12,6 +12,7 @@ import EditableTitle from 'Components/common/EditableTitle';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
 import ProfileImage from 'Components/ProfileImage';
+import { PATHS } from 'Constants/paths';
 
 interface SharedspaceHeaderHeaderProps {
   spaceData: TSharedspaceMetaData,
@@ -40,7 +41,7 @@ const SharedspaceHeader: FC<SharedspaceHeaderHeaderProps> = ({
       <Left>
         <FlexBox>
           <SatelliteIcon
-            onClick={() => navigate('/sharedspaces/subscribed')}
+            onClick={() => navigate(PATHS.SHAREDSPACE)}
             fontSize='large'
             sx={{ color: 'var(--blue)', cursor: 'pointer', marginRight: '10px' }}/>
           {

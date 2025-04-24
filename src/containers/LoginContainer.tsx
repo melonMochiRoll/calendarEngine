@@ -3,6 +3,7 @@ import useInput from 'Hooks/useInput';
 import { login } from 'Api/authApi';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from 'Components/auth/LoginForm';
+import { PATHS } from 'Constants/paths';
 
 const emailConfirmation = (email: string) => {
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -74,7 +75,7 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
   
     login(emailConfirmResult.email, passwordConfirmResult.password)
       .then(() => {
-        navigate('/');
+        navigate(PATHS.SHAREDSPACE);
       })
       .catch((errorMessage) => {
         setErrors({
