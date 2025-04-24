@@ -7,9 +7,10 @@ import TextButton from 'Components/common/TextButton';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_USER_KEY } from 'Lib/queryKeys';
 import ProfileImage from 'Components/ProfileImage';
+import { PATHS } from 'Constants/paths';
 
 const RenderUserProfile: FC = () => {
-  const navigator = useNavigate();
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const { userData } = useUser();
 
@@ -41,12 +42,12 @@ const RenderUserProfile: FC = () => {
           :
           <>
             <TextButton
-              onClick={() => navigator('/login')}
+              onClick={() => navigate(PATHS.LOGIN)}
               type={'button'}>
                 로그인
             </TextButton>
             <TextButton
-              onClick={() => navigator('/join')}
+              onClick={() => navigate(PATHS.JOIN)}
               type={'button'}>
                 회원가입
             </TextButton>
