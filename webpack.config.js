@@ -70,7 +70,7 @@ module.exports = {
     },
     historyApiFallback: true,
     open: true,
-    port: 9001,
+    port: process.env.DEVELOPMENT_SERVER_PORT,
   },
   plugins: [
     new HtmlWebpackPlugin({
