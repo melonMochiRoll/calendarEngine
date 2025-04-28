@@ -30,6 +30,7 @@ export const defaultToastOption: ToastOptions = {
   closeOnClick: true,
   draggable: true,
   pauseOnHover: false,
+  pauseOnFocusLoss: false,
   progress: undefined,
   theme: 'dark',
   transition: Bounce,
