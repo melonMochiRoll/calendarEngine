@@ -37,11 +37,7 @@ const SearchHeader: FC = () => {
         placeholder='검색'/>
       <CloseIcon
         onClick={() => dispatch(closeModal())}
-        sx={{
-          color: 'var(--white)',
-          fontSize: '35px',
-          cursor: 'pointer',
-        }} />
+        sx={CloseIconInlineStyle} />
     </Header>
   );
 };
@@ -66,3 +62,9 @@ const Input = styled.input`
   border: none;
   outline: none;
 `;
+
+const CloseIconInlineStyle = {
+  color: 'var(--white)',
+  fontSize: '35px',
+  cursor: 'pointer',
+};
