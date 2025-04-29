@@ -4,11 +4,11 @@ import RenderUserProfile from 'Components/auth/RenderUserProfile';
 import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
+import useUser from 'Hooks/useUser';
 
-interface HeaderProps {};
-
-const Header: FC<HeaderProps> = ({}) => {
+const Header: FC = () => {
   const navigate = useNavigate();
+  const { data: userData } = useUser({ suspense: true, throwOnError: true });
   
   return (
     <Block>
@@ -21,7 +21,7 @@ const Header: FC<HeaderProps> = ({}) => {
         </FlexBox>
       </Left>
       <Right>
-        <RenderUserProfile />
+        <RenderUserProfile userData={userData} />
       </Right>
     </Block>
   );
