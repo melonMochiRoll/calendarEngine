@@ -32,7 +32,7 @@ export const createUser = async (email: string, password: string) => {
 };
 
 export const searchUsers = async (query: string) => {
-  if (!query) return;
+  if (!query) return [];
   
   try {
     const { data } = await axiosInstance
