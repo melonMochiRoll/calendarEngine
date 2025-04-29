@@ -9,7 +9,7 @@ import TodoDetail from './todo/TodoDetail';
 import TodoInput from './todo/TodoInput';
 import SharedspaceMemberListModal from './sharedspaceMemberList/SharedspaceMemberListModal';
 import JoinRequestSender from './joinrequest/JoinRequestSender';
-import JoinRequestManager from './joinrequest/JoinRequestManager';
+import JoinRequestManagerModal from './joinrequest/JoinRequestManagerModal';
 import ImageViewer from './imageViewer/ImageViewer';
 
 const Modals: TModals = {
@@ -19,7 +19,7 @@ const Modals: TModals = {
   TODO_DETAIL: <TodoDetail />,
   SHAREDSPACEMEMBERLIST: <SharedspaceMemberListModal />,
   JOINREQUEST_SENDER: <JoinRequestSender />,
-  JOINREQUEST_MANAGER: <JoinRequestManager />,
+  JOINREQUEST_MANAGER: <JoinRequestManagerModal />,
   IMAGE_VIEWER: <ImageViewer />,
   CLOSE: null,
 };
