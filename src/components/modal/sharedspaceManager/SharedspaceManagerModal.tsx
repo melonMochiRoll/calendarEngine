@@ -8,7 +8,7 @@ import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { clearQuery } from 'Features/searchUsersSlice';
 import { useQueryClient } from '@tanstack/react-query';
-import { SEARCH_USERS_KEY } from 'Lib/queryKeys';
+import { GET_SHAREDSPACE_KEY, SEARCH_USERS_KEY } from 'Lib/queryKeys';
 import SharedspaceManagerError from './SharedspaceManagerError';
 
 const SharedspaceManagerModal: FC = () => {
@@ -25,6 +25,7 @@ const SharedspaceManagerModal: FC = () => {
         errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
         onReset={() => {
           dispatch(clearQuery());
+          qc.removeQueries([GET_SHAREDSPACE_KEY]);
           qc.removeQueries([SEARCH_USERS_KEY]);
         }}>
         <SharedspaceManagerMain />
