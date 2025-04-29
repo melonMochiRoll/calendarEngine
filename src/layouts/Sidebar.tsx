@@ -8,7 +8,6 @@ import { openModal } from 'Features/modalSlice';
 import { ModalName } from 'Typings/types';
 import PublicIcon from '@mui/icons-material/Public';
 import MailIcon from '@mui/icons-material/Mail';
-import MailReadIcon from '@mui/icons-material/MarkEmailRead';
 import useUser from 'Hooks/useUser';
 import { PATHS } from 'Constants/paths';
 
@@ -17,7 +16,7 @@ const Sidebar: FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const { url = '' } = useParams();
-  const { isLogin, isOwner, hasPermission } = useUser({ suspense: false, throwOnError: false });
+  const { isOwner } = useUser({ suspense: false, throwOnError: false });
   const pageName = location.pathname.split('/')[2];
   
   return (
@@ -34,13 +33,6 @@ const Sidebar: FC = () => {
         </Icon>
         <span>채팅</span>
       </IconButton>
-      {
-        isLogin && !hasPermission() &&
-        <IconButton onClick={() => dispatch(openModal(ModalName.JOINREQUEST_SENDER))}>
-          <MailReadIcon />
-          <span>권한 요청</span>
-        </IconButton>
-      }
       {
         isOwner() &&
         <IconButton onClick={() => dispatch(openModal(ModalName.SHAREDSPACEMANAGER))}>
