@@ -1,29 +1,32 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
 import Sidebar from 'Containers/Sidebar';
 import SharedspaceHeader from 'Containers/SharedspaceHeader';
-import SkeletonSharedspaceHeader from 'Components/skeleton/SkeletonSharedspaceHeader';
+import SkeletonHeader from 'Components/skeleton/SkeletonHeader';
 import TodoContainer from 'Containers/TodoContainer';
-import useSharedspace from 'Hooks/useSharedspace';
-import WithSharedspaceRedirect from 'Components/hoc/WithSharedspaceRedirect';
+import AsyncBoundary from 'Components/AsyncBoundary';
+import SharedspaceRedirectFallback from 'Components/errors/SharedspaceRedirectFallback';
+import { useQueryClient } from '@tanstack/react-query';
+import { GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
 
-const SharedspacesLayout = () => {
-  const {
-    data: spaceData,
-    isLoading,
-  } = useSharedspace();
+interface SharedspacesLayoutProps {};
+
+const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
+  const qc = useQueryClient();
 
   return (
     <Block>
       <Sidebar />
       <Content>
-        {
-          !isLoading && spaceData ?
-            <SharedspaceHeader
-              spaceData={spaceData} /> :
-            <SkeletonSharedspaceHeader />
-        }
+        <AsyncBoundary
+          errorBoundaryFallback={SharedspaceRedirectFallback}
+          suspenseFallback={<SkeletonHeader />}
+          onReset={() => {
+            qc.removeQueries([GET_SHAREDSPACE_KEY]);
+          }}>
+          <SharedspaceHeader />
+        </AsyncBoundary>
         <Main>
           <Outlet />
           <TodoContainer />
@@ -33,7 +36,7 @@ const SharedspacesLayout = () => {
   );
 };
 
-export default WithSharedspaceRedirect(SharedspacesLayout);
+export default SharedspacesLayout;
 
 const Block = styled.div`
   display: flex;
