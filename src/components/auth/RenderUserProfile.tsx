@@ -8,11 +8,17 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_USER_KEY } from 'Lib/queryKeys';
 import ProfileImage from 'Components/ProfileImage';
 import { PATHS } from 'Constants/paths';
+import { TUser } from 'Typings/types';
 
-const RenderUserProfile: FC = () => {
+interface RenderUserProfileProps {
+  userData: TUser;
+};
+
+const RenderUserProfile: FC<RenderUserProfileProps> = ({
+  userData,
+}) => {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { userData } = useUser();
 
   const onLogout = useCallback(() => {
     logout()
@@ -20,7 +26,7 @@ const RenderUserProfile: FC = () => {
         console.dir(err);
       })
       .finally(() => {
-        qc.refetchQueries([GET_USER_KEY]);
+        qc.removeQueries([GET_USER_KEY]);
       });
   }, []);
   
