@@ -103,7 +103,7 @@ export const searchTodos = async (
   limit: number = 10,
 ) => {
   if (!url || !query) {
-    return;
+    return [];
   }
   
   try {
