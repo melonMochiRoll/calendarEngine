@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-import Header from 'Containers/Header';
+import Header from 'Layouts/Header';
 import MenuButton from 'Components/common/MenuButton';
 
 const ForbiddenPage: FC = () => {

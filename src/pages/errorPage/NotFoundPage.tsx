@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import MenuButton from 'Components/common/MenuButton';
 import { useNavigate } from 'react-router-dom';
-import Header from 'Containers/Header';
+import Header from 'Layouts/Header';
 
 const NotFoundPage: FC = () => {
   const navigate = useNavigate();

@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
-import Sidebar from 'Containers/Sidebar';
-import SharedspaceHeader from 'Containers/SharedspaceHeader';
+import SharedspaceHeader from './SharedspaceHeader';
+import Sidebar from './Sidebar';
 import SkeletonHeader from 'Components/skeleton/SkeletonHeader';
 import TodoContainer from 'Containers/TodoContainer';
 import AsyncBoundary from 'Components/AsyncBoundary';

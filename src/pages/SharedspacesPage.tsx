@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import Header from 'Containers/Header';
+import Header from 'Layouts/Header';
 import SubscribedSpacesContainer from 'Containers/SubscribedSpacesContainer';
 import WithAuthGuard from 'Components/hoc/WithAuthGuard';
 import AsyncBoundary from 'Components/AsyncBoundary';
