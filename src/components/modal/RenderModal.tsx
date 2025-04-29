@@ -7,7 +7,7 @@ import { closeModal } from 'Features/modalSlice';
 import { TModals } from 'Typings/types';
 import TodoDetail from './todo/TodoDetail';
 import TodoInput from './todo/TodoInput';
-import SharedspaceMemberList from './sharedspaceMemberList/SharedspaceMemberList';
+import SharedspaceMemberListModal from './sharedspaceMemberList/SharedspaceMemberListModal';
 import JoinRequestSender from './joinrequest/JoinRequestSender';
 import JoinRequestManager from './joinrequest/JoinRequestManager';
 import ImageViewer from './imageViewer/ImageViewer';
@@ -17,7 +17,7 @@ const Modals: TModals = {
   SHAREDSPACEMANAGER: <SharedspaceManagerModal />,
   TODO_INPUT: <TodoInput />,
   TODO_DETAIL: <TodoDetail />,
-  SHAREDSPACEMEMBERLIST: <SharedspaceMemberList />,
+  SHAREDSPACEMEMBERLIST: <SharedspaceMemberListModal />,
   JOINREQUEST_SENDER: <JoinRequestSender />,
   JOINREQUEST_MANAGER: <JoinRequestManager />,
   IMAGE_VIEWER: <ImageViewer />,
