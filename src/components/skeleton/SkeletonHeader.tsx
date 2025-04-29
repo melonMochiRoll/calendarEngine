@@ -4,7 +4,7 @@ import { Skeleton } from '@mui/material';
 
 interface SharedspaceHeaderHeaderProps {}; 
 
-const SkeletonSharedspaceHeader: FC<SharedspaceHeaderHeaderProps> = ({}) => {
+const SkeletonHeader: FC<SharedspaceHeaderHeaderProps> = ({}) => {
   return (
     <Block>
       <Left>
@@ -31,7 +31,7 @@ const SkeletonSharedspaceHeader: FC<SharedspaceHeaderHeaderProps> = ({}) => {
   );
 };
 
-export default SkeletonSharedspaceHeader;
+export default SkeletonHeader;
 
 const Block = styled.header`
   display: flex;
