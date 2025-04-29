@@ -18,11 +18,7 @@ const SharedspaceMemberListHeader: FC = () => {
       <Right>
         <CloseIcon
           onClick={() => dispatch(closeModal())}
-          sx={{
-            color: 'var(--white)',
-            fontSize: '35px',
-            cursor: 'pointer',
-          }} />
+          sx={CloseIconInlineStyle} />
       </Right>
     </Header>
   );
@@ -65,3 +61,9 @@ const Right = styled.div`
   justify-content: center;
   width: 15%;
 `;
+
+const CloseIconInlineStyle = {
+  color: 'var(--white)',
+  fontSize: '35px',
+  cursor: 'pointer',
+};
