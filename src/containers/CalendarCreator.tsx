@@ -1,16 +1,17 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import DateCover from './DateCover';
+import DateCover from 'Components/calendar/DateCover';
 import useTodosList from 'Hooks/useTodosList';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import { setTodoTime } from 'Features/todoTimeSlice';
 import { DAYS } from 'Lib/calendarConstants';
-import LoadingCircularCalendar from './skeleton/LoadingCircularCalendar';
 
 interface CalendarCreatorProps {};
 
 const CalendarCreator: FC<CalendarCreatorProps> = () => {
   const dispatch = useAppDispatch();
+  const { data: todosListData } = useTodosList({ suspense: true, throwOnError: true });
+
   const {
     calendarYear,
     calendarMonth,
@@ -19,17 +20,6 @@ const CalendarCreator: FC<CalendarCreatorProps> = () => {
     isNowYearAndMonth,
   } = useAppSelector(state => state.calendarTime);
   
-  const {
-    data: todosListData,
-    isLoading,
-  } = useTodosList();
-
-  if (isLoading) {
-    return (
-      <LoadingCircularCalendar />
-    );
-  }
-
   return (
     <Block>
       <WeekBlock>
