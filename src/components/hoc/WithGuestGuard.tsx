@@ -6,7 +6,7 @@ import { PATHS } from 'Constants/paths';
 const WithGuestGuard = <P extends {}>(WrappedComponent: React.FunctionComponent<P>) => {
   return (props: P) => {
     const navigate = useNavigate();
-    const { userData, isLogin } = useUser();
+    const { data: userData, isLogin } = useUser({ suspense: false, throwOnError: false });
 
     useEffect(() => {
       if (isLogin) {
