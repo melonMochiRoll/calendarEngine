@@ -9,7 +9,7 @@ import { FallbackProps } from 'react-error-boundary';
 
 export default function SharedspaceRedirectFallback({ error, resetErrorBoundary }: FallbackProps, ErrorRenderComponent?: React.ReactNode) {
   const navigate = useNavigate();
-  const { isLogin, isNotLogin } = useUser();
+  const { isLogin, isNotLogin } = useUser({ suspense: false, throwOnError: false });
 
   useEffect(() => {
     const errorCode = error instanceof AxiosError ? error.response?.status : 500;
