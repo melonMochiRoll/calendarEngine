@@ -114,14 +114,8 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
         anchorEl={anchorEl}
         open={open}
         onClick={onClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}>
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
         {
           updateRoleOption.map((option: typeof updateRoleOption[0], idx: number) => {
             return (
@@ -137,8 +131,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
           })
         }
         <Divider />
-        {
-          accessOption.map((option: typeof accessOption[0]) => {
+        {accessOption.map((option: typeof accessOption[0]) => {
             return (
               <MenuItem
                 key={option.text}
@@ -149,8 +142,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
                 <span>{option.text}</span>
               </MenuItem>
             );
-          })
-        }
+        })}
       </Menu>
     </Item>
   );
