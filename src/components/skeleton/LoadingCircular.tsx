@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { CircularProgress } from '@mui/material';
 
-const LoadingCircularCalendar: FC = () => {
+const LoadingCircular: FC = () => {
   return (
     <Block>
       <CircularProgress size={100}/>
@@ -10,7 +10,7 @@ const LoadingCircularCalendar: FC = () => {
   );
 };
 
-export default LoadingCircularCalendar;
+export default LoadingCircular;
 
 const Block = styled.div`
   display: flex;
