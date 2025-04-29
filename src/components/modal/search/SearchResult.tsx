@@ -1,8 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import SearchIcon from '@mui/icons-material/SearchRounded';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
-import { CircularProgress } from '@mui/material';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { closeModal } from 'Features/modalSlice';
 import { setCalendarTime } from 'Features/calendarTimeSlice';
@@ -10,37 +8,19 @@ import { setTodoTime } from 'Features/todoTimeSlice';
 import { TSearchTodos } from 'Typings/types';
 
 interface SearchResultProps {
-  query: string,
-  todosData: TSearchTodos[],
-  isLoading: boolean,
-  canLoadMore: boolean,
-  nextOffset: () => void,
+  query: string;
+  todosData: TSearchTodos[];
+  canLoadMore: boolean;
+  nextOffset: () => void;
 }; 
 
 const SearchResult: FC<SearchResultProps> = ({
   query,
   todosData,
-  isLoading,
   canLoadMore,
   nextOffset,
 }) => {
   const dispatch = useAppDispatch();
-
-  if (!query) {
-    return (
-      <Main>
-        <SearchIcon sx={{ color: 'var(--light-gray)', fontSize: '250px' }} />
-      </Main>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <Main>
-        <CircularProgress size={70} />
-      </Main>
-    );
-  }
 
   const onClickTodo = (date: string) => {
     dispatch(setCalendarTime(date));
@@ -50,8 +30,7 @@ const SearchResult: FC<SearchResultProps> = ({
 
   return (
     <Main>
-      {
-        todosData?.length ?
+      {todosData?.length ?
         <Ul>
           {
             todosData.map((todo: TSearchTodos) => {
