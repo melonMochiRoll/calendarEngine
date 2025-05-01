@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { TSubscribedspaces } from 'Typings/types';
 import SubscribedspacesItem from './SubscribedspacesItem';
-import { emptyspaces } from 'Lib/noticeConstants';
 import { deleteSharedspace } from 'Api/sharedspacesApi';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SUBSCRIBED_SPACES_KEY } from 'Lib/queryKeys';
@@ -22,26 +21,18 @@ const SubscribedSpacesResult: FC<SubscribedSpacesResultProps> = ({
   };
   
   return (
-    <>
-      {subscribedspaceData.length ?
-        <List>
-          {
-            subscribedspaceData.map((space: TSubscribedspaces, idx: number) => {
-              return (
-                <SubscribedspacesItem
-                  key={`${space.SharedspaceId}+${idx}`}
-                  space={space}
-                  onDeleteSharedspace={onDeleteSharedspace} />
-              );
-            })
-          }
-        </List>
-        :
-        <EmptyResult>
-          <h2>{emptyspaces}</h2>
-        </EmptyResult>
+    <List>
+      {
+        subscribedspaceData.map((space: TSubscribedspaces, idx: number) => {
+          return (
+            <SubscribedspacesItem
+              key={`${space.SharedspaceId}+${idx}`}
+              space={space}
+              onDeleteSharedspace={onDeleteSharedspace} />
+          );
+        })
       }
-    </>
+    </List>
   );
 };
 
@@ -56,19 +47,4 @@ const List = styled.ul`
   padding: 0 20%;
   margin: 0;
   border-bottom: 1px solid var(--light-gray);
-`;
-
-const EmptyResult = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  border-bottom: 1px solid var(--light-gray);
-
-  h2 {
-    color: var(--white);
-    font-size: 28px;
-    font-weight: 600;
-    margin: 100px 0;
-  }
 `;

@@ -4,6 +4,7 @@ import useUser from 'Hooks/useUser';
 import useSubscribedspace from 'Hooks/useSubscribedspaces';
 import SubscribedSpacesResult from 'Components/subscribedspaces/SubscribedspacesResult';
 import SubscribedSpacesHeader from 'Components/subscribedspaces/SubscribedspacesHeader';
+import SubscribedSpacesNull from 'Components/subscribedspaces/SubscribedSpacesNull';
 
 const SubscribedSpacesContainer: FC = () => {
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
@@ -12,7 +13,9 @@ const SubscribedSpacesContainer: FC = () => {
   return (
     <Main>
       <SubscribedSpacesHeader userData={userData} />
-      <SubscribedSpacesResult subscribedspaceData={subscribedspaceData} />
+      {subscribedspaceData.length ?
+        <SubscribedSpacesResult subscribedspaceData={subscribedspaceData} /> :
+        <SubscribedSpacesNull />}
     </Main>
   );
 };
