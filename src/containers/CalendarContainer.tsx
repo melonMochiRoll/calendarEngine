@@ -36,19 +36,17 @@ const CalendarContainer: FC<CalendarContainerProps> = () => {
               <tr key={i}>
                 {[1, 2, 3, 4, 5, 6, 7].map((n, idx) => {
                   const date = dates[i + n];
-
-                  if (!date || typeof date === 'string') {
-                    return <td key={i + n} />
-                  };
-
+                  const isBlank = !date || typeof date === 'string';
                   const timeKey = `${calendarYear}-${calendarMonth}-${String(date).padStart(2, '0')}`;
-                    
-                  return <DateCover
-                    key={i + n}
-                    index={idx}
-                    setTodoTime={() => dispatch(setTodoTime(timeKey))}
-                    todosLength={todosListData[timeKey] || 0}
-                    date={date} />;
+
+                  return isBlank ?
+                    <td key={i + n} /> :
+                    <DateCover
+                      key={i + n}
+                      index={idx}
+                      setTodoTime={() => dispatch(setTodoTime(timeKey))}
+                      todosLength={todosListData[timeKey] || 0}
+                      date={date} />;
                 })}
               </tr>
             )
