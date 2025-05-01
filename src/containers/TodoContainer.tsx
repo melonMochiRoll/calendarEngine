@@ -11,7 +11,7 @@ import useUser from 'Hooks/useUser';
 
 interface TodoAppProps {};
 
-const TodoApp: FC<TodoAppProps> = ({}) => {
+const TodoContainer: FC<TodoAppProps> = ({}) => {
   const dispatch = useAppDispatch();
   const { hasPermission } = useUser();
   const { todoTime } = useAppSelector(state => state.todoTime);
@@ -35,7 +35,7 @@ const TodoApp: FC<TodoAppProps> = ({}) => {
   );
 };
 
-export default TodoApp;
+export default TodoContainer;
 
 const Container = styled.div`
   display: flex;

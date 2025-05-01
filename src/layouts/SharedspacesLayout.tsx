@@ -9,7 +9,7 @@ import AsyncBoundary from 'Components/AsyncBoundary';
 import SharedspaceRedirectFallback from 'Components/errors/SharedspaceRedirectFallback';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
-import TodoApp from 'Containers/todo/TodoApp';
+import TodoContainer from 'Containers/TodoContainer';
 
 interface SharedspacesLayoutProps {};
 
@@ -31,7 +31,7 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
         <Main>
           <Outlet />
           <Drawer>
-            <TodoApp />
+            <TodoContainer />
           </Drawer>
         </Main>
       </Content>
