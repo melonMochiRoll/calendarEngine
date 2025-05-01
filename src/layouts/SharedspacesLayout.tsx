@@ -8,13 +8,18 @@ import Drawer from 'Components/common/Drawer';
 import AsyncBoundary from 'Components/AsyncBoundary';
 import SharedspaceRedirectFallback from 'Components/errors/SharedspaceRedirectFallback';
 import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
+import { GET_SHAREDSPACE_KEY, GET_TODOS_KEY } from 'Lib/queryKeys';
 import TodoContainer from 'Containers/TodoContainer';
+import { useAppSelector } from 'Hooks/reduxHooks';
+import TodoInit from 'Components/todo/TodoInit';
+import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
+import LoadingCircular from 'Components/skeleton/LoadingCircular';
 
 interface SharedspacesLayoutProps {};
 
 const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
   const qc = useQueryClient();
+  const { todoTime } = useAppSelector(state => state.todoTime);
 
   return (
     <Block>
@@ -31,7 +36,16 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
         <Main>
           <Outlet />
           <Drawer>
-            <TodoContainer />
+            {todoTime ?
+              <AsyncBoundary
+                errorBoundaryFallback={GenericErrorFallback}
+                suspenseFallback={<LoadingCircular />}
+                onReset={() => {
+                  qc.removeQueries([GET_TODOS_KEY]);
+                }}>
+                <TodoContainer />
+              </AsyncBoundary> :
+              <TodoInit />}
           </Drawer>
         </Main>
       </Content>

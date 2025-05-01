@@ -1,26 +1,18 @@
 import React, { FC, Fragment } from 'react';
 import styled from '@emotion/styled';
-import TodoNull from 'Components/todo/TodoNull';
 import { TTodo } from 'Typings/types';
 import TodoItem from './TodoItem';
 import { TODO_PALETTE } from 'Lib/calendarConstants';
 import { getTodoHeight, renderTime, timeToDayjs } from 'Lib/utilFunction';
 import TodoBlank from './TodoBlank';
-import useTodos from 'Hooks/useTodos';
 
-interface TodoListProps {};
+interface TodoListProps {
+  todosData: TTodo[];
+};
 
-const TodoList: FC<TodoListProps> = ({}) => {
-  const { data: todosData } = useTodos();
-
-  if (!todosData || !todosData.length) {
-    return (
-      <Block>
-        <TodoNull />
-      </Block>
-    );
-  }
-
+const TodoList: FC<TodoListProps> = ({
+  todosData,
+}) => {
   return (
     <Block>
       <ListHeader>
