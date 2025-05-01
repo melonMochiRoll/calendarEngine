@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import CalendarCreator from 'Containers/CalendarCreator';
+import CalendarContainer from 'Containers/CalendarContainer';
 import CalendarHeader from 'Components/calendar/CalendarHeader';
 import AsyncBoundary from 'Components/AsyncBoundary';
 import { GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
@@ -20,7 +20,7 @@ const SharedspacesViewPage: FC = () => {
         onReset={() => {
           qc.removeQueries([GET_TODOS_LIST_KEY]);
         }}>
-        <CalendarCreator />
+        <CalendarContainer />
       </AsyncBoundary>
     </Calendar>
   );
