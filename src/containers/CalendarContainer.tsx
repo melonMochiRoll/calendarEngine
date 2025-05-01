@@ -6,9 +6,9 @@ import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import { setTodoTime } from 'Features/todoTimeSlice';
 import { DAYS } from 'Lib/calendarConstants';
 
-interface CalendarCreatorProps {};
+interface CalendarContainerProps {};
 
-const CalendarCreator: FC<CalendarCreatorProps> = () => {
+const CalendarContainer: FC<CalendarContainerProps> = () => {
   const dispatch = useAppDispatch();
   const { data: todosListData } = useTodosList({ suspense: true, throwOnError: true });
 
@@ -59,7 +59,7 @@ const CalendarCreator: FC<CalendarCreatorProps> = () => {
   );
 };
 
-export default CalendarCreator;
+export default CalendarContainer;
 
 const Block = styled.table`
   width: 100%;
