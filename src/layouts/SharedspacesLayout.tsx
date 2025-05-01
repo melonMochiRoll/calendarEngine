@@ -4,11 +4,12 @@ import { Outlet } from 'react-router-dom';
 import SharedspaceHeader from './SharedspaceHeader';
 import Sidebar from './Sidebar';
 import SkeletonHeader from 'Components/skeleton/SkeletonHeader';
-import TodoContainer from 'Containers/TodoContainer';
+import Drawer from 'Components/common/Drawer';
 import AsyncBoundary from 'Components/AsyncBoundary';
 import SharedspaceRedirectFallback from 'Components/errors/SharedspaceRedirectFallback';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
+import TodoApp from 'Containers/todo/TodoApp';
 
 interface SharedspacesLayoutProps {};
 
@@ -29,7 +30,9 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
         </AsyncBoundary>
         <Main>
           <Outlet />
-          <TodoContainer />
+          <Drawer>
+            <TodoApp />
+          </Drawer>
         </Main>
       </Content>
     </Block>
