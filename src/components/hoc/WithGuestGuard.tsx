@@ -6,13 +6,13 @@ import { PATHS } from 'Constants/paths';
 const WithGuestGuard = <P extends {}>(WrappedComponent: React.FunctionComponent<P>) => {
   return (props: P) => {
     const navigate = useNavigate();
-    const { data: userData, isLogin } = useUser({ suspense: false, throwOnError: false });
+    const { isLogin } = useUser({ suspense: false, throwOnError: false });
 
     useEffect(() => {
       if (isLogin) {
         navigate(PATHS.SHAREDSPACE);
       }
-    }, [userData, isLogin]);
+    }, [isLogin]);
       
     return <WrappedComponent {...props} />;
   }

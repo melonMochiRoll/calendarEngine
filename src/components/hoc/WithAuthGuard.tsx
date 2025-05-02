@@ -8,26 +8,16 @@ import { PATHS } from 'Constants/paths';
 const WithAuthGuard = <P extends {}>(WrappedComponent: React.FunctionComponent<P>) => {
   return (props: P) => {
     const navigate = useNavigate();
-    const { data: userData, isNotLogin } = useUser({ suspense: false, throwOnError: false });
+    const { isNotLogin } = useUser({ suspense: false, throwOnError: false });
 
     useEffect(() => {
       if (isNotLogin) {
-        const delay = setTimeout(() => {
-          if (userData) {
-            clearTimeout(delay);
-          } else {
-            toast.error(needLogin, {
-              ...defaultToastOption,
-            });
-            navigate(PATHS.LOGIN);
-          }
-        }, 500);
-
-        return () => {
-          clearTimeout(delay);
-        };
+        toast.error(needLogin, {
+          ...defaultToastOption,
+        });
+        navigate(PATHS.LOGIN);
       }
-    }, [userData, isNotLogin]);
+    }, [isNotLogin]);
       
     return <WrappedComponent {...props} />;
   }
