@@ -1,19 +1,9 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { useNavigate } from 'react-router-dom';
-import useUser from 'Hooks/useUser';
 import JoinContainer from 'Containers/JoinContainer';
+import WithGuestGuard from 'Components/hoc/WithGuestGuard';
 
 const JoinPage: FC = () => {
-  const navigate = useNavigate();
-  const { data: userData, isLogin } = useUser({ suspense: false, throwOnError: false });
-
-  useEffect(() => {
-    if (isLogin) {
-      navigate('/');
-    }
-  }, [userData]);
-  
   return (
     <Block>
       <JoinContainer />
@@ -21,7 +11,7 @@ const JoinPage: FC = () => {
   );
 };
 
-export default JoinPage;
+export default WithGuestGuard(JoinPage);
 
 const Block = styled.div`
   display: flex;
