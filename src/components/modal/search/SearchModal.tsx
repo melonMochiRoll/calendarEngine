@@ -6,11 +6,11 @@ import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import SharedspaceManagerError from '../sharedspaceManager/SharedspaceManagerError';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
 import SearchMain from './SearchMain';
-import { useQueryClient } from '@tanstack/react-query';
-import { SEARCH_TODOS_KEY } from 'Lib/queryKeys';
+import { useAppDispatch } from 'Hooks/reduxHooks';
+import { clearQuery } from 'Features/searchTodosSlice';
 
 const SearchModal: FC = () => {
-  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
 
   return (
     <Block
@@ -20,8 +20,8 @@ const SearchModal: FC = () => {
         errorBoundaryFallback={GenericErrorFallback}
         suspenseFallback={<LoadingCircular />}
         errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
-        onReset={() => {
-          qc.removeQueries([SEARCH_TODOS_KEY]);
+        onError={() => {
+          dispatch(clearQuery());
         }}>
         <SearchMain />
       </AsyncBoundary>
