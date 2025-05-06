@@ -32,21 +32,17 @@ export default function SharedspaceRedirectFallback({ error, resetErrorBoundary 
     const delay = setTimeout(() => {
       toast.error(response.message, {
         ...defaultToastOption,
-        onClose: () => {
-          resetErrorBoundary();
-        },
       });
       navigate(response.destination);
     }, 500);
 
     return () => {
       clearTimeout(delay);
+      resetErrorBoundary();
     };
   }, []);
 
   return (
-    <>
-      {ErrorRenderComponent ? ErrorRenderComponent : <></>}
-    </>
+    <>{ErrorRenderComponent ? ErrorRenderComponent : <></>}</>
   );
 }

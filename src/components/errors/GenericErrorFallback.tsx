@@ -14,15 +14,13 @@ export default function GenericErrorFallback({ error, resetErrorBoundary }: Fall
       if (errorMessage) {
         toast.error(errorMessage, {
           ...defaultToastOption,
-          onClose: () => {
-            resetErrorBoundary();
-          },
         });
       }
     }, 500);
 
     return () => {
       clearTimeout(delay);
+      resetErrorBoundary();
     };
   }, []);
   
