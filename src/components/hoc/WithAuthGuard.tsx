@@ -11,12 +11,18 @@ const WithAuthGuard = <P extends {}>(WrappedComponent: React.FunctionComponent<P
     const { isNotLogin } = useUser({ suspense: false, throwOnError: false });
 
     useEffect(() => {
-      if (isNotLogin) {
-        toast.error(needLogin, {
-          ...defaultToastOption,
-        });
-        navigate(PATHS.LOGIN);
-      }
+      const delay = setTimeout(() => {
+        if (isNotLogin) {
+          toast.error(needLogin, {
+            ...defaultToastOption,
+          });
+          navigate(PATHS.LOGIN);
+        }
+      }, 500);
+
+      return () => {
+        clearTimeout(delay);
+      };
     }, [isNotLogin]);
       
     return <WrappedComponent {...props} />;
