@@ -27,6 +27,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({
       })
       .finally(() => {
         qc.removeQueries([GET_USER_KEY]);
+        navigate(PATHS.LOGIN);
       });
   }, []);
   
