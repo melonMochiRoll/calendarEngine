@@ -45,7 +45,7 @@ function useUser(options = { suspense: false, throwOnError: false }) {
     useErrorBoundary: throwOnError,
   });
 
-  const getRoleName = (url?: string | undefined): string => {
+  const getRoleName = (url?: string | undefined) => {
     if (data) {
       return data
         .Sharedspacemembers
@@ -60,7 +60,7 @@ function useUser(options = { suspense: false, throwOnError: false }) {
     return getRoleName(url) === SharedspaceMembersRoles.OWNER;
   };
 
-  const hasMemberPermission = (url?: string): boolean => {
+  const hasMemberPermission = (url?: string) => {
     const roleName = getRoleName(url);
     const isMember = roleName === SharedspaceMembersRoles.MEMBER;
     const isOwner = roleName === SharedspaceMembersRoles.OWNER;
