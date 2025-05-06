@@ -9,12 +9,12 @@ import TodoNull from 'Components/todo/TodoNull';
 interface TodoAppProps {};
 
 const TodoContainer: FC<TodoAppProps> = ({}) => {
-  const { hasPermission } = useUser();
+  const { hasMemberPermission } = useUser();
   const { data: todosData } = useTodos({ suspense: true, throwOnError: true });
   
   return (
     <Block>
-      <TodoHeader hasPermission={hasPermission} />
+      <TodoHeader hasMemberPermission={hasMemberPermission} />
       {todosData.length ? <TodoList todosData={todosData} /> : <TodoNull />}
     </Block>
   );

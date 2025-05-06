@@ -6,11 +6,11 @@ import { openModal } from 'Features/modalSlice';
 import { ModalName } from 'Typings/types';
 
 interface TodoHeader {
-  hasPermission: (url?: string) => boolean;
+  hasMemberPermission: (url?: string) => boolean;
 };
 
 const TodoHeader: FC<TodoHeader> = ({
-  hasPermission,
+  hasMemberPermission,
 }) => {
   const dispatch = useAppDispatch();
   const { todoTime } = useAppSelector(state => state.todoTime);
@@ -19,7 +19,7 @@ const TodoHeader: FC<TodoHeader> = ({
   return (
     <>
       <Title>{`${year}년 ${month}월 ${date}일`}</Title>
-      {hasPermission() &&
+      {hasMemberPermission() &&
         <FlexBox
           onClick={() => dispatch(openModal(ModalName.TODO_INPUT))}>
           <AddIcon fontSize='large' sx={{ color: 'var(--blue)' }}/>
