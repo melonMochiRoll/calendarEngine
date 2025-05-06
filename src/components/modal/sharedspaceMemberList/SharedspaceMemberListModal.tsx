@@ -6,12 +6,8 @@ import AsyncBoundary from 'Components/AsyncBoundary';
 import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
 import SharedspaceManagerError from '../sharedspaceManager/SharedspaceManagerError';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
 
 const SharedspaceMemberListModal: FC = () => {
-  const qc = useQueryClient();
-
   return (
     <Block
       onClick={e => e.stopPropagation()}>
@@ -20,10 +16,7 @@ const SharedspaceMemberListModal: FC = () => {
         <AsyncBoundary
           errorBoundaryFallback={GenericErrorFallback}
           suspenseFallback={<LoadingCircular />}
-          errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
-          onReset={() => {
-            qc.removeQueries([GET_SHAREDSPACE_KEY]);
-          }}>
+          errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}>
           <SharedspaceMemberListMain />
         </AsyncBoundary>
       </Main>

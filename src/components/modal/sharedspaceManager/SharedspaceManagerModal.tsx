@@ -2,18 +2,15 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import SharedspaceManagerMain from './SharedspaceManagerMain';
 import AsyncBoundary from 'Components/AsyncBoundary';
-import SkeletonSharedspaceManagerModal from 'Components/skeleton/modal/sharedspaceManager/SkeletonSharedspaceManagerModal';
 import SharedspaceMangerHeader from './SharedspaceManagerHeader';
 import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { clearQuery } from 'Features/searchUsersSlice';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_KEY, SEARCH_USERS_KEY } from 'Lib/queryKeys';
 import SharedspaceManagerError from './SharedspaceManagerError';
+import LoadingCircular from 'Components/skeleton/LoadingCircular';
 
 const SharedspaceManagerModal: FC = () => {
   const dispatch = useAppDispatch();
-  const qc = useQueryClient();
   
   return (
     <Block
@@ -21,12 +18,10 @@ const SharedspaceManagerModal: FC = () => {
       <SharedspaceMangerHeader />
       <AsyncBoundary
         errorBoundaryFallback={GenericErrorFallback}
-        suspenseFallback={<SkeletonSharedspaceManagerModal />}
+        suspenseFallback={<LoadingCircular />}
         errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
-        onReset={() => {
+        onError={() => {
           dispatch(clearQuery());
-          qc.removeQueries([GET_SHAREDSPACE_KEY]);
-          qc.removeQueries([SEARCH_USERS_KEY]);
         }}>
         <SharedspaceManagerMain />
       </AsyncBoundary>
