@@ -8,6 +8,7 @@ import { openModal } from 'Features/modalSlice';
 import { ModalName } from 'Typings/types';
 import PublicIcon from '@mui/icons-material/Public';
 import MailIcon from '@mui/icons-material/Mail';
+import MailReadIcon from '@mui/icons-material/MarkEmailRead';
 import useUser from 'Hooks/useUser';
 import { PATHS } from 'Constants/paths';
 
@@ -15,8 +16,8 @@ const Sidebar: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const { url = '' } = useParams();
-  const { isOwner } = useUser({ suspense: false, throwOnError: false });
+  const { url } = useParams();
+  const { isOwner, hasMemberPermission } = useUser({ suspense: false, throwOnError: false });
   const pageName = location.pathname.split('/')[2];
   
   return (
@@ -49,6 +50,15 @@ const Sidebar: FC = () => {
             <MailIcon />
           </Icon>
           <span>권한 요청 관리</span>
+        </IconButton>
+      }
+      {
+        !hasMemberPermission() &&
+        <IconButton onClick={() => dispatch(openModal(ModalName.JOINREQUEST_SENDER))}>
+          <Icon>
+            <MailReadIcon />
+          </Icon>
+          <span>권한 요청</span>
         </IconButton>
       }
     </Block>
