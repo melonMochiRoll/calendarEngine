@@ -21,13 +21,11 @@ export const getJoinRequest = async (
 
 export const createJoinRequest = async (
   url: string,
-  RoleName: string,
   message: string,
 ) => {
   try {
     await axiosInstance
       .post(`api/sharedspaces/${url}/joinrequest`, {
-        RoleName,
         message,
       });
   } catch (err) {
