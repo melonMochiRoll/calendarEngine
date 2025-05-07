@@ -10,6 +10,7 @@ const SharedspacesPage = React.lazy(() => import('../pages/SharedspacesPage'));
 const SharedspacesLayout = React.lazy(() => import('../layouts/SharedspacesLayout'));
 const SharedspacesViewPage = React.lazy(() => import('../pages/SharedspacesViewPage'));
 const SharedspacesChatPage = React.lazy(() => import('../pages/SharedspacesChatPage'));
+const JoinRequestSenderPage = React.lazy(() => import('../pages/JoinRequestSenderPage'));
 const NotFoundPage = React.lazy(() => import('../pages/errorPage/NotFoundPage'));
 const InternalServerErrorPage = React.lazy(() => import('../pages/errorPage/InternalServerErrorPage'));
 const ForbiddenPage = React.lazy(() => import('../pages/errorPage/ForbiddenPage'));
@@ -35,6 +36,7 @@ const MainRouter = createBrowserRouter([
           }
         ],
       },
+      { path: `${PATHS.JOINREQUEST_SENDER}/:url`, element: <JoinRequestSenderPage /> },
       { path: PATHS.FORBIDDEN, element: <ForbiddenPage /> },
       { path: PATHS.NOTFOUND, element: <NotFoundPage /> },
       { path: PATHS.INTERNAL, element: <InternalServerErrorPage /> },
