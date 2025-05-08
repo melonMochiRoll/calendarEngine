@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-import Header from 'Layouts/Header';
 import MenuButton from 'Components/common/MenuButton';
 
 const ForbiddenPage: FC = () => {
@@ -9,7 +8,6 @@ const ForbiddenPage: FC = () => {
   
   return (
     <Block>
-      <Header />
       <Box>
         <h1>403</h1>
         <span>해당 요청에 필요한 권한이 부족합니다. 권한을 요청하거나 계정을 확인해주세요.</span>

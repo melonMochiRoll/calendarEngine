@@ -2,14 +2,12 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import MenuButton from 'Components/common/MenuButton';
 import { useNavigate } from 'react-router-dom';
-import Header from 'Layouts/Header';
 
 const NotFoundPage: FC = () => {
   const navigate = useNavigate();
 
   return (
     <Block>
-      <Header />
       <Box>
         <h1>404</h1>
         <span>페이지를 찾을수 없습니다.</span>

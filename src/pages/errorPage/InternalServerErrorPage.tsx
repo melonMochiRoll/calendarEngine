@@ -2,14 +2,12 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import MenuButton from 'Components/common/MenuButton';
 import { useNavigate } from 'react-router-dom';
-import Header from 'Layouts/Header';
 
 const InternalServerErrorPage: FC = () => {
   const navigate = useNavigate();
 
   return (
     <Block>
-      <Header />
       <Box>
         <h1>500</h1>
         <span>서버에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</span>
