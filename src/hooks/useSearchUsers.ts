@@ -3,7 +3,7 @@ import { useAppSelector } from "./reduxHooks";
 import { TSearchUsers } from "Typings/types";
 import { searchUsers } from "Api/usersApi";
 import { useEffect } from "react";
-import { SEARCH_USERS_KEY } from "Lib/queryKeys";
+import { SEARCH_USERS_KEY } from "Constants/queryKeys";
 
 type TypeSafeReturnType = {
   data: TSearchUsers[];

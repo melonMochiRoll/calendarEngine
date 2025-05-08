@@ -4,7 +4,7 @@ import { TSubscribedspaces } from 'Typings/types';
 import SubscribedspacesItem from './SubscribedspacesItem';
 import { deleteSharedspace } from 'Api/sharedspacesApi';
 import { useQueryClient } from '@tanstack/react-query';
-import { GET_SUBSCRIBED_SPACES_KEY } from 'Lib/queryKeys';
+import { GET_SUBSCRIBED_SPACES_KEY } from 'Constants/queryKeys';
 
 interface SubscribedSpacesResultProps {
   subscribedspaceData: TSubscribedspaces[];

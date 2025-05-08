@@ -7,7 +7,7 @@ import { MemberOptions, RoleDictionary, SharedspaceMembersRoles, TSharedspaceMem
 import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
+import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import useUser from 'Hooks/useUser';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';

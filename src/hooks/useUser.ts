@@ -1,6 +1,6 @@
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from '@tanstack/react-query';
 import { getUser } from 'Api/usersApi';
-import { GET_USER_KEY } from 'Lib/queryKeys';
+import { GET_USER_KEY } from 'Constants/queryKeys';
 import { useParams } from 'react-router-dom';
 import { SharedspaceMembersRoles, TSharedspace, TUser } from 'Typings/types';
 

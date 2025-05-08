@@ -6,7 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import useMenu from 'Hooks/useMenu';
 import { updateSharedspacePrivate } from 'Api/sharedspacesApi';
 import { Menu, MenuItem } from '@mui/material';
-import { GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
+import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { TSharedspaceMetaData } from 'Typings/types';
 import PeopleIcon from '@mui/icons-material/PeopleAltRounded';
 import MemberItem from './MemberItem';

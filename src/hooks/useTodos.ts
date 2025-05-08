@@ -4,7 +4,7 @@ import { useAppSelector } from './reduxHooks';
 import { useEffect } from 'react';
 import { TTodo } from 'Typings/types';
 import { getTodosByDate } from 'Api/todosApi';
-import { GET_TODOS_KEY } from 'Lib/queryKeys';
+import { GET_TODOS_KEY } from 'Constants/queryKeys';
 
 type TypeSafeReturnType = {
   data: TTodo[];

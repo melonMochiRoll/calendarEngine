@@ -1,6 +1,6 @@
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from "@tanstack/react-query";
 import { getSubscribedspaces } from "Api/sharedspacesApi";
-import { GET_SUBSCRIBED_SPACES_KEY } from "Lib/queryKeys";
+import { GET_SUBSCRIBED_SPACES_KEY } from "Constants/queryKeys";
 import { useEffect } from "react";
 import { TSubscribedspaces } from "Typings/types";
 import { useAppSelector } from "./reduxHooks";

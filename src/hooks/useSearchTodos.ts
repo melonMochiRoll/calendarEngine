@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { SEARCH_TODOS_KEY } from "Lib/queryKeys";
+import { SEARCH_TODOS_KEY } from "Constants/queryKeys";
 import { searchTodos } from "Api/todosApi";
 import { useEffect, useState } from "react";
 import { TSearchTodos } from "Typings/types";

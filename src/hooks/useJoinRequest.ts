@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getJoinRequest } from "Api/joinrequestApi";
-import { GET_JOINREQUEST_KEY } from "Lib/queryKeys";
+import { GET_JOINREQUEST_KEY } from "Constants/queryKeys";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { TJoinRequest } from "Typings/types";

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSharedspaceChats } from "Api/sharedspacesApi";
-import { GET_SHAREDSPACE_CHATS_KEY } from "Lib/queryKeys";
+import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TChats } from "Typings/types";

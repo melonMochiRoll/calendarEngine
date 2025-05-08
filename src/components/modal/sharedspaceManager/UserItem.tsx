@@ -4,7 +4,7 @@ import useMenu from 'Hooks/useMenu';
 import { Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { RoleDictionary, SharedspaceMembersRoles, TSearchUsers, TSharedspaceMetaData } from 'Typings/types';
-import { GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
+import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';
 import { createSharedspaceMembers } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';

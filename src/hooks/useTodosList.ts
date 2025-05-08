@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getTodosCount } from 'Api/todosApi';
-import { GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
+import { GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppSelector } from './reduxHooks';
