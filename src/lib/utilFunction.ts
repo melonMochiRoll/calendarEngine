@@ -1,5 +1,10 @@
 import dayjs from 'dayjs';
 
+export const getOrigin = () => {
+  const isDevelopment = process.env.REACT_APP_NODE_ENV === 'development';
+  return isDevelopment ? process.env.REACT_APP_DEVELOPMENT_SERVER_ORIGIN : process.env.REACT_APP_PRODUCTION_SERVER_ORIGIN;
+};
+
 export const getByteSize = (str: string) => {
   const encoder = new TextEncoder();
 
