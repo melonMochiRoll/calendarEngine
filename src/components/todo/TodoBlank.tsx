@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { renderTime } from 'Lib/utilFunction';
-import { TODO_MAX_HEIGHT } from 'Lib/calendarConstants';
+import { TODO_MAX_HEIGHT } from 'Constants/calendar';
 
 interface TodoBlankProps {
   blankHeight: number;

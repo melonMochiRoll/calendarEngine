@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { axiosInstance } from "./axiosInstance";
-import { waitingMessage } from "Lib/noticeConstants";
+import { waitingMessage } from "Constants/notices";
 
 export const login = async (email: string, password: string) => {
   try {

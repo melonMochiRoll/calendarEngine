@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { emptyspaces } from 'Lib/noticeConstants';
+import { emptyspaces } from 'Constants/notices';
 
 const SubscribedSpacesNull: FC = () => {
   return (

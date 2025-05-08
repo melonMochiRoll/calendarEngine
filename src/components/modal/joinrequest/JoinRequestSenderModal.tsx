@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { closeModal } from 'Features/modalSlice';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { createJoinRequest } from 'Api/joinrequestApi';
-import { checkURL, defaultToastOption, successMessage } from 'Lib/noticeConstants';
+import { checkURL, defaultToastOption, successMessage } from 'Constants/notices';
 import { toast } from 'react-toastify';
 import JoinRequestSenderHeader from './JoinRequestSenderHeader';
 import JoinRequestSenderMain from './JoinRequestSenderMain';

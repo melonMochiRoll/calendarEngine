@@ -9,7 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_JOINREQUEST_KEY, GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
 import { deleteJoinRequest, resolveJoinRequest } from 'Api/joinrequestApi';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Lib/noticeConstants';
+import { defaultToastOption, successMessage } from 'Constants/notices';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openNestedModal } from 'Features/modalSlice';
 import { setjoinRequestDetail } from 'Features/joinRequestDetailSlice';

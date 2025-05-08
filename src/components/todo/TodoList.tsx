@@ -2,7 +2,7 @@ import React, { FC, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { TTodo } from 'Typings/types';
 import TodoItem from './TodoItem';
-import { TODO_PALETTE } from 'Lib/calendarConstants';
+import { TODO_PALETTE } from 'Constants/calendar';
 import { getTodoHeight, renderTime, timeToDayjs } from 'Lib/utilFunction';
 import TodoBlank from './TodoBlank';
 

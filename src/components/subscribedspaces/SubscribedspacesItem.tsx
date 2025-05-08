@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { TSubscribedspaces } from 'Typings/types';
 import useUser from 'Hooks/useUser';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Lib/noticeConstants';
+import { defaultToastOption, successMessage } from 'Constants/notices';
 
 interface TSubscribedspacesItemProps {
   space: TSubscribedspaces,

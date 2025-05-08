@@ -10,7 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_KEY } from 'Lib/queryKeys';
 import useUser from 'Hooks/useUser';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Lib/noticeConstants';
+import { defaultToastOption, successMessage } from 'Constants/notices';
 import ProfileImage from 'Components/ProfileImage';
 
 const updateRoleOption = [

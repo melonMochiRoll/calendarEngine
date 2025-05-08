@@ -10,7 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import HelpIcon from '@mui/icons-material/HelpRounded';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Menu, MenuItem, Tooltip } from '@mui/material';
-import { privateTooltip } from 'Lib/noticeConstants';
+import { privateTooltip } from 'Constants/notices';
 import { SubscribedspacesFilter, TSubscribedspacesFilter, TUser } from 'Typings/types';
 
 const sortOptions: { text: string, filter: TSubscribedspacesFilter }[] = [

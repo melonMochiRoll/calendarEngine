@@ -5,7 +5,7 @@ import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
 import { setTodoDetail } from 'Features/todoDetailSlice';
 import { renderTime } from 'Lib/utilFunction';
-import { TODO_MAX_HEIGHT } from 'Lib/calendarConstants';
+import { TODO_MAX_HEIGHT } from 'Constants/calendar';
 import ClockIcon from '@mui/icons-material/AccessTime';
 import DescriptionIcon from '@mui/icons-material/Description';
 import PencilIcon from '@mui/icons-material/Create';

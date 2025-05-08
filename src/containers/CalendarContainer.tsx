@@ -4,7 +4,7 @@ import DateCover from 'Components/calendar/DateCover';
 import useTodosList from 'Hooks/useTodosList';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import { setTodoTime } from 'Features/todoTimeSlice';
-import { DAYS } from 'Lib/calendarConstants';
+import { DAYS } from 'Constants/calendar';
 
 interface CalendarContainerProps {};
 
