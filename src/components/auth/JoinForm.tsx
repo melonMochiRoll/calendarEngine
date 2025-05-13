@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import InputField from 'Components/common/InputField';
+import LabelInput from 'Components/common/LabelInput';
 import SubmitButton from 'Components/common/SubmitButton';
 import LongSubmitButton, { ButtonIconName } from 'Components/common/LongSubmitButton';
 import { useNavigate } from 'react-router-dom';
@@ -38,7 +38,7 @@ const JoinForm: FC<JoinFormProps> = ({
   return (
     <Form onSubmit={onSubmit}>
       <Title>회원가입</Title>
-      <InputField
+      <LabelInput
         id='email'
         name='email'
         value={email}
@@ -46,7 +46,7 @@ const JoinForm: FC<JoinFormProps> = ({
         title='이메일'
         type='text' />
       {errors.email ? <ErrorSpan>{errors.email}</ErrorSpan> : <ErrorSpan />}
-      <InputField
+      <LabelInput
         id='password'
         name='password'
         value={password}
@@ -54,7 +54,7 @@ const JoinForm: FC<JoinFormProps> = ({
         title='비밀번호'
         type='password' />
       {errors.password ? <ErrorSpan>{errors.password}</ErrorSpan> : <ErrorSpan />}
-      <InputField
+      <LabelInput
         id='passwordChk'
         name='passwordChk'
         value={passwordChk}

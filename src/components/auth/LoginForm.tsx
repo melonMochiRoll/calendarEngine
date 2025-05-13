@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import InputField from 'Components/common/InputField';
+import LabelInput from 'Components/common/LabelInput';
 import SubmitButton from 'Components/common/SubmitButton';
 import { ErrorSpan } from './JoinForm';
 import LongSubmitButton, { ButtonIconName } from 'Components/common/LongSubmitButton';
@@ -46,7 +46,7 @@ const LoginForm: FC<LoginFormProps> = ({
   return (
     <Form onSubmit={onSubmit}>
       <Title>로그인</Title>
-      <InputField
+      <LabelInput
         id='email'
         name='email'
         value={email}
@@ -54,7 +54,7 @@ const LoginForm: FC<LoginFormProps> = ({
         title='이메일'
         type='text' />
       {errors.email ? <ErrorSpan>{errors.email}</ErrorSpan> : <ErrorSpan />}
-      <InputField
+      <LabelInput
         id='password'
         name='password'
         value={password}

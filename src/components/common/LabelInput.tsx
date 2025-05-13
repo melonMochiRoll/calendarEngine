@@ -11,7 +11,7 @@ interface InputFieldProps {
   type: InputTypeAttribute;
 };
 
-const InputField: FC<InputFieldProps> = ({
+const LabelInput: FC<InputFieldProps> = ({
   id,
   name,
   value,
@@ -37,7 +37,7 @@ const InputField: FC<InputFieldProps> = ({
   );
 };
 
-export default InputField;
+export default LabelInput;
 
 const Block = styled.div`
   position: relative;
