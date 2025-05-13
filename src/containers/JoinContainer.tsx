@@ -1,7 +1,8 @@
 import React, { FC, useCallback, useState } from 'react';
+import styled from '@emotion/styled';
 import useInput from 'Hooks/useInput';
 import { createUser, isUser } from 'Api/usersApi';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import JoinForm from 'Components/auth/JoinForm';
 
 const emailConfirmation = async (email: string) => {
@@ -113,16 +114,25 @@ const JoinContainer: FC<JoinContainerProps> = ({}) => {
   }, [email, password, passwordChk]);
 
   return (
-    <JoinForm
-      email={email}
-      password={password}
-      passwordChk={passwordChk}
-      errors={errors}
-      onSubmit={onSubmit}
-      onChangeEmail={onChangeEmail}
-      onChangePassword={onChangePassword}
-      onChangePasswordChk={onChangePasswordChk} />
+    <Main>
+      <JoinForm
+        email={email}
+        password={password}
+        passwordChk={passwordChk}
+        errors={errors}
+        onSubmit={onSubmit}
+        onChangeEmail={onChangeEmail}
+        onChangePassword={onChangePassword}
+        onChangePasswordChk={onChangePasswordChk} />
+    </Main>
   );
 };
 
 export default JoinContainer;
+
+const Main = styled.main`
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  background-color: var(--black);
+`;
