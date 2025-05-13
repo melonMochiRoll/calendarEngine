@@ -4,6 +4,7 @@ import { InputTypeAttribute } from 'src/typings/types';
 
 interface InputFieldProps {
   id: string;
+  name: string;
   value: string;
   onChangeValue: (e: any) => void;
   title: string;
@@ -12,6 +13,7 @@ interface InputFieldProps {
 
 const InputField: FC<InputFieldProps> = ({
   id,
+  name,
   value,
   onChangeValue,
   title,
@@ -21,10 +23,10 @@ const InputField: FC<InputFieldProps> = ({
     <Block>
       <Input
         id={id}
+        name={name}
         value={value}
         onChange={onChangeValue}
         type={type}
-        name='text'
         required
         />
       <Label
