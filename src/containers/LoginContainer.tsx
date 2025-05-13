@@ -56,7 +56,7 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
     password: '',
   });
 
-  const onSubmit = useCallback((e: any) => {
+  const onSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({
       email: '',

@@ -75,7 +75,7 @@ const JoinContainer: FC<JoinContainerProps> = ({}) => {
     passwordChk: '',
   });
 
-  const onSubmit = useCallback(async (e: any) => {
+  const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({
       email: '',
