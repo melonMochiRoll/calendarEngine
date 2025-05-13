@@ -63,7 +63,7 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
   };
 
   return (
-    <>
+    <Header>
       <Top>
         <Title>스페이스 목록</Title>
         <AddButton onClick={() => onCreateSharedspace(userData.id)}>
@@ -114,11 +114,13 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
           <ItemMoreMenu />
         </ItemHead>
       </Bottom>
-    </>
+    </Header>
   );
 };
 
 export default SubscribedSpacesHeader;
+
+const Header = styled.header``;
 
 const Top = styled.div`
   display: flex;

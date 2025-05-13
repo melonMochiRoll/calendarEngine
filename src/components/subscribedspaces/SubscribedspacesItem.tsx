@@ -91,7 +91,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
 
 export default SubscribedspacesItem;
 
-const Item = styled.div`
+const Item = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
