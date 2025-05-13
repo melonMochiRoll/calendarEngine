@@ -1,16 +1,14 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { useAppSelector } from 'Hooks/reduxHooks';
-
-const palette = [
- '#F79552', '#F2728C', '#03c75a', '#4EB8B9', '#27AAE1', '#9E7EB9', '#EF404A',
-];
+import { TODO_PALETTE } from 'Constants/calendar';
 
 interface DateCoverProps {
   setTodoTime: () => void;
   index: number;
   todosLength: number;
   date: number;
+  nowDate: string;
+  isNowYearAndMonth: boolean;
 };
 
 const DateCover: FC<DateCoverProps> = ({
@@ -18,12 +16,9 @@ const DateCover: FC<DateCoverProps> = ({
   index,
   todosLength,
   date,
+  nowDate,
+  isNowYearAndMonth,
 }) => {
-  const {
-    nowDate,
-    isNowYearAndMonth,
-  } = useAppSelector(state => state.calendarTime);
-
   return (
     <Block
       isToday={isNowYearAndMonth && (date === Number(nowDate))}
@@ -90,5 +85,5 @@ const Count = styled.div<{ i: number }>`
   border-radius: 25px;
   color: var(--white);
   font-size: 18px;
-  background-color: ${({i}) => palette[i % 7]};
+  background-color: ${({i}) => TODO_PALETTE[i % 7]};
 `;
