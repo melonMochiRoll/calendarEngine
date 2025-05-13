@@ -4,17 +4,17 @@ import { CircularProgress } from '@mui/material';
 
 const LoadingPage: FC = () => {
   return (
-    <Block>
-      <LoadingBox>
+    <Main>
+      <CircleWrapper>
         <CircularProgress size={100} />
-      </LoadingBox>
-    </Block>
+      </CircleWrapper>
+    </Main>
   );
 };
 
 export default LoadingPage;
 
-const Block = styled.div`
+const Main = styled.main`
   display: flex;
   justify-content: center;
   width: 100vw;
@@ -22,6 +22,6 @@ const Block = styled.div`
   background-color: var(--black);
 `;
 
-const LoadingBox = styled.div`
+const CircleWrapper = styled.div`
   padding-top: 50px;
 `;
