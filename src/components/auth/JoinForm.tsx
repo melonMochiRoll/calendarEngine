@@ -4,6 +4,7 @@ import InputField from 'Components/common/InputField';
 import SubmitButton from 'Components/common/SubmitButton';
 import LongSubmitButton, { ButtonIconName } from 'Components/common/LongSubmitButton';
 import { useNavigate } from 'react-router-dom';
+import { PATHS } from 'Constants/paths';
 
 type ErrorType = {
   email: string,
@@ -38,35 +39,38 @@ const JoinForm: FC<JoinFormProps> = ({
     <Form onSubmit={onSubmit}>
       <Title>회원가입</Title>
       <InputField
-        id={'email'}
+        id='email'
+        name='email'
         value={email}
         onChangeValue={onChangeEmail}
-        title={'이메일'}
-        type={'text'} />
+        title='이메일'
+        type='text' />
       {errors.email ? <ErrorSpan>{errors.email}</ErrorSpan> : <ErrorSpan />}
       <InputField
-        id={'password'}
+        id='password'
+        name='password'
         value={password}
         onChangeValue={onChangePassword}
-        title={'비밀번호'}
-        type={'password'} />
+        title='비밀번호'
+        type='password' />
       {errors.password ? <ErrorSpan>{errors.password}</ErrorSpan> : <ErrorSpan />}
       <InputField
-        id={'passwordChk'}
+        id='passwordChk'
+        name='passwordChk'
         value={passwordChk}
         onChangeValue={onChangePasswordChk}
-        title={'비밀번호 확인'}
-        type={'password'} />
+        title='비밀번호 확인'
+        type='password' />
       {errors.passwordChk ? <ErrorSpan>{errors.passwordChk}</ErrorSpan> : <ErrorSpan />}
       <ButtonBox>
         <LongSubmitButton
-          type={'submit'}
+          type='submit'
           icon={ButtonIconName.JOIN}>
             회원가입
         </LongSubmitButton>
         <SubmitButton
-          onClick={() => navigate(-1)}
-          type={'button'}>
+          onClick={() => navigate(PATHS.LOGIN)}
+          type='button'>
             뒤로
         </SubmitButton>
       </ButtonBox>

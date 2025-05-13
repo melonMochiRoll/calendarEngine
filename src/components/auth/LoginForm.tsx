@@ -7,6 +7,7 @@ import LongSubmitButton, { ButtonIconName } from 'Components/common/LongSubmitBu
 import TextButton from 'Components/common/TextButton';
 import { useNavigate } from 'react-router-dom';
 import { loginOAuth2Google, loginOAuth2Naver } from 'Api/authApi';
+import { PATHS } from 'Constants/paths';
 
 type ErrorType = {
   email: string,
@@ -46,25 +47,27 @@ const LoginForm: FC<LoginFormProps> = ({
     <Form onSubmit={onSubmit}>
       <Title>로그인</Title>
       <InputField
-        id={'email'}
+        id='email'
+        name='email'
         value={email}
         onChangeValue={onChangeEmail}
-        title={'이메일'}
-        type={'text'} />
+        title='이메일'
+        type='text' />
       {errors.email ? <ErrorSpan>{errors.email}</ErrorSpan> : <ErrorSpan />}
       <InputField
-        id={'password'}
+        id='password'
+        name='password'
         value={password}
         onChangeValue={onChangePassword}
-        title={'비밀번호'}
-        type={'password'} />
+        title='비밀번호'
+        type='password' />
       {errors.password ? <ErrorSpan>{errors.password}</ErrorSpan> : <ErrorSpan />}
       <ButtonBox>
         <JoinBox>
           <span>계정이 없으신가요?</span>
           <TextButton
             type='button'
-            onClick={() => navigate('/join')}>
+            onClick={() => navigate(PATHS.JOIN)}>
             회원가입
           </TextButton>
         </JoinBox>
