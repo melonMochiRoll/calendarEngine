@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
+import styled from '@emotion/styled';
 import useInput from 'Hooks/useInput';
 import { login } from 'Api/authApi';
 import { useNavigate } from 'react-router-dom';
@@ -87,14 +88,23 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
   }, [email, password]);
   
   return (
-    <LoginForm
-      email={email}
-      password={password}
-      errors={errors}
-      onSubmit={onSubmit}
-      onChangeEmail={onChangeEmail}
-      onChangePassword={onChangePassword} />
+    <Main>
+      <LoginForm
+        email={email}
+        password={password}
+        errors={errors}
+        onSubmit={onSubmit}
+        onChangeEmail={onChangeEmail}
+        onChangePassword={onChangePassword} />
+    </Main>
   );
 };
 
 export default LoginContainer;
+
+const Main = styled.main`
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  background-color: var(--black);
+`;
