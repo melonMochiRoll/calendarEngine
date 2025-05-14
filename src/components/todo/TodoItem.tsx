@@ -29,7 +29,7 @@ const TodoItem: FC<TodoItemProps> = ({
 
   const onClickDescription = () => {
     dispatch(setTodoDetail(todo));
-    dispatch(openModal(ModalName.TODO_DETAIL));
+    dispatch(openModal({ name: ModalName.TODO_DETAIL }));
   };
 
   const onEnter = (e: React.MouseEvent<HTMLDivElement>) => {

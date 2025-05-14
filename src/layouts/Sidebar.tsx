@@ -36,7 +36,7 @@ const Sidebar: FC = () => {
       </IconButton>
       {
         isOwner() &&
-        <IconButton onClick={() => dispatch(openModal(ModalName.SHAREDSPACEMANAGER))}>
+        <IconButton onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACEMANAGER }))}>
           <Icon>
             <PublicIcon />
           </Icon>
@@ -45,7 +45,7 @@ const Sidebar: FC = () => {
       }
       {
         isOwner() &&
-        <IconButton onClick={() => dispatch(openModal(ModalName.JOINREQUEST_MANAGER))}>
+        <IconButton onClick={() => dispatch(openModal({ name: ModalName.JOINREQUEST_MANAGER }))}>
           <Icon>
             <MailIcon />
           </Icon>
@@ -54,7 +54,7 @@ const Sidebar: FC = () => {
       }
       {
         !hasMemberPermission() &&
-        <IconButton onClick={() => dispatch(openModal(ModalName.JOINREQUEST_SENDER))}>
+        <IconButton onClick={() => dispatch(openModal({ name: ModalName.JOINREQUEST_SENDER }))}>
           <Icon>
             <MailReadIcon />
           </Icon>

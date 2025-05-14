@@ -21,7 +21,7 @@ const TodoHeader: FC<TodoHeader> = ({
       <Title>{`${year}년 ${month}월 ${date}일`}</Title>
       {hasMemberPermission() &&
         <FlexBox
-          onClick={() => dispatch(openModal(ModalName.TODO_INPUT))}>
+          onClick={() => dispatch(openModal({ name: ModalName.TODO_INPUT }))}>
           <AddIcon fontSize='large' sx={{ color: 'var(--blue)' }}/>
           <Span>새 Todo 작성</Span>
         </FlexBox>}

@@ -27,11 +27,9 @@ const MultipleImage: FC<MultipleImageProps> = ({
       .catch(() => {});
   };
 
-  const openImageModal = (e: React.MouseEvent<HTMLImageElement>) => {
-    e.preventDefault();
-
+  const openImageModal = () => {
     dispatch(setImagePath(image.path));
-    dispatch(openModal(ModalName.IMAGE_VIEWER));
+    dispatch(openModal({ name: ModalName.IMAGE_VIEWER }));
   };
 
   return (

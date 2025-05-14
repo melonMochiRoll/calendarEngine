@@ -52,7 +52,7 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
           }
         </FlexBox>
         {spaceData.Sharedspacemembers &&
-          <FlexBox onClick={() => dispatch(openModal(ModalName.SHAREDSPACEMEMBERLIST))}>
+          <FlexBox onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACEMEMBERLIST }))}>
             {
               spaceData.Sharedspacemembers
                 .slice(0, 5)

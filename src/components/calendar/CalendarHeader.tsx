@@ -20,7 +20,7 @@ const CalendarHeader: FC = () => {
         </Title>
       </CalendarTitle>
       <Searchbar
-        onClick={() => dispatch(openModal(ModalName.SEARCH))}>
+        onClick={() => dispatch(openModal({ name: ModalName.SEARCH }))}>
         <SearchIcon sx={SearchIconInlineStyle}/>
         <span>Search...</span>
       </Searchbar>
