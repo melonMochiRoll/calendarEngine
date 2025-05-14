@@ -128,7 +128,7 @@ const ChatContainer: FC = () => {
 
   return (
     <Block>
-      <ChatSection>
+      <ChatWrapper>
         <ChatList
           chatList={chatList}
           previews={previews}
@@ -141,20 +141,20 @@ const ChatContainer: FC = () => {
           chat={chat}
           onChangeChat={onChangeChat}
           onChangeImageFiles={onChangeImageFiles} />
-      </ChatSection>
+      </ChatWrapper>
     </Block>
   );
 };
 
 export default ChatContainer;
 
-const Block = styled.main`
+const Block = styled.section`
   display: flex;
   justify-content: center;
   width: 70%;
 `;
 
-const ChatSection = styled.section`
+const ChatWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
