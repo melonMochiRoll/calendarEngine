@@ -40,8 +40,8 @@ const JoinRequestSenderPage: FC = () => {
   };
 
   return (
-    <Body>
-      <Block>
+    <Block>
+      <Section>
         <Header>
           <Left></Left>
           <Center>
@@ -50,13 +50,13 @@ const JoinRequestSenderPage: FC = () => {
           </Center>
           <Right></Right>
         </Header>
-        <Main>
+        <Body>
           <TextField
             value={message}
             onChange={onChangeMessage}
             placeholder='메세지' />
-        </Main>
-        <Bottom>
+        </Body>
+        <Footer>
           <ErrorSpan>{error}</ErrorSpan>
           <Buttons>
             <TextButton
@@ -75,15 +75,15 @@ const JoinRequestSenderPage: FC = () => {
                 홈으로
             </TextButton>
           </Buttons>
-        </Bottom>
-      </Block>
-    </Body>
+        </Footer>
+      </Section>
+    </Block>
   );
 };
 
 export default WithAuthGuard(JoinRequestSenderPage);
 
-const Body = styled.body`
+const Block = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -92,7 +92,7 @@ const Body = styled.body`
   padding-top: 50px;
 `;
 
-const Block = styled.div`
+const Section = styled.section`
   display: flex;
   flex-direction: column;
   width: 550px;
@@ -138,7 +138,7 @@ const Right = styled.div`
   width: 15%;
 `;
 
-const Main = styled.div`
+const Body = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -159,7 +159,7 @@ const TextField = styled.textarea`
   background-color: var(--black);
 `;
 
-const Bottom = styled.div`
+const Footer = styled.footer`
   display: flex;
   justify-content: space-between;
   align-items: center;
