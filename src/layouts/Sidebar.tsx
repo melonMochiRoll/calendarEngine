@@ -67,7 +67,7 @@ const Sidebar: FC = () => {
 
 export default Sidebar;
 
-const Block = styled.div`
+const Block = styled.nav`
   display: flex;
   flex-direction: column;
   align-items: center;
