@@ -6,7 +6,6 @@ import searchUsersReducer from 'Features/searchUsersSlice';
 import subscribedspaceFilterReducer from 'Features/subscribedspacesFilterSlice';
 import todoDetailReducer from "Features/todoDetailSlice";
 import joinRequestDetailReducer from 'Features/joinRequestDetailSlice';
-import searchTodosReducer from 'Features/searchTodosSlice';
 import imageViewerReducer from 'Features/imageViewerSlice';
 
 export const reduxStore = configureStore({
@@ -18,7 +17,6 @@ export const reduxStore = configureStore({
     subscribedspaceFilter: subscribedspaceFilterReducer,
     todoDetail: todoDetailReducer,
     joinRequestDetail: joinRequestDetailReducer,
-    searchTodos: searchTodosReducer,
     imageViewer: imageViewerReducer,
   },
 })
