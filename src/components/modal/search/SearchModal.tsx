@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import SearchHeader from './SearchHeader';
 import AsyncBoundary from 'Components/AsyncBoundary';
@@ -6,24 +6,26 @@ import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import SharedspaceManagerError from '../sharedspaceManager/SharedspaceManagerError';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
 import SearchMain from './SearchMain';
-import { useAppDispatch } from 'Hooks/reduxHooks';
-import { clearQuery } from 'Features/searchTodosSlice';
+import { useDebounce } from 'Hooks/utils/useDebounce';
 
 const SearchModal: FC = () => {
-  const dispatch = useAppDispatch();
+  const [ query, setQuery ] = useState('');
+  const debouncedQuery = useDebounce(query, 500);
 
   return (
     <Block
       onClick={e => e.stopPropagation()}>
-      <SearchHeader />
+      <SearchHeader
+        query={query} 
+        setQuery={setQuery} />
       <AsyncBoundary
         errorBoundaryFallback={GenericErrorFallback}
         suspenseFallback={<LoadingCircular />}
         errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
         onError={() => {
-          dispatch(clearQuery());
+          setQuery('');
         }}>
-        <SearchMain />
+        <SearchMain query={debouncedQuery} />
       </AsyncBoundary>
       <Footer />
     </Block>

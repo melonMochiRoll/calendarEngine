@@ -1,28 +1,20 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { useAppDispatch } from 'Hooks/reduxHooks';
-import useInput from 'Hooks/useInput';
-import { clearQuery, setQuery } from 'Features/searchTodosSlice';
 import SearchIcon from '@mui/icons-material/SearchRounded';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import { closeModal } from 'Features/modalSlice';
 
-const SearchHeader: FC = () => {
+interface SearchHeaderProps {
+  query: string;
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const SearchHeader: FC<SearchHeaderProps> = ({
+  query,
+  setQuery,
+}) => {
   const dispatch = useAppDispatch();
-  const [ query, onChangeQuery ] = useInput('');
-
-  useEffect(() => {
-    if (query) {
-      const delay = setTimeout(() => {
-        dispatch(setQuery({ query }));
-      }, 500);
-
-      return () => {
-        dispatch(clearQuery());
-        clearTimeout(delay);
-      };
-    }
-  }, [query]);
 
   return (
     <Header>
@@ -33,7 +25,7 @@ const SearchHeader: FC = () => {
         autoFocus
         type='text'
         value={query}
-        onChange={onChangeQuery}
+        onChange={(e) => setQuery(e.target.value)}
         placeholder='검색'/>
       <CloseIcon
         onClick={() => dispatch(closeModal())}

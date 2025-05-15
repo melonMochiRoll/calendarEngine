@@ -1,12 +1,16 @@
 import React, { FC } from 'react';
-import { useAppSelector } from 'Hooks/reduxHooks';
 import SearchResult from './SearchResult';
 import SearchInit from './SearchInit';
-import useSearchTodos from 'Hooks/useSearchTodos';
+import { useSearchTodos } from 'Hooks/useSearchTodos';
 
-const SearchMain: FC = () => {
-  const { data: todosData, canLoadMore, nextOffset } = useSearchTodos({ suspense: true, throwOnError: true });
-  const { query } = useAppSelector(state => state.searchTodos);
+interface SearchMainProps {
+  query: string;
+};
+
+const SearchMain: FC<SearchMainProps> = ({
+  query,
+}) => {
+  const { data: todosData, canLoadMore, nextOffset } = useSearchTodos(query);
   
   return (
     <>
@@ -17,8 +21,7 @@ const SearchMain: FC = () => {
           canLoadMore={canLoadMore}
           nextOffset={nextOffset} />
         :
-        <SearchInit />
-      }
+        <SearchInit />}
     </>
   );
 };
