@@ -29,20 +29,18 @@ const SearchResult: FC<SearchResultProps> = ({
   };
 
   return (
-    <Main>
+    <Block>
       {todosData?.length ?
-        <Ul>
+        <TodoList>
           {
             todosData.map((todo: TSearchTodos) => {
-              const { id, description, date } = todo;
-
               return (
-                <Li
-                  key={id}
-                  onClick={() => onClickTodo(date)}>
-                  <Date>{date}</Date>
-                  <Description>{description}</Description>
-                </Li>
+                <TodoItem
+                  key={todo.id}
+                  onClick={() => onClickTodo(todo.date)}>
+                  <Date>{todo.date}</Date>
+                  <Description>{todo.description}</Description>
+                </TodoItem>
               );
             })
           }
@@ -51,19 +49,19 @@ const SearchResult: FC<SearchResultProps> = ({
               <LoadMore onClick={nextOffset}>Load More</LoadMore> :
               <LoadMore disabled>목록 없음</LoadMore>
           }
-        </Ul> :
+        </TodoList> :
         <>
           <ErrorIcon sx={ErrorInlineStyle} />
           <NotFoundMessage>{`"${query}" 에 대한 검색 결과가 없습니다.`}</NotFoundMessage>
         </>
       }
-    </Main>
+    </Block>
   );
 };
 
 export default SearchResult;
 
-const Main = styled.main`
+const Block = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -72,7 +70,7 @@ const Main = styled.main`
   height: 80%;
 `;
 
-const Ul = styled.ul`
+const TodoList = styled.ul`
   width: 100%;
   height: 100%;
   padding: 10px;
@@ -82,7 +80,7 @@ const Ul = styled.ul`
   overflow: auto;
 `;
 
-const Li = styled.li`
+const TodoItem = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
