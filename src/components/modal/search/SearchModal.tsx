@@ -13,18 +13,14 @@ const SearchModal: FC = () => {
   const debouncedQuery = useDebounce(query, 500);
 
   return (
-    <Block
-      onClick={e => e.stopPropagation()}>
+    <Block onClick={e => e.stopPropagation()}>
       <SearchHeader
         query={query} 
         setQuery={setQuery} />
       <AsyncBoundary
         errorBoundaryFallback={GenericErrorFallback}
         suspenseFallback={<LoadingCircular />}
-        errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
-        onError={() => {
-          setQuery('');
-        }}>
+        errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}>
         <SearchMain query={debouncedQuery} />
       </AsyncBoundary>
       <Footer />
