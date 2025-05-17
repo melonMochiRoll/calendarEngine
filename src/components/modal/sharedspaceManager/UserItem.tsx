@@ -8,8 +8,6 @@ import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';
 import { createSharedspaceMembers } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
-import { useAppDispatch } from 'Hooks/reduxHooks';
-import { clearQuery } from 'Features/searchUsersSlice';
 import ProfileImage from 'Components/ProfileImage';
 
 const createRoleOption = [
@@ -33,9 +31,7 @@ const UserItem: FC<UserItemProps> = ({
   searchUserData,
 }) => {
   const qc = useQueryClient();
-  const dispatch = useAppDispatch();
-  const { url = '' } = useParams();
-  const { id: UserId, email, profileImage, Sharedspacemembers } = searchUserData;
+  const { url } = useParams();
 
   const {
     anchorEl,
@@ -52,8 +48,7 @@ const UserItem: FC<UserItemProps> = ({
   const onCreateRoleMenuClick = async (e: any, option: typeof createRoleOption[0]) => {
     e.stopPropagation();
 
-    dispatch(clearQuery());
-    await createSharedspaceMembers(url, UserId, option.roleName);
+    await createSharedspaceMembers(url, searchUserData.id, option.roleName);
     await qc.refetchQueries([GET_SHAREDSPACE_KEY]);
     onClose();
   };
@@ -62,14 +57,13 @@ const UserItem: FC<UserItemProps> = ({
     <Item>
       <Left>
         <ProfileImage
-          profileImage={profileImage}
-          email={email} />
+          profileImage={searchUserData.profileImage}
+          email={searchUserData.email} />
       </Left>
       <Center>
-        <Email>{email}</Email>
+        <Email>{searchUserData.email}</Email>
       </Center>
-      {
-        Sharedspacemembers.find((ele: any) => ele.SharedspaceId === spaceData.id) ?
+      {searchUserData.Sharedspacemembers.find((ele: any) => ele.SharedspaceId === spaceData.id) ?
         <DisableRight>
           <CurrentOption>이미 속한 유저</CurrentOption>
         </DisableRight>
@@ -77,32 +71,23 @@ const UserItem: FC<UserItemProps> = ({
         <Right onClick={onOpenWithEvent}>
           <CurrentOption>초대</CurrentOption>
           <ArrowDropDownIcon fontSize='large' />
-        </Right>
-      }
+        </Right>}
       <Menu
         aria-labelledby='demo-positioned-button'
         anchorEl={anchorEl}
         open={open}
         onClick={onClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}>
-        {
-          createRoleOption.map((option: typeof createRoleOption[0], idx: number) => {
-            return (
-              <MenuItem
-                key={option.text}
-                onClick={(e) => onCreateRoleMenuClick(e, createRoleOption[idx])}>
-                <span>{option.text}</span>
-              </MenuItem>
-            );
-          })
-        }
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        {createRoleOption.map((option: typeof createRoleOption[0], idx: number) => {
+          return (
+            <MenuItem
+              key={option.text}
+              onClick={(e) => onCreateRoleMenuClick(e, createRoleOption[idx])}>
+              <span>{option.text}</span>
+            </MenuItem>
+          );
+        })}
       </Menu>
     </Item>
   );

@@ -16,28 +16,26 @@ const SharedspaceManagerResult: FC<SharedspaceManagerResultProps> = ({
   searchUsersData,
 }) => {
   return (
-    <Main>
-      {
-        searchUsersData?.length ?
-          <List>
-            {searchUsersData?.map((data) => {
-              return (
-                <UserItem
-                  key={data.email}
-                  spaceData={spaceData}
-                  searchUserData={data} />
-              );
-            })}
-          </List> :
-          <SharedspaceManagerError message={`"${query}" 에 대한 검색 결과가 없습니다.`} />
-      }
-    </Main>
+    <Block>
+      {searchUsersData?.length ?
+        <UserList>
+          {searchUsersData?.map((data) => {
+            return (
+              <UserItem
+                key={data.email}
+                spaceData={spaceData}
+                searchUserData={data} />
+            );
+          })}
+        </UserList> :
+        <SharedspaceManagerError message={`"${query}" 에 대한 검색 결과가 없습니다.`} />}
+    </Block>
   );
 };
 
 export default SharedspaceManagerResult;
 
-const Main = styled.main`
+const Block = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,7 +44,7 @@ const Main = styled.main`
   height: 85%;
 `;
 
-const List = styled.ul`
+const UserList = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;

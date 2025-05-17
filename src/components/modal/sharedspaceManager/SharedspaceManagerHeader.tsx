@@ -1,30 +1,20 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { closeModal } from 'Features/modalSlice';
 import SearchIcon from '@mui/icons-material/SearchRounded';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import { useAppDispatch } from 'Hooks/reduxHooks';
-import useInput from 'Hooks/useInput';
-import { clearQuery, setQuery } from 'Features/searchUsersSlice';
 
-interface SharedspaceMangerHeaderProps {};
+interface SharedspaceMangerHeaderProps {
+  query: string;
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+};
 
-const SharedspaceMangerHeader: FC<SharedspaceMangerHeaderProps> = ({}) => {
+const SharedspaceMangerHeader: FC<SharedspaceMangerHeaderProps> = ({
+  query,
+  setQuery,
+}) => {
   const dispatch = useAppDispatch();
-  const [ value, onChangeValue ] = useInput('');
-
-  useEffect(() => {
-    if (value) {
-      const delay = setTimeout(() => {
-        dispatch(setQuery({ query: value }));
-      }, 500);
-
-      return () => {
-        dispatch(clearQuery());
-        clearTimeout(delay);
-      };
-    }
-  }, [value]);
 
   return (
     <Header>
@@ -34,8 +24,8 @@ const SharedspaceMangerHeader: FC<SharedspaceMangerHeaderProps> = ({}) => {
       <Input
         autoFocus
         type='text'
-        value={value}
-        onChange={onChangeValue}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
         placeholder='초대 할 유저 검색' />
       <CloseIcon
         onClick={() => dispatch(closeModal())}

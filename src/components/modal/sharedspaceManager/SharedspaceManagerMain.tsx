@@ -1,16 +1,18 @@
 import React, { FC } from 'react';
 import useSharedspace from 'Hooks/useSharedspace';
-import useSearchUsers from 'Hooks/useSearchUsers';
 import SharedspaceManagerInitPage from './SharedspaceManagerInitPage';
-import { useAppSelector } from 'Hooks/reduxHooks';
 import SharedspaceManagerResult from './SharedspaceManagerResult';
+import { useSearchUsers } from 'Hooks/useSearchUsers';
 
-interface SharedspaceManagerMainProps {};
+interface SharedspaceManagerMainProps {
+  query: string;
+};
 
-const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
+const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
+  query,
+}) => {
   const { data: spaceData } = useSharedspace({ suspense: true, throwOnError: true });
-  const { data: searchUsersData } = useSearchUsers({ suspense: true, throwOnError: true });
-  const { query } = useAppSelector(state => state.searchUsers);
+  const { data: searchUsersData } = useSearchUsers(query);
 
   return (
     <>
