@@ -1,43 +1,28 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import useMenu from 'Hooks/useMenu';
 import { createSharedspace } from 'Api/sharedspacesApi';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from 'Hooks/reduxHooks';
-import { setFilter } from 'Features/subscribedspacesFilterSlice';
 import { PATHS } from 'Constants/paths';
 import AddIcon from '@mui/icons-material/Add';
 import HelpIcon from '@mui/icons-material/HelpRounded';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Menu, MenuItem, Tooltip } from '@mui/material';
 import { privateTooltip } from 'Constants/notices';
-import { SubscribedspacesFilter, TSubscribedspacesFilter, TUser } from 'Typings/types';
-
-const sortOptions: { text: string, filter: TSubscribedspacesFilter }[] = [
-  {
-    text: '모든 스페이스',
-    filter: SubscribedspacesFilter.ALL,
-  },
-  {
-    text: '소유한 스페이스',
-    filter: SubscribedspacesFilter.OWNED,
-  },
-  {
-    text: '소유하지 않은 스페이스',
-    filter: SubscribedspacesFilter.UNOWNED,
-  }
-];
+import { SubscribedspacesSortOptions, TUser } from 'Typings/types';
 
 interface SubscribedSpacesHeaderProps {
   userData: TUser;
+  optionText: string;
+  setOption: React.Dispatch<React.SetStateAction<typeof SubscribedspacesSortOptions[0]>>
 };
 
 const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
   userData,
+  optionText,
+  setOption,
 }) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const [ option, setOption ] = useState<typeof sortOptions[0]>(sortOptions[0]);
 
   const {
     anchorEl,
@@ -46,13 +31,8 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
     onClose,
   } = useMenu();
   
-  const onMenuClick = (value: typeof sortOptions[0]) => {
-    if (option.filter === value.filter) {
-      return;
-    }
-    
+  const onMenuClick = (value: typeof SubscribedspacesSortOptions[0]) => {
     setOption(value);
-    dispatch(setFilter({ filter: value.filter }));
     onClose();
   };
 
@@ -80,9 +60,8 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
             </ItemPrivate>
           </Tooltip>
           <ItemTitle>스페이스 이름</ItemTitle>
-          <ItemOwner
-            onClick={onOpen}>
-            {option.text}
+          <ItemOwner onClick={onOpen}>
+            {optionText}
             <ArrowDropDownIcon fontSize='large' />
           </ItemOwner>
           <Menu
@@ -90,21 +69,15 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
             anchorEl={anchorEl}
             open={open}
             onClick={onClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
             sx={{ marginTop: '10px' }}>
             {
-              sortOptions.map((option: { text: string, filter: string }, idx: number) => {
+              SubscribedspacesSortOptions.map((option, idx) => {
                 return (
                   <MenuItem
                     key={option.text}
-                    onClick={() => onMenuClick(sortOptions[idx])}>
+                    onClick={() => onMenuClick(SubscribedspacesSortOptions[idx])}>
                     <span>{option.text}</span>
                   </MenuItem>
                 );
