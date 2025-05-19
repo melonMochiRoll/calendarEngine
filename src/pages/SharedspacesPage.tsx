@@ -30,6 +30,6 @@ export default WithAuthGuard(SharedspacesPage);
 const Block = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   background-color: var(--black);
 `;

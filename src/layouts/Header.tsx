@@ -34,7 +34,7 @@ const Block = styled.header`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 5%;
+  height: 50px;
   padding: 10px 5%;
   border-bottom: 1px solid var(--light-gray);
   background-color: var(--black);
