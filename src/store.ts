@@ -2,7 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import modalReducer from 'Features/modalSlice';
 import calendarTimeReducer from 'Features/calendarTimeSlice';
 import todoTimeReducer from 'Features/todoTimeSlice';
-import subscribedspaceFilterReducer from 'Features/subscribedspacesFilterSlice';
 import todoDetailReducer from "Features/todoDetailSlice";
 import joinRequestDetailReducer from 'Features/joinRequestDetailSlice';
 import imageViewerReducer from 'Features/imageViewerSlice';
@@ -12,7 +11,6 @@ export const reduxStore = configureStore({
     modal: modalReducer,
     calendarTime: calendarTimeReducer,
     todoTime: todoTimeReducer,
-    subscribedspaceFilter: subscribedspaceFilterReducer,
     todoDetail: todoDetailReducer,
     joinRequestDetail: joinRequestDetailReducer,
     imageViewer: imageViewerReducer,
