@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { ModalName, TImages } from 'Typings/types';
 import { useAppDispatch } from 'Hooks/reduxHooks';
-import { setImagePath } from 'Features/imageViewerSlice';
 import { openModal } from 'Features/modalSlice';
 
 interface SingleImageProps {
@@ -15,8 +14,10 @@ const SingleImage: FC<SingleImageProps> = ({
   const dispatch = useAppDispatch();
 
   const openImageModal = () => {
-    dispatch(setImagePath(image.path));
-    dispatch(openModal({ name: ModalName.IMAGE_VIEWER }));
+    dispatch(openModal({
+      name: ModalName.IMAGE_VIEWER,
+      props: { path: image.path },
+    }));
   };
 
   return (

@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { useAppSelector } from 'Hooks/reduxHooks';
 
-const ImageViewer: FC = () => {
-  const { path } = useAppSelector(state => state.imageViewer);
+export interface ImageViewerProps {
+  path: string;
+};
 
+const ImageViewer: FC<ImageViewerProps> = ({ path }) => {
   return (
     <Block>
       <Img

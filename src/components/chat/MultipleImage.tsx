@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import { ModalName, TImages } from 'Typings/types';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch } from 'Hooks/reduxHooks';
-import { setImagePath } from 'Features/imageViewerSlice';
 import { openModal } from 'Features/modalSlice';
 import { deleteSharedspaceChatImage } from 'Api/sharedspacesApi';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -28,8 +27,10 @@ const MultipleImage: FC<MultipleImageProps> = ({
   };
 
   const openImageModal = () => {
-    dispatch(setImagePath(image.path));
-    dispatch(openModal({ name: ModalName.IMAGE_VIEWER }));
+    dispatch(openModal({
+      name: ModalName.IMAGE_VIEWER,
+      props: { path: image.path },
+    }));
   };
 
   return (
