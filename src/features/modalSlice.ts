@@ -1,31 +1,22 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ModalName, NestedModalName, TModalName, TNestedModalName } from "Typings/types";
+import { ModalPayload } from "Typings/types";
 
-type TModalState = {
-  modalName: TModalName,
-  nestedModalName: TNestedModalName,
-};
-
-const initialState: TModalState = {
-  modalName: ModalName.CLOSE,
-  nestedModalName: NestedModalName.CLOSE,
+const initialState: ModalPayload = {
+  name: '',
+  props: {},
 };
 
 export const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    openModal: (state, action: PayloadAction<TModalName>) => {
-      state.modalName = action.payload;
+    openModal: (state: ModalPayload, action: PayloadAction<ModalPayload>) => {
+      state.name = action.payload.name;
+      state.props = action.payload.props;
     },
     closeModal: (state) => {
-      state.modalName = ModalName.CLOSE;
-    },
-    openNestedModal: (state, action: PayloadAction<TNestedModalName>) => {
-      state.nestedModalName = action.payload;
-    },
-    closeNestedModal: (state) => {
-      state.nestedModalName = NestedModalName.CLOSE;
+      state.name = '';
+      state.props = {};
     },
   },
 });
@@ -33,7 +24,5 @@ export const modalSlice = createSlice({
 export const {
   openModal,
   closeModal,
-  openNestedModal,
-  closeNestedModal,
 } = modalSlice.actions;
 export default modalSlice.reducer;
