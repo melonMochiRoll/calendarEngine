@@ -1,3 +1,4 @@
+import { ImageViewerProps } from "Components/modal/imageViewer/ImageViewer";
 
 export type InputTypeAttribute = 'button' | 'checkbox' | 'color' | 'date' | 'datetime-local' | 'email' | 'file' | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | 'range' | 'reset' | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week';
 
@@ -18,12 +19,20 @@ export const ModalName = {
   JOINREQUEST_SENDER: 'JOINREQUEST_SENDER',
   JOINREQUEST_MANAGER: 'JOINREQUEST_MANAGER',
   IMAGE_VIEWER: 'IMAGE_VIEWER',
-  CLOSE: '',
 } as const;
 
 export type TModalName = typeof ModalName[keyof typeof ModalName];
 
-export type TModals = Record<keyof typeof ModalName, React.FC | null>;
+export type ModalPayload = 
+  | { name: typeof ModalName.SEARCH, props?: {} }
+  | { name: typeof ModalName.SHAREDSPACEMANAGER, props?: {} }
+  | { name: typeof ModalName.TODO_INPUT, props?: {} }
+  | { name: typeof ModalName.TODO_DETAIL, props?: {} }
+  | { name: typeof ModalName.SHAREDSPACEMEMBERLIST, props?: {} }
+  | { name: typeof ModalName.JOINREQUEST_SENDER, props?: {} }
+  | { name: typeof ModalName.JOINREQUEST_MANAGER, props?: {} }
+  | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps }
+  | { name: '', props: {} };
 
 export const RoleDictionary = {
   OWNER: '소유자',
