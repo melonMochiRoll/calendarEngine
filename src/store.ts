@@ -4,7 +4,6 @@ import calendarTimeReducer from 'Features/calendarTimeSlice';
 import todoTimeReducer from 'Features/todoTimeSlice';
 import todoDetailReducer from "Features/todoDetailSlice";
 import joinRequestDetailReducer from 'Features/joinRequestDetailSlice';
-import imageViewerReducer from 'Features/imageViewerSlice';
 
 export const reduxStore = configureStore({
   reducer: {
@@ -13,7 +12,6 @@ export const reduxStore = configureStore({
     todoTime: todoTimeReducer,
     todoDetail: todoDetailReducer,
     joinRequestDetail: joinRequestDetailReducer,
-    imageViewer: imageViewerReducer,
   },
 })
 
