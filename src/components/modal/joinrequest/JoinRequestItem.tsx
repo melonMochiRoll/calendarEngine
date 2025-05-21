@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import useMenu from 'Hooks/useMenu';
 import { Divider, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { NestedModalName, RoleDictionary, SharedspaceMembersRoles, TJoinRequest } from 'Typings/types';
+import { ModalName, RoleDictionary, SharedspaceMembersRoles, TJoinRequest } from 'Typings/types';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_JOINREQUEST_KEY, GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
@@ -11,9 +11,8 @@ import { deleteJoinRequest, resolveJoinRequest } from 'Api/joinrequestApi';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';
 import { useAppDispatch } from 'Hooks/reduxHooks';
-import { openNestedModal } from 'Features/modalSlice';
-import { setjoinRequestDetail } from 'Features/joinRequestDetailSlice';
 import ProfileImage from 'Components/ProfileImage';
+import { openModal } from 'Features/modalSlice';
 
 const updateRoleOption = [
   {
@@ -36,12 +35,10 @@ interface JoinRequestItemProps {
   request: TJoinRequest,
 };
 
-const JoinRequestItem: FC<JoinRequestItemProps> = ({
-  request,
-}) => {
+const JoinRequestItem: FC<JoinRequestItemProps> = ({ request }) => {
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
-  const { url = '' } = useParams();
+  const { url } = useParams();
   const { id, message, Requestor } = request;
 
   const {
@@ -57,10 +54,14 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
   };
 
   const onRolesUpdateMenuClick = (
-    url: string,
+    url: string | undefined,
     id: number,
     option: typeof updateRoleOption[0],
   ) => {
+    if (!url) {
+      return;
+    }
+
     resolveJoinRequest(url, id, option.roleName)
       .then(async () => {
         await qc.refetchQueries([GET_JOINREQUEST_KEY]);
@@ -74,9 +75,13 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
   };
 
   const onDeleteMenuClick = (
-    url: string,
+    url: string | undefined,
     id: number,
   ) => {
+    if (!url) {
+      return;
+    }
+    
     deleteJoinRequest(url, id)
       .then(async () => {
         await qc.refetchQueries([GET_JOINREQUEST_KEY]);
@@ -89,13 +94,15 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
     onClose();
   };
 
-  const onClickMessage = () => {
-    dispatch(setjoinRequestDetail(request));
-    dispatch(openNestedModal(NestedModalName.JOINREQUEST_DETAIL));
+  const openJoinRequestDetail = (request: TJoinRequest) => {
+    dispatch(openModal({
+      name: ModalName.JOINREQUEST_DETAIL,
+      props: { request },
+    }));
   };
   
   return (
-    <Item onClick={() => onClickMessage()}>
+    <Item onClick={() => openJoinRequestDetail(request)}>
       <Left>
         <ProfileImage
           profileImage={Requestor.profileImage}
