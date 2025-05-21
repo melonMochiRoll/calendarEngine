@@ -1,40 +1,40 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
-import { closeModal, openNestedModal } from 'Features/modalSlice';
+import { useAppDispatch } from 'Hooks/reduxHooks';
+import { closeModal, openModal } from 'Features/modalSlice';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import ClockIcon from '@mui/icons-material/AccessTime';
 import DescriptionIcon from '@mui/icons-material/Description';
 import PencilIcon from '@mui/icons-material/Create';
 import MenuIcon from '@mui/icons-material/MoreHoriz';
-import { NestedModalName } from 'Typings/types';
 import useMenu from 'Hooks/useMenu';
 import { Menu, MenuItem } from '@mui/material';
 import { deleteTodo } from 'Api/todosApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
+import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import useUser from 'Hooks/useUser';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Lib/noticeConstants';
+import { defaultToastOption, successMessage } from 'Constants/notices';
 import { formatDateTime } from 'Lib/utilFunction';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { ModalName, TTodo } from 'Typings/types';
 
-const TodoDetail: FC = () => {
+export interface TodoDetailProps {
+  todo: TTodo;
+};
+
+const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
-  const { url = '' } = useParams();
-  const { todo } = useAppSelector(state => state.todoDetail);
-  const { hasPermission } = useUser();
   dayjs.extend(utc);
   dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
 
-  if (!todo) {
-    return <></>;
-  }
+  const { url } = useParams();
+  const { data: userData, hasMemberPermission } = useUser({ suspense: false, throwOnError: false });
 
   const {
     anchorEl,
@@ -43,11 +43,12 @@ const TodoDetail: FC = () => {
     onClose,
   } = useMenu();
 
-  const onClickTodoDelete = async (todoId: number, url: string) => {
-    await deleteTodo(
-      todoId,
-      url,
-    )
+  const onClickTodoDelete = async (todoId: number, url: string | undefined) => {
+    if (!url) {
+      return;
+    }
+
+    await deleteTodo(todoId, url);
     dispatch(closeModal());
     await qc.refetchQueries([GET_TODOS_KEY]);
     await qc.refetchQueries([GET_TODOS_LIST_KEY]);
@@ -55,13 +56,24 @@ const TodoDetail: FC = () => {
       ...defaultToastOption,
     });
   };
+
+  const openTodoUpdate = (todo: TTodo, url: string | undefined, UserId: number | undefined) => {
+    if (!UserId || !url) {
+      return;
+    }
+
+    dispatch(openModal({
+      name: ModalName.TODO_UPDATE,
+      props: { todo, url, UserId }
+    }));
+  };
   
   return (
     <Block
       onClick={e => e.stopPropagation()}>
       <Header>
         <Left>
-          {hasPermission() &&
+          {hasMemberPermission() &&
             <MenuIcon
               onClick={onOpen}
               fontSize='large'
@@ -72,20 +84,14 @@ const TodoDetail: FC = () => {
             anchorEl={anchorEl}
             open={open}
             onClick={onClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}>
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
               <MenuItem
-                onClick={() => dispatch(openNestedModal(NestedModalName.TODO_UPDATE))}>
+                onClick={() => openTodoUpdate(todo, url, userData?.id)}>
                 <span>수정</span>
               </MenuItem>
               <MenuItem
-                onClick={() => onClickTodoDelete(todo?.id as number, url)}>
+                onClick={() => onClickTodoDelete(todo.id, url)}>
                 <span>삭제</span>
               </MenuItem>
             </Menu>
@@ -96,11 +102,7 @@ const TodoDetail: FC = () => {
         <Right>
           <CloseIcon
             onClick={() => dispatch(closeModal())}
-            sx={{
-              color: 'var(--white)',
-              fontSize: '35px',
-              cursor: 'pointer',
-            }} />
+            sx={CloseIconInlineStyle} />
         </Right>
       </Header>
       <Main>
@@ -172,7 +174,7 @@ const Right = styled.div`
   width: 15%;
 `;
 
-const Main = styled.div`
+const Main = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -217,3 +219,9 @@ const LastupdatedAt = styled.span`
   color: #868e96;
   font-size: 16px;
 `;
+
+const CloseIconInlineStyle = {
+  color: 'var(--white)',
+  fontSize: '35px',
+  cursor: 'pointer',
+};
