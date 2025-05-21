@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import { ModalName, TTodo } from 'Typings/types';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
-import { setTodoDetail } from 'Features/todoDetailSlice';
 import { renderTime } from 'Lib/utilFunction';
 import { TODO_MAX_HEIGHT } from 'Constants/calendar';
 import ClockIcon from '@mui/icons-material/AccessTime';
@@ -27,22 +26,15 @@ const TodoItem: FC<TodoItemProps> = ({
   const { description, endTime } = todo;
   const [ hover, setHover ] = useState({ visible: false, x: 0, y: 0 });
 
-  const onClickDescription = () => {
-    dispatch(setTodoDetail(todo));
-    dispatch(openModal({ name: ModalName.TODO_DETAIL }));
-  };
-
-  const onEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    setHover({ visible: true, x: e.clientX, y: e.clientY });
-  };
-
-  const onLeave = () => {
-    setHover({ visible: false, x: 0, y: 0 });
+  const openTodoDetail = (todo: TTodo) => {
+    dispatch(openModal({
+      name: ModalName.TODO_DETAIL,
+      props: { todo },
+    }));
   };
 
   return (
-    <Article
-      todoHeight={todoHeight > TODO_MAX_HEIGHT ? TODO_MAX_HEIGHT : todoHeight}>
+    <Article todoHeight={todoHeight > TODO_MAX_HEIGHT ? TODO_MAX_HEIGHT : todoHeight}>
       <Left>
         {!hideEndTime &&
           <TimeDiv borderBottomColor={bgColor}>
@@ -50,10 +42,10 @@ const TodoItem: FC<TodoItemProps> = ({
           </TimeDiv>}
       </Left>
       <Right
-        onMouseEnter={onEnter}
-        onMouseLeave={onLeave}>
+        onMouseEnter={(e) => setHover({ visible: true, x: e.clientX, y: e.clientY })}
+        onMouseLeave={() => setHover({ visible: false, x: 0, y: 0 })}>
         <DescriptionDiv
-          onClick={() => onClickDescription()}
+          onClick={() => openTodoDetail(todo)}
           bgColor={bgColor}
           borderBottomColor={bgColor}>
           <DescriptionSpan>{description}</DescriptionSpan>
