@@ -1,4 +1,5 @@
 import { ImageViewerProps } from "Components/modal/imageViewer/ImageViewer";
+import { JoinRequestDetailProps } from "Components/modal/joinrequest/JoinRequestDetail";
 import { TodoDetailProps } from "Components/modal/todo/TodoDetail";
 import { TodoUpdateProps } from "Components/modal/todo/TodoUpdate";
 
@@ -21,6 +22,7 @@ export const ModalName = {
   SHAREDSPACEMEMBERLIST: 'SHAREDSPACEMEMBERLIST',
   JOINREQUEST_SENDER: 'JOINREQUEST_SENDER',
   JOINREQUEST_MANAGER: 'JOINREQUEST_MANAGER',
+  JOINREQUEST_DETAIL: 'JOINREQUEST_DETAIL',
   IMAGE_VIEWER: 'IMAGE_VIEWER',
 } as const;
 
@@ -35,6 +37,7 @@ export type ModalPayload =
   | { name: typeof ModalName.SHAREDSPACEMEMBERLIST, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_SENDER, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_MANAGER, props?: {} }
+  | { name: typeof ModalName.JOINREQUEST_DETAIL, props: JoinRequestDetailProps }
   | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps };
 
 export const RoleDictionary = {

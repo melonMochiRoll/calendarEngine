@@ -13,6 +13,7 @@ const modals = {
   [ModalName.SHAREDSPACEMEMBERLIST]: React.lazy(() => import('Components/modal/sharedspaceMemberList/SharedspaceMemberListModal')),
   [ModalName.JOINREQUEST_SENDER]: React.lazy(() => import('Components/modal/joinrequest/JoinRequestSenderModal')),
   [ModalName.JOINREQUEST_MANAGER]: React.lazy(() => import('Components/modal/joinrequest/JoinRequestManagerModal')),
+  [ModalName.JOINREQUEST_DETAIL]: React.lazy(() => import('Components/modal/joinrequest/JoinRequestDetail')),
   [ModalName.IMAGE_VIEWER]: React.lazy(() => import('Components/modal/imageViewer/ImageViewer')),
 };
 
