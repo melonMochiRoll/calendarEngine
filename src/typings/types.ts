@@ -1,5 +1,6 @@
 import { ImageViewerProps } from "Components/modal/imageViewer/ImageViewer";
 import { TodoDetailProps } from "Components/modal/todo/TodoDetail";
+import { TodoUpdateProps } from "Components/modal/todo/TodoUpdate";
 
 export type InputTypeAttribute = 'button' | 'checkbox' | 'color' | 'date' | 'datetime-local' | 'email' | 'file' | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | 'range' | 'reset' | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week';
 
@@ -16,6 +17,7 @@ export const ModalName = {
   SHAREDSPACEMANAGER: 'SHAREDSPACEMANAGER',
   TODO_INPUT: 'TODO_INPUT',
   TODO_DETAIL: 'TODO_DETAIL',
+  TODO_UPDATE: 'TODO_UPDATE',
   SHAREDSPACEMEMBERLIST: 'SHAREDSPACEMEMBERLIST',
   JOINREQUEST_SENDER: 'JOINREQUEST_SENDER',
   JOINREQUEST_MANAGER: 'JOINREQUEST_MANAGER',
@@ -29,6 +31,7 @@ export type ModalPayload =
   | { name: typeof ModalName.SHAREDSPACEMANAGER, props?: {} }
   | { name: typeof ModalName.TODO_INPUT, props?: {} }
   | { name: typeof ModalName.TODO_DETAIL, props: TodoDetailProps }
+  | { name: typeof ModalName.TODO_UPDATE, props: TodoUpdateProps }
   | { name: typeof ModalName.SHAREDSPACEMEMBERLIST, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_SENDER, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_MANAGER, props?: {} }
