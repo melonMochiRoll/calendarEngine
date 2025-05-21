@@ -1,17 +1,18 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import CloseIcon from '@mui/icons-material/CloseRounded';
-import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
-import { closeNestedModal } from 'Features/modalSlice';
-import { CircularProgress } from '@mui/material';
+import { useAppDispatch } from 'Hooks/reduxHooks';
+import { TJoinRequest } from 'Typings/types';
+import { closeModal } from 'Features/modalSlice';
 
-const JoinRequestDetail: FC = () => {
+export interface JoinRequestDetailProps {
+  request: TJoinRequest;
+};
+
+const JoinRequestDetail: FC<JoinRequestDetailProps> = ({
+  request,
+}) => {
   const dispatch = useAppDispatch();
-  const { request } = useAppSelector(state => state.joinRequestDetail);
-
-  if (!request) {
-    return <CircularProgress size={70} />;
-  }
   
   return (
     <Block
@@ -23,17 +24,13 @@ const JoinRequestDetail: FC = () => {
         </Center>
         <Right>
           <CloseIcon
-            onClick={() => dispatch(closeNestedModal())}
-            sx={{
-              color: 'var(--white)',
-              fontSize: '35px',
-              cursor: 'pointer',
-            }} />
+            onClick={() => dispatch(closeModal())}
+            sx={CloseIconInlineStyle} />
         </Right>
       </Header>
-      <Main>
+      <Body>
         <Span>{request.message}</Span>
-      </Main>
+      </Body>
     </Block>
   );
 };
@@ -83,7 +80,7 @@ const Right = styled.div`
   width: 15%;
 `;
 
-const Main = styled.div`
+const Body = styled.section`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -97,3 +94,9 @@ const Span = styled.span`
   word-wrap: break-all;
   word-break: break-all;
 `;
+
+const CloseIconInlineStyle = {
+  color: 'var(--white)',
+  fontSize: '35px',
+  cursor: 'pointer',
+};
