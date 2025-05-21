@@ -32,8 +32,7 @@ export type ModalPayload =
   | { name: typeof ModalName.SHAREDSPACEMEMBERLIST, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_SENDER, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_MANAGER, props?: {} }
-  | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps }
-  | { name: '', props: {} };
+  | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps };
 
 export const RoleDictionary = {
   OWNER: '소유자',
