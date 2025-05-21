@@ -13,11 +13,15 @@ export const modalSlice = createSlice({
     closeModal: (state) => {
       state.pop();
     },
+    clearModal: (state) => {
+      state.splice(0, state.length);
+    },
   },
 });
 
 export const {
   openModal,
   closeModal,
+  clearModal,
 } = modalSlice.actions;
 export default modalSlice.reducer;
