@@ -5,21 +5,30 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
+import { useAppDispatch } from 'Hooks/reduxHooks';
 import CloseIcon from '@mui/icons-material/CloseRounded';
-import { closeModal, closeNestedModal } from 'Features/modalSlice';
+import { clearModal, closeModal } from 'Features/modalSlice';
 import { useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
-import useUser from 'Hooks/useUser';
-import { TODO_MAX_SIZE } from 'Lib/calendarConstants';
+import { TODO_MAX_SIZE } from 'Constants/calendar';
 import { getByteSize } from 'Lib/utilFunction';
-import { checkContent, defaultToastOption, keepMininumTime, successMessage, waitingMessage } from 'Lib/noticeConstants';
-import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
+import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
+import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import TextButton from 'Components/common/TextButton';
 import { updateTodo } from 'Api/todosApi';
 import { toast } from 'react-toastify';
+import { TTodo } from 'Typings/types';
 
-const TodoUpdate: FC = () => {
+export interface TodoUpdateProps {
+  todo: TTodo;
+  url: string;
+  UserId: number;
+};
+
+const TodoUpdate: FC<TodoUpdateProps> = ({
+  todo,
+  url,
+  UserId,
+}) => {
   dayjs.extend(utc);
   dayjs.extend(timezone);
   dayjs.extend(customParseFormat);
@@ -27,10 +36,6 @@ const TodoUpdate: FC = () => {
   const timeZone = dayjs.tz.guess();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
-  const { todo } = useAppSelector(state => state.todoDetail);
-
-  const { url = '' } = useParams();
-  const { userData } = useUser();
 
   const [ start_hour, start_minute ] = todo?.startTime.split(':') || [ '', '00' ];
   const [ end_hour, end_minute ] = todo?.endTime.split(':') || [ '', '00' ];
@@ -101,14 +106,8 @@ const TodoUpdate: FC = () => {
       start === startTime &&
       end === endTime
     ) {
-      return dispatch(closeNestedModal());
-    }
-
-    if (!userData || !url) {
-      return setError({
-        isError: true,
-        message: waitingMessage
-      });
+      dispatch(closeModal());
+      return;
     }
 
     const trimmedStartTime = Object.values(start).map((value) => value.trim());
@@ -160,10 +159,9 @@ const TodoUpdate: FC = () => {
         minute: trimmedEndTime[1].padStart(2, '0'),
       });
       setDescription(description);
-      dispatch(closeModal());
-      dispatch(closeNestedModal());
       await qc.refetchQueries([GET_TODOS_KEY]);
       await qc.refetchQueries([GET_TODOS_LIST_KEY]);
+      dispatch(clearModal());
       toast.success(successMessage, {
         ...defaultToastOption,
       });
@@ -186,12 +184,8 @@ const TodoUpdate: FC = () => {
         </Center>
         <Right>
           <CloseIcon
-            onClick={() => dispatch(closeNestedModal())}
-            sx={{
-              color: 'var(--white)',
-              fontSize: '35px',
-              cursor: 'pointer',
-            }} />
+            onClick={() => dispatch(closeModal())}
+            sx={CloseIconInlineStyle} />
         </Right>
       </Header>
       <Main>
@@ -253,7 +247,7 @@ const TodoUpdate: FC = () => {
                   description as string,
                   startTime,
                   endTime,
-                  userData?.id,
+                  UserId,
                   url,
                 );
               }}>
@@ -399,3 +393,9 @@ const ErrorSpan = styled.span`
   font-size: 16px;
   color: var(--red);
 `;
+
+const CloseIconInlineStyle = {
+  color: 'var(--white)',
+  fontSize: '35px',
+  cursor: 'pointer',
+};
