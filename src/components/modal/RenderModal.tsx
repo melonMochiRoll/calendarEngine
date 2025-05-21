@@ -1,49 +1,39 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
-import SearchModal from 'Components/modal/search/SearchModal';
-import SharedspaceManagerModal from 'Components/modal/sharedspaceManager/SharedspaceManagerModal';
 import { closeModal } from 'Features/modalSlice';
-import { TModals } from 'Typings/types';
-import TodoDetail from './todo/TodoDetail';
-import TodoInput from './todo/TodoInput';
-import SharedspaceMemberListModal from './sharedspaceMemberList/SharedspaceMemberListModal';
-import JoinRequestSenderModal from './joinrequest/JoinRequestSenderModal';
-import JoinRequestManagerModal from './joinrequest/JoinRequestManagerModal';
-import ImageViewer from './imageViewer/ImageViewer';
+import { ModalName } from 'Typings/types';
 
-const Modals: TModals = {
-  SEARCH: <SearchModal />,
-  SHAREDSPACEMANAGER: <SharedspaceManagerModal />,
-  TODO_INPUT: <TodoInput />,
-  TODO_DETAIL: <TodoDetail />,
-  SHAREDSPACEMEMBERLIST: <SharedspaceMemberListModal />,
-  JOINREQUEST_SENDER: <JoinRequestSenderModal />,
-  JOINREQUEST_MANAGER: <JoinRequestManagerModal />,
-  IMAGE_VIEWER: <ImageViewer />,
-  CLOSE: null,
+const modals = {
+  [ModalName.SEARCH]: React.lazy(() => import('Components/modal/search/SearchModal')),
+  [ModalName.SHAREDSPACEMANAGER]: React.lazy(() => import('Components/modal/sharedspaceManager/SharedspaceManagerModal')),
+  [ModalName.TODO_INPUT]: React.lazy(() => import('Components/modal/todo/TodoInput')),
+  [ModalName.TODO_DETAIL]: React.lazy(() => import('Components/modal/todo/TodoDetail')),
+  [ModalName.SHAREDSPACEMEMBERLIST]: React.lazy(() => import('Components/modal/sharedspaceMemberList/SharedspaceMemberListModal')),
+  [ModalName.JOINREQUEST_SENDER]: React.lazy(() => import('Components/modal/joinrequest/JoinRequestSenderModal')),
+  [ModalName.JOINREQUEST_MANAGER]: React.lazy(() => import('Components/modal/joinrequest/JoinRequestManagerModal')),
+  [ModalName.IMAGE_VIEWER]: React.lazy(() => import('Components/modal/imageViewer/ImageViewer')),
 };
 
 const RenderModal: FC = () => {
-  const { modalName } = useAppSelector(state => state.modal);
   const dispatch = useAppDispatch();
-  if (!modalName || !Modals.hasOwnProperty(modalName)) return;
+  const modalStack = useAppSelector(state => state.modal);
 
-  const renderModal = () => {
-    return Modals[modalName];
-  };
+  if (!modalStack.length) return null;
+
+  const currentModal = modalStack[modalStack.length - 1];
+  const ModalComponent = modals[currentModal.name] as React.ComponentType<any>;
 
   return (
-    <Block
-      onClick={() => dispatch(closeModal())}>
-      {renderModal()}
-    </Block>
+    <Backdrop onClick={() => dispatch(closeModal())}>
+      <ModalComponent {...currentModal.props} />
+    </Backdrop>
   );
 };
 
 export default RenderModal;
 
-const Block = styled.div`
+const Backdrop = styled.div`
   position: fixed;
   inset: 0;
   display: flex;
