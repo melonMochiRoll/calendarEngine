@@ -1,4 +1,5 @@
 import { ImageViewerProps } from "Components/modal/imageViewer/ImageViewer";
+import { TodoDetailProps } from "Components/modal/todo/TodoDetail";
 
 export type InputTypeAttribute = 'button' | 'checkbox' | 'color' | 'date' | 'datetime-local' | 'email' | 'file' | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | 'range' | 'reset' | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week';
 
@@ -27,7 +28,7 @@ export type ModalPayload =
   | { name: typeof ModalName.SEARCH, props?: {} }
   | { name: typeof ModalName.SHAREDSPACEMANAGER, props?: {} }
   | { name: typeof ModalName.TODO_INPUT, props?: {} }
-  | { name: typeof ModalName.TODO_DETAIL, props?: {} }
+  | { name: typeof ModalName.TODO_DETAIL, props: TodoDetailProps }
   | { name: typeof ModalName.SHAREDSPACEMEMBERLIST, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_SENDER, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_MANAGER, props?: {} }
