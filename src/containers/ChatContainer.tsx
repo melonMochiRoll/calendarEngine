@@ -1,7 +1,7 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import useSocket from 'Hooks/useSocket';
-import { TChats } from 'Typings/types';
+import { ChatsCommandList, TChats } from 'Typings/types';
 import useChats from 'Hooks/useChats';
 import { createSharedspaceChat, getSharedspaceChats } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
@@ -18,13 +18,35 @@ const ChatContainer: FC = () => {
   const { url } = useParams();
   const qc = useQueryClient();
 
-  const { showNewChat, setShowNewChat } = useSocket();
   const { data: chatList, offset, setOffset } = useChats({ suspense: true, throwOnError: true });
+  const {
+    socket,
+    showNewChat,
+    setShowNewChat,
+    onChatCreated,
+    onChatUpdated,
+    onChatDeleted,
+    onChatImageDeleted,
+  } = useSocket();
 
   const scrollbarRef = useRef<HTMLUListElement>(null);
   const [ chat, onChangeChat, setChat ] = useInput('');
   const [ images, setImages ] = useState<File[]>([]);
   const [ previews, setPreviews ] = useState<Array<string | ArrayBuffer | null>>([]);
+
+  useEffect(() => {
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
+
+    return () => {
+      socket?.off(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
+      socket?.off(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
+      socket?.off(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
+      socket?.off(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
+    };
+  }, [socket]);
 
   const loadMore = () => {
     scrollbarRef?.current?.scrollTo(0, -200);
