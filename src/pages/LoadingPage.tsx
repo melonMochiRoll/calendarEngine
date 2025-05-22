@@ -4,17 +4,17 @@ import { CircularProgress } from '@mui/material';
 
 const LoadingPage: FC = () => {
   return (
-    <Main>
+    <Background>
       <CircleWrapper>
         <CircularProgress size={100} />
       </CircleWrapper>
-    </Main>
+    </Background>
   );
 };
 
 export default LoadingPage;
 
-const Main = styled.main`
+const Background = styled.div`
   display: flex;
   justify-content: center;
   width: 100vw;
