@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import RenderUserProfile from 'Components/auth/RenderUserProfile';
 import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ModalName } from 'Typings/types';
 import { updateSharedspaceName } from 'Api/sharedspacesApi';
 import useUser from 'Hooks/useUser';
@@ -23,6 +23,7 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
 
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { url } = useParams();
   const dispatch = useAppDispatch();
 
   const onUpdateSharedspaceName = async (name: string) => {
@@ -35,15 +36,15 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
   };
   
   return (
-    <Block>
-      <Left>
+    <HeaderBlock>
+      <SpaceInfoWrapper>
         <FlexBox>
           <SatelliteIcon
             onClick={() => navigate(PATHS.SHAREDSPACE)}
             fontSize='large'
-            sx={{ color: 'var(--blue)', cursor: 'pointer', marginRight: '10px' }}/>
+            sx={SatelliteIconInlineStyle} />
           {
-            isOwner() ?
+            isOwner(url) ?
             <EditableTitle
               initValue={spaceData.name}
               submitEvent={onUpdateSharedspaceName}/>
@@ -67,17 +68,17 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
             }
             {spaceData.Sharedspacemembers.length - 5 > 0 && <RestUserImg>{`+${spaceData.Sharedspacemembers.length - 5}`} </RestUserImg>}
           </FlexBox>}
-      </Left>
-      <Right>
+      </SpaceInfoWrapper>
+      <ProfileWrapper>
         <RenderUserProfile userData={userData} />
-      </Right>
-    </Block>
+      </ProfileWrapper>
+    </HeaderBlock>
   );
 };
 
 export default SharedspaceHeader;
 
-const Block = styled.header`
+const HeaderBlock = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -88,7 +89,7 @@ const Block = styled.header`
   z-index: 1;
 `;
 
-const Left = styled.div`
+const SpaceInfoWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -120,13 +121,19 @@ const RestUserImg = styled.div`
   cursor: pointer;
 `;
 
-const Right = styled.div`
+const ProfileWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
   width: 30%;
   gap: 15px;
 `;
+
+const SatelliteIconInlineStyle = {
+  color: 'var(--blue)',
+  cursor: 'pointer',
+  marginRight: '10px',
+};
 
 const IconButton = styled.button`
   display: flex;

@@ -11,25 +11,25 @@ const Header: FC = () => {
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   
   return (
-    <Block>
-      <Left>
+    <HeaderBlock>
+      <InfoWrapper>
         <FlexBox>
           <SatelliteIcon
             onClick={() => navigate(PATHS.SHAREDSPACE)}
             fontSize='large'
             sx={{ color: 'var(--blue)', cursor: 'pointer', marginRight: '10px' }}/>
         </FlexBox>
-      </Left>
-      <Right>
+      </InfoWrapper>
+      <ProfileWrapper>
         <RenderUserProfile userData={userData} />
-      </Right>
-    </Block>
+      </ProfileWrapper>
+    </HeaderBlock>
   );
 };
 
 export default Header;
 
-const Block = styled.header`
+const HeaderBlock = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -40,7 +40,7 @@ const Block = styled.header`
   background-color: var(--black);
 `;
 
-const Left = styled.div`
+const InfoWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -53,7 +53,7 @@ const FlexBox = styled.div`
   gap: 10px;
 `;
 
-const Right = styled.div`
+const ProfileWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
