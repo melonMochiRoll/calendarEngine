@@ -8,7 +8,6 @@ import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOw
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
-import useUser from 'Hooks/useUser';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';
 import ProfileImage from 'Components/ProfileImage';
@@ -47,8 +46,7 @@ const MemberItem: FC<MemberItemProps> = ({
   SharedspaceMembersAndUser,
 }) => {
   const qc = useQueryClient();
-  const { isOwner } = useUser();
-  const { url = '' } = useParams();
+  const { url } = useParams();
   const { Role, UserId, User } = SharedspaceMembersAndUser;
 
   const {
@@ -58,7 +56,7 @@ const MemberItem: FC<MemberItemProps> = ({
     onClose,
   } = useMenu();
 
-  const onOpenWithEvent = (e: any) => {
+  const onOpenWithEvent = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     onOpen(e);
   };
@@ -107,38 +105,32 @@ const MemberItem: FC<MemberItemProps> = ({
   
   return (
     <Item>
-      <Left>
+      <ProfileWrapper>
         <ProfileImage
           profileImage={User.profileImage}
           email={User.email} />
-      </Left>
-      <Center>
-        <Email>{User.email}</Email>
-      </Center>
+      </ProfileWrapper>
+      <EmailWrapper>
+        <EmailText>{User.email}</EmailText>
+      </EmailWrapper>
       {
-        isOwner() && Role.name !== SharedspaceMembersRoles.OWNER ?
-        <Right onClick={onOpenWithEvent}>
+        Role.name === SharedspaceMembersRoles.OWNER ?
+        <DisableButton>
+          <CurrentOption>{renderRole(Role.name)}</CurrentOption>
+        </DisableButton>
+        :
+        <Button onClick={onOpenWithEvent}>
           <CurrentOption>{renderRole(Role.name)}</CurrentOption>
           <ArrowDropDownIcon fontSize='large' />
-        </Right>
-        :
-        <DisableRight>
-          <CurrentOption>{renderRole(Role.name)}</CurrentOption>
-        </DisableRight>
+        </Button>
       }
       <Menu
         aria-labelledby='demo-positioned-button'
         anchorEl={anchorEl}
         open={open}
         onClick={onClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}>
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
         {
           updateRoleOption.map((option: typeof updateRoleOption[0], idx: number) => {
             return (
@@ -183,25 +175,25 @@ const Item = styled.li`
   }
 `;
 
-const Left = styled.div`
+const ProfileWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 10%;
 `;
 
-const Center = styled.div`
+const EmailWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 70%;
 `;
 
-const Email = styled.span`
+const EmailText = styled.span`
   font-size: 20px;
 `;
 
-const DisableRight = styled.div`
+const DisableButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -209,7 +201,7 @@ const DisableRight = styled.div`
   color: #828282;
 `;
 
-const Right = styled.div`
+const Button = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;

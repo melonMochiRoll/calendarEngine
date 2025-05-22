@@ -40,12 +40,12 @@ const UserItem: FC<UserItemProps> = ({
     onClose,
   } = useMenu();
 
-  const onOpenWithEvent = (e: any) => {
+  const onOpenWithEvent = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     onOpen(e);
   };
 
-  const onCreateRoleMenuClick = async (e: any, option: typeof createRoleOption[0]) => {
+  const onCreateRoleMenuClick = async (e: React.MouseEvent<HTMLLIElement>, option: typeof createRoleOption[0]) => {
     e.stopPropagation();
 
     await createSharedspaceMembers(url, searchUserData.id, option.roleName);
@@ -55,23 +55,23 @@ const UserItem: FC<UserItemProps> = ({
   
   return (
     <Item>
-      <Left>
+      <ProfileWrapper>
         <ProfileImage
           profileImage={searchUserData.profileImage}
           email={searchUserData.email} />
-      </Left>
-      <Center>
-        <Email>{searchUserData.email}</Email>
-      </Center>
-      {searchUserData.Sharedspacemembers.find((ele: any) => ele.SharedspaceId === spaceData.id) ?
-        <DisableRight>
+      </ProfileWrapper>
+      <EmailWrapper>
+        <EmailText>{searchUserData.email}</EmailText>
+      </EmailWrapper>
+      {searchUserData.Sharedspacemembers.find((ele) => ele.SharedspaceId === spaceData.id) ?
+        <DisableButton>
           <CurrentOption>이미 속한 유저</CurrentOption>
-        </DisableRight>
+        </DisableButton>
         :
-        <Right onClick={onOpenWithEvent}>
+        <Button onClick={onOpenWithEvent}>
           <CurrentOption>초대</CurrentOption>
           <ArrowDropDownIcon fontSize='large' />
-        </Right>}
+        </Button>}
       <Menu
         aria-labelledby='demo-positioned-button'
         anchorEl={anchorEl}
@@ -109,25 +109,25 @@ const Item = styled.li`
   }
 `;
 
-const Left = styled.div`
+const ProfileWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 10%;
 `;
 
-const Center = styled.div`
+const EmailWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 70%;
 `;
 
-const Email = styled.span`
+const EmailText = styled.span`
   font-size: 20px;
 `;
 
-const DisableRight = styled.div`
+const DisableButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -135,7 +135,7 @@ const DisableRight = styled.div`
   color: #828282;
 `;
 
-const Right = styled.div`
+const Button = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
