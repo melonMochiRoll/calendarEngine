@@ -21,13 +21,13 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
   return (
     <Block>
       <Sidebar />
-      <Content>
+      <PageWrapper>
         <AsyncBoundary
           errorBoundaryFallback={SharedspaceRedirectFallback}
           suspenseFallback={<SkeletonHeader />}>
           <SharedspaceHeader />
         </AsyncBoundary>
-        <Main>
+        <ContentWrapper>
           <Outlet />
           <Drawer>
             {todoTime ?
@@ -38,8 +38,8 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
               </AsyncBoundary> :
               <TodoInit />}
           </Drawer>
-        </Main>
-      </Content>
+        </ContentWrapper>
+      </PageWrapper>
     </Block>
   );
 };
@@ -50,7 +50,7 @@ const Block = styled.div`
   display: flex;
 `;
 
-const Content = styled.div`
+const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -58,7 +58,7 @@ const Content = styled.div`
   background-color: var(--black);
 `;
 
-const Main = styled.main`
+const ContentWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   height: 95%;
