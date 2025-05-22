@@ -69,14 +69,8 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
         anchorEl={anchorEl}
         open={open}
         onClick={onCloseMoreMenu}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
         sx={{ marginTop: '10px' }}>
           <MenuItem
             onClick={(e) => onClickDelete(e, url)}
