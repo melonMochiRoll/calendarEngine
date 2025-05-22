@@ -1,19 +1,20 @@
 import React, { useEffect } from 'react';
 import useUser from 'Hooks/useUser';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { defaultToastOption, needLogin, privateTooltip, waitingMessage } from 'Lib/noticeConstants';
+import { defaultToastOption, needLogin, privateTooltip, waitingMessage } from 'Constants/notices';
 import { PATHS } from 'Constants/paths';
 import { AxiosError } from 'axios';
 import { FallbackProps } from 'react-error-boundary';
 
 export default function SharedspaceRedirectFallback({ error, resetErrorBoundary }: FallbackProps, ErrorRenderComponent?: React.ReactNode) {
   const navigate = useNavigate();
+  const { url } = useParams();
   const { isLogin, isNotLogin } = useUser({ suspense: false, throwOnError: false });
+  const isAxiosError = error instanceof AxiosError
+  const errorCode = isAxiosError ? error.response?.status : 500;
 
   useEffect(() => {
-    const errorCode = error instanceof AxiosError ? error.response?.status : 500;
-
     const response = {
       message: waitingMessage,
       destination: PATHS.INTERNAL,
@@ -21,7 +22,7 @@ export default function SharedspaceRedirectFallback({ error, resetErrorBoundary 
     
     if (errorCode === 403 && isLogin) {
       response.message = privateTooltip;
-      response.destination = PATHS.FORBIDDEN;
+      response.destination = `${PATHS.JOINREQUEST_SENDER}/${url}`;
     }
   
     if (errorCode === 403 && isNotLogin) {
@@ -38,7 +39,6 @@ export default function SharedspaceRedirectFallback({ error, resetErrorBoundary 
 
     return () => {
       clearTimeout(delay);
-      resetErrorBoundary();
     };
   }, []);
 
