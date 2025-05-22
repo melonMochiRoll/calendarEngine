@@ -40,8 +40,8 @@ const JoinRequestSenderPage: FC = () => {
   };
 
   return (
-    <Block>
-      <Section>
+    <Background>
+      <Wrapper>
         <Header>
           <Left></Left>
           <Center>
@@ -76,14 +76,14 @@ const JoinRequestSenderPage: FC = () => {
             </TextButton>
           </Buttons>
         </Footer>
-      </Section>
-    </Block>
+      </Wrapper>
+    </Background>
   );
 };
 
 export default WithAuthGuard(JoinRequestSenderPage);
 
-const Block = styled.main`
+const Background = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -92,7 +92,7 @@ const Block = styled.main`
   padding-top: 50px;
 `;
 
-const Section = styled.section`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 550px;
