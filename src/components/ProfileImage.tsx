@@ -14,24 +14,22 @@ const ProfileImage: FC<ProfileImageProps> = ({
   size,
 }) => {
 
-  if (size === 'large') {
-    return <Img
-      size={'50px'}
-      alt='ProfileImg'
-      src={profileImage ? profileImage : gravatar.url(email, { s: '25px', d: 'retro' })} />;
-  }
+  const renderSize = (size: string | undefined) => {
+    if (size === 'large') {
+      return '50px';
+    }
 
-  if (size === 'small') {
-    return <Img
-      size={'25px'}
-      alt='ProfileImg'
-      src={profileImage ? profileImage : gravatar.url(email, { s: '25px', d: 'retro' })} />;
-  }
+    if (size === 'small') {
+      return '25px';
+    }
+
+    return '35px';
+  };
 
   return (
     <Img
-      size={'35px'}
-      alt='ProfileImg'
+      size={renderSize(size)}
+      alt={`${email}`}
       src={profileImage ? profileImage : gravatar.url(email, { s: '25px', d: 'retro' })} />
   );
 };
