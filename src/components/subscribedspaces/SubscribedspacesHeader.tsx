@@ -44,14 +44,14 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
 
   return (
     <Header>
-      <Top>
+      <TitleWrapper>
         <Title>스페이스 목록</Title>
         <AddButton onClick={() => onCreateSharedspace(userData.id)}>
           <AddIcon fontSize='large' sx={{ color: 'var(--blue)' }}/>
           <span>새 스페이스</span>
         </AddButton>
-      </Top>
-      <Bottom>
+      </TitleWrapper>
+      <ListHeader>
         <ItemHead>
           <Tooltip title={privateTooltip} sx={{ fontSize: '24px' }} arrow>
             <ItemPrivate>
@@ -86,7 +86,7 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
           </Menu>
           <ItemMoreMenu />
         </ItemHead>
-      </Bottom>
+      </ListHeader>
     </Header>
   );
 };
@@ -95,7 +95,7 @@ export default SubscribedSpacesHeader;
 
 const Header = styled.header``;
 
-const Top = styled.div`
+const TitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -130,7 +130,7 @@ const AddButton = styled.div`
   }
 `;
 
-const Bottom = styled.div`
+const ListHeader = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
