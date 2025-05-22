@@ -5,6 +5,8 @@ import { login } from 'Api/authApi';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from 'Components/auth/LoginForm';
 import { PATHS } from 'Constants/paths';
+import { useQueryClient } from '@tanstack/react-query';
+import { GET_USER_KEY } from 'Constants/queryKeys';
 
 const emailConfirmation = (email: string) => {
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -49,6 +51,7 @@ interface LoginContainerProps {};
 
 const LoginContainer: FC<LoginContainerProps> = ({}) => {
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const [ email, onChangeEmail ] = useInput('');
   const [ password, onChangePassword ] = useInput('');
   const [ errors, setErrors ] = useState({
@@ -75,7 +78,8 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
     }
   
     login(emailConfirmResult.email, passwordConfirmResult.password)
-      .then(() => {
+      .then((user) => {
+        qc.setQueryData([GET_USER_KEY], user);
         navigate(PATHS.SHAREDSPACE);
       })
       .catch((errorMessage) => {
