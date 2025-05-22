@@ -10,7 +10,7 @@ import LoadingCircular from 'Components/skeleton/LoadingCircular';
 
 const SharedspacesPage: FC = () => {
   return (
-    <Block>
+    <Background>
       <AsyncBoundary
         errorBoundaryFallback={GenericErrorFallback}
         suspenseFallback={<SkeletonHeader />}>
@@ -21,13 +21,13 @@ const SharedspacesPage: FC = () => {
         suspenseFallback={<LoadingCircular />}>
         <SubscribedSpacesContainer />
       </AsyncBoundary>
-    </Block>
+    </Background>
   );
 };
 
 export default WithAuthGuard(SharedspacesPage);
 
-const Block = styled.div`
+const Background = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;

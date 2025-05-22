@@ -8,20 +8,20 @@ import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 
 const SharedspacesViewPage: FC = () => {
   return (
-    <Block>
+    <Background>
       <CalendarHeader />
       <AsyncBoundary
         errorBoundaryFallback={GenericErrorFallback}
         suspenseFallback={<LoadingCircular />}>
         <CalendarContainer />
       </AsyncBoundary>
-    </Block>
+    </Background>
   );
 };
 
 export default SharedspacesViewPage;
 
-const Block = styled.div`
+const Background = styled.div`
   display: flex;
   flex-direction: column;
   width: 70%;
