@@ -1,14 +1,13 @@
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from '@tanstack/react-query';
 import { getUser } from 'Api/usersApi';
 import { GET_USER_KEY } from 'Constants/queryKeys';
-import { useParams } from 'react-router-dom';
 import { SharedspaceMembersRoles, TSharedspace, TUser } from 'Typings/types';
 
 type TypeSafeReturnType = {
   data: TUser;
-  isOwner: (url?: string) => boolean;
-  hasMemberPermission: (url?: string) => boolean;
-  hasViewerPermission: (url?: string) => boolean;
+  isOwner: (url: string | undefined) => boolean;
+  hasMemberPermission: (url: string | undefined) => boolean;
+  hasViewerPermission: (url: string | undefined) => boolean;
 };
 
 type FetchStateReturnType = {
@@ -19,9 +18,9 @@ type FetchStateReturnType = {
   ) => Promise<QueryObserverResult<TUser, unknown>>;
   isLogin: boolean;
   isNotLogin: boolean;
-  isOwner: (url?: string) => boolean;
-  hasMemberPermission: (url?: string) => boolean;
-  hasViewerPermission: (url?: string) => boolean;
+  isOwner: (url: string | undefined) => boolean;
+  hasMemberPermission: (url: string | undefined) => boolean;
+  hasViewerPermission: (url: string | undefined) => boolean;
   error: unknown;
 };
 
@@ -29,7 +28,6 @@ function useUser(options: { suspense: true, throwOnError: true }): TypeSafeRetur
 function useUser(options?: { suspense: boolean, throwOnError: boolean }): FetchStateReturnType;
 
 function useUser(options = { suspense: false, throwOnError: false }) {
-  const { url: _url } = useParams();
   const { suspense, throwOnError } = options;
 
   const {
@@ -45,22 +43,22 @@ function useUser(options = { suspense: false, throwOnError: false }) {
     useErrorBoundary: throwOnError,
   });
 
-  const getRoleName = (url?: string | undefined) => {
-    if (data) {
+  const getRoleName = (url: string | undefined) => {
+    if (data && url) {
       return data
         .Sharedspacemembers
-        .filter((it: { Sharedspace: Pick<TSharedspace, 'url'> }) => it.Sharedspace.url === url || _url)[0]
+        .filter((it: { Sharedspace: Pick<TSharedspace, 'url'> }) => it.Sharedspace.url === url)[0]
         ?.Role.name;
     }
 
     return '';
   };
 
-  const isOwner = (url?: string) => {
+  const isOwner = (url: string | undefined) => {
     return getRoleName(url) === SharedspaceMembersRoles.OWNER;
   };
 
-  const hasMemberPermission = (url?: string) => {
+  const hasMemberPermission = (url: string | undefined) => {
     const roleName = getRoleName(url);
     const isMember = roleName === SharedspaceMembersRoles.MEMBER;
     const isOwner = roleName === SharedspaceMembersRoles.OWNER;
@@ -68,7 +66,7 @@ function useUser(options = { suspense: false, throwOnError: false }) {
     return isMember || isOwner;
   };
 
-  const hasViewerPermission = (url?: string) => {
+  const hasViewerPermission = (url: string | undefined) => {
     const roleName = getRoleName(url);
 
     return Object
