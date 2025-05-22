@@ -21,7 +21,7 @@ const Sidebar: FC = () => {
   const pageName = location.pathname.split('/')[2];
   
   return (
-    <Block>
+    <NavBlock>
       <IconButton onClick={() => navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`)}>
         <Icon active={pageName === 'view'}>
           <HomeIcon fontSize='large' />
@@ -35,7 +35,7 @@ const Sidebar: FC = () => {
         <span>채팅</span>
       </IconButton>
       {
-        isOwner() &&
+        isOwner(url) &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACEMANAGER }))}>
           <Icon>
             <PublicIcon />
@@ -44,7 +44,7 @@ const Sidebar: FC = () => {
         </IconButton>
       }
       {
-        isOwner() &&
+        isOwner(url) &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.JOINREQUEST_MANAGER }))}>
           <Icon>
             <MailIcon />
@@ -53,7 +53,7 @@ const Sidebar: FC = () => {
         </IconButton>
       }
       {
-        !hasMemberPermission() &&
+        !hasMemberPermission(url) &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.JOINREQUEST_SENDER }))}>
           <Icon>
             <MailReadIcon />
@@ -61,13 +61,13 @@ const Sidebar: FC = () => {
           <span>권한 요청</span>
         </IconButton>
       }
-    </Block>
+    </NavBlock>
   );
 };
 
 export default Sidebar;
 
-const Block = styled.nav`
+const NavBlock = styled.nav`
   display: flex;
   flex-direction: column;
   align-items: center;
