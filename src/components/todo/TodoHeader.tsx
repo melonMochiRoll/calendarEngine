@@ -6,7 +6,7 @@ import { openModal } from 'Features/modalSlice';
 import { ModalName } from 'Typings/types';
 
 interface TodoHeader {
-  hasMemberPermission: (url?: string) => boolean;
+  hasMemberPermission: () => boolean;
 };
 
 const TodoHeader: FC<TodoHeader> = ({

@@ -5,16 +5,18 @@ import TodoHeader from 'Components/todo/TodoHeader';
 import useTodos from 'Hooks/useTodos';
 import useUser from 'Hooks/useUser';
 import TodoNull from 'Components/todo/TodoNull';
+import { useParams } from 'react-router-dom';
 
 interface TodoAppProps {};
 
 const TodoContainer: FC<TodoAppProps> = ({}) => {
+  const { url } = useParams();
   const { hasMemberPermission } = useUser();
   const { data: todosData } = useTodos({ suspense: true, throwOnError: true });
   
   return (
     <Block>
-      <TodoHeader hasMemberPermission={hasMemberPermission} />
+      <TodoHeader hasMemberPermission={() => hasMemberPermission(url)} />
       {todosData.length ? <TodoList todosData={todosData} /> : <TodoNull />}
     </Block>
   );
