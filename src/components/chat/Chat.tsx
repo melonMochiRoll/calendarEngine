@@ -7,7 +7,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import useMenu from 'Hooks/useMenu';
-import { defaultToastOption, muiMenuDefaultSx, waitingMessage } from 'Lib/noticeConstants';
+import { defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Constants/notices';
 import { Menu, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import { useParams } from 'react-router-dom';
@@ -28,16 +28,12 @@ const Chat: FC<ChatProps> = ({
   chat,
 }) => {
   const { url } = useParams();
-  const { userData } = useUser();
+  const { data: userData } = useUser({ suspense: false, throwOnError: false });
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ newContent, onChangeNewContent ] = useInput(chat.content);
   dayjs.extend(utc);
   dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
-
-  if (!chat) {
-    return <></>;
-  }
 
   const {
     anchorEl,
@@ -55,6 +51,10 @@ const Chat: FC<ChatProps> = ({
     oldContent: string,
     newContent: string,
   ) => {
+    if (!url) {
+      return;
+    }
+
     updateSharedspaceChat(url, ChatId, oldContent, newContent.trim())
       .catch(() => {
         toast.error(waitingMessage, {
@@ -64,6 +64,10 @@ const Chat: FC<ChatProps> = ({
   };
 
   const onDeleteChat = (url: string | undefined, chatId: number) => {
+    if (!url) {
+      return;
+    }
+
     deleteSharedspaceChat(url, chatId)
       .catch(() => {
         toast.error(waitingMessage, {
@@ -73,20 +77,20 @@ const Chat: FC<ChatProps> = ({
   };
 
   return (
-    <Block hoverMenuId={hoverMenuId}>
-      <Left>
+    <Item hoverMenuId={hoverMenuId}>
+      <ProfileWrapper>
         <ProfileImage
           profileImage={chat.Sender.profileImage}
           email={chat.Sender.email}
           size={'large'} />
-      </Left>
-      <Right>
-        <Top>
+      </ProfileWrapper>
+      <ChatWrapper>
+        <InfoWrapper>
           <ProfileName>{chat.Sender.email}</ProfileName>
           <Timestamp>{dayjs(chat.createdAt).tz(localTimeZone).format('A hh:mm')}</Timestamp>
           {isUpdated && <UpdatedSpan>수정됨</UpdatedSpan>}
-        </Top>
-        <Bottom>
+        </InfoWrapper>
+        <ContentWrapper>
           {isEditMode ?
             <EditContent
               onClose={() => setIsEditMode(false)}
@@ -101,7 +105,7 @@ const Chat: FC<ChatProps> = ({
           }
           <Images>
             {
-              chat.Images.map((image, imageIdx) => {
+              chat.Images.map((image) => {
                 if (chat.Images.length === 1) {
                   return <SingleImage
                     key={image.id}
@@ -110,19 +114,19 @@ const Chat: FC<ChatProps> = ({
 
                 return <MultipleImage
                   key={image.id}
-                  isSender={chat.SenderId === userData.id}
+                  isSender={chat.SenderId === userData?.id}
                   ChatId={chat.id}
                   image={image} />
               })
             }
           </Images>
-        </Bottom>
-      </Right>
-      {chat.SenderId === userData.id &&
+        </ContentWrapper>
+      </ChatWrapper>
+      {chat.SenderId === userData?.id &&
         <HoverMenu id={hoverMenuId}>
-          <Item onClick={onOpen}>
+          <IconWrapper onClick={onOpen}>
             <MoreIcon fontSize='large' />
-          </Item>
+          </IconWrapper>
         </HoverMenu>
       }
       <Menu
@@ -130,15 +134,9 @@ const Chat: FC<ChatProps> = ({
         anchorEl={anchorEl}
         open={open}
         onClick={onClose}
-        anchorOrigin={{
-          vertical: 'center',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'center',
-          horizontal: 'right',
-        }}
-        sx={muiMenuDefaultSx}>
+        anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'center', horizontal: 'right' }}
+        sx={muiMenuDarkModeSx}>
           <MenuItem
             onClick={() => setIsEditMode(true)}
             sx={{ gap: '5px', color: 'var(--gray-3)' }}>
@@ -152,13 +150,13 @@ const Chat: FC<ChatProps> = ({
             <span>메시지 삭제</span>
           </MenuItem>
       </Menu>
-    </Block>
+    </Item>
   );
 };
 
 export default Chat;
 
-const Block = styled.li<{ hoverMenuId?: string }>`
+const Item = styled.li<{ hoverMenuId?: string }>`
   position: relative;
   display: flex;
   padding: 5px 20px;
@@ -173,26 +171,26 @@ const Block = styled.li<{ hoverMenuId?: string }>`
   }
 `;
 
-const Left = styled.div`
+const ProfileWrapper = styled.div`
   display: flex;
   justify-content: center;
 `;
 
-const Right = styled.div`
+const ChatWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   gap: 5px;
 `;
 
-const Top = styled.div`
+const InfoWrapper = styled.div`
   display: flex;
   align-items: flex-end;
   width: 100%;
   gap: 10px;
 `;
 
-const Bottom = styled.div`
+const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 90%;
@@ -237,7 +235,7 @@ const HoverMenu = styled.div`
   padding: 10px;
 `;
 
-const Item = styled.div`
+const IconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
