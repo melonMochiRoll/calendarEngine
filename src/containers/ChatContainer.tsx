@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import useSocket from 'Hooks/useSocket';
+import { useChatSocket } from 'Hooks/useChatSocket';
 import { ChatsCommandList, TChats } from 'Typings/types';
 import useChats from 'Hooks/useChats';
 import { createSharedspaceChat, getSharedspaceChats } from 'Api/sharedspacesApi';
@@ -27,7 +27,7 @@ const ChatContainer: FC = () => {
     onChatUpdated,
     onChatDeleted,
     onChatImageDeleted,
-  } = useSocket();
+  } = useChatSocket();
 
   const scrollbarRef = useRef<HTMLUListElement>(null);
   const [ chat, onChangeChat, setChat ] = useInput('');

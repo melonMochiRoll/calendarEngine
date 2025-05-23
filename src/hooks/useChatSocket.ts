@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { TChatList, TChats } from "Typings/types";
 
-const useSocket = () => {
+export function useChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
   const socketRef = useRef<Socket>();
@@ -101,5 +101,3 @@ const useSocket = () => {
     onChatImageDeleted,
   } as const;
 };
-
-export default useSocket;
