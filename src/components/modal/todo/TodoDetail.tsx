@@ -69,11 +69,10 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
   };
   
   return (
-    <Block
-      onClick={e => e.stopPropagation()}>
+    <Block onClick={e => e.stopPropagation()}>
       <Header>
-        <Left>
-          {hasMemberPermission() &&
+        <MenuWrapper>
+          {hasMemberPermission(url) &&
             <MenuIcon
               onClick={onOpen}
               fontSize='large'
@@ -95,18 +94,18 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
                 <span>삭제</span>
               </MenuItem>
             </Menu>
-        </Left>
-        <Center>
+        </MenuWrapper>
+        <TitleWrapper>
           <ModalTitle>Todo</ModalTitle>
-        </Center>
-        <Right>
+        </TitleWrapper>
+        <CloseButtonWrapper>
           <CloseIcon
             onClick={() => dispatch(closeModal())}
             sx={CloseIconInlineStyle} />
-        </Right>
+        </CloseButtonWrapper>
       </Header>
-      <Main>
-        <DetailDiv>
+      <ContentsWrapper>
+        <Contents>
           <Content>
             <ClockIcon sx={{ color: 'var(--blue)' }}/>
             <ContentSpan>{`${todo?.startTime} ~ ${todo?.endTime}`}</ContentSpan>
@@ -119,11 +118,11 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
             <PencilIcon />
             <ContentSpan>{`${todo?.Author.email}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
           </Content>
-        </DetailDiv>
-        <UpdateAtDiv>
+        </Contents>
+        <UpdatedAtWrapper>
           {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor.email}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
-        </UpdateAtDiv>
-      </Main>
+        </UpdatedAtWrapper>
+      </ContentsWrapper>
     </Block>
   );
 };
@@ -149,13 +148,13 @@ const Header = styled.header`
   border-bottom: 1px solid var(--light-gray);
 `;
 
-const Left = styled.div`
+const MenuWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 15%;
 `;
 
-const Center = styled.div`
+const TitleWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 70%;
@@ -168,13 +167,13 @@ const ModalTitle = styled.h1`
   margin: 0;
 `;
 
-const Right = styled.div`
+const CloseButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 15%;
 `;
 
-const Main = styled.section`
+const ContentsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -184,7 +183,7 @@ const Main = styled.section`
   gap: 50px;
 `;
 
-const DetailDiv = styled.div`
+const Contents = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -193,7 +192,7 @@ const DetailDiv = styled.div`
   gap: 10px;
 `;
 
-const UpdateAtDiv = styled.div`
+const UpdatedAtWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
