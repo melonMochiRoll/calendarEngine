@@ -5,7 +5,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircleRounded';
 import AddPhotoIcon from '@mui/icons-material/AddPhotoAlternate';
 import useMenu from 'Hooks/useMenu';
 import { Menu, MenuItem } from '@mui/material';
-import { muiMenuDefaultSx } from 'Constants/notices';
+import { muiMenuDarkModeSx } from 'Constants/notices';
 
 interface ChatFooterProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -49,7 +49,7 @@ const ChatFooter: FC<ChatFooterProps> = ({
           onClick={onClose}
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          sx={muiMenuDefaultSx}>
+          sx={muiMenuDarkModeSx}>
           <Label htmlFor='image-upload'>
             <MenuItem sx={{ gap: '5px' }}>
               <AddPhotoIcon />

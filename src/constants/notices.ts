@@ -38,7 +38,7 @@ export const defaultToastOption: ToastOptions = {
   transition: Bounce,
 };
 
-export const muiMenuDefaultSx = {
+export const muiMenuDarkModeSx = {
   '.MuiMenu-paper': {
     'backgroundColor': 'var(--black)',
     'color': 'var(--white)',
