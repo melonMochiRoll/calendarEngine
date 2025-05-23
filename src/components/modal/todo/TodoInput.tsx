@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
-import { TODO_MAX_SIZE } from 'Lib/calendarConstants';
+import { TODO_MAX_SIZE } from 'Constants/calendar';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -14,8 +14,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import useUser from 'Hooks/useUser';
 import { createTodo } from 'Api/todosApi';
-import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Lib/queryKeys';
-import { checkContent, defaultToastOption, keepMininumTime, successMessage, waitingMessage } from 'Lib/noticeConstants';
+import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
+import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { getByteSize } from 'Lib/utilFunction';
 import { toast } from 'react-toastify';
 
@@ -29,20 +29,17 @@ const TodoInput: FC = () => {
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
 
-  const { url = '' } = useParams();
-  const { userData } = useUser();
+  const { url } = useParams();
+  const { data: userData } = useUser();
   const { todoTime } = useAppSelector(state => state.todoTime);
 
   const initialTime = { hour: '', minute: '00' };
   const [ startTime, setStartTime ] = useState(initialTime);
   const [ endTime, setEndTime ] = useState(initialTime);
   const [ description, setDescription ] = useState('');
-  const [ error, setError ] = useState({
-    isError: false,
-    message: '',
-  });
+  const [ errorMessage, setErrorMessage ] = useState('');
 
-  const onChangeStartTime = (e: any) => {
+  const onChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 2) return;
 
     if (e.target.name === 'hour') {
@@ -58,7 +55,7 @@ const TodoInput: FC = () => {
     }
   };
 
-  const onChangeEndTime = (e: any) => {
+  const onChangeEndTime = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 2) return;
 
     if (e.target.name === 'hour') {
@@ -74,7 +71,7 @@ const TodoInput: FC = () => {
     }
   };
 
-  const onChangeDescriptionWithMaxSize = (e: any) => {
+  const onChangeDescriptionWithMaxSize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (getByteSize(e.target.value) > TODO_MAX_SIZE) {
       return;
     }
@@ -87,19 +84,14 @@ const TodoInput: FC = () => {
     todoTime: string,
     start: typeof startTime,
     end: typeof endTime,
-    UserId: number,
-    url: string,
+    UserId: number | undefined,
+    url: string | undefined,
   ) => {
-    setError({
-      isError: false,
-      message: '',
-    });
+    setErrorMessage('');
 
-    if (!userData || !url) {
-      return setError({
-        isError: true,
-        message: waitingMessage
-      });
+    if (!url || !UserId) {
+      setErrorMessage(waitingMessage);
+      return;
     }
 
     const trimmedStartTime = Object.values(start).map((value) => value.trim());
@@ -111,10 +103,8 @@ const TodoInput: FC = () => {
       trimmedEndTime.includes('') ||
       !trimmedDescription
     ) {
-      return setError({
-        isError: true,
-        message: checkContent,
-      });
+      setErrorMessage(checkContent);
+      return;
     }
 
     const startTimeFormat = `${trimmedStartTime[0].padStart(2, '0')}:${trimmedStartTime[1].padEnd(2, '0')}:00`;
@@ -127,10 +117,8 @@ const TodoInput: FC = () => {
       !dayjs_endTime.isValid() ||
       dayjs(dayjs_startTime).isSameOrAfter(dayjs_endTime)
     ) {
-      return setError({
-        isError: true,
-        message: checkContent,
-      });
+      setErrorMessage(checkContent);
+      return;
     }
 
     createTodo(
@@ -153,16 +141,12 @@ const TodoInput: FC = () => {
       });
     })
     .catch(() => {
-      setError({
-        isError: true,
-        message: waitingMessage,
-      });
+      setErrorMessage(waitingMessage);
     });
   };
 
   return (
-    <Block
-      onClick={e => e.stopPropagation()}>
+    <Block onClick={e => e.stopPropagation()}>
       <Header>
         <Left></Left>
         <Center>
@@ -171,11 +155,7 @@ const TodoInput: FC = () => {
         <Right>
           <CloseIcon
             onClick={() => dispatch(closeModal())}
-            sx={{
-              color: 'var(--white)',
-              fontSize: '35px',
-              cursor: 'pointer',
-            }} />
+            sx={CloseIconInlineStyle} />
         </Right>
       </Header>
       <Main>
@@ -226,7 +206,7 @@ const TodoInput: FC = () => {
         <SubmitDiv>
           <Left></Left>
           <Center>
-            {error.isError && <ErrorSpan>{error.message}</ErrorSpan>}
+            {errorMessage && <ErrorSpan>{errorMessage}</ErrorSpan>}
           </Center>
           <Right>
             <TextButton
@@ -383,3 +363,9 @@ const ErrorSpan = styled.span`
   font-size: 16px;
   color: var(--red);
 `;
+
+const CloseIconInlineStyle = {
+  color: 'var(--white)',
+  fontSize: '35px',
+  cursor: 'pointer',
+};
