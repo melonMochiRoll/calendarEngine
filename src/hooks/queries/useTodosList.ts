@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getTodosCount } from 'Api/todosApi';
 import { GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
-import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppSelector } from 'Hooks/reduxHooks';
 
@@ -9,53 +8,32 @@ export type TTodosList = {
   [key: string]: number,
 };
 
-type TypeSafeReturnType = {
+type UseTodosListReturnType = {
   data: TTodosList;
 };
 
-type FetchStateReturnType = {
-  data: TTodosList | undefined;
-  isLoading: boolean;
-  error: unknown;
-};
-
-function useTodosList(options: { suspense: true, throwOnError: true }): TypeSafeReturnType;
-function useTodosList(options?: { suspense: boolean, throwOnError: boolean }): FetchStateReturnType;
-
-function useTodosList(options = { suspense: false, throwOnError: false }) {
+export function useTodosList(): UseTodosListReturnType {
   const { url: _url } = useParams();
   const {
     calendarYear,
     calendarMonth,
   } = useAppSelector(state => state.calendarTime);
-  const { suspense, throwOnError } = options;
   
   const {
     data,
     isLoading,
-    refetch,
     error,
   } = useQuery<TTodosList>({
-    queryKey: [GET_TODOS_LIST_KEY],
+    queryKey: [GET_TODOS_LIST_KEY, _url, calendarYear, calendarMonth],
     queryFn: () => getTodosCount(_url, calendarYear, calendarMonth),
     refetchOnWindowFocus: false,
-    suspense,
-    useErrorBoundary: throwOnError,
+    suspense: true,
+    useErrorBoundary: true,
   });
 
-  useEffect(() => {
-    refetch();
-  }, [_url, calendarYear, calendarMonth]);
+  if (isLoading) throw new Promise(() => {});
+  if (error) throw error;
+  if (!data) throw new Error();
 
-  if (suspense) {
-    if (isLoading) throw new Promise(() => {});
-    if (error) throw error;
-    if (!data) throw new Error();
-
-    return { data };
-  }
-
-  return { data, isLoading, error };
+  return { data };
 }
-
-export default useTodosList;
