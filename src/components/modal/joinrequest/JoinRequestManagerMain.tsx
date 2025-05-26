@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import useJoinRequest from 'Hooks/queries/useJoinRequest';
+import { useJoinRequest } from 'Hooks/queries/useJoinRequest';
 import { TJoinRequest } from 'Typings/types';
 import JoinRequestItem from './JoinRequestItem';
 
 const JoinRequestManagerMain: FC = () => {
-  const { data: joinRequestsData } = useJoinRequest({ suspense: true, throwOnError: true });
+  const { data: joinRequestsData } = useJoinRequest();
 
   return (
     <Main>
