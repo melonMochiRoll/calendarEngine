@@ -5,7 +5,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { useAppDispatch } from 'Hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import { clearModal, closeModal } from 'Features/modalSlice';
 import { useQueryClient } from '@tanstack/react-query';
@@ -36,6 +36,10 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   const timeZone = dayjs.tz.guess();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
+  const {
+    calendarYear,
+    calendarMonth,
+  } = useAppSelector(state => state.calendarTime);
 
   const [ start_hour, start_minute ] = todo?.startTime.split(':') || [ '', '00' ];
   const [ end_hour, end_minute ] = todo?.endTime.split(':') || [ '', '00' ];
@@ -159,7 +163,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
         minute: trimmedEndTime[1].padStart(2, '0'),
       });
       setDescription(description);
-      await qc.refetchQueries([GET_TODOS_KEY]);
+      await qc.refetchQueries([GET_TODOS_KEY, url, calendarYear, calendarMonth]);
       await qc.refetchQueries([GET_TODOS_LIST_KEY]);
       dispatch(clearModal());
       toast.success(successMessage, {

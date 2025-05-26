@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { useAppDispatch } from 'Hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import { closeModal, openModal } from 'Features/modalSlice';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import ClockIcon from '@mui/icons-material/AccessTime';
@@ -33,6 +33,11 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
   dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
 
+  const {
+    calendarYear,
+    calendarMonth,
+  } = useAppSelector(state => state.calendarTime);
+
   const { url } = useParams();
   const { data: userData, hasMemberPermission } = useUser({ suspense: false, throwOnError: false });
 
@@ -50,7 +55,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
 
     await deleteTodo(todoId, url);
     dispatch(closeModal());
-    await qc.refetchQueries([GET_TODOS_KEY]);
+    await qc.refetchQueries([GET_TODOS_KEY, url, calendarYear, calendarMonth]);
     await qc.refetchQueries([GET_TODOS_LIST_KEY]);
     toast.success(successMessage, {
       ...defaultToastOption,
