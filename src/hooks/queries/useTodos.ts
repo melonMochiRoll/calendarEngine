@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { useAppSelector } from './reduxHooks';
+import { useAppSelector } from 'Hooks/reduxHooks';
 import { useEffect } from 'react';
 import { TTodo } from 'Typings/types';
 import { getTodosByDate } from 'Api/todosApi';
