@@ -7,7 +7,7 @@ type UseSubscribedspaceReturnType = {
   data: TSubscribedspaces[];
 };
 
-function useSubscribedspace(filter: TSubscribedspacesFilter): UseSubscribedspaceReturnType {
+export function useSubscribedspace(filter: TSubscribedspacesFilter): UseSubscribedspaceReturnType {
   const {
     data,
     isLoading,
@@ -26,5 +26,3 @@ function useSubscribedspace(filter: TSubscribedspacesFilter): UseSubscribedspace
 
   return { data };
 }
-
-export default useSubscribedspace;
