@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useChatSocket } from 'Hooks/useChatSocket';
 import { ChatsCommandList, TChats } from 'Typings/types';
-import useChats from 'Hooks/useChats';
+import useChats from 'Hooks/queries/useChats';
 import { createSharedspaceChat, getSharedspaceChats } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
