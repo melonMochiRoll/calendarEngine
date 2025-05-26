@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import useSharedspace from 'Hooks/useSharedspace';
 import SharedspaceManagerInitPage from './SharedspaceManagerInitPage';
 import SharedspaceManagerResult from './SharedspaceManagerResult';
-import { useSearchUsers } from 'Hooks/useSearchUsers';
+import { useSearchUsers } from 'Hooks/queries/useSearchUsers';
 
 interface SharedspaceManagerMainProps {
   query: string;
