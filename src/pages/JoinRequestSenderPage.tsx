@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import MailIcon from '@mui/icons-material/MarkEmailRead';
 import TextButton from 'Components/common/TextButton';
 import { useNavigate, useParams } from 'react-router-dom';
-import useInput from 'Hooks/useInput';
+import useInput from 'Hooks/utils/useInput';
 import { checkURL, defaultToastOption, successMessage } from 'Constants/notices';
 import { createJoinRequest } from 'Api/joinrequestApi';
 import { toast } from 'react-toastify';

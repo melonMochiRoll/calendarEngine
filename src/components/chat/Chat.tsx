@@ -13,7 +13,7 @@ import DeleteIcon from '@mui/icons-material/DeleteForever';
 import { useParams } from 'react-router-dom';
 import { deleteSharedspaceChat, updateSharedspaceChat } from 'Api/sharedspacesApi';
 import EditIcon from '@mui/icons-material/Edit';
-import useInput from 'Hooks/useInput';
+import useInput from 'Hooks/utils/useInput';
 import EditContent from './EditContent';
 import SingleImage from './SingleImage';
 import MultipleImage from './MultipleImage';

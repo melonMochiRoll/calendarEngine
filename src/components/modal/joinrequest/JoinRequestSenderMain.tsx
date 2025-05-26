@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import useInput from 'Hooks/useInput';
+import useInput from 'Hooks/utils/useInput';
 import TextButton from 'Components/common/TextButton';
 
 interface JoinRequestSenderMainProps {

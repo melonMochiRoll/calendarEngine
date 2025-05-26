@@ -5,7 +5,7 @@ import { ChatsCommandList, TChats } from 'Typings/types';
 import useChats from 'Hooks/useChats';
 import { createSharedspaceChat, getSharedspaceChats } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
-import useInput from 'Hooks/useInput';
+import useInput from 'Hooks/utils/useInput';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Constants/queryKeys';
 import { throttle } from 'lodash';

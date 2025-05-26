@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import useInput from 'Hooks/useInput';
+import useInput from 'Hooks/utils/useInput';
 import useDoubleClick from 'Hooks/utils/useDoubleClick';
 
 interface EditableTitleProps {

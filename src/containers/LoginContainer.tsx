@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import styled from '@emotion/styled';
-import useInput from 'Hooks/useInput';
+import useInput from 'Hooks/utils/useInput';
 import { login } from 'Api/authApi';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from 'Components/auth/LoginForm';
