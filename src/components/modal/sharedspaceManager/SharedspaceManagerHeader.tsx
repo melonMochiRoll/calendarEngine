@@ -10,7 +10,7 @@ interface SharedspaceMangerHeaderProps {
   setQuery: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const SharedspaceMangerHeader: FC<SharedspaceMangerHeaderProps> = ({
+const SharedspaceManagerHeader: FC<SharedspaceMangerHeaderProps> = ({
   query,
   setQuery,
 }) => {
@@ -34,7 +34,7 @@ const SharedspaceMangerHeader: FC<SharedspaceMangerHeaderProps> = ({
   );
 };
 
-export default SharedspaceMangerHeader;
+export default SharedspaceManagerHeader;
 
 const Header = styled.header`
   display: flex;

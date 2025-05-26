@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import SharedspaceManagerMain from './SharedspaceManagerMain';
 import AsyncBoundary from 'Components/AsyncBoundary';
-import SharedspaceMangerHeader from './SharedspaceManagerHeader';
+import SharedspaceManagerHeader from './SharedspaceManagerHeader';
 import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import SharedspaceManagerError from './SharedspaceManagerError';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
@@ -14,7 +14,7 @@ const SharedspaceManagerModal: FC = () => {
   
   return (
     <Block onClick={e => e.stopPropagation()}>
-      <SharedspaceMangerHeader
+      <SharedspaceManagerHeader
         query={query}
         setQuery={setQuery} />
       <AsyncBoundary
