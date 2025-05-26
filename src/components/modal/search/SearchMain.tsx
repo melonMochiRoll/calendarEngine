@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import SearchResult from './SearchResult';
 import SearchInit from './SearchInit';
-import { useSearchTodos } from 'Hooks/useSearchTodos';
+import { useSearchTodos } from 'Hooks/queries/useSearchTodos';
 
 interface SearchMainProps {
   query: string;
