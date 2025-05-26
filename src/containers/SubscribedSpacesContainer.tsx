@@ -1,7 +1,7 @@
 import React, { FC, useDeferredValue, useState } from 'react';
 import styled from '@emotion/styled';
 import useUser from 'Hooks/useUser';
-import useSubscribedspace from 'Hooks/useSubscribedspaces';
+import useSubscribedspace from 'Hooks/queries/useSubscribedspaces';
 import SubscribedSpacesResult from 'Components/subscribedspaces/SubscribedspacesResult';
 import SubscribedSpacesHeader from 'Components/subscribedspaces/SubscribedspacesHeader';
 import SubscribedSpacesNull from 'Components/subscribedspaces/SubscribedSpacesNull';
