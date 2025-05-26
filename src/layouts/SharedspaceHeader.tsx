@@ -13,7 +13,7 @@ import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
 import ProfileImage from 'Components/ProfileImage';
 import { PATHS } from 'Constants/paths';
-import useSharedspace from 'Hooks/useSharedspace';
+import useSharedspace from 'Hooks/queries/useSharedspace';
 
 interface SharedspaceHeaderProps {};
 

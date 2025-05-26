@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import useSharedspace from 'Hooks/useSharedspace';
+import useSharedspace from 'Hooks/queries/useSharedspace';
 import SharedspaceManagerInitPage from './SharedspaceManagerInitPage';
 import SharedspaceManagerResult from './SharedspaceManagerResult';
 import { useSearchUsers } from 'Hooks/queries/useSearchUsers';

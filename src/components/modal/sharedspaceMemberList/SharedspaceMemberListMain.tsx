@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import useSharedspace from 'Hooks/useSharedspace';
+import useSharedspace from 'Hooks/queries/useSharedspace';
 import MemberItem from '../sharedspaceManager/MemberItem';
 
 const SharedspaceMemberListMain: FC = () => {
