@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import TodoList from 'Components/todo/TodoList';
 import TodoHeader from 'Components/todo/TodoHeader';
-import useTodos from 'Hooks/useTodos';
+import useTodos from 'Hooks/queries/useTodos';
 import useUser from 'Hooks/useUser';
 import TodoNull from 'Components/todo/TodoNull';
 import { useParams } from 'react-router-dom';
