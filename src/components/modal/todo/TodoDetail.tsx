@@ -7,7 +7,7 @@ import ClockIcon from '@mui/icons-material/AccessTime';
 import DescriptionIcon from '@mui/icons-material/Description';
 import PencilIcon from '@mui/icons-material/Create';
 import MenuIcon from '@mui/icons-material/MoreHoriz';
-import useMenu from 'Hooks/useMenu';
+import useMenu from 'Hooks/utils/useMenu';
 import { Menu, MenuItem } from '@mui/material';
 import { deleteTodo } from 'Api/todosApi';
 import { useParams } from 'react-router-dom';

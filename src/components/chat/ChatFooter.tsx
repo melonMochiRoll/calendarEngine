@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import SendIcon from '@mui/icons-material/Send';
 import AddCircleIcon from '@mui/icons-material/AddCircleRounded';
 import AddPhotoIcon from '@mui/icons-material/AddPhotoAlternate';
-import useMenu from 'Hooks/useMenu';
+import useMenu from 'Hooks/utils/useMenu';
 import { Menu, MenuItem } from '@mui/material';
 import { muiMenuDarkModeSx } from 'Constants/notices';
 

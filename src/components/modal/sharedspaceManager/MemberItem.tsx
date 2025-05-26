@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import useMenu from 'Hooks/useMenu';
+import useMenu from 'Hooks/utils/useMenu';
 import { Divider, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { MemberOptions, RoleDictionary, SharedspaceMembersRoles, TSharedspaceMembersAndUser, TUser } from 'Typings/types';

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import useMenu from 'Hooks/useMenu';
+import useMenu from 'Hooks/utils/useMenu';
 import { createSharedspace } from 'Api/sharedspacesApi';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';

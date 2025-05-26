@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import ShieldIcon from '@mui/icons-material/VerifiedUser';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useQueryClient } from '@tanstack/react-query';
-import useMenu from 'Hooks/useMenu';
+import useMenu from 'Hooks/utils/useMenu';
 import { updateSharedspacePrivate } from 'Api/sharedspacesApi';
 import { Menu, MenuItem } from '@mui/material';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';

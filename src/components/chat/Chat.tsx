@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
-import useMenu from 'Hooks/useMenu';
+import useMenu from 'Hooks/utils/useMenu';
 import { defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Constants/notices';
 import { Menu, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteForever';

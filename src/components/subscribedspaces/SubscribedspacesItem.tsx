@@ -5,7 +5,7 @@ import UnlockIcon from '@mui/icons-material/LockOpen';
 import { useNavigate } from 'react-router-dom';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Menu, MenuItem } from '@mui/material';
-import useMenu from 'Hooks/useMenu';
+import useMenu from 'Hooks/utils/useMenu';
 import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { TSubscribedspaces } from 'Typings/types';
 import useUser from 'Hooks/useUser';
