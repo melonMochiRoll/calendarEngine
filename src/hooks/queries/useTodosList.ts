@@ -3,7 +3,7 @@ import { getTodosCount } from 'Api/todosApi';
 import { GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAppSelector } from './reduxHooks';
+import { useAppSelector } from 'Hooks/reduxHooks';
 
 export type TTodosList = {
   [key: string]: number,
