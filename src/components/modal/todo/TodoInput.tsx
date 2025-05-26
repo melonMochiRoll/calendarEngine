@@ -138,8 +138,8 @@ const TodoInput: FC = () => {
       setEndTime(initialTime);
       setDescription('');
       dispatch(closeModal());
-      await qc.refetchQueries([GET_TODOS_KEY, url, calendarYear, calendarMonth]);
-      await qc.refetchQueries([GET_TODOS_LIST_KEY]);
+      await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
+      await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
       toast.success(successMessage, {
         ...defaultToastOption,
       });

@@ -40,13 +40,14 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     calendarYear,
     calendarMonth,
   } = useAppSelector(state => state.calendarTime);
+  const { todoTime } = useAppSelector(state => state.todoTime);
 
-  const [ start_hour, start_minute ] = todo?.startTime.split(':') || [ '', '00' ];
-  const [ end_hour, end_minute ] = todo?.endTime.split(':') || [ '', '00' ];
+  const [ start_hour, start_minute ] = todo.startTime.split(':');
+  const [ end_hour, end_minute ] = todo.endTime.split(':');
 
   const [ startTime, setStartTime ] = useState({ hour: start_hour, minute: start_minute });
   const [ endTime, setEndTime ] = useState({ hour: end_hour, minute: end_minute });
-  const [ description, setDescription ] = useState(todo?.description);
+  const [ description, setDescription ] = useState(todo.description);
   const [ error, setError ] = useState({
     isError: false,
     message: '',
@@ -163,8 +164,8 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
         minute: trimmedEndTime[1].padStart(2, '0'),
       });
       setDescription(description);
-      await qc.refetchQueries([GET_TODOS_KEY, url, calendarYear, calendarMonth]);
-      await qc.refetchQueries([GET_TODOS_LIST_KEY]);
+      await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
+      await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
       dispatch(clearModal());
       toast.success(successMessage, {
         ...defaultToastOption,
@@ -247,8 +248,8 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
               type='button'
               onClick={() => {
                 onSubmit(
-                  todo?.id as number,
-                  description as string,
+                  todo.id,
+                  description,
                   startTime,
                   endTime,
                   UserId,

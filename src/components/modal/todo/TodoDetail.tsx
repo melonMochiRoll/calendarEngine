@@ -37,6 +37,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
     calendarYear,
     calendarMonth,
   } = useAppSelector(state => state.calendarTime);
+  const { todoTime } = useAppSelector(state => state.todoTime);
 
   const { url } = useParams();
   const { data: userData, hasMemberPermission } = useUser({ suspense: false, throwOnError: false });
@@ -55,8 +56,8 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
 
     await deleteTodo(todoId, url);
     dispatch(closeModal());
-    await qc.refetchQueries([GET_TODOS_KEY, url, calendarYear, calendarMonth]);
-    await qc.refetchQueries([GET_TODOS_LIST_KEY]);
+    await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
+    await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
     toast.success(successMessage, {
       ...defaultToastOption,
     });
