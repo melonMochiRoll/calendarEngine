@@ -4,7 +4,7 @@ import RenderUserProfile from 'Components/auth/RenderUserProfile';
 import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
-import useUser from 'Hooks/useUser';
+import useUser from 'Hooks/queries/useUser';
 
 const Header: FC = () => {
   const navigate = useNavigate();

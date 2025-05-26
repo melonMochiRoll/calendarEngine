@@ -8,7 +8,7 @@ import { Menu, MenuItem } from '@mui/material';
 import useMenu from 'Hooks/utils/useMenu';
 import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { TSubscribedspaces } from 'Typings/types';
-import useUser from 'Hooks/useUser';
+import useUser from 'Hooks/queries/useUser';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';
 

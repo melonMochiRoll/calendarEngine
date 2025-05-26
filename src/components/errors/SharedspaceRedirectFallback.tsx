@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import useUser from 'Hooks/useUser';
+import useUser from 'Hooks/queries/useUser';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { defaultToastOption, needLogin, privateTooltip, waitingMessage } from 'Constants/notices';

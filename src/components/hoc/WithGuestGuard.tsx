@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import useUser from 'Hooks/useUser';
+import useUser from 'Hooks/queries/useUser';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
 

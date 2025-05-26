@@ -5,7 +5,7 @@ import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ModalName } from 'Typings/types';
 import { updateSharedspaceName } from 'Api/sharedspacesApi';
-import useUser from 'Hooks/useUser';
+import useUser from 'Hooks/queries/useUser';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import EditableTitle from 'Components/common/EditableTitle';

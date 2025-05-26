@@ -12,7 +12,7 @@ import { closeModal } from 'Features/modalSlice';
 import TextButton from 'Components/common/TextButton';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import useUser from 'Hooks/useUser';
+import useUser from 'Hooks/queries/useUser';
 import { createTodo } from 'Api/todosApi';
 import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';

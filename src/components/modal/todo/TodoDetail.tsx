@@ -13,7 +13,7 @@ import { deleteTodo } from 'Api/todosApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
-import useUser from 'Hooks/useUser';
+import useUser from 'Hooks/queries/useUser';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';
 import { formatDateTime } from 'Lib/utilFunction';

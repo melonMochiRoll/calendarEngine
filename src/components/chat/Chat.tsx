@@ -17,7 +17,7 @@ import useInput from 'Hooks/utils/useInput';
 import EditContent from './EditContent';
 import SingleImage from './SingleImage';
 import MultipleImage from './MultipleImage';
-import useUser from 'Hooks/useUser';
+import useUser from 'Hooks/queries/useUser';
 import { toast } from 'react-toastify';
 
 interface ChatProps {

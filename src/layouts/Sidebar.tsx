@@ -9,7 +9,7 @@ import { ModalName } from 'Typings/types';
 import PublicIcon from '@mui/icons-material/Public';
 import MailIcon from '@mui/icons-material/Mail';
 import MailReadIcon from '@mui/icons-material/MarkEmailRead';
-import useUser from 'Hooks/useUser';
+import useUser from 'Hooks/queries/useUser';
 import { PATHS } from 'Constants/paths';
 
 const Sidebar: FC = () => {
