@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import TodoList from 'Components/todo/TodoList';
 import TodoHeader from 'Components/todo/TodoHeader';
-import useTodos from 'Hooks/queries/useTodos';
+import { useTodos } from 'Hooks/queries/useTodos';
 import useUser from 'Hooks/queries/useUser';
 import TodoNull from 'Components/todo/TodoNull';
 import { useParams } from 'react-router-dom';
@@ -12,7 +12,7 @@ interface TodoAppProps {};
 const TodoContainer: FC<TodoAppProps> = ({}) => {
   const { url } = useParams();
   const { hasMemberPermission } = useUser();
-  const { data: todosData } = useTodos({ suspense: true, throwOnError: true });
+  const { data: todosData } = useTodos();
   
   return (
     <Block>
