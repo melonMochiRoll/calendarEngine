@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import DateCover from 'Components/calendar/DateCover';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { setTodoTime } from 'Features/todoTimeSlice';
-import { TTodosList } from 'Hooks/useTodosList';
+import { TTodosList } from 'Hooks/queries/useTodosList';
 
 interface CalendarDatesProps {
   todosListData: TTodosList;
