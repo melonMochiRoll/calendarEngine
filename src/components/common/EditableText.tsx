@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import useDoubleClick from 'Hooks/useDoubleClick';
-import useInput from 'Hooks/useInput';
+import useDoubleClick from 'Hooks/utils/useDoubleClick';
+import useInput from 'Hooks/utils/useInput';
 
 interface EditableTextProps {
   initValue: string,
