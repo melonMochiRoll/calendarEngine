@@ -4,8 +4,10 @@ import { waitingMessage } from "Constants/notices";
 
 export const login = async (email: string, password: string) => {
   try {
-    await axiosInstance
+    const { data } = await axiosInstance
       .post('/api/auth/login', { username: email, password });
+
+    return data;
   } catch (err) {
     if (err instanceof AxiosError) {
       return Promise.reject(err.response?.data?.message);
