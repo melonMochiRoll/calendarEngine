@@ -5,46 +5,41 @@ import SubmitButton from 'Components/common/SubmitButton';
 import { ErrorSpan } from './JoinForm';
 import LongSubmitButton, { ButtonIconName } from 'Components/common/LongSubmitButton';
 import TextButton from 'Components/common/TextButton';
-import { useNavigate } from 'react-router-dom';
-import { loginOAuth2Google, loginOAuth2Naver } from 'Api/authApi';
 import { PATHS } from 'Constants/paths';
-
-type ErrorType = {
-  email: string,
-  password: string,
-};
+import useInput from 'Hooks/utils/useInput';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginFormProps {
-  email: string;
-  password: string;
-  errors: ErrorType;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  onChangeEmail: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (email: string, password: string) => void;
+  onGoogleLogin: () => void;
+  onNaverLogin: () => void;
+  errors: {
+    email: string,
+    password: string,
+  };
 };
 
 const LoginForm: FC<LoginFormProps> = ({
-  email,
-  password,
-  errors,
   onSubmit,
-  onChangeEmail,
-  onChangePassword,
+  onGoogleLogin,
+  onNaverLogin,
+  errors,
 }) => {
   const navigate = useNavigate();
+  const [ email, onChangeEmail ] = useInput('');
+  const [ password, onChangePassword ] = useInput('');
 
-  const onGoogleLogin = () => {
-    loginOAuth2Google()
-      .then((res) => window.open(res, '_self'));
-  };
-
-  const onNaverLogin = () => {
-    loginOAuth2Naver()
-      .then((res) => window.open(res, '_self'));
+  const handleSubmit = (
+    e: React.FormEvent<HTMLFormElement>,
+    email: string,
+    password: string,
+  ) => {
+    e.preventDefault();
+    onSubmit(email.trim(), password.trim());
   };
 
   return (
-    <Form onSubmit={onSubmit}>
+    <Form onSubmit={(e) => handleSubmit(e, email, password)}>
       <Title>로그인</Title>
       <LabelInput
         id='email'
