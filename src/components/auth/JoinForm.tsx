@@ -5,38 +5,38 @@ import SubmitButton from 'Components/common/SubmitButton';
 import LongSubmitButton, { ButtonIconName } from 'Components/common/LongSubmitButton';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
-
-type ErrorType = {
-  email: string,
-  password: string,
-  passwordChk: string, 
-};
+import useInput from 'Hooks/utils/useInput';
 
 interface JoinFormProps {
-  email: string;
-  password: string;
-  passwordChk: string;
-  errors: ErrorType;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  onChangeEmail: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangePassword: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangePasswordChk: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (email: string, password: string, passwordChk: string) => void;
+  errors: {
+    email: string,
+    password: string,
+    passwordChk: string
+  };
 };
 
 const JoinForm: FC<JoinFormProps> = ({
-  email,
-  password,
-  passwordChk,
-  errors,
   onSubmit,
-  onChangeEmail,
-  onChangePassword,
-  onChangePasswordChk,
+  errors,
 }) => {
   const navigate = useNavigate();
+  const [ email, onChangeEmail ] = useInput('');
+  const [ password, onChangePassword ] = useInput('');
+  const [ passwordChk, onChangePasswordChk ] = useInput('');
+
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+    email: string,
+    password: string,
+    passwordChk: string,
+  ) => {
+    e.preventDefault();
+    onSubmit(email.trim(), password.trim(), passwordChk.trim());
+  };
   
   return (
-    <Form onSubmit={onSubmit}>
+    <Form onSubmit={(e) => handleSubmit(e, email, password, passwordChk)}>
       <Title>회원가입</Title>
       <LabelInput
         id='email'
