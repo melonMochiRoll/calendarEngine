@@ -1,3 +1,4 @@
+import axios from 'axios';
 import dayjs from 'dayjs';
 
 export const getOrigin = () => {
@@ -51,3 +52,14 @@ export const formatDate = (date: string) => {
 
   return `${splited[0]}년 ${splited[1]}월 ${splited[2]}일`;
 };
+
+export const handleRetry = (failureCount: number, error: unknown) => {
+  const errorCode = axios.isAxiosError(error) && error?.response?.status || 500;
+  const retryDisableCodes = [ 400, 401, 403, 404 ];
+
+  if (retryDisableCodes.includes(errorCode)) {
+    return false;
+  }
+
+  return failureCount < 3;
+}
