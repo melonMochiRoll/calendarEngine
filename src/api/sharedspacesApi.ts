@@ -11,8 +11,8 @@ export const getSharedspace = async (url: string | undefined) => {
       .get(`/api/sharedspaces/${url}/view`);
 
     return data;
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -22,8 +22,8 @@ export const getSubscribedspaces = async (filter: string) => {
       .get(`/api/sharedspaces/subscribed?filter=${filter}`);
 
     return data;
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -35,8 +35,8 @@ export const createSharedspace = async (UserId: number) => {
       });
 
     return data;
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -49,24 +49,28 @@ export const updateSharedspaceName = async (
       .patch(`api/sharedspaces/${url}/name`, {
         name,
       });
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
 export const updateSharedspaceOwner = async (
-  url: string,
+  url: string | undefined,
   OwnerId: number,
   newOwnerId: number,
 ) => {
+  if (!url) {
+    return;
+  }
+  
   try {
     await axiosInstance
       .patch(`api/sharedspaces/${url}/owner`, {
         OwnerId,
         newOwnerId
       });
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -74,40 +78,48 @@ export const deleteSharedspace = async (url: string) => {
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}`);
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
 export const createSharedspaceMembers = async (
-  url: string,
+  url: string | undefined,
   UserId: number,
   RoleName: TSharedspaceMembersRoles,
 ) => {
+  if (!url) {
+    return;
+  }
+
   try {
     await axiosInstance
       .post(`/api/sharedspaces/${url}/members`, {
         UserId,
         RoleName,
       });
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
 export const updateSharedspaceMembers = async (
-  url: string,
+  url: string | undefined,
   UserId: number,
   RoleName: TSharedspaceMembersRoles,
 ) => {
+  if (!url) {
+    return;
+  }
+
   try {
     await axiosInstance
       .patch(`/api/sharedspaces/${url}/members`, {
         UserId,
         RoleName,
       })
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -120,20 +132,20 @@ export const updateSharedspacePrivate = async (
       .patch(`/api/sharedspaces/${url}/private`, {
         private: Private,
       });
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
 export const deleteSharedspaceMembers = async (
-  url: string,
+  url: string | undefined,
   UserId: number,
 ) => {
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/members/${UserId}`);
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -154,17 +166,15 @@ export const getSharedspaceChats = async (
       });
 
     return data;
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
-export const createSharedspaceChats = async (
+export const createSharedspaceChat = async (
   url: string | undefined,
   formData: FormData,
 ) => {
-  if (!url) return;
-
   try {
     await axiosInstance
       .post(`/api/sharedspaces/${url}/chats`, formData, {
@@ -172,8 +182,8 @@ export const createSharedspaceChats = async (
           'Content-Type': 'multipart/form-data',
         },
       });
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -195,8 +205,8 @@ export const updateSharedspaceChat = async (
       });
 
     return data;
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -211,8 +221,8 @@ export const deleteSharedspaceChat = async (
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/chats/${ChatId}`);
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -228,7 +238,7 @@ export const deleteSharedspaceChatImage = async (
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/chats/${ChatId}/images/${ImageId}`);
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };

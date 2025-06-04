@@ -1,6 +1,4 @@
-import { AxiosError } from "axios";
 import { axiosInstance } from "./axiosInstance";
-import { waitingMessage } from "Constants/notices";
 
 export const login = async (email: string, password: string) => {
   try {
@@ -9,10 +7,7 @@ export const login = async (email: string, password: string) => {
 
     return data;
   } catch (err) {
-    if (err instanceof AxiosError) {
-      return Promise.reject(err.response?.data?.message);
-    }
-    return Promise.reject(waitingMessage);
+    throw err;
   }
 };
 
@@ -21,7 +16,7 @@ export const logout = async () => {
     await axiosInstance
       .post('api/auth/logout');
   } catch (err) {
-    return Promise.reject(err);
+    throw err;
   }
 };
 
@@ -32,7 +27,7 @@ export const loginOAuth2Google = async () => {
 
     return url;
   } catch (err) {
-    return Promise.reject(err);
+    throw err;
   }
 };
 
@@ -43,6 +38,6 @@ export const loginOAuth2Naver = async () => {
 
     return url;
   } catch (err) {
-    return Promise.reject(err);
+    throw err;
   }
 };

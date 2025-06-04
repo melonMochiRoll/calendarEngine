@@ -13,8 +13,8 @@ export const getTodosByDate = async (
       .get(`/api/sharedspaces/${url}/todos?date=${date}`);
 
     return data;
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -32,8 +32,8 @@ export const getTodosCount = async (
       .get(`/api/sharedspaces/${url}/todos/count?date=${year}-${month}`);
       
     return data;
-  } catch (err: any) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -54,9 +54,8 @@ export const createTodo = async (
         endTime,
         AuthorId,
       });
-  } catch (err: any) {
-    console.error(err);
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -77,9 +76,8 @@ export const updateTodo = async (
         endTime,
         EditorId,
       });
-  } catch (err: any) {
-    console.dir(err);
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -90,9 +88,8 @@ export const deleteTodo = async (
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/todos/${todoId}`);
-  } catch (err: any) {
-    console.dir(err);
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -112,8 +109,7 @@ export const searchTodos = async (
     );
     
     return data;
-  } catch (err: any) {
-    console.dir(err);
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };

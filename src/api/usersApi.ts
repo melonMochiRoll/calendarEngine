@@ -6,8 +6,8 @@ export const getUser = async () => {
       .get('/api/users');
     
     return data;
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -26,8 +26,8 @@ export const createUser = async (email: string, password: string) => {
   try {
     await axiosInstance
       .post('/api/users', { email, password });
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -39,7 +39,7 @@ export const searchUsers = async (query: string) => {
       .get(`/api/users/search?query=${query}`);
 
     return data;
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };

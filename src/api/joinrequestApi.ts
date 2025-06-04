@@ -1,6 +1,4 @@
-import { AxiosError } from "axios";
 import { axiosInstance } from "./axiosInstance";
-import { waitingMessage } from "Constants/notices";
 
 export const getJoinRequest = async (
   url: string | undefined,
@@ -14,8 +12,8 @@ export const getJoinRequest = async (
       .get(`api/sharedspaces/${url}/joinrequest`);
 
     return data;
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -28,11 +26,8 @@ export const createJoinRequest = async (
       .post(`api/sharedspaces/${url}/joinrequest`, {
         message,
       });
-  } catch (err) {
-    if (err instanceof AxiosError) {
-      return Promise.reject(err.response?.data?.message);
-    }
-    return Promise.reject(waitingMessage);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -46,8 +41,8 @@ export const resolveJoinRequest = async (
       .post(`api/sharedspaces/${url}/joinrequest/${id}/resolve`, {
         RoleName,
       });
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -58,7 +53,7 @@ export const deleteJoinRequest = async (
   try {
     await axiosInstance
       .delete(`api/sharedspaces/${url}/joinrequest/${id}`);
-  } catch (err) {
-    return Promise.reject(err);
+  } catch (error) {
+    throw error;
   }
 };
