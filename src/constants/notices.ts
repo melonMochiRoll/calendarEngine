@@ -1,5 +1,7 @@
 import { Bounce, ToastOptions } from "react-toastify";
 
+export const incorrectCredentialsMessage = '이메일 혹은 비밀번호를 확인해주세요';
+
 export const privateTooltip = '비공개 스페이스는 멤버로 초대받은 사람만 접근할 수 있습니다.';
 
 export const emptyspaces = '스페이스가 없습니다.';
