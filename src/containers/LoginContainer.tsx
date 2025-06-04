@@ -7,6 +7,7 @@ import { GET_USER_KEY } from 'Constants/queryKeys';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
 import { useLoginValidator } from 'Hooks/utils/useLoginValidator';
+import { incorrectCredentialsMessage, waitingMessage } from 'Constants/notices';
 
 interface LoginContainerProps {};
 
@@ -55,7 +56,11 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
         qc.setQueryData([GET_USER_KEY], user);
         navigate(PATHS.SHAREDSPACE);
       })
-      .catch((errorMessage) => {
+      .catch((error) => {
+        const errorMessage = error?.response?.status === 401 ?
+          incorrectCredentialsMessage :
+          waitingMessage
+
         setErrors({
           email: errorMessage,
           password: '',

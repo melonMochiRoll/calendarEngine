@@ -4,7 +4,7 @@ import MailIcon from '@mui/icons-material/MarkEmailRead';
 import TextButton from 'Components/common/TextButton';
 import { useNavigate, useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
-import { checkURL, defaultToastOption, successMessage } from 'Constants/notices';
+import { alreadyRequest, checkURL, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { createJoinRequest } from 'Api/joinrequestApi';
 import { toast } from 'react-toastify';
 import { PATHS } from 'Constants/paths';
@@ -34,7 +34,11 @@ const JoinRequestSenderPage: FC = () => {
         });
         navigate(PATHS.SHAREDSPACE);
       })
-      .catch((errorMessage) => {
+      .catch((error) => {
+        const errorMessage = error?.response?.status === 409 ?
+          alreadyRequest :
+          waitingMessage;
+        
         setError(errorMessage);
       });
   };

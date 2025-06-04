@@ -10,7 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Constants/queryKeys';
 import { throttle } from 'lodash';
 import { toast } from 'react-toastify';
-import { defaultToastOption, tooManyImagesMessage } from 'Constants/notices';
+import { defaultToastOption, imageTooLargeMessage, tooManyImagesMessage, waitingMessage } from 'Constants/notices';
 import ChatFooter from 'Components/chat/ChatFooter';
 import ChatList from 'Components/chat/ChatList';
 
@@ -136,9 +136,14 @@ const ChatContainer: FC = () => {
       .then(() => {
         scrollbarRef?.current?.scrollTo(0, 0);
       })
-      .catch((errorMessage) => {
+      .catch((error) => {
+        const errorMessage = error?.response?.status === 413 ?
+          imageTooLargeMessage :
+          waitingMessage;
+
         toast.error(errorMessage, {
           ...defaultToastOption,
+          toastId: errorMessage,
         });
       })
       .finally(() => {
