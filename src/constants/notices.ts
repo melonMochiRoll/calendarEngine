@@ -28,6 +28,8 @@ export const tooManyImagesMessage = '이미지는 최대 6개까지 첨부할 �
 
 export const checkURL = 'URL을 확인해주세요';
 
+export const alreadyRequest = '이미 요청을 보냈습니다.';
+
 export const defaultToastOption: ToastOptions = {
   position: 'top-center',
   autoClose: 5000,
