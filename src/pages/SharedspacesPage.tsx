@@ -4,21 +4,16 @@ import Header from 'Layouts/Header';
 import SubscribedSpacesContainer from 'Containers/SubscribedSpacesContainer';
 import WithAuthGuard from 'Components/hoc/WithAuthGuard';
 import AsyncBoundary from 'Components/AsyncBoundary';
-import SkeletonHeader from 'Components/skeleton/SkeletonHeader';
 import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
-import LoadingCircular from 'Components/skeleton/LoadingCircular';
+import SkeletonSharedspacePage from 'Components/SkeletonSharedspacePage';
 
 const SharedspacesPage: FC = () => {
   return (
     <Background>
       <AsyncBoundary
         errorBoundaryFallback={GenericErrorFallback}
-        suspenseFallback={<SkeletonHeader />}>
+        suspenseFallback={<SkeletonSharedspacePage />}>
         <Header />
-      </AsyncBoundary>
-      <AsyncBoundary
-        errorBoundaryFallback={GenericErrorFallback}
-        suspenseFallback={<LoadingCircular />}>
         <SubscribedSpacesContainer />
       </AsyncBoundary>
     </Background>
