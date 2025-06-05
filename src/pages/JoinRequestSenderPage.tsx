@@ -16,18 +16,15 @@ const JoinRequestSenderPage: FC = () => {
   const [ message, onChangeMessage ] = useInput('');
   const [ error, setError ] = useState('');
   
-  const onSubmit = (
-    url: string | undefined,
-    message: string,
-  ) => {
+  const onSubmit = (url: string | undefined, message: string) => {
+    setError('');
+
     if (!url) {
-      return setError(checkURL);
+      setError(checkURL);
+      return;
     }
 
-    createJoinRequest(
-      url,
-      message,
-    )
+    createJoinRequest(url, message)
       .then(() => {
         toast.success(successMessage, {
           ...defaultToastOption,
@@ -65,10 +62,7 @@ const JoinRequestSenderPage: FC = () => {
           <Buttons>
             <TextButton
               type='button'
-              onClick={() => {
-                setError('');
-                onSubmit(url, message);
-              }}>
+              onClick={() => onSubmit(url, message)}>
                 전송
             </TextButton>
             <TextButton
