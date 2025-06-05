@@ -26,7 +26,7 @@ export function useChatSocket() {
   }, [_url]);
 
   const onChatCreated = (data: TChatList) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY], (prev?: TChats) => {
+    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
       if (!prev || !Array.isArray(prev.chats)) {
         return { chats: [ data ], hasMoreData: prev?.hasMoreData || false };
       }
@@ -43,7 +43,7 @@ export function useChatSocket() {
   };
 
   const onChatUpdated = (data: TChatList) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY], (prev?: TChats) => {
+    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
       if (prev) {
         const newChats = [ ...prev.chats ];
         const idx = newChats.findIndex(chat => chat.id === data.id);
@@ -57,7 +57,7 @@ export function useChatSocket() {
   };
 
   const onChatDeleted = (ChatId: number) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY], (prev?: TChats) => {
+    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
       if (prev) {
         const idx = prev.chats.findIndex(chat => chat.id === ChatId);
 
@@ -72,7 +72,7 @@ export function useChatSocket() {
   };
 
   const onChatImageDeleted = (ChatId: number, ImageId: number) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY], (prev?: TChats) => {
+    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
       if (prev) {
         const chatIdx = prev.chats.findIndex(chat => chat.id === ChatId);
         const head = prev.chats.slice(0, chatIdx);
