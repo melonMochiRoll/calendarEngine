@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useChatSocket } from 'Hooks/useChatSocket';
 import { ChatsCommandList, TChats } from 'Typings/types';
-import useChats from 'Hooks/queries/useChats';
+import { useChats } from 'Hooks/queries/useChats';
 import { createSharedspaceChat, getSharedspaceChats } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
@@ -17,8 +17,9 @@ import ChatList from 'Components/chat/ChatList';
 const ChatContainer: FC = () => {
   const { url } = useParams();
   const qc = useQueryClient();
+  const [ offset, setOffset ] = useState(1);
 
-  const { data: chatList, offset, setOffset } = useChats({ suspense: true, throwOnError: true });
+  const { data: chatList } = useChats(offset);
   const {
     socket,
     showNewChat,
@@ -53,7 +54,7 @@ const ChatContainer: FC = () => {
         
     getSharedspaceChats(url, offset + 1)
       .then((res) => {
-        qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY], (prev?: TChats) => {
+        qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, url], (prev?: TChats) => {
           if (prev) {
             return { chats: [ ...prev?.chats, ...res.chats ], hasMoreData: res?.hasMoreData };
           }
@@ -61,7 +62,7 @@ const ChatContainer: FC = () => {
         setOffset(prev => prev + 1);
       })
       .catch(() => {
-        qc.invalidateQueries([GET_SHAREDSPACE_CHATS_KEY]);
+        qc.invalidateQueries([GET_SHAREDSPACE_CHATS_KEY, url]);
       });
   };
 
