@@ -13,7 +13,6 @@ const SharedspacesChatPage = React.lazy(() => import('../pages/SharedspacesChatP
 const JoinRequestSenderPage = React.lazy(() => import('../pages/JoinRequestSenderPage'));
 const NotFoundPage = React.lazy(() => import('../pages/errorPage/NotFoundPage'));
 const InternalServerErrorPage = React.lazy(() => import('../pages/errorPage/InternalServerErrorPage'));
-const ForbiddenPage = React.lazy(() => import('../pages/errorPage/ForbiddenPage'));
 
 const MainRouter = createBrowserRouter([
   {
@@ -37,7 +36,6 @@ const MainRouter = createBrowserRouter([
         ],
       },
       { path: `${PATHS.JOINREQUEST_SENDER}/:url`, element: <JoinRequestSenderPage /> },
-      { path: PATHS.FORBIDDEN, element: <ForbiddenPage /> },
       { path: PATHS.NOTFOUND, element: <NotFoundPage /> },
       { path: PATHS.INTERNAL, element: <InternalServerErrorPage /> },
       { path: '*', element: <NotFoundPage /> }
