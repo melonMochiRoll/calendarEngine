@@ -22,8 +22,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
   onDeleteSharedspace,
 }) => {
   const navigate = useNavigate();
-  const { Sharedspace } = space;
-  const { name, url, private: privateBool, Owner } = Sharedspace;
+  const { name, url, private: privateBool, Owner } = space.Sharedspace;
   const { isOwner } = useUser();
 
   const {
@@ -33,19 +32,19 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
     onClose,
   } = useMenu();
 
-  const onClickMoreMenu = (e: any) => {
+  const onClickMoreMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     onOpen(e);
   };
 
-  const onCloseMoreMenu = (e: any) => {
+  const onCloseMoreMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     onClose();
   };
 
-  const onClickDelete = (e: any, url: string) => {
+  const onClickDelete = (e: React.MouseEvent<HTMLLIElement, MouseEvent>, url: string) => {
     onDeleteSharedspace(url);
-    onCloseMoreMenu(e);
+    onClose();
     toast.success(successMessage, {
       ...defaultToastOption,
     });

@@ -1,29 +1,24 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import useMenu from 'Hooks/utils/useMenu';
-import { createSharedspace } from 'Api/sharedspacesApi';
-import { useNavigate } from 'react-router-dom';
-import { PATHS } from 'Constants/paths';
 import AddIcon from '@mui/icons-material/Add';
 import HelpIcon from '@mui/icons-material/HelpRounded';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Menu, MenuItem, Tooltip } from '@mui/material';
 import { privateTooltip } from 'Constants/notices';
-import { SubscribedspacesSortOptions, TUser } from 'Typings/types';
+import { SubscribedspacesSortOptions } from 'Typings/types';
 
 interface SubscribedSpacesHeaderProps {
-  userData: TUser;
   optionText: string;
-  setOption: React.Dispatch<React.SetStateAction<typeof SubscribedspacesSortOptions[0]>>
+  onCreateSharedspace: () => void;
+  filterSpaces: (option: typeof SubscribedspacesSortOptions[0]) => void;
 };
 
 const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
-  userData,
   optionText,
-  setOption,
+  onCreateSharedspace,
+  filterSpaces,
 }) => {
-  const navigate = useNavigate();
-
   const {
     anchorEl,
     open,
@@ -32,21 +27,15 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
   } = useMenu();
   
   const onMenuClick = (value: typeof SubscribedspacesSortOptions[0]) => {
-    setOption(value);
+    filterSpaces(value);
     onClose();
-  };
-
-  const onCreateSharedspace = async (UserId: number) => {
-    const spaceUrl = await createSharedspace(UserId);
-
-    navigate(`${PATHS.SHAREDSPACE_VIEW}/${spaceUrl}`);
   };
 
   return (
     <Header>
       <TitleWrapper>
         <Title>스페이스 목록</Title>
-        <AddButton onClick={() => onCreateSharedspace(userData.id)}>
+        <AddButton onClick={() => onCreateSharedspace()}>
           <AddIcon fontSize='large' sx={{ color: 'var(--blue)' }}/>
           <span>새 스페이스</span>
         </AddButton>

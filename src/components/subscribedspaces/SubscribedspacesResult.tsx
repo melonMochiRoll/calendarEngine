@@ -2,24 +2,16 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { TSubscribedspaces } from 'Typings/types';
 import SubscribedspacesItem from './SubscribedspacesItem';
-import { deleteSharedspace } from 'Api/sharedspacesApi';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SUBSCRIBED_SPACES_KEY } from 'Constants/queryKeys';
 
 interface SubscribedSpacesResultProps {
   subscribedspaceData: TSubscribedspaces[];
+  onDeleteSharedspace: (url: string) => void;
 };
 
 const SubscribedSpacesResult: FC<SubscribedSpacesResultProps> = ({
   subscribedspaceData,
+  onDeleteSharedspace,
 }) => {
-  const qc = useQueryClient();
-
-  const onDeleteSharedspace = async (url: string) => {
-    await deleteSharedspace(url);
-    await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY]);
-  };
-  
   return (
     <List>
       {
