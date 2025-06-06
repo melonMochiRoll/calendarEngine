@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { TSearchUsers } from "Typings/types";
 import { searchUsers } from "Api/usersApi";
 import { SEARCH_USERS_KEY } from "Constants/queryKeys";
+import { handleRetry } from "Lib/utilFunction";
 
 type UseSearchUsersReturnType = {
   data: TSearchUsers[];
@@ -18,6 +19,7 @@ export function useSearchUsers(query: string): UseSearchUsersReturnType {
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
+    retry: (failureCount, error) => handleRetry([ 401 ], failureCount, error),
   });
 
   if (isLoading) throw new Promise(() => {});

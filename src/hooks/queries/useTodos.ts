@@ -4,6 +4,7 @@ import { useAppSelector } from 'Hooks/reduxHooks';
 import { TTodo } from 'Typings/types';
 import { getTodosByDate } from 'Api/todosApi';
 import { GET_TODOS_KEY } from 'Constants/queryKeys';
+import { handleRetry } from 'Lib/utilFunction';
 
 type UseTodosReturnType = {
   data: TTodo[];
@@ -23,6 +24,7 @@ export function useTodos(): UseTodosReturnType {
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
+    retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
   if (isLoading) throw new Promise(() => {});

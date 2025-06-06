@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSharedspaceChats } from "Api/sharedspacesApi";
 import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
+import { handleRetry } from "Lib/utilFunction";
 import { useParams } from "react-router-dom";
 import { TChats } from "Typings/types";
 
@@ -21,6 +22,7 @@ export function useChats(offset: number): UseChatsReturnType {
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
+    retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
   if (isLoading) throw new Promise(() => {});

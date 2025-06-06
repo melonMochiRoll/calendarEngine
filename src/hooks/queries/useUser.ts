@@ -1,6 +1,7 @@
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from '@tanstack/react-query';
 import { getUser } from 'Api/usersApi';
 import { GET_USER_KEY } from 'Constants/queryKeys';
+import { handleRetry } from 'Lib/utilFunction';
 import { SharedspaceMembersRoles, TSharedspace, TUser } from 'Typings/types';
 
 type TypeSafeReturnType = {
@@ -41,6 +42,7 @@ function useUser(options = { suspense: false, throwOnError: false }) {
     refetchOnWindowFocus: false,
     suspense,
     useErrorBoundary: throwOnError,
+    retry: (failureCount, error) => handleRetry([200], failureCount, error),
   });
 
   const getRoleName = (url: string | undefined) => {

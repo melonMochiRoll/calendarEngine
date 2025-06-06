@@ -4,6 +4,7 @@ import { searchTodos } from "Api/todosApi";
 import { useEffect, useState } from "react";
 import { TSearchTodos } from "Typings/types";
 import { useParams } from "react-router-dom";
+import { handleRetry } from "Lib/utilFunction";
 
 type UseSearchTodosReturnType = {
   data: TSearchTodos[];
@@ -27,6 +28,7 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
+    retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
   useEffect(() => {

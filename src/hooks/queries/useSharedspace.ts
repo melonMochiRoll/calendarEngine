@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSharedspace } from "Api/sharedspacesApi";
 import { GET_SHAREDSPACE_KEY } from "Constants/queryKeys";
+import { handleRetry } from "Lib/utilFunction";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { TSharedspaceMetaData } from "Typings/types";
@@ -33,6 +34,7 @@ function useSharedspace(options = { suspense: false, throwOnError: false }) {
     refetchOnWindowFocus: false,
     suspense,
     useErrorBoundary: throwOnError,
+    retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
   useEffect(() => {

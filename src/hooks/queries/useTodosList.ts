@@ -3,6 +3,7 @@ import { getTodosCount } from 'Api/todosApi';
 import { GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import { useParams } from 'react-router-dom';
 import { useAppSelector } from 'Hooks/reduxHooks';
+import { handleRetry } from 'Lib/utilFunction';
 
 export type TTodosList = {
   [key: string]: number,
@@ -29,6 +30,7 @@ export function useTodosList(): UseTodosListReturnType {
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
+    retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
   if (isLoading) throw new Promise(() => {});
