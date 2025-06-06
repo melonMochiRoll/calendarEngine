@@ -49,7 +49,7 @@ const UserItem: FC<UserItemProps> = ({
     e.stopPropagation();
 
     await createSharedspaceMembers(url, searchUserData.id, option.roleName);
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY]);
+    await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
     onClose();
   };
   

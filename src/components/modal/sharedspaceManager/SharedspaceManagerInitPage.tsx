@@ -43,7 +43,7 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
     setOption(value);
 
     await updateSharedspacePrivate(spaceData?.url, value?.filter);
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY]);
+    await qc.refetchQueries([GET_SHAREDSPACE_KEY, spaceData?.url]);
     onClose();
   };
 

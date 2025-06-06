@@ -65,7 +65,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({ request }) => {
     resolveJoinRequest(url, id, option.roleName)
       .then(async () => {
         await qc.refetchQueries([GET_JOINREQUEST_KEY]);
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY]);
+        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
         toast.success(successMessage, {
           ...defaultToastOption,
         });
@@ -85,7 +85,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({ request }) => {
     deleteJoinRequest(url, id)
       .then(async () => {
         await qc.refetchQueries([GET_JOINREQUEST_KEY]);
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY]);
+        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
         toast.success(successMessage, {
           ...defaultToastOption,
         });

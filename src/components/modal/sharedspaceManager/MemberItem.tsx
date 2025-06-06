@@ -78,7 +78,7 @@ const MemberItem: FC<MemberItemProps> = ({
     }
 
     await updateSharedspaceMembers(url, UserId, option.roleName);
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY]);
+    await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
     onClose();
     toast.success(successMessage, {
       ...defaultToastOption,
@@ -96,7 +96,7 @@ const MemberItem: FC<MemberItemProps> = ({
       await deleteSharedspaceMembers(url, UserId);
     }
 
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY]);
+    await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
     onClose();
     toast.success(successMessage, {
       ...defaultToastOption,
