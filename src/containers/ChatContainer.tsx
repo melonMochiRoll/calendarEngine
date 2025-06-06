@@ -136,6 +136,9 @@ const ChatContainer: FC = () => {
     createSharedspaceChat(url, formData)
       .then(() => {
         scrollbarRef?.current?.scrollTo(0, 0);
+        setChat('');
+        setImages([]);
+        setPreviews([]);
       })
       .catch((error) => {
         const errorMessage = error?.response?.status === 413 ?
@@ -146,11 +149,6 @@ const ChatContainer: FC = () => {
           ...defaultToastOption,
           toastId: errorMessage,
         });
-      })
-      .finally(() => {
-        setChat('');
-        setImages([]);
-        setPreviews([]);
       });
   };
 
