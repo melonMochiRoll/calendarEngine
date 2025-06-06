@@ -19,16 +19,13 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({
   const navigate = useNavigate();
   const qc = useQueryClient();
 
-  const onLogout = useCallback(() => {
+  const onLogout = () => {
     logout()
-      .catch((err) => {
-        console.dir(err);
-      })
-      .finally(() => {
+      .then(() => {
         qc.removeQueries([GET_USER_KEY]);
         navigate(PATHS.LOGIN);
       });
-  }, []);
+  };
   
   return (
     <>
@@ -38,7 +35,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({
             <ProfileImage
               profileImage={userData.profileImage}
               email={userData.email} />
-            <EmailSpan>{userData.email}</EmailSpan>
+            <Email>{userData.email}</Email>
             <TextButton
               onClick={() => onLogout()}
               type={'button'}>
@@ -65,7 +62,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({
 
 export default RenderUserProfile;
 
-const EmailSpan = styled.span`
+const Email = styled.span`
   color: var(--white);
   font-size: 16px;
   font-weight: 500;
