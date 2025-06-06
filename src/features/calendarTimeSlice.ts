@@ -1,22 +1,23 @@
+import { range, pipe, flat, toArray, chunk, fx } from "@fxts/core";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import dayjs, { Dayjs } from "dayjs";
 
 const now = dayjs();
 
 const getDates = (now: Dayjs) => {
-  const result = [];
   const firstDay = now.date(1).day();
   const lastDate = now.daysInMonth();
+  const lastDay = now.date(lastDate).day();
 
-  for (let i=0; i<=firstDay; i++) {
-    result.push(' ');
-  }
-
-  for (let i=1; i<=lastDate; i++) {
-    result.push(i);
-  }
-
-  return result;
+  return pipe(
+    flat([
+      fx(range(1, firstDay + 1)).map(() => 0),
+      range(1, lastDate + 1),
+      fx(range(1, 6 - lastDay + 1)).map(() => 0),
+    ]),
+    chunk(7),
+    toArray
+  );
 };
 
 const initialState = {
