@@ -102,23 +102,24 @@ const ChatContainer: FC = () => {
       return;
     }
 
-    const result = Object.values(e.target.files).map((file) => {
-      const reader = new FileReader();
+    const newImages =
+      Object
+      .values(e.target.files)
+      .map((file) => {
+        const reader = new FileReader();
 
-      reader.onloadend = () => {
-        setPreviews(prev => [ ...prev, reader.result ]);
-      };
+        reader.onloadend = () => {
+          setPreviews(prev => [ ...prev, reader.result ]);
+        };
+        reader.readAsDataURL(file);
 
-      reader.readAsDataURL(file);
+        return file;
+      });
 
-      return file;
-    });
-
-    setImages(prev => [ ...prev, ...result ]);
+    setImages(prev => [ ...prev, ...newImages ]);
   };
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = () => {
     const trimmedChat = chat.trim();
 
     if (!trimmedChat && !images.length) {

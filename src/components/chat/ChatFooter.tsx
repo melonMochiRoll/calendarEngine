@@ -8,7 +8,7 @@ import { Menu, MenuItem } from '@mui/material';
 import { muiMenuDarkModeSx } from 'Constants/notices';
 
 interface ChatFooterProps {
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: () => void;
   chat: string;
   onChangeChat: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeImageFiles: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -27,9 +27,14 @@ const ChatFooter: FC<ChatFooterProps> = ({
     onClose,
   } = useMenu();
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSubmit();
+  };
+
   return (
     <Footer>
-      <Form onSubmit={onSubmit}>
+      <Form onSubmit={handleSubmit}>
         <IconButton
           onClick={onOpen}
           type='button'>
