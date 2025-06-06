@@ -8,9 +8,9 @@ const SkeletonSharedspacePage: FC = () => {
     <Background>
       <NavBlock>
         {
-          Array.from({ length: 4 }, () => 1).map(() => {
+          Array.from({ length: 4 }, (_, i) => i).map((i) => {
             return (
-              <IconButton>
+              <IconButton key={i}>
                 <Icon>
                   <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' variant='circular' width={35} height={35} />
                 </Icon>
@@ -25,9 +25,9 @@ const SkeletonSharedspacePage: FC = () => {
         <ContentWrapper>
           <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={280} height={100} />
           {
-            Array.from({ length: 4 }, () => 1).map(() => {
+            Array.from({ length: 4 }, (_, i) => i).map((i) => {
               return (
-                <Skeleton sx={{ bgcolor: 'grey.800', margin: 0, padding: 0 }} animation='wave' width={1000} height={150} />
+                <Skeleton key={i} sx={{ bgcolor: 'grey.800', margin: 0, padding: 0 }} animation='wave' width={1000} height={150} />
               );
             })
           }
