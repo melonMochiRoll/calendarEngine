@@ -51,9 +51,9 @@ const ChatList: FC<ChatListProps> = ({
           deleteFile={deleteFile} />}
       {chatList.chats.length ?
         chatList.chats.map((chat: TChatList, idx: number) => {
-          const hasDateSeparator =
-            (idx >= chatList.chats.length - 1 && !chatList.hasMoreData) ||
-            (idx < chatList.chats.length - 1 && dayjs(chat.createdAt).tz(localTimeZone).format('DD') !== dayjs(chatList.chats[idx + 1].createdAt).tz(localTimeZone).format('DD'));
+          const isLastChat = idx >= chatList.chats.length - 1 && !chatList.hasMoreData;
+          const isDateBoundary = idx < chatList.chats.length - 1 && (dayjs(chat.createdAt).tz(localTimeZone).format('DD') !== dayjs(chatList.chats[idx + 1].createdAt).tz(localTimeZone).format('DD'));
+          const hasDateSeparator = isLastChat || isDateBoundary;
 
           if (hasDateSeparator) {
             return (
@@ -69,7 +69,8 @@ const ChatList: FC<ChatListProps> = ({
           return <Chat
             key={chat.id}
             chat={chat} />;
-        }) :
+        })
+        :
         <FirstChatNotice>첫 메시지를 전송해보세요</FirstChatNotice>}
     </List>
   );
