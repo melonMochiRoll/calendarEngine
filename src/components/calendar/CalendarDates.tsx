@@ -9,7 +9,7 @@ interface CalendarDatesProps {
   todosListData: TTodosList;
   calendarYear: string;
   calendarMonth: string;
-  dates: Array<string | number>;
+  dates: number[][];
   nowDate: string;
   isNowYearAndMonth: boolean;
 };
@@ -26,30 +26,27 @@ const CalendarDates: FC<CalendarDatesProps> = ({
 
   return (
     <Tbody>
-      {dates.map((date: number|string, i: number) => {
-        if (i % 7 === 0) {
-          return (
-            <tr key={i}>
-              {[1, 2, 3, 4, 5, 6, 7].map((n, idx) => {
-                const date = dates[i + n];
-                const isBlank = !date || typeof date === 'string';
-                const timeKey = `${calendarYear}-${calendarMonth}-${String(date).padStart(2, '0')}`;
+      {dates.map((week: number[], weekIndex: number) => 
+        <tr key={`week-${weekIndex}`}>
+          {
+            week.map((date, dateIndex) => {
+              const timeKey = `${calendarYear}-${calendarMonth}-${String(date).padStart(2, '0')}`;
 
-                return isBlank ?
-                  <td key={i + n} /> :
-                  <DateCover
-                    key={i + n}
-                    index={idx}
-                    setTodoTime={() => dispatch(setTodoTime(timeKey))}
-                    todosLength={todosListData[timeKey] || 0}
-                    date={date}
-                    nowDate={nowDate}
-                    isNowYearAndMonth={isNowYearAndMonth} />;
-              })}
-            </tr>
-          )
-        }
-      })}
+              return date ?
+                <DateCover
+                  key={`date-${dateIndex}`}
+                  index={dateIndex}
+                  setTodoTime={() => dispatch(setTodoTime(timeKey))}
+                  todosLength={todosListData[timeKey] || 0}
+                  date={date}
+                  nowDate={nowDate}
+                  isNowYearAndMonth={isNowYearAndMonth} />
+                :
+                <td key={`date-${dateIndex}`} />;
+            })
+          }
+        </tr>
+      )}
     </Tbody>
   );
 };
