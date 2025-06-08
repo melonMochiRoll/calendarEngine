@@ -4,13 +4,9 @@ import useMenu from 'Hooks/utils/useMenu';
 import { Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { RoleDictionary, SharedspaceMembersRoles, TSearchUsers, TSharedspaceMetaData } from 'Typings/types';
-import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
-import { useQueryClient } from '@tanstack/react-query';
-import { createSharedspaceMembers } from 'Api/sharedspacesApi';
-import { useParams } from 'react-router-dom';
 import ProfileImage from 'Components/ProfileImage';
 
-const createRoleOption = [
+const createMemeberOption = [
   {
     text: RoleDictionary.MEMBER,
     roleName: SharedspaceMembersRoles.MEMBER,
@@ -24,15 +20,14 @@ const createRoleOption = [
 interface UserItemProps {
   spaceData: TSharedspaceMetaData,
   searchUserData: TSearchUsers,
+  onCreateMember: (UserId: number, RoleName: string) => void;
 };
 
 const UserItem: FC<UserItemProps> = ({
   spaceData,
   searchUserData,
+  onCreateMember,
 }) => {
-  const qc = useQueryClient();
-  const { url } = useParams();
-
   const {
     anchorEl,
     open,
@@ -43,14 +38,6 @@ const UserItem: FC<UserItemProps> = ({
   const onOpenWithEvent = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     onOpen(e);
-  };
-
-  const onCreateRoleMenuClick = async (e: React.MouseEvent<HTMLLIElement>, option: typeof createRoleOption[0]) => {
-    e.stopPropagation();
-
-    await createSharedspaceMembers(url, searchUserData.id, option.roleName);
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-    onClose();
   };
   
   return (
@@ -79,11 +66,15 @@ const UserItem: FC<UserItemProps> = ({
         onClick={onClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        {createRoleOption.map((option: typeof createRoleOption[0], idx: number) => {
+        {createMemeberOption.map((option: typeof createMemeberOption[0]) => {
           return (
             <MenuItem
               key={option.text}
-              onClick={(e) => onCreateRoleMenuClick(e, createRoleOption[idx])}>
+              onClick={(e) => {
+                e.stopPropagation();
+                onCreateMember(searchUserData.id, option.roleName);
+                onClose();
+              }}>
               <span>{option.text}</span>
             </MenuItem>
           );

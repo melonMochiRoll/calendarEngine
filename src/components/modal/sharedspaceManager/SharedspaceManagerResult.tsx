@@ -8,12 +8,14 @@ interface SharedspaceManagerResultProps {
   query: string;
   spaceData: TSharedspaceMetaData;
   searchUsersData: TSearchUsers[];
+  onCreateMember: (UserId: number, RoleName: string) => void;
 };
 
 const SharedspaceManagerResult: FC<SharedspaceManagerResultProps> = ({
   query,
   spaceData,
   searchUsersData,
+  onCreateMember,
 }) => {
   return (
     <Block>
@@ -24,7 +26,8 @@ const SharedspaceManagerResult: FC<SharedspaceManagerResultProps> = ({
               <UserItem
                 key={data.email}
                 spaceData={spaceData}
-                searchUserData={data} />
+                searchUserData={data}
+                onCreateMember={onCreateMember} />
             );
           })}
         </UserList> :
