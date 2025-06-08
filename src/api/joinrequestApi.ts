@@ -32,10 +32,12 @@ export const createJoinRequest = async (
 };
 
 export const resolveJoinRequest = async (
-  url: string,
+  url: string | undefined,
   id: number,
   RoleName: string,
 ) => {
+  if (!url) return;
+
   try {
     await axiosInstance
       .post(`api/sharedspaces/${url}/joinrequest/${id}/resolve`, {
@@ -46,10 +48,12 @@ export const resolveJoinRequest = async (
   }
 };
 
-export const deleteJoinRequest = async (
-  url: string,
+export const rejectJoinRequest = async (
+  url: string | undefined,
   id: number,
 ) => {
+  if (!url) return;
+
   try {
     await axiosInstance
       .delete(`api/sharedspaces/${url}/joinrequest/${id}`);
