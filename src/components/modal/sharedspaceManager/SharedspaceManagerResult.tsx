@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { TSearchUsers, TSharedspaceMetaData } from 'Typings/types';
+import { TSearchUsers, TSharedspaceMembersRoles, TSharedspaceMetaData } from 'Typings/types';
 import UserItem from './UserItem';
 import SharedspaceManagerError from './SharedspaceManagerError';
 
@@ -8,7 +8,7 @@ interface SharedspaceManagerResultProps {
   query: string;
   spaceData: TSharedspaceMetaData;
   searchUsersData: TSearchUsers[];
-  onCreateMember: (UserId: number, RoleName: string) => void;
+  onCreateMember: (UserId: number, RoleName: TSharedspaceMembersRoles) => void;
 };
 
 const SharedspaceManagerResult: FC<SharedspaceManagerResultProps> = ({

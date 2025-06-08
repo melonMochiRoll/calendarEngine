@@ -2,36 +2,27 @@ import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import ShieldIcon from '@mui/icons-material/VerifiedUser';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { useQueryClient } from '@tanstack/react-query';
 import useMenu from 'Hooks/utils/useMenu';
-import { updateSharedspacePrivate } from 'Api/sharedspacesApi';
 import { Menu, MenuItem } from '@mui/material';
-import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
-import { TSharedspaceMetaData } from 'Typings/types';
+import { TSharedspaceMembersRoles, TSharedspaceMetaData } from 'Typings/types';
 import PeopleIcon from '@mui/icons-material/PeopleAltRounded';
 import MemberItem from './MemberItem';
 
-const privateOption = [
-  {
-    text: '권한이 있는 유저',
-    filter: true,
-  },
-  {
-    text: '모든 유저',
-    filter: false,
-  },
-];
-
 interface SharedspaceManagerInitPageProps {
-  spaceData: TSharedspaceMetaData,
+  spaceData: TSharedspaceMetaData;
+  onUpdateSharedspacePrivate: (Private: boolean) => void;
+  onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => void;
+  onUpdateOwner: (OwnerId: number, targetUserId: number) => void;
+  onDeleteMember: (UserId: number) => void;
 };
 
 const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
   spaceData,
+  onUpdateMemberRole,
+  onUpdateSharedspacePrivate,
+  onUpdateOwner,
+  onDeleteMember,
 }) => {
-  const qc = useQueryClient();
-  const [ option, setOption ] = useState<{ text: string, filter: boolean }>(spaceData?.private ? privateOption[0] : privateOption[1]);
-
   const {
     anchorEl,
     open,
@@ -39,12 +30,8 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
     onClose,
   } = useMenu();
 
-  const onMenuClick = async (value: { text: string, filter: boolean }) => {
-    setOption(value);
-
-    await updateSharedspacePrivate(spaceData?.url, value?.filter);
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY, spaceData?.url]);
-    onClose();
+  const renderPrivateText = (status: boolean) => {
+    return status ? '권한이 있는 유저' : '모든 유저';
   };
 
   return (
@@ -54,16 +41,19 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
           <PeopleIcon fontSize='large' sx={{ marginRight: '15px' }}/>
           <Title>권한이 있는 유저</Title>
         </Top>
-        <MembersUl>
+        <MemberList>
           {spaceData.Sharedspacemembers.map((user) => {
             return (
               <MemberItem
                 key={user.UserId}
                 OwnerData={spaceData.Owner}
-                SharedspaceMembersAndUser={user} />
+                SharedspaceMembersAndUser={user}
+                onUpdateMemberRole={onUpdateMemberRole}
+                onUpdateOwner={onUpdateOwner}
+                onDeleteMember={onDeleteMember} />
             );
           })}
-        </MembersUl>
+        </MemberList>
       </MemberDiv>
       <PrivateDiv>
         <Top>
@@ -74,7 +64,7 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
           <Span>이 스페이스를</Span>
           <PrivateSwitch
             onClick={onOpen}>
-            {option.text}
+            {renderPrivateText(spaceData?.private)}
             <ArrowDropDownIcon fontSize='large' />
           </PrivateSwitch>
           <Menu
@@ -82,29 +72,19 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
             anchorEl={anchorEl}
             open={open}
             onClick={onClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
             sx={{ marginTop: '10px' }}>
             {
-              privateOption.map((option, idx) => {
-                return (
-                  <MenuItem
-                    key={option.text}
-                    onClick={() => onMenuClick(privateOption[idx])}
-                    sx={{
-                      fontSize: '20px',
-                      fontWeight: '500',
-                    }}>
-                    <span>{option.text}</span>
-                  </MenuItem>
-                );
-              })
+              <MenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUpdateSharedspacePrivate(!spaceData?.private);
+                  onClose();
+                }}
+                sx={{ fontSize: '20px', fontWeight: '500' }}>
+                <span>{renderPrivateText(!spaceData?.private)}</span>
+              </MenuItem>
             }
           </Menu>
           <Span>가 접근하도록 합니다.</Span>
@@ -143,7 +123,7 @@ const PrivateDiv = styled.div`
   height: 40%;
 `;
 
-const MembersUl = styled.ul`
+const MemberList = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import useMenu from 'Hooks/utils/useMenu';
 import { Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { RoleDictionary, SharedspaceMembersRoles, TSearchUsers, TSharedspaceMetaData } from 'Typings/types';
+import { RoleDictionary, SharedspaceMembersRoles, TSearchUsers, TSharedspaceMembersRoles, TSharedspaceMetaData } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
 
 const createMemeberOption = [
@@ -20,7 +20,7 @@ const createMemeberOption = [
 interface UserItemProps {
   spaceData: TSharedspaceMetaData,
   searchUserData: TSearchUsers,
-  onCreateMember: (UserId: number, RoleName: string) => void;
+  onCreateMember: (UserId: number, RoleName: TSharedspaceMembersRoles) => void;
 };
 
 const UserItem: FC<UserItemProps> = ({

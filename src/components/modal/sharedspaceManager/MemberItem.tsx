@@ -3,50 +3,25 @@ import styled from '@emotion/styled';
 import useMenu from 'Hooks/utils/useMenu';
 import { Divider, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { MemberOptions, RoleDictionary, SharedspaceMembersRoles, TSharedspaceMembersAndUser, TUser } from 'Typings/types';
-import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
-import { useParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
-import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Constants/notices';
+import { RoleDictionary, SharedspaceMembersRoles, TSharedspaceMembersAndUser, TSharedspaceMembersRoles, TUser } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
-
-const updateRoleOption = [
-  {
-    text: RoleDictionary.MEMBER,
-    roleName: SharedspaceMembersRoles.MEMBER,
-    method: MemberOptions.UPDATE_MEMBER,
-  },
-  {
-    text: RoleDictionary.VIEWER,
-    roleName: SharedspaceMembersRoles.VIEWER,
-    method: MemberOptions.UPDATE_MEMBER,
-  },
-];
-
-const accessOption = [
-  {
-    text: `${RoleDictionary.OWNER} 변경`,
-    method: MemberOptions.UPDATE_OWNER,
-  },
-  {
-    text: '권한 삭제',
-    method: MemberOptions.DELETE_MEMBER,
-  },
-];
+import { renderRole } from 'Lib/utilFunction';
 
 interface MemberItemProps {
   OwnerData: Pick<TUser, 'id' | 'email'>;
   SharedspaceMembersAndUser: TSharedspaceMembersAndUser;
+  onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => void;
+  onUpdateOwner: (OwnerId: number, targetUserId: number) => void;
+  onDeleteMember: (UserId: number) => void;
 };
 
 const MemberItem: FC<MemberItemProps> = ({
   OwnerData,
   SharedspaceMembersAndUser,
+  onUpdateMemberRole,
+  onUpdateOwner,
+  onDeleteMember,
 }) => {
-  const qc = useQueryClient();
-  const { url } = useParams();
   const { Role, UserId, User } = SharedspaceMembersAndUser;
 
   const {
@@ -61,47 +36,27 @@ const MemberItem: FC<MemberItemProps> = ({
     onOpen(e);
   };
 
-  const renderRole = (roleName: string) => {
-    const result = Object
-      .entries(RoleDictionary)
-      .find((ele) => ele[0] === roleName.toUpperCase());
+  const updateRoleOptions = [
+    {
+      text: RoleDictionary.MEMBER,
+      roleName: SharedspaceMembersRoles.MEMBER,
+    },
+    {
+      text: RoleDictionary.VIEWER,
+      roleName: SharedspaceMembersRoles.VIEWER,
+    },
+  ];
 
-    return result ? result[1] : '';
-  };
-
-  const onRolesUpdateMenuClick = async (e: any, option: typeof updateRoleOption[0]) => {
-    e.stopPropagation();
-
-    if (Role.name === option.roleName) {
-      onClose();
-      return;
+  const accessOption = [
+    {
+      text: `${RoleDictionary.OWNER} 변경`,
+      action: () => onUpdateOwner(OwnerData.id, UserId),
+    },
+    {
+      text: '권한 삭제',
+      action: () => onDeleteMember(UserId),
     }
-
-    await updateSharedspaceMembers(url, UserId, option.roleName);
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-    onClose();
-    toast.success(successMessage, {
-      ...defaultToastOption,
-    });
-  };
-
-  const onAccessMenuClick = async (e: any, option: typeof accessOption[0]) => {
-    e.stopPropagation();
-
-    if (option.method === MemberOptions.UPDATE_OWNER) {
-      await updateSharedspaceOwner(url, OwnerData.id, UserId);
-    }
-
-    if (option.method === MemberOptions.DELETE_MEMBER) {
-      await deleteSharedspaceMembers(url, UserId);
-    }
-
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-    onClose();
-    toast.success(successMessage, {
-      ...defaultToastOption,
-    });
-  };
+  ];
   
   return (
     <Item>
@@ -132,14 +87,20 @@ const MemberItem: FC<MemberItemProps> = ({
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
         {
-          updateRoleOption.map((option: typeof updateRoleOption[0], idx: number) => {
-            return (
-              <MenuItem
-                key={option.text}
-                onClick={(e) => onRolesUpdateMenuClick(e, updateRoleOption[idx])}>
-                <span>{option.text}</span>
-              </MenuItem>
-            );
+          updateRoleOptions.map((option: typeof updateRoleOptions[0]) => {
+            if (Role.name !== option.roleName) {
+              return (
+                <MenuItem
+                  key={option.text}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onUpdateMemberRole(UserId, option.roleName);
+                    onClose();
+                  }}>
+                  <span>{option.text}</span>
+                </MenuItem>
+              );
+            }
           })
         }
         <Divider />
@@ -148,7 +109,11 @@ const MemberItem: FC<MemberItemProps> = ({
             return (
               <MenuItem
                 key={option.text}
-                onClick={(e) => onAccessMenuClick(e, accessOption[idx])}>
+                onClick={(e) => {
+                  e.stopPropagation();
+                  option.action();
+                  onClose();
+                }}>
                 <span>{option.text}</span>
               </MenuItem>
             );
