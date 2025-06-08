@@ -9,8 +9,7 @@ import SharedspaceManagerError from '../sharedspaceManager/SharedspaceManagerErr
 
 const JoinRequestManagerModal: FC = () => { 
   return (
-    <Block
-      onClick={e => e.stopPropagation()}>
+    <Block onClick={e => e.stopPropagation()}>
       <JoinRequestManagerHeader />
       <AsyncBoundary
         errorBoundaryFallback={GenericErrorFallback}
