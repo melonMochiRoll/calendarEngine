@@ -3,9 +3,44 @@ import styled from '@emotion/styled';
 import { useJoinRequest } from 'Hooks/queries/useJoinRequest';
 import { TJoinRequest } from 'Typings/types';
 import JoinRequestItem from './JoinRequestItem';
+import { GET_JOINREQUEST_KEY, GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
+import { rejectJoinRequest, resolveJoinRequest } from 'Api/joinrequestApi';
+import { toast } from 'react-toastify';
+import { defaultToastOption, successMessage } from 'Constants/notices';
+import { useQueryClient } from '@tanstack/react-query';
 
 const JoinRequestManagerMain: FC = () => {
+  const qc = useQueryClient();
   const { data: joinRequestsData } = useJoinRequest();
+
+  const onResolveMenuClick = (
+    url: string | undefined,
+    id: number,
+    roleName: string,
+  ) => {
+    resolveJoinRequest(url, id, roleName)
+      .then(async () => {
+        await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
+        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+        toast.success(successMessage, {
+          ...defaultToastOption,
+        });
+      });
+  };
+
+  const onRejectMenuClick = (
+    url: string | undefined,
+    id: number,
+  ) => {
+    rejectJoinRequest(url, id)
+      .then(async () => {
+        await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
+        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+        toast.success(successMessage, {
+          ...defaultToastOption,
+        });
+      });
+  };
 
   return (
     <Main>
@@ -14,7 +49,9 @@ const JoinRequestManagerMain: FC = () => {
           return (
             <JoinRequestItem
               key={request.id}
-              request={request}/>
+              request={request}
+              onResolveMenuClick={onResolveMenuClick}
+              onRejectMenuClick={onRejectMenuClick} />
           );
         })}
       </List>

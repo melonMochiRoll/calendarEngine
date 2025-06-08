@@ -5,16 +5,11 @@ import { Divider, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { ModalName, RoleDictionary, SharedspaceMembersRoles, TJoinRequest } from 'Typings/types';
 import { useParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_JOINREQUEST_KEY, GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
-import { deleteJoinRequest, resolveJoinRequest } from 'Api/joinrequestApi';
-import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Constants/notices';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import ProfileImage from 'Components/ProfileImage';
 import { openModal } from 'Features/modalSlice';
 
-const updateRoleOption = [
+const resolveMenuOption = [
   {
     text: RoleDictionary.MEMBER,
     roleName: SharedspaceMembersRoles.MEMBER,
@@ -25,18 +20,17 @@ const updateRoleOption = [
   },
 ];
 
-const accessOption = [
-  {
-    text: '거절',
-  }
-];
-
 interface JoinRequestItemProps {
-  request: TJoinRequest,
+  request: TJoinRequest;
+  onResolveMenuClick: (url: string | undefined, id: number, roleName: string) => void;
+  onRejectMenuClick: (url: string | undefined, id: number) => void;
 };
 
-const JoinRequestItem: FC<JoinRequestItemProps> = ({ request }) => {
-  const qc = useQueryClient();
+const JoinRequestItem: FC<JoinRequestItemProps> = ({
+  request,
+  onResolveMenuClick,
+  onRejectMenuClick,
+}) => {
   const dispatch = useAppDispatch();
   const { url } = useParams();
   const { id, message, Requestor } = request;
@@ -51,47 +45,6 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({ request }) => {
   const onOpenWithEvent = (e: any) => {
     e.stopPropagation();
     onOpen(e);
-  };
-
-  const onRolesUpdateMenuClick = (
-    url: string | undefined,
-    id: number,
-    option: typeof updateRoleOption[0],
-  ) => {
-    if (!url) {
-      return;
-    }
-
-    resolveJoinRequest(url, id, option.roleName)
-      .then(async () => {
-        await qc.refetchQueries([GET_JOINREQUEST_KEY]);
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      });
-    
-    onClose();
-  };
-
-  const onDeleteMenuClick = (
-    url: string | undefined,
-    id: number,
-  ) => {
-    if (!url) {
-      return;
-    }
-    
-    deleteJoinRequest(url, id)
-      .then(async () => {
-        await qc.refetchQueries([GET_JOINREQUEST_KEY]);
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      });
-
-    onClose();
   };
 
   const openJoinRequestDetail = (request: TJoinRequest) => {
@@ -124,13 +77,14 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({ request }) => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
         {
-          updateRoleOption.map((option: typeof updateRoleOption[0], idx: number) => {
+          resolveMenuOption.map((option: typeof resolveMenuOption[0]) => {
             return (
               <MenuItem
                 key={option.text}
                 onClick={(e) => {
                   e.stopPropagation();
-                  onRolesUpdateMenuClick(url, id, updateRoleOption[idx]);
+                  onResolveMenuClick(url, id, option.roleName);
+                  onClose();
                 }}>
                 <span>{option.text}</span>
               </MenuItem>
@@ -138,18 +92,14 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({ request }) => {
           })
         }
         <Divider />
-        {accessOption.map((option: typeof accessOption[0]) => {
-            return (
-              <MenuItem
-                key={option.text}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteMenuClick(url, id);
-                }}>
-                <span>{option.text}</span>
-              </MenuItem>
-            );
-        })}
+          <MenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              onRejectMenuClick(url, id);
+              onClose();
+            }}>
+            <span>거절</span>
+          </MenuItem>
       </Menu>
     </Item>
   );
