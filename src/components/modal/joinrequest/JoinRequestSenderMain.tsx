@@ -4,15 +4,13 @@ import useInput from 'Hooks/utils/useInput';
 import TextButton from 'Components/common/TextButton';
 
 interface JoinRequestSenderMainProps {
-  onSubmit: (message: string ) => void;
+  onSubmit: (message: string) => void;
   error: string;
-  setError: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const JoinRequestSenderMain: FC<JoinRequestSenderMainProps> = ({
   onSubmit,
   error,
-  setError,
 }) => {
   const [ message, onChangeMessage ] = useInput('');
 
@@ -24,19 +22,18 @@ const JoinRequestSenderMain: FC<JoinRequestSenderMainProps> = ({
           onChange={onChangeMessage}
           placeholder='메세지' />
       </Main>
-      <Bottom>
+      <Footer>
         <ErrorSpan>{error}</ErrorSpan>
         <Buttons>
           <TextButton
             type='button'
             onClick={() => {
-              setError('');
               onSubmit(message);
             }}>
               전송
           </TextButton>
         </Buttons>
-      </Bottom>
+      </Footer>
     </>
   );
 };
@@ -64,7 +61,7 @@ const TextField = styled.textarea`
   background-color: var(--black);
 `;
 
-const Bottom = styled.div`
+const Footer = styled.footer`
   display: flex;
   justify-content: space-between;
   align-items: center;

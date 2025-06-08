@@ -10,13 +10,16 @@ import JoinRequestSenderMain from './JoinRequestSenderMain';
 import { useParams } from 'react-router-dom';
 
 const JoinRequestSenderModal: FC = () => {
-  const { url = '' } = useParams();
+  const { url } = useParams();
   const dispatch = useAppDispatch();
   const [ error, setError ] = useState('');
   
   const onSubmit = (message: string) => {
+    setError('');
+
     if (!url) {
-      return setError(checkURL);
+      setError(checkURL);
+      return;
     }
 
     createJoinRequest(url, message)
@@ -40,8 +43,7 @@ const JoinRequestSenderModal: FC = () => {
       <JoinRequestSenderHeader />
       <JoinRequestSenderMain
         onSubmit={onSubmit}
-        error={error}
-        setError={setError} />
+        error={error} />
     </Block>
   );
 };
