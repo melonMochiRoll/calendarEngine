@@ -86,7 +86,7 @@ export const deleteSharedspace = async (url: string) => {
 export const createSharedspaceMembers = async (
   url: string | undefined,
   UserId: number,
-  RoleName: TSharedspaceMembersRoles,
+  RoleName: string,
 ) => {
   if (!url) {
     return;
