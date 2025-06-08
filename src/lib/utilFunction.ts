@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { RoleDictionary } from 'Typings/types';
 
 export const getOrigin = () => {
   const isDevelopment = process.env.REACT_APP_NODE_ENV === 'development';
@@ -62,3 +63,11 @@ export const handleRetry = (noRetryStatusCodes: number[], failureCount: number, 
 
   return failureCount < 3;
 }
+
+export const renderRole = (roleName: string) => {
+  const result = Object
+    .entries(RoleDictionary)
+    .find((ele) => ele[0] === roleName.toUpperCase());
+
+  return result ? result[1] : '';
+};
