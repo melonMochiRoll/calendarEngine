@@ -86,7 +86,7 @@ export const deleteSharedspace = async (url: string) => {
 export const createSharedspaceMembers = async (
   url: string | undefined,
   UserId: number,
-  RoleName: string,
+  RoleName: TSharedspaceMembersRoles,
 ) => {
   if (!url) {
     return;
@@ -124,9 +124,13 @@ export const updateSharedspaceMembers = async (
 };
 
 export const updateSharedspacePrivate = async (
-  url: string,
+  url: string | undefined,
   Private: boolean,
 ) => {
+  if (!url) {
+    return;
+  }
+
   try {
     await axiosInstance
       .patch(`/api/sharedspaces/${url}/private`, {
