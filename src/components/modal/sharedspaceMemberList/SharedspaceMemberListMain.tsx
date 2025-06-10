@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import useSharedspace from 'Hooks/queries/useSharedspace';
+import { useSharedspace } from 'Hooks/queries/useSharedspace';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';
 import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
@@ -13,7 +13,7 @@ import MemberItem from '../sharedspaceManager/MemberItem';
 const SharedspaceMemberListMain: FC = () => {
   const { url } = useParams();
   const qc = useQueryClient();
-  const { data: spaceData } = useSharedspace({ suspense: true, throwOnError: true });
+  const { data: spaceData } = useSharedspace();
 
   const onUpdateMemberRole = (UserId: number, roleName: TSharedspaceMembersRoles) => {
     updateSharedspaceMembers(url, UserId, roleName)

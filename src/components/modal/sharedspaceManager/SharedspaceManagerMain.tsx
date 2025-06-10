@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import useSharedspace from 'Hooks/queries/useSharedspace';
+import { useSharedspace } from 'Hooks/queries/useSharedspace';
 import SharedspaceManagerInitPage from './SharedspaceManagerInitPage';
 import SharedspaceManagerResult from './SharedspaceManagerResult';
 import { useSearchUsers } from 'Hooks/queries/useSearchUsers';
@@ -7,7 +7,7 @@ import { createSharedspaceMembers, deleteSharedspaceMembers, updateSharedspaceMe
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
-import { MemberOptions, TSharedspaceMembersRoles } from 'Typings/types';
+import { TSharedspaceMembersRoles } from 'Typings/types';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';
 
@@ -20,7 +20,7 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
 }) => {
   const qc = useQueryClient();
   const { url } = useParams();
-  const { data: spaceData } = useSharedspace({ suspense: true, throwOnError: true });
+  const { data: spaceData } = useSharedspace();
   const { data: searchUsersData } = useSearchUsers(query);
 
   const onCreateMember = (UserId: number, RoleName: TSharedspaceMembersRoles) => {

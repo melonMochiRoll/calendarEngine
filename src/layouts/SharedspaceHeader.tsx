@@ -13,13 +13,13 @@ import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
 import ProfileImage from 'Components/ProfileImage';
 import { PATHS } from 'Constants/paths';
-import useSharedspace from 'Hooks/queries/useSharedspace';
+import { useSharedspace } from 'Hooks/queries/useSharedspace';
 
 interface SharedspaceHeaderProps {};
 
 const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
   const { data: userData, isOwner } = useUser({ suspense: true, throwOnError: true });
-  const { data: spaceData } = useSharedspace({ suspense: true, throwOnError: true });
+  const { data: spaceData } = useSharedspace();
 
   const navigate = useNavigate();
   const qc = useQueryClient();
