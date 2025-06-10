@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { useSharedspace } from 'Hooks/queries/useSharedspace';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Constants/notices';
+import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -14,6 +14,7 @@ const SharedspaceMemberListMain: FC = () => {
   const { url } = useParams();
   const qc = useQueryClient();
   const { data: spaceData } = useSharedspace();
+  const [ error, setError ] = useState('');
 
   const onUpdateMemberRole = (UserId: number, roleName: TSharedspaceMembersRoles) => {
     updateSharedspaceMembers(url, UserId, roleName)
@@ -22,6 +23,9 @@ const SharedspaceMemberListMain: FC = () => {
           toast.success(successMessage, {
           ...defaultToastOption,
         });
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
 
@@ -32,6 +36,9 @@ const SharedspaceMemberListMain: FC = () => {
         toast.success(successMessage, {
           ...defaultToastOption,
         });
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
 
@@ -42,23 +49,29 @@ const SharedspaceMemberListMain: FC = () => {
         toast.success(successMessage, {
           ...defaultToastOption,
         });
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
   
   return (
-    <List>
-      {spaceData.Sharedspacemembers.map((user) => {
-        return (
-          <MemberItem
-            key={user.UserId}
-            OwnerData={spaceData.Owner}
-            SharedspaceMembersAndUser={user}
-            onUpdateMemberRole={onUpdateMemberRole}
-            onUpdateOwner={onUpdateOwner}
-            onDeleteMember={onDeleteMember} />
-        );
-      })}
-    </List>
+    <>
+      <List>
+        {spaceData.Sharedspacemembers.map((user) => {
+          return (
+            <MemberItem
+              key={user.UserId}
+              OwnerData={spaceData.Owner}
+              SharedspaceMembersAndUser={user}
+              onUpdateMemberRole={onUpdateMemberRole}
+              onUpdateOwner={onUpdateOwner}
+              onDeleteMember={onDeleteMember} />
+          );
+        })}
+      </List>
+      {error && <ErrorSpan>{error}</ErrorSpan>}
+    </>
   );
 };
 
@@ -74,4 +87,9 @@ const List = styled.ul`
   padding-bottom: 1%;
   margin: 0;
   overflow-y: auto;
+`;
+
+const ErrorSpan = styled.span`
+  font-size: 16px;
+  color: var(--red);
 `;

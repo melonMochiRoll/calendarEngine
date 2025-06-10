@@ -6,6 +6,8 @@ import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
 import { deleteSharedspaceChatImage } from 'Api/sharedspacesApi';
 import ClearIcon from '@mui/icons-material/Clear';
+import { toast } from 'react-toastify';
+import { defaultToastOption, waitingMessage } from 'Constants/notices';
 
 interface MultipleImageProps {
   isSender: boolean,
@@ -23,7 +25,11 @@ const MultipleImage: FC<MultipleImageProps> = ({
 
   const deleteImage = () => {
     deleteSharedspaceChatImage(url, ChatId, image.id)
-      .catch(() => {});
+      .catch(() => {
+        toast.error(waitingMessage, {
+          ...defaultToastOption,
+        });
+      });
   };
 
   const openImageModal = () => {

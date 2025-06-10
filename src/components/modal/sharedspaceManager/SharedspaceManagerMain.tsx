@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
+import styled from '@emotion/styled';
 import { useSharedspace } from 'Hooks/queries/useSharedspace';
 import SharedspaceManagerInitPage from './SharedspaceManagerInitPage';
 import SharedspaceManagerResult from './SharedspaceManagerResult';
@@ -9,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { TSharedspaceMembersRoles } from 'Typings/types';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Constants/notices';
+import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 
 interface SharedspaceManagerMainProps {
   query: string;
@@ -22,11 +23,15 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
   const { url } = useParams();
   const { data: spaceData } = useSharedspace();
   const { data: searchUsersData } = useSearchUsers(query);
+  const [ error, setError ] = useState('');
 
   const onCreateMember = (UserId: number, RoleName: TSharedspaceMembersRoles) => {
     createSharedspaceMembers(url, UserId, RoleName)
       .then(async () => {
         await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
 
@@ -34,6 +39,9 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
     updateSharedspacePrivate(url, Private)
       .then(async () => {
         await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
 
@@ -44,6 +52,9 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
           toast.success(successMessage, {
           ...defaultToastOption,
         });
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
 
@@ -54,6 +65,9 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
         toast.success(successMessage, {
           ...defaultToastOption,
         });
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
 
@@ -64,11 +78,14 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
         toast.success(successMessage, {
           ...defaultToastOption,
         });
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
 
   return (
-    <>
+    <Block>
       {query ?
         <SharedspaceManagerResult
           query={query}
@@ -82,8 +99,25 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
           onUpdateOwner={onUpdateOwner}
           onDeleteMember={onDeleteMember} />
       }
-    </>
+      {error && <ErrorSpan>{error}</ErrorSpan>}
+    </Block>
   );
 };
 
 export default SharedspaceManagerMain;
+
+const Block = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 85%;
+  color: var(--white);
+  padding: 1% 0;
+`;
+
+const ErrorSpan = styled.span`
+  font-size: 16px;
+  color: var(--red);
+`;

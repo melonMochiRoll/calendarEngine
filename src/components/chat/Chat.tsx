@@ -51,10 +51,6 @@ const Chat: FC<ChatProps> = ({
     oldContent: string,
     newContent: string,
   ) => {
-    if (!url) {
-      return;
-    }
-
     updateSharedspaceChat(url, ChatId, oldContent, newContent.trim())
       .catch(() => {
         toast.error(waitingMessage, {
@@ -64,10 +60,6 @@ const Chat: FC<ChatProps> = ({
   };
 
   const onDeleteChat = (url: string | undefined, chatId: number) => {
-    if (!url) {
-      return;
-    }
-
     deleteSharedspaceChat(url, chatId)
       .catch(() => {
         toast.error(waitingMessage, {

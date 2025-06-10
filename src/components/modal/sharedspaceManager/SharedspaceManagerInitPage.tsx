@@ -35,7 +35,7 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
   };
 
   return (
-    <Main>
+    <>
       <MemberDiv>
         <Top>
           <PeopleIcon fontSize='large' sx={{ marginRight: '15px' }}/>
@@ -90,22 +90,11 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
           <Span>가 접근하도록 합니다.</Span>
         </Bottom>
       </PrivateDiv>
-    </Main>
+    </>
   );
 };
 
 export default SharedspaceManagerInitPage;
-
-const Main = styled.main`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 85%;
-  color: var(--white);
-  padding: 1% 0;
-`;
 
 const MemberDiv = styled.div`
   display: flex;

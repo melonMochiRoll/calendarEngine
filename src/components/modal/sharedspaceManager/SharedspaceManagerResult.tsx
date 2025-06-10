@@ -18,7 +18,7 @@ const SharedspaceManagerResult: FC<SharedspaceManagerResultProps> = ({
   onCreateMember,
 }) => {
   return (
-    <Block>
+    <>
       {searchUsersData?.length ?
         <UserList>
           {searchUsersData?.map((data) => {
@@ -32,20 +32,11 @@ const SharedspaceManagerResult: FC<SharedspaceManagerResultProps> = ({
           })}
         </UserList> :
         <SharedspaceManagerError message={`"${query}" 에 대한 검색 결과가 없습니다.`} />}
-    </Block>
+    </>
   );
 };
 
 export default SharedspaceManagerResult;
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 85%;
-`;
 
 const UserList = styled.ul`
   display: flex;

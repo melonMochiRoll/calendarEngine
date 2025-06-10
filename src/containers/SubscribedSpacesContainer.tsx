@@ -11,6 +11,8 @@ import { createSharedspace, deleteSharedspace } from 'Api/sharedspacesApi';
 import { PATHS } from 'Constants/paths';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SUBSCRIBED_SPACES_KEY } from 'Constants/queryKeys';
+import { toast } from 'react-toastify';
+import { defaultToastOption, waitingMessage } from 'Constants/notices';
 
 const SubscribedSpacesContainer: FC = () => {
   const navigate = useNavigate();
@@ -25,6 +27,11 @@ const SubscribedSpacesContainer: FC = () => {
     createSharedspace(UserId)
       .then((url) => {
         navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`);
+      })
+      .catch(() => {
+        toast.error(waitingMessage, {
+          ...defaultToastOption,
+        });
       });
   };
 
@@ -32,6 +39,11 @@ const SubscribedSpacesContainer: FC = () => {
     deleteSharedspace(url)
       .then(async () => {
         await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY]);
+      })
+      .catch(() => {
+        toast.error(waitingMessage, {
+          ...defaultToastOption,
+        });
       });
   };
 
