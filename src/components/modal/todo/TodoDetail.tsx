@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import { closeModal, openModal } from 'Features/modalSlice';
@@ -15,7 +15,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import useUser from 'Hooks/queries/useUser';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Constants/notices';
+import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { formatDateTime } from 'Lib/utilFunction';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -33,14 +33,13 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
   dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
 
-  const {
-    calendarYear,
-    calendarMonth,
-  } = useAppSelector(state => state.calendarTime);
+  const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
   const { todoTime } = useAppSelector(state => state.todoTime);
 
   const { url } = useParams();
   const { data: userData, hasMemberPermission } = useUser({ suspense: false, throwOnError: false });
+  
+  const [ error, setError ] = useState('');
 
   const {
     anchorEl,
@@ -49,25 +48,22 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
     onClose,
   } = useMenu();
 
-  const onClickTodoDelete = async (todoId: number, url: string | undefined) => {
-    if (!url) {
-      return;
-    }
-
-    await deleteTodo(todoId, url);
-    dispatch(closeModal());
-    await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
-    await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
-    toast.success(successMessage, {
-      ...defaultToastOption,
-    });
+  const onClickTodoDelete = (todoId: number, url: string | undefined) => {
+    deleteTodo(todoId, url)
+      .then(async () => {
+        toast.success(successMessage, {
+          ...defaultToastOption,
+        });
+        await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
+        await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
+        dispatch(closeModal());
+      })
+      .catch(() => {
+        setError(waitingMessage);
+      });
   };
 
   const openTodoUpdate = (todo: TTodo, url: string | undefined, UserId: number | undefined) => {
-    if (!UserId || !url) {
-      return;
-    }
-
     dispatch(openModal({
       name: ModalName.TODO_UPDATE,
       props: { todo, url, UserId }
@@ -127,6 +123,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
         </Contents>
         <UpdatedAtWrapper>
           {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor.email}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
+          {error && <ErrorSpan>error</ErrorSpan>}
         </UpdatedAtWrapper>
       </ContentsWrapper>
     </Block>
@@ -230,3 +227,8 @@ const CloseIconInlineStyle = {
   fontSize: '35px',
   cursor: 'pointer',
 };
+
+const ErrorSpan = styled.span`
+  font-size: 16px;
+  color: var(--red);
+`;

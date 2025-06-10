@@ -32,10 +32,7 @@ const TodoInput: FC = () => {
   const { url } = useParams();
   const { data: userData } = useUser();
   const { todoTime } = useAppSelector(state => state.todoTime);
-  const {
-    calendarYear,
-    calendarMonth,
-  } = useAppSelector(state => state.calendarTime);
+  const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
 
   const initialTime = { hour: '', minute: '00' };
   const [ startTime, setStartTime ] = useState(initialTime);
@@ -93,11 +90,6 @@ const TodoInput: FC = () => {
   ) => {
     setErrorMessage('');
 
-    if (!url || !UserId) {
-      setErrorMessage(waitingMessage);
-      return;
-    }
-
     const trimmedStartTime = Object.values(start).map((value) => value.trim());
     const trimmedEndTime = Object.values(end).map((value) => value.trim());
     const trimmedDescription = description.trim();
@@ -134,15 +126,12 @@ const TodoInput: FC = () => {
       url,
     )
     .then(async () => {
-      setStartTime(initialTime);
-      setEndTime(initialTime);
-      setDescription('');
-      dispatch(closeModal());
       await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
       await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
       toast.success(successMessage, {
         ...defaultToastOption,
       });
+      dispatch(closeModal());
     })
     .catch(() => {
       setErrorMessage(waitingMessage);

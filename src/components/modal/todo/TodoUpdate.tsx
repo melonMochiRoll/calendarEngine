@@ -20,14 +20,14 @@ import { TTodo } from 'Typings/types';
 
 export interface TodoUpdateProps {
   todo: TTodo;
-  url: string;
-  UserId: number;
+  UserId: number | undefined;
+  url: string | undefined
 };
 
 const TodoUpdate: FC<TodoUpdateProps> = ({
   todo,
-  url,
   UserId,
+  url,
 }) => {
   dayjs.extend(utc);
   dayjs.extend(timezone);
@@ -36,10 +36,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   const timeZone = dayjs.tz.guess();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
-  const {
-    calendarYear,
-    calendarMonth,
-  } = useAppSelector(state => state.calendarTime);
+  const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
   const { todoTime } = useAppSelector(state => state.todoTime);
 
   const [ start_hour, start_minute ] = todo.startTime.split(':');
@@ -48,12 +45,9 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   const [ startTime, setStartTime ] = useState({ hour: start_hour, minute: start_minute });
   const [ endTime, setEndTime ] = useState({ hour: end_hour, minute: end_minute });
   const [ description, setDescription ] = useState(todo.description);
-  const [ error, setError ] = useState({
-    isError: false,
-    message: '',
-  });
+  const [ error, setError ] = useState('');
 
-  const onChangeStartTime = (e: any) => {
+  const onChangeStartTime = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 2) return;
 
     if (e.target.name === 'hour') {
@@ -69,7 +63,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     }
   };
 
-  const onChangeEndTime = (e: any) => {
+  const onChangeEndTime = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 2) return;
 
     if (e.target.name === 'hour') {
@@ -85,7 +79,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     }
   };
 
-  const onChangeDescriptionWithMaxSize = (e: any) => {
+  const onChangeDescriptionWithMaxSize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (getByteSize(e.target.value) > TODO_MAX_SIZE) {
       return;
     }
@@ -98,22 +92,10 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     newDescription: string,
     start: typeof startTime,
     end: typeof endTime,
-    UserId: number,
-    url: string,
+    UserId: number | undefined,
+    url: string | undefined,
   ) => {
-    setError({
-      isError: false,
-      message: '',
-    });
-
-    if (
-      newDescription === todo?.description &&
-      start === startTime &&
-      end === endTime
-    ) {
-      dispatch(closeModal());
-      return;
-    }
+    setError('');
 
     const trimmedStartTime = Object.values(start).map((value) => value.trim());
     const trimmedEndTime = Object.values(end).map((value) => value.trim());
@@ -124,10 +106,8 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       trimmedEndTime.includes('') ||
       !trimmedDescription
     ) {
-      return setError({
-        isError: true,
-        message: checkContent,
-      });
+      setError(checkContent);
+      return;
     }
 
     const startTimeFormat = `${trimmedStartTime[0].padStart(2, '0')}:${trimmedStartTime[1].padEnd(2, '0')}:00`;
@@ -140,10 +120,8 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       !dayjs_endTime.isValid() ||
       dayjs(dayjs_startTime).isSameOrAfter(dayjs_endTime)
     ) {
-      return setError({
-        isError: true,
-        message: checkContent,
-      });
+      setError(checkContent);
+      return;
     }
 
     updateTodo(
@@ -155,15 +133,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       url,
     )
     .then(async () => {
-      setStartTime({
-        hour: trimmedStartTime[0].padStart(2, '0'),
-        minute: trimmedStartTime[1].padStart(2, '0'),
-      });
-      setEndTime({
-        hour: trimmedEndTime[0].padStart(2, '0'),
-        minute: trimmedEndTime[1].padStart(2, '0'),
-      });
-      setDescription(description);
       await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
       await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
       dispatch(clearModal());
@@ -172,10 +141,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       });
     })
     .catch(() => {
-      setError({
-        isError: true,
-        message: waitingMessage,
-      });
+      setError(waitingMessage);
     });
   };
 
@@ -241,7 +207,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
         <SubmitDiv>
           <Left></Left>
           <Center>
-            {error.isError && <ErrorSpan>{error.message}</ErrorSpan>}
+            {error && <ErrorSpan>{error}</ErrorSpan>}
           </Center>
           <Right>
             <TextButton
