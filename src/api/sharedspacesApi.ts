@@ -60,7 +60,7 @@ export const updateSharedspaceOwner = async (
   newOwnerId: number,
 ) => {
   if (!url) {
-    return;
+    throw new Error;
   }
   
   try {
@@ -89,7 +89,7 @@ export const createSharedspaceMembers = async (
   RoleName: TSharedspaceMembersRoles,
 ) => {
   if (!url) {
-    return;
+    throw new Error;
   }
 
   try {
@@ -109,7 +109,7 @@ export const updateSharedspaceMembers = async (
   RoleName: TSharedspaceMembersRoles,
 ) => {
   if (!url) {
-    return;
+    throw new Error;
   }
 
   try {
@@ -128,7 +128,7 @@ export const updateSharedspacePrivate = async (
   Private: boolean,
 ) => {
   if (!url) {
-    return;
+    throw new Error;
   }
 
   try {
@@ -145,6 +145,10 @@ export const deleteSharedspaceMembers = async (
   url: string | undefined,
   UserId: number,
 ) => {
+  if (!url) {
+    throw new Error;
+  }
+
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/members/${UserId}`);
@@ -158,7 +162,9 @@ export const getSharedspaceChats = async (
   offset: number,
   limit: number = 30,
 ) => {
-  if (!url) return;
+  if (!url) {
+    return;
+  };
 
   try {
     const { data } = await axiosInstance
@@ -179,6 +185,10 @@ export const createSharedspaceChat = async (
   url: string | undefined,
   formData: FormData,
 ) => {
+  if (!url) {
+    throw new Error;
+  }
+
   try {
     await axiosInstance
       .post(`/api/sharedspaces/${url}/chats`, formData, {
@@ -198,7 +208,7 @@ export const updateSharedspaceChat = async (
   newContent: string,
 ) => {
   if (oldContent === newContent || !url || !newContent) {
-    return;
+    throw new Error;
   }
 
   try {
@@ -219,7 +229,7 @@ export const deleteSharedspaceChat = async (
   ChatId: number,
 ) => {
   if (!url || !ChatId) {
-    return;
+    throw new Error;
   }
 
   try {
@@ -236,7 +246,7 @@ export const deleteSharedspaceChatImage = async (
   ImageId: number,
 ) => {
   if (!url || !ChatId || !ImageId) {
-    return;
+    throw new Error;
   }
 
   try {
