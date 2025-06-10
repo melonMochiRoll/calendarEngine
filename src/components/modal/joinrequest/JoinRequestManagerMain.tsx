@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { useJoinRequest } from 'Hooks/queries/useJoinRequest';
 import { TJoinRequest } from 'Typings/types';
@@ -6,12 +6,13 @@ import JoinRequestItem from './JoinRequestItem';
 import { GET_JOINREQUEST_KEY, GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { rejectJoinRequest, resolveJoinRequest } from 'Api/joinrequestApi';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Constants/notices';
+import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { useQueryClient } from '@tanstack/react-query';
 
 const JoinRequestManagerMain: FC = () => {
   const qc = useQueryClient();
   const { data: joinRequestsData } = useJoinRequest();
+  const [ error, setError ] = useState('')
 
   const onResolveMenuClick = (
     url: string | undefined,
@@ -25,6 +26,9 @@ const JoinRequestManagerMain: FC = () => {
         toast.success(successMessage, {
           ...defaultToastOption,
         });
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
 
@@ -39,11 +43,14 @@ const JoinRequestManagerMain: FC = () => {
         toast.success(successMessage, {
           ...defaultToastOption,
         });
+      })
+      .catch(() => {
+        setError(waitingMessage);
       });
   };
 
   return (
-    <Main>
+    <Block>
       <List>
         {joinRequestsData.map((request: TJoinRequest) => {
           return (
@@ -55,19 +62,21 @@ const JoinRequestManagerMain: FC = () => {
           );
         })}
       </List>
-    </Main>
+      {error && <ErrorSpan>{error}</ErrorSpan>}
+    </Block>
   );
 };
 
 export default JoinRequestManagerMain;
 
-const Main = styled.main`
+const Block = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 85%;
+  padding-bottom: 15px;
   color: var(--white);
 `;
 
@@ -81,4 +90,9 @@ const List = styled.ul`
   padding-bottom: 1%;
   margin: 0;
   overflow-y: auto;
+`;
+
+const ErrorSpan = styled.span`
+  font-size: 18px;
+  color: var(--red);
 `;
