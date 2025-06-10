@@ -36,7 +36,9 @@ export const resolveJoinRequest = async (
   id: number,
   RoleName: string,
 ) => {
-  if (!url) return;
+  if (!url) {
+    throw new Error;
+  }
 
   try {
     await axiosInstance
@@ -52,7 +54,9 @@ export const rejectJoinRequest = async (
   url: string | undefined,
   id: number,
 ) => {
-  if (!url) return;
+  if (!url) {
+    throw new Error;
+  }
 
   try {
     await axiosInstance
