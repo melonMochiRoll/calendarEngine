@@ -15,6 +15,7 @@ const WithAuthGuard = <P extends {}>(WrappedComponent: React.FunctionComponent<P
         if (isNotLogin) {
           toast.error(needLogin, {
             ...defaultToastOption,
+            toastId: needLogin,
           });
           navigate(PATHS.LOGIN);
         }
