@@ -5,22 +5,11 @@ import { handleRetry } from "Lib/utilFunction";
 import { useParams } from "react-router-dom";
 import { TSharedspaceMetaData } from "Typings/types";
 
-type TypeSafeReturnType = {
+type UseSharedspaceReturnType = {
   data: TSharedspaceMetaData;
 };
 
-type FetchStateReturnType = {
-  data: TSharedspaceMetaData | undefined;
-  isLoading: boolean;
-  error: unknown;
-};
-
-function useSharedspace(options: { suspense: true, throwOnError: true }): TypeSafeReturnType;
-function useSharedspace(options?: { suspense: boolean, throwOnError: boolean }): FetchStateReturnType;
-
-function useSharedspace(options = { suspense: false, throwOnError: false }) {
-  const { suspense, throwOnError } = options;
-
+export function useSharedspace(): UseSharedspaceReturnType {
   const { url: _url } = useParams();
   const {
     data,
@@ -30,20 +19,14 @@ function useSharedspace(options = { suspense: false, throwOnError: false }) {
     queryKey: [GET_SHAREDSPACE_KEY, _url],
     queryFn: () => getSharedspace(_url),
     refetchOnWindowFocus: false,
-    suspense,
-    useErrorBoundary: throwOnError,
+    suspense: true,
+    useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
-  if (suspense) {
-    if (isLoading) throw new Promise(() => {});
-    if (error) throw error;
-    if (!data) throw new Error();
+  if (isLoading) throw new Promise(() => {});
+  if (error) throw error;
+  if (!data) throw new Error();
 
-    return { data };
-  }
-
-  return { data, isLoading, error };
+  return { data };
 }
-
-export default useSharedspace;
