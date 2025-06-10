@@ -42,9 +42,13 @@ export const createTodo = async (
   date: string,
   startTime: string,
   endTime: string,
-  AuthorId: number,
-  url: string,
+  UserId: number | undefined,
+  url: string | undefined,
   ) => {
+  if (!UserId || !url) {
+    throw new Error;
+  }
+
   try {
     await axiosInstance
       .post(`/api/sharedspaces/${url}/todos`, {
@@ -52,7 +56,7 @@ export const createTodo = async (
         date,
         startTime,
         endTime,
-        AuthorId,
+        AuthorId: UserId,
       });
   } catch (error) {
     throw error;
@@ -64,9 +68,13 @@ export const updateTodo = async (
   description: string,
   startTime: string,
   endTime: string,
-  EditorId: number,
-  url: string,
+  UserId: number | undefined,
+  url: string | undefined,
   ) => {
+  if (!UserId || !url) {
+    throw new Error;
+  }
+
   try {
     await axiosInstance
       .put(`/api/sharedspaces/${url}/todos`, {
@@ -74,7 +82,7 @@ export const updateTodo = async (
         description,
         startTime,
         endTime,
-        EditorId,
+        EditorId: UserId,
       });
   } catch (error) {
     throw error;
@@ -83,8 +91,12 @@ export const updateTodo = async (
 
 export const deleteTodo = async (
   todoId: number,
-  url: string,
+  url: string | undefined,
 ) => {
+  if (!url) {
+    throw new Error;
+  }
+
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/todos/${todoId}`);
