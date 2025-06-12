@@ -6,12 +6,11 @@ import Sidebar from './Sidebar';
 import SkeletonHeader from 'Components/skeleton/SkeletonHeader';
 import Drawer from 'Components/common/Drawer';
 import AsyncBoundary from 'Components/AsyncBoundary';
-import SharedspaceRedirectFallback from 'Components/errors/SharedspaceRedirectFallback';
 import TodoContainer from 'Containers/TodoContainer';
 import { useAppSelector } from 'Hooks/reduxHooks';
 import TodoInit from 'Components/todo/TodoInit';
-import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
+import GlobalErrorFallback from 'Components/errors/GlobalErrorFallback';
 
 interface SharedspacesLayoutProps {};
 
@@ -23,7 +22,7 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
       <Sidebar />
       <PageWrapper>
         <AsyncBoundary
-          errorBoundaryFallback={SharedspaceRedirectFallback}
+          errorBoundaryFallback={GlobalErrorFallback}
           suspenseFallback={<SkeletonHeader />}>
           <SharedspaceHeader />
         </AsyncBoundary>
@@ -32,7 +31,7 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
           <Drawer>
             {todoTime ?
               <AsyncBoundary
-                errorBoundaryFallback={GenericErrorFallback}
+                errorBoundaryFallback={GlobalErrorFallback}
                 suspenseFallback={<LoadingCircular />}>
                 <TodoContainer />
               </AsyncBoundary> :

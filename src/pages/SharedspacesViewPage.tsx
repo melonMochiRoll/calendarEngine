@@ -4,14 +4,14 @@ import CalendarContainer from 'Containers/CalendarContainer';
 import CalendarHeader from 'Components/calendar/CalendarHeader';
 import AsyncBoundary from 'Components/AsyncBoundary';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
-import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
+import GlobalErrorFallback from 'Components/errors/GlobalErrorFallback';
 
 const SharedspacesViewPage: FC = () => {
   return (
     <Background>
       <CalendarHeader />
       <AsyncBoundary
-        errorBoundaryFallback={GenericErrorFallback}
+        errorBoundaryFallback={GlobalErrorFallback}
         suspenseFallback={<LoadingCircular />}>
         <CalendarContainer />
       </AsyncBoundary>

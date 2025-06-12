@@ -3,15 +3,15 @@ import styled from '@emotion/styled';
 import Header from 'Layouts/Header';
 import SubscribedSpacesContainer from 'Containers/SubscribedSpacesContainer';
 import WithAuthGuard from 'Components/hoc/WithAuthGuard';
-import AsyncBoundary from 'Components/AsyncBoundary';
-import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import SkeletonSharedspacePage from 'Components/SkeletonSharedspacePage';
+import AsyncBoundary from 'Components/AsyncBoundary';
+import GlobalErrorFallback from 'Components/errors/GlobalErrorFallback';
 
 const SharedspacesPage: FC = () => {
   return (
     <Background>
       <AsyncBoundary
-        errorBoundaryFallback={GenericErrorFallback}
+        errorBoundaryFallback={GlobalErrorFallback}
         suspenseFallback={<SkeletonSharedspacePage />}>
         <Header />
         <SubscribedSpacesContainer />

@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import ChatContainer from 'Containers/ChatContainer';
 import AsyncBoundary from 'Components/AsyncBoundary';
-import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import SkeletonChatList from 'Components/skeleton/SkeletonChatList';
+import GlobalErrorFallback from 'Components/errors/GlobalErrorFallback';
 
 const SharedspacesChatPage: FC = () => {
   return (
     <AsyncBoundary
-      errorBoundaryFallback={GenericErrorFallback}
+      errorBoundaryFallback={GlobalErrorFallback}
       suspenseFallback={<SkeletonChatList />}>
       <ChatContainer />
     </AsyncBoundary>
