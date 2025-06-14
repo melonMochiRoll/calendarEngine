@@ -2,7 +2,6 @@ import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import SearchHeader from './SearchHeader';
 import AsyncBoundary from 'Components/AsyncBoundary';
-import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import SharedspaceManagerError from '../sharedspaceManager/SharedspaceManagerError';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
 import SearchMain from './SearchMain';
@@ -18,9 +17,8 @@ const SearchModal: FC = () => {
         query={query} 
         setQuery={setQuery} />
       <AsyncBoundary
-        errorBoundaryFallback={GenericErrorFallback}
-        suspenseFallback={<LoadingCircular />}
-        errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}>
+        errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
+        suspenseFallback={<LoadingCircular />}>
         <SearchMain query={debouncedQuery} />
       </AsyncBoundary>
       <Footer />

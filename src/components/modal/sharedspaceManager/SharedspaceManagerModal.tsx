@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import SharedspaceManagerMain from './SharedspaceManagerMain';
 import AsyncBoundary from 'Components/AsyncBoundary';
 import SharedspaceManagerHeader from './SharedspaceManagerHeader';
-import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import SharedspaceManagerError from './SharedspaceManagerError';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
 import { useDebounce } from 'Hooks/utils/useDebounce';
@@ -18,9 +17,8 @@ const SharedspaceManagerModal: FC = () => {
         query={query}
         setQuery={setQuery} />
       <AsyncBoundary
-        errorBoundaryFallback={GenericErrorFallback}
-        suspenseFallback={<LoadingCircular />}
-        errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}>
+        errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
+        suspenseFallback={<LoadingCircular />}>
         <SharedspaceManagerMain query={debouncedQuery}/>
       </AsyncBoundary>
     </Block>

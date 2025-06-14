@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import JoinRequestManagerHeader from './JoinRequestManagerHeader';
 import JoinRequestManagerMain from './JoinRequestManagerMain';
 import AsyncBoundary from 'Components/AsyncBoundary';
-import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
 import SharedspaceManagerError from '../sharedspaceManager/SharedspaceManagerError';
 
@@ -12,9 +11,8 @@ const JoinRequestManagerModal: FC = () => {
     <Block onClick={e => e.stopPropagation()}>
       <JoinRequestManagerHeader />
       <AsyncBoundary
-        errorBoundaryFallback={GenericErrorFallback}
-        suspenseFallback={<LoadingCircular />}
-        errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}>
+        errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
+        suspenseFallback={<LoadingCircular />}>
         <JoinRequestManagerMain />
       </AsyncBoundary>
     </Block>

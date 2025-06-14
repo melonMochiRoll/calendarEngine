@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import SharedspaceMemberListHeader from './SharedspaceMemberListHeader';
 import SharedspaceMemberListMain from './SharedspaceMemberListMain';
 import AsyncBoundary from 'Components/AsyncBoundary';
-import GenericErrorFallback from 'Components/errors/GenericErrorFallback';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
 import SharedspaceManagerError from '../sharedspaceManager/SharedspaceManagerError';
 
@@ -14,9 +13,8 @@ const SharedspaceMemberListModal: FC = () => {
       <Main>
         <SharedspaceMemberListHeader />
         <AsyncBoundary
-          errorBoundaryFallback={GenericErrorFallback}
-          suspenseFallback={<LoadingCircular />}
-          errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}>
+          errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
+          suspenseFallback={<LoadingCircular />}>
           <SharedspaceMemberListMain />
         </AsyncBoundary>
       </Main>
