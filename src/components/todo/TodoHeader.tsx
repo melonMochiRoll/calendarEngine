@@ -19,12 +19,11 @@ const TodoHeader: FC<TodoHeader> = ({
   return (
     <>
       <Title>{`${year}년 ${month}월 ${date}일`}</Title>
-      {hasMemberPermission() &&
-        <FlexBox
-          onClick={() => dispatch(openModal({ name: ModalName.TODO_INPUT }))}>
-          <AddIcon fontSize='large' sx={{ color: 'var(--blue)' }}/>
-          <Span>새 Todo 작성</Span>
-        </FlexBox>}
+      <FlexBox visibility={hasMemberPermission()}
+        onClick={() => dispatch(openModal({ name: ModalName.TODO_INPUT }))}>
+        <AddIcon fontSize='large' sx={{ color: 'var(--blue)' }}/>
+        <Span>새 Todo 작성</Span>
+      </FlexBox>
     </>
   );
 };
@@ -39,7 +38,8 @@ const Title = styled.h1`
   margin-bottom: 10px;
 `;
 
-const FlexBox = styled.div`
+const FlexBox = styled.div<{ visibility: boolean }>`
+  visibility: ${({ visibility }) => visibility ? 'visible' : 'hidden'};
   display: flex;
   flex-direction: column;
   align-items: center;
