@@ -6,7 +6,7 @@ import timezone from 'dayjs/plugin/timezone';
 import { addError, clearErrors, ErrorPriority } from "Features/globalErrorSlice";
 import { useAppDispatch, useAppSelector } from "Hooks/reduxHooks";
 import { FallbackProps } from "react-error-boundary";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { defaultToastOption, needLogin, privateTooltip, waitingMessage } from "Constants/notices";
 
@@ -16,6 +16,7 @@ dayjs.extend(timezone);
 export default function GlobalErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { url: _url } = useParams();
   const errors = useAppSelector(state => state.globalError);
 
   const getErrorPayload = (error: any, status: number) => {
@@ -46,7 +47,7 @@ export default function GlobalErrorFallback({ error, resetErrorBoundary }: Fallb
         if (status === 403) {
           result.priority = ErrorPriority.SERVER_403;
           result.message = privateTooltip;
-          result.destination = `${PATHS.JOINREQUEST_SENDER}/${'url'}`;
+          result.destination = `${PATHS.JOINREQUEST_SENDER}/${_url}`;
           break;
         }
         if (status === 404) {
