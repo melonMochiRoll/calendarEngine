@@ -18,8 +18,6 @@ import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { formatDateTime } from 'Lib/utilFunction';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import { ModalName, TTodo } from 'Typings/types';
 
 export interface TodoDetailProps {
@@ -29,8 +27,6 @@ export interface TodoDetailProps {
 const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
-  dayjs.extend(utc);
-  dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
 
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
