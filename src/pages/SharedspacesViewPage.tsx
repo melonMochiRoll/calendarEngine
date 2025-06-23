@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 import CalendarContainer from 'Containers/CalendarContainer';
 import CalendarHeader from 'Components/calendar/CalendarHeader';
 import AsyncBoundary from 'Components/AsyncBoundary';
-import LoadingCircular from 'Components/skeleton/LoadingCircular';
 import GlobalErrorFallback from 'Components/errors/GlobalErrorFallback';
+import SkeletonSharedspacePage from 'Components/SkeletonSharedspacePage';
 
 const SharedspacesViewPage: FC = () => {
   return (
@@ -12,7 +12,7 @@ const SharedspacesViewPage: FC = () => {
       <CalendarHeader />
       <AsyncBoundary
         errorBoundaryFallback={GlobalErrorFallback}
-        suspenseFallback={<LoadingCircular />}>
+        suspenseFallback={<SkeletonSharedspacePage />}>
         <CalendarContainer />
       </AsyncBoundary>
     </Background>
