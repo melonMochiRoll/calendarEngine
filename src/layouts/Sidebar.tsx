@@ -17,7 +17,7 @@ const Sidebar: FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const { url } = useParams();
-  const { isOwner, hasMemberPermission } = useUser({ suspense: false, throwOnError: false });
+  const { isOwner, hasMemberPermission } = useUser({ suspense: true, throwOnError: true });
   const pageName = location.pathname.split('/')[2];
   
   return (

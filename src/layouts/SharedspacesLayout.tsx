@@ -11,6 +11,7 @@ import { useAppSelector } from 'Hooks/reduxHooks';
 import TodoInit from 'Components/todo/TodoInit';
 import LoadingCircular from 'Components/skeleton/LoadingCircular';
 import GlobalErrorFallback from 'Components/errors/GlobalErrorFallback';
+import SkeletonSidebar from 'Components/skeleton/SkeletonSidebar';
 
 interface SharedspacesLayoutProps {};
 
@@ -19,7 +20,11 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
 
   return (
     <Block>
-      <Sidebar />
+      <AsyncBoundary
+        errorBoundaryFallback={GlobalErrorFallback}
+        suspenseFallback={<SkeletonSidebar />}>
+        <Sidebar />
+      </AsyncBoundary>
       <PageWrapper>
         <AsyncBoundary
           errorBoundaryFallback={GlobalErrorFallback}
