@@ -3,7 +3,7 @@ import { axiosInstance } from "./axiosInstance";
 export const login = async (email: string, password: string) => {
   try {
     const { data } = await axiosInstance
-      .post('/api/auth/login', { username: email, password });
+      .post('/api/auth/login/jwt', { username: email, password });
 
     return data;
   } catch (err) {
@@ -37,6 +37,21 @@ export const loginOAuth2Naver = async () => {
       .get(`/api/auth/login/oauth2/naver`);
 
     return url;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getCsrfToken = async (email: string | undefined) => {
+  if (!email) {
+    return null;
+  }
+
+  try {
+    const { data } = await axiosInstance
+      .get(`/api/auth/csrf-token`);
+
+    return data;
   } catch (err) {
     throw err;
   }
