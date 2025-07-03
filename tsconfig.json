@@ -14,6 +14,7 @@
     "allowSyntheticDefaultImports" : true,
     "baseUrl": ".",
     "paths": {
+      "Src/*": ["src/*"],
       "Api/*": ["src/api/*"],
       "Components/*": ["src/components/*"],
       "Constants/*": ["src/constants/*"],
