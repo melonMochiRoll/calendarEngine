@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getOrigin } from "Lib/utilFunction";
-import { getCsrfTokenFromStore } from "Src/store";
+import { reduxStore } from "Src/store";
 
 export const axiosInstance = axios.create({
   baseURL: getOrigin(),
@@ -8,13 +8,13 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-axiosInstance.interceptors.request.use(config => {
-  const token = getCsrfTokenFromStore();
+axiosInstance.interceptors.request.use(async (config) => {
+  const token = reduxStore.getState().csrfToken.token;
 
   if (token) {
     config.headers['x-csrf-token'] = token;
   }
-  
+
   return config;
 }, error => {
   throw error;
