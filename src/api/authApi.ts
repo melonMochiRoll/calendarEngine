@@ -42,16 +42,12 @@ export const loginOAuth2Naver = async () => {
   }
 };
 
-export const getCsrfToken = async (email: string | undefined) => {
-  if (!email) {
-    return null;
-  }
-
+export const getCsrfToken = async () => {
   try {
     const { data } = await axiosInstance
       .get(`/api/auth/csrf-token`);
 
-    return data;
+    return data.csrfToken;
   } catch (err) {
     throw err;
   }
