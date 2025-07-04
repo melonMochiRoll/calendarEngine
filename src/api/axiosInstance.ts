@@ -8,7 +8,7 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-axiosInstance.interceptors.request.use(async (config) => {
+axiosInstance.interceptors.request.use((config) => {
   const token = reduxStore.getState().csrfToken.token;
 
   if (token) {
