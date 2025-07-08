@@ -6,6 +6,7 @@ interface MenuButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
   filled?: boolean;
+  bgColor?: string;
 };
 
 const MenuButton: FC<MenuButtonProps> = ({
@@ -13,12 +14,14 @@ const MenuButton: FC<MenuButtonProps> = ({
   onClick,
   children,
   filled = false,
+  bgColor = 'var(--purple)',
 }) => {
   return (
     <Button
       onClick={onClick}
       type={type}
-      filled={filled}>
+      filled={filled}
+      bgColor={bgColor}>
       {children}
     </Button>
   );
@@ -26,22 +29,24 @@ const MenuButton: FC<MenuButtonProps> = ({
 
 export default MenuButton;
 
-const Button = styled.button<{ filled: boolean }>`
+const Button = styled.button<{ filled: boolean, bgColor: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
+  min-width: 100px;
   height: 40px;
+  padding: 0 10px;
   font-size: 14px;
   font-weight: 600;
   color: #fff;
-  background-color: ${({filled}) => filled ? `rgba(0, 0, 0, 0)` : `var(--purple)`};
-  border: ${({filled}) => filled ? `none` : `2px solid var(--purple)`} ;
+  background-color: ${({filled, bgColor}) => filled ? `rgba(0, 0, 0, 0)` : bgColor};
+  border: ${({filled, bgColor}) => filled ? `none` : `2px solid ${bgColor}`} ;
   border-radius: 10px;
+  gap: 10px;
   cursor: pointer;
   transition: all 0.3s;
 
   &:hover {
-    background-color: ${({filled}) => filled ? `var(--purple)` : `rgba(0, 0, 0, 0)`};
+    background-color: ${({filled, bgColor}) => filled ? bgColor : `rgba(0, 0, 0, 0)`};
   }
 `;
