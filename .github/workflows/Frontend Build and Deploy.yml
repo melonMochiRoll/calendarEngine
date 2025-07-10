@@ -9,6 +9,8 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      REACT_APP_NODE_ENV: production
 
     strategy:
       matrix:
@@ -28,7 +30,7 @@ jobs:
       run: npm ci
     
     - name: 🔨 Build Project
-      run: npm run build -- --mode production --if-present
+      run: npm run build -- --mode production
 
   deploy:
     name: Deploy
