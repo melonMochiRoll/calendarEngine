@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import RenderModal from 'Components/modal/RenderModal';
-import { useCsrfToken } from 'Src/hooks/queries/useCSRFToken';
+import { useCsrfToken } from 'Src/hooks/queries/useCsrfToken';
 
 const Layout: FC = () => {
   useCsrfToken();
