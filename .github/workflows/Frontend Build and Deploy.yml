@@ -73,7 +73,7 @@ jobs:
 
     - name: 🚀 Deploy to EC2
       run: |
-        rsync -avz --delete -e "ssh -i ~/.ssh/ec2_rsa -o StrictHostKeyChecking=no" dist/* ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/client_dist
+        rsync -avz --delete -e "ssh -i ~/.ssh/ec2_rsa -o StrictHostKeyChecking=no" ./dist/* ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/client_dist
         
     - name: 🔑 Remove Github Actions IP From Security Group
       run: |
