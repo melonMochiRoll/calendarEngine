@@ -32,6 +32,17 @@ jobs:
     - name: 🔨 Build Project
       run: npm run build -- --mode production
 
+    - name: Debug
+      run: |
+        echo "Listing files in current directory ($(pwd)):"
+        ls -Fal
+        echo "---"
+        echo "Listing files in dist/ (if exists):"
+        ls -Fal dist/ || echo "dist/ directory not found or empty."
+        echo "---"
+        echo "Searching for 'dist' directory:"
+        find . -name "dist" -type d
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
