@@ -34,14 +34,13 @@ jobs:
 
     - name: Debug
       run: |
-        echo "Listing files in current directory ($(pwd)):"
+        echo "Current Working Directory: $(pwd)"
+        echo "--- Contents of current directory ---"
         ls -Fal
-        echo "---"
-        echo "Listing files in dist/ (if exists):"
-        ls -Fal dist/ || echo "dist/ directory not found or empty."
-        echo "---"
-        echo "Searching for 'dist' directory:"
-        find . -name "dist" -type d
+        echo "--- Contents of dist/ (if exists) ---"
+        ls -Fal dist/ || echo "dist/ directory not found or empty." # dist가 없으면 에러가 아닌 메시지 출력
+        echo "--- Searching for 'dist' directory ---"
+        find . -maxdepth 2 -name "dist" -type d # 현재 및 하위 1단계까지만 검색
 
   deploy:
     name: Deploy
