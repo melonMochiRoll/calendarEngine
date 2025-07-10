@@ -74,7 +74,7 @@ jobs:
       run: |
         SOURCE_DIR="${GITHUB_WORKSPACE}/dist/"
         TARGET_DIR="ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/client_dist"
-        rsync -avz --delete -e "ssh -i ~/.ssh/ec2_rsa -o StrictHostKeyChecking=no" "${SOURCE_DIR}" "${TARGET_DIR}"
+        rsync -avz --delete -e "ssh -i ~/.ssh/ec2_rsa -o StrictHostKeyChecking=no" ${SOURCE_DIR} ${TARGET_DIR}
         
     - name: 🔑 Remove Github Actions IP From Security Group
       run: |
