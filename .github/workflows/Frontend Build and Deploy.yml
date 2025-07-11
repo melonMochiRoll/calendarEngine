@@ -1,9 +1,9 @@
 name: Frontend Build and Deploy
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 
-on:
-  push:
-    branches: [ "release" ]
+# on:
+#   push:
+#     branches: [ "release" ]
 
 jobs:
   build:
@@ -52,17 +52,17 @@ jobs:
     - name: 💻 Get Github Actions IP
       id: ip
       uses: haythem/public-ip@v1.2
-      
+
+    - name: 🔑 Add Github Actions IP to Security group
+      run: |
+        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
     - name: 🔧 Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ vars.AWS_REGION }}
-
-    - name: 🔑 Add Github Actions IP to Security group
-      run: |
-        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
         
     - name: 🔧 Set SSH Key
       run: |
@@ -70,11 +70,27 @@ jobs:
         echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/ec2_rsa
         chmod 600 ~/.ssh/ec2_rsa
 
-    - name: 🚀 Deploy to EC2
-      run: |
-        SOURCE_DIR="${GITHUB_WORKSPACE}/dist/"
-        TARGET_DIR="ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/client_dist"
-        rsync -avz --delete -e "ssh -i ~/.ssh/ec2_rsa -o StrictHostKeyChecking=no" ${SOURCE_DIR} ${TARGET_DIR}
+    - name: 🚛 Upload to S3
+      run: aws s3 cp --region ${{ vars.AWS_REGION }} ./압축파일이름.zip s3://${{ secrets.S3_BUCKET_NAME }}/${{ env.S3_BUCKET_DIR_NAME }}/압축파일이름.zip
+
+    - name: Download from S3
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.AWS_SSH_HOST }} # 
+        username: ${{ secrets.AWS_SSH_USERNAME }}
+        key: ${{ secrets.AWS_SSH_KEY }}
+        port: ${{ secrets.AWS_SSH_PORT }}
+        script_stop: true
+        script: |
+          aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/${{ env.S3_BUCKET_DIR_NAME }}/압축파일이름.zip /home/ec2-user/client_dist
+          sudo service nginx restart
+          pm2 restart main
+
+    # - name: 🚀 Deploy to EC2
+    #   run: |
+    #     SOURCE_DIR="${GITHUB_WORKSPACE}/dist/"
+    #     TARGET_DIR="ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/client_dist"
+    #     rsync -avz --delete -e "ssh -i ~/.ssh/ec2_rsa -o StrictHostKeyChecking=no" ${SOURCE_DIR} ${TARGET_DIR}
         
     - name: 🔑 Remove Github Actions IP From Security Group
       run: |
