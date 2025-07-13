@@ -45,7 +45,7 @@ jobs:
     - name: 🔧 Set Dist Filename
       id: dist
       run: |
-        DIST_FILENAME=calendar-engine-$(date +%Y%m%d)
+        DIST_FILENAME="calendar-engine-"$(date +%Y%m%d)
         "dist_filename=$DIST_FILENAME" >> $GITHUB_OUTPUT
 
     - name: 🔑 Add Github Actions IP to Security group
