@@ -1,5 +1,5 @@
 name: Frontend Build and Deploy
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: 🚀 Deploying
 
 # on:
 #   push:
@@ -52,7 +52,7 @@ jobs:
 
     - name: 🔑 Add Github Actions IP to Security group
       run: |
-        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port ${{ secrets.EC2_SSH_PORT }} --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
     - name: 📦 Compress Build Files
       run: tar cvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./dist .
@@ -78,4 +78,4 @@ jobs:
     - name: 🔑 Remove Github Actions IP From Security Group
       if: always()
       run: |
-        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port ${{ secrets.EC2_SSH_PORT }} --cidr ${{ steps.ip.outputs.ipv4 }}/32
