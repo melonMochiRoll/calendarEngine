@@ -27,16 +27,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         
-    - name: ✨ Install dependencies
-      run: npm ci
+    # - name: ✨ Install dependencies
+    #   run: npm ci
     
-    - name: 🔨 Build Project
-      run: npm run build -- --mode production
-
-    # - name: Debug
-    #   run: |
-    #     ls -Fal
-    #     ls -Fal dist/
+    # - name: 🔨 Build Project
+    #   run: npm run build -- --mode production
     
     - name: 💻 Get Github Actions IP
       id: ip
@@ -55,9 +50,9 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ vars.AWS_REGION }}
 
-    - name: 🔑 Add Github Actions IP to Security group
-      run: |
-        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+    # - name: 🔑 Add Github Actions IP to Security group
+    #   run: |
+    #     aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
         
     - name: 🔧 Set SSH Key
       run: |
@@ -65,28 +60,34 @@ jobs:
         echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/ec2_rsa
         chmod 600 ~/.ssh/ec2_rsa
 
-    - name: 📦 Compress Build Files
-      run: tar cvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./dist .
-
-    - name: 🚛 Upload to S3
-      run: aws s3 cp --region ${{ vars.AWS_REGION }} ./${{ steps.dist.outputs.dist_filename }}.tar s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar
-
-    - name: ⬇️ Download from S3
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }} # 
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ~/.ssh/ec2_rsa
-        port: ${{ secrets.EC2_SSH_PORT }}
-        script_stop: true
-        script: |
-          aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar /home/ec2-user/
-          tar xvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./client_dist .
-          rm -r ${{ steps.dist.outputs.dist_filename }}.tar
-          sudo service nginx restart
-          pm2 restart main
-        
-    - name: 🔑 Remove Github Actions IP From Security Group
-      if: always()
+    - name: Debug
       run: |
-        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        cd ~/.ssh
+        ls -Fal
+        nano ~/.ssh/ec2_rsa
+
+    # - name: 📦 Compress Build Files
+    #   run: tar cvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./dist .
+
+    # - name: 🚛 Upload to S3
+    #   run: aws s3 cp --region ${{ vars.AWS_REGION }} ./${{ steps.dist.outputs.dist_filename }}.tar s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar
+
+    # - name: ⬇️ Download from S3
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.EC2_HOST }} # 
+    #     username: ${{ secrets.EC2_USERNAME }}
+    #     key: ~/.ssh/ec2_rsa
+    #     port: ${{ secrets.EC2_SSH_PORT }}
+    #     script_stop: true
+    #     script: |
+    #       aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar /home/ec2-user/
+    #       tar xvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./client_dist .
+    #       rm -r ${{ steps.dist.outputs.dist_filename }}.tar
+    #       sudo service nginx restart
+    #       pm2 restart main
+        
+    # - name: 🔑 Remove Github Actions IP From Security Group
+    #   if: always()
+    #   run: |
+    #     aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
