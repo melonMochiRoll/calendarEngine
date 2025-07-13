@@ -40,7 +40,7 @@ jobs:
     - name: 🔧 Set Dist Filename
       id: dist
       run: |
-        filename="calendar-engine-$(date +%Y%m%d)"
+        filename="calendar-engine-front-$(date +%Y%m%d)"
         echo "dist_filename=$filename" >> $GITHUB_OUTPUT
 
     - name: 🔧 Configure AWS Credentials
