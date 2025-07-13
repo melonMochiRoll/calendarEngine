@@ -74,14 +74,15 @@ jobs:
     - name: ⬇️ Download from S3
       uses: appleboy/ssh-action@v0.1.6
       with:
-        host: ${{ secrets.AWS_EC2_HOST }} # 
-        username: ${{ secrets.AWS_EC2_USERNAME }}
+        host: ${{ secrets.EC2_HOST }} # 
+        username: ${{ secrets.EC2_USERNAME }}
         key: ~/.ssh/ec2_rsa
-        port: ${{ secrets.AWS_SSH_PORT }}
+        port: ${{ secrets.EC2_SSH_PORT }}
         script_stop: true
         script: |
-          aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar /home/ec2-user/client_dist
+          aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar /home/ec2-user/
           tar xvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./client_dist .
+          rm -r ${{ steps.dist.outputs.dist_filename }}.tar
           sudo service nginx restart
           pm2 restart main
 
