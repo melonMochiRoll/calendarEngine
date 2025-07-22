@@ -42,7 +42,7 @@ function useUser(options = { suspense: false, throwOnError: false }) {
     refetchOnWindowFocus: false,
     suspense,
     useErrorBoundary: throwOnError,
-    retry: (failureCount, error) => handleRetry([200], failureCount, error),
+    retry: (failureCount, error) => handleRetry([200, 401], failureCount, error),
   });
 
   const getRoleName = (url: string | undefined) => {
