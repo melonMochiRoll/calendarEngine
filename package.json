@@ -8,11 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "reset": "git reset --soft HEAD~",
     "pre-build": "rm -r dist/*",
-    "build": "cross-env REACT_APP_NODE_ENV=production webpack --config webpack.config.js",
-    "pre-release": "ssh -i ~/.ssh/aws1.pem ec2-user@%EC2_HOSTNAME% 'rm -r client_dist/*'",
-    "release": "scp -i ~/.ssh/aws1.pem -r dist/* ec2-user@%EC2_HOSTNAME%:/home/ec2-user/client_dist",
-    "post-release": "ssh -i ~/.ssh/aws1.pem ec2-user@%EC2_HOSTNAME% 'sudo service nginx restart;pm2 restart main'",
-    "deploy": "npm run pre-build && npm run build && npm run pre-release && npm run release && npm run post-release"
+    "build": "cross-env REACT_APP_NODE_ENV=production webpack --config webpack.config.js"
   },
   "author": "",
   "license": "ISC",
