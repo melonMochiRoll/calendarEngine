@@ -3,18 +3,28 @@ import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import { closeModal } from 'Features/modalSlice';
 import { ModalName } from 'Typings/types';
+import TodoDetail from './todo/TodoDetail';
+import TodoUpdate from './todo/TodoUpdate';
+import TodoInput from 'Components/modal/todo/TodoInput';
+import SharedspaceManagerModal from './sharedspaceManager/SharedspaceManagerModal';
+import SearchModal from './search/SearchModal';
+import SharedspaceMemberListModal from './sharedspaceMemberList/SharedspaceMemberListModal';
+import JoinRequestSenderModal from 'Components/modal/joinrequest/JoinRequestSenderModal';
+import JoinRequestManagerModal from 'Components/modal/joinrequest/JoinRequestManagerModal';
+import JoinRequestDetail from 'Components/modal/joinrequest/JoinRequestDetail';
+import ImageViewer from './imageViewer/ImageViewer';
 
 const modals = {
-  [ModalName.SEARCH]: React.lazy(() => import('Components/modal/search/SearchModal')),
-  [ModalName.SHAREDSPACEMANAGER]: React.lazy(() => import('Components/modal/sharedspaceManager/SharedspaceManagerModal')),
-  [ModalName.TODO_INPUT]: React.lazy(() => import('Components/modal/todo/TodoInput')),
-  [ModalName.TODO_DETAIL]: React.lazy(() => import('Components/modal/todo/TodoDetail')),
-  [ModalName.TODO_UPDATE]: React.lazy(() => import('Components/modal/todo/TodoUpdate')),
-  [ModalName.SHAREDSPACEMEMBERLIST]: React.lazy(() => import('Components/modal/sharedspaceMemberList/SharedspaceMemberListModal')),
-  [ModalName.JOINREQUEST_SENDER]: React.lazy(() => import('Components/modal/joinrequest/JoinRequestSenderModal')),
-  [ModalName.JOINREQUEST_MANAGER]: React.lazy(() => import('Components/modal/joinrequest/JoinRequestManagerModal')),
-  [ModalName.JOINREQUEST_DETAIL]: React.lazy(() => import('Components/modal/joinrequest/JoinRequestDetail')),
-  [ModalName.IMAGE_VIEWER]: React.lazy(() => import('Components/modal/imageViewer/ImageViewer')),
+  [ModalName.SEARCH]: SearchModal,
+  [ModalName.SHAREDSPACEMANAGER]: SharedspaceManagerModal,
+  [ModalName.TODO_INPUT]: TodoInput,
+  [ModalName.TODO_DETAIL]: TodoDetail,
+  [ModalName.TODO_UPDATE]: TodoUpdate,
+  [ModalName.SHAREDSPACEMEMBERLIST]: SharedspaceMemberListModal,
+  [ModalName.JOINREQUEST_SENDER]: JoinRequestSenderModal,
+  [ModalName.JOINREQUEST_MANAGER]: JoinRequestManagerModal,
+  [ModalName.JOINREQUEST_DETAIL]: JoinRequestDetail,
+  [ModalName.IMAGE_VIEWER]: ImageViewer,
 };
 
 const RenderModal: FC = () => {
@@ -23,19 +33,26 @@ const RenderModal: FC = () => {
 
   if (!modalStack.length) return null;
 
-  const currentModal = modalStack[modalStack.length - 1];
-  const ModalComponent = modals[currentModal.name] as React.ComponentType<any>;
-
   return (
-    <Backdrop onClick={() => dispatch(closeModal())}>
-      <ModalComponent {...currentModal.props} />
-    </Backdrop>
+    modalStack.map((modal, i) => {
+      const ModalComponent = modals[modal.name] as React.ComponentType<any>;
+
+      return (
+        <Backdrop
+          key={modal.name + i}
+          zIndex={100 + i}
+          isBottom={!i}
+          onClick={() => dispatch(closeModal())}>
+          <ModalComponent {...modal.props}/>
+        </Backdrop>
+      );
+    })
   );
 };
 
 export default RenderModal;
 
-const Backdrop = styled.div`
+const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
   position: fixed;
   inset: 0;
   display: flex;
@@ -43,6 +60,6 @@ const Backdrop = styled.div`
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 2;
+  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
+  z-index: ${({ zIndex }) => zIndex};
 `;
