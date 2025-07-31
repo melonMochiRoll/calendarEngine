@@ -1,4 +1,4 @@
-import React, { FC, useDeferredValue, useState } from 'react';
+import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import useUser from 'Hooks/queries/useUser';
 import { useSubscribedspace } from 'Hooks/queries/useSubscribedspaces';
@@ -18,9 +18,8 @@ const SubscribedSpacesContainer: FC = () => {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [ option, setOption ] = useState(SubscribedspacesSortOptions[0]);
-  const deferredInput = useDeferredValue(option);
 
-  const { data: subscribedspaceData } = useSubscribedspace(deferredInput.filter);
+  const { data: subscribedspaceData } = useSubscribedspace(option.filter);
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
 
   const onCreateSharedspace = (UserId: number) => {
@@ -55,7 +54,7 @@ const SubscribedSpacesContainer: FC = () => {
     <Main>
       <SubscribedSpacesHeader
         onCreateSharedspace={() => onCreateSharedspace(userData.id)}
-        optionText={deferredInput.text}
+        optionText={option.text}
         filterSpaces={filterSpaces} />
       {subscribedspaceData?.length ?
         <SubscribedSpacesResult
