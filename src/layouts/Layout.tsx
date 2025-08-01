@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import RenderModal from 'Components/modal/RenderModal';
 import { useCsrfToken } from 'Src/hooks/queries/useCsrfToken';
-import LoadingCircular from 'Src/components/skeleton/LoadingCircular';
+import ModalLoadingCircular from 'Src/components/skeleton/ModalLoadingCircular';
 
 const Layout: FC = () => {
   useCsrfToken();
@@ -13,7 +13,7 @@ const Layout: FC = () => {
     <>
       <Outlet />
       <ToastContainer />
-      <Suspense fallback={<LoadingCircular />}>
+      <Suspense fallback={<ModalLoadingCircular />}>
         <RenderModal />
       </Suspense>
     </>
