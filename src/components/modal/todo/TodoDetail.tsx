@@ -135,7 +135,7 @@ export default TodoDetail;
 const Block = styled.div`
   display: flex;
   flex-direction: column;
-  width: 650px;
+  width: 450px;
   border-radius: 15px;
   background-color: var(--black);
   box-shadow: 1px 1px 10px 2px #000;
