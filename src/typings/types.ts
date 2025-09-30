@@ -130,9 +130,17 @@ export type TSharedspace = {
   url: string,
 };
 
+export type TSubscribedspace = TSharedspace & {
+  owner: string,
+  permission: {
+    isOwner: boolean,
+  }
+};
+
 export type TSubscribedspaces = {
-  Sharedspace: Pick<TSharedspace, 'name' | 'url' | 'private'> & { Owner: Pick<TUser, 'email'> },
-} & TSharedspaceMembers;
+  spaces: TSubscribedspace[],
+  totalCount: number,
+};
 
 export const SubscribedspacesFilter = {
   ALL: 'all',
