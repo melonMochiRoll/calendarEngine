@@ -7,13 +7,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Menu, MenuItem } from '@mui/material';
 import useMenu from 'Hooks/utils/useMenu';
 import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
-import { TSubscribedspaces } from 'Typings/types';
-import useUser from 'Hooks/queries/useUser';
+import { TSubscribedspace } from 'Typings/types';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';
 
 interface TSubscribedspacesItemProps {
-  space: TSubscribedspaces,
+  space: TSubscribedspace,
   onDeleteSharedspace: (url: string) => void,
 };
 
@@ -22,8 +21,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
   onDeleteSharedspace,
 }) => {
   const navigate = useNavigate();
-  const { name, url, private: privateBool, Owner } = space.Sharedspace;
-  const { isOwner } = useUser();
+  const { name, url, private: privateBool, owner, permission } = space;
 
   const {
     anchorEl,
@@ -55,9 +53,9 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
       onClick={() => navigate(`/sharedspaces/view/${url}`)}>
       <ItemPrivate>{privateBool ? <LockIcon /> : <UnlockIcon />}</ItemPrivate>
       <ItemTitle>{name}</ItemTitle>
-      <ItemOwner>{Owner.email}</ItemOwner>
+      <ItemOwner>{owner}</ItemOwner>
       {
-        isOwner(url) ?
+        permission.isOwner ?
         <ItemMoreMenu onClick={onClickMoreMenu}>
           <MoreVertIcon fontSize='large' />
         </ItemMoreMenu> :
