@@ -16,10 +16,13 @@ export const getSharedspace = async (url: string | undefined) => {
   }
 };
 
-export const getSubscribedspaces = async (filter: string) => {
+export const getSubscribedspaces = async (
+  sort: string,
+  page = 1,
+) => {
   try {
     const { data } = await axiosInstance
-      .get(`/api/sharedspaces/subscribed?filter=${filter}`);
+      .get(`/api/sharedspaces/subscribed?sort=${sort}&page=${page}`);
 
     return data;
   } catch (error) {
