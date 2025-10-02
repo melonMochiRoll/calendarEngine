@@ -142,28 +142,11 @@ export type TSubscribedspaces = {
   totalCount: number,
 };
 
-export const SubscribedspacesFilter = {
-  ALL: 'all',
-  OWNED: 'owned',
-  UNOWNED: 'unowned',
+export const subscribedspacesSortsMap: { [key: string]: string} = {
+  all: '모든 스페이스',
+  owned: '소유한 스페이스',
+  unowned: '소유하지 않은 스페이스',
 } as const;
-
-export type TSubscribedspacesFilter = typeof SubscribedspacesFilter[keyof typeof SubscribedspacesFilter];
-
-export const SubscribedspacesSortOptions: { text: string, filter: TSubscribedspacesFilter }[] = [
-  {
-    text: '모든 스페이스',
-    filter: SubscribedspacesFilter.ALL,
-  },
-  {
-    text: '소유한 스페이스',
-    filter: SubscribedspacesFilter.OWNED,
-  },
-  {
-    text: '소유하지 않은 스페이스',
-    filter: SubscribedspacesFilter.UNOWNED,
-  }
-];
 
 export type TSharedspaceMembersAndUser = Pick<TSharedspaceMembers, 'UserId' | 'RoleId' | 'createdAt'> &
 {
