@@ -130,6 +130,14 @@ export type TSharedspace = {
   url: string,
 };
 
+export type TSharedspaceMetaData = TSharedspace & {
+  permission: {
+    isOwner: boolean,
+    isMember: boolean,
+    isViewer: boolean,
+  },
+};
+
 export type TSubscribedspace = TSharedspace & {
   owner: string,
   permission: {
@@ -155,14 +163,6 @@ export type TSharedspaceMembersAndUser = Pick<TSharedspaceMembers, 'UserId' | 'R
   Role: {
     name: string,
   }
-};
-
-export type TSharedspaceMetaData = Pick<TSharedspace, 'id' | 'name' | 'url' | 'private'> &
-{
-  Owner: Pick<TUser, 'id' | 'email'>,
-} &
-{
-  Sharedspacemembers: TSharedspaceMembersAndUser[],
 };
 
 export type TSearchUsers = Pick<TUser, 'id' | 'email' | 'profileImage'> &
