@@ -138,7 +138,7 @@ export type TSharedspaceMetaData = TSharedspace & {
   },
 };
 
-export type TSubscribedspace = TSharedspace & {
+export type TSubscribedspace = Pick<TSharedspace, 'name' | 'url' | 'private'> & {
   owner: string,
   permission: {
     isOwner: boolean,
@@ -150,7 +150,7 @@ export type TSubscribedspaces = {
   totalCount: number,
 };
 
-export const subscribedspacesSortsMap: { [key: string]: string} = {
+export const subscribedspacesSortsMap: { [key: string]: string } = {
   all: '모든 스페이스',
   owned: '소유한 스페이스',
   unowned: '소유하지 않은 스페이스',
