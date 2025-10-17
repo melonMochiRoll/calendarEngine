@@ -45,7 +45,7 @@ const ChatList: FC<ChatListProps> = ({
         <NewChatNotifier
           chat={showNewChat.chat}
           onClick={() => scrollbarRef?.current?.scrollTo(0, 0)} />}
-      {previews.length &&
+      {Boolean(previews.length) &&
         <ImagePreviewer
           previews={previews}
           deleteFile={deleteFile} />}
