@@ -4,7 +4,7 @@ import { getOrigin } from "Lib/utilFunction";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { TChatList, TChats } from "Typings/types";
+import { ChatsCommandList, TChatList, TChats } from "Typings/types";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
@@ -19,9 +19,15 @@ export function useChatSocket() {
 
   useEffect(() => {
     socketRef.current = io(`${getOrigin()}/sharedspace-${_url}`);
+    const socket = socketRef.current;
+
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
 
     return () => {
-      socketRef.current?.disconnect();
+      socket?.disconnect();
     };
   }, [_url]);
 

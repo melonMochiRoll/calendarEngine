@@ -21,33 +21,14 @@ const ChatContainer: FC = () => {
 
   const { data: chatList } = useChats(offset);
   const {
-    socket,
     showNewChat,
     setShowNewChat,
-    onChatCreated,
-    onChatUpdated,
-    onChatDeleted,
-    onChatImageDeleted,
   } = useChatSocket();
 
   const scrollbarRef = useRef<HTMLUListElement>(null);
   const [ chat, onChangeChat, setChat ] = useInput('');
   const [ images, setImages ] = useState<File[]>([]);
   const [ previews, setPreviews ] = useState<Array<string | ArrayBuffer | null>>([]);
-
-  useEffect(() => {
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
-
-    return () => {
-      socket?.off(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
-      socket?.off(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
-      socket?.off(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
-      socket?.off(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
-    };
-  }, [socket]);
 
   const loadMore = () => {
     scrollbarRef?.current?.scrollTo(0, -200);
