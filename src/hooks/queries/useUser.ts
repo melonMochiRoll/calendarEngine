@@ -2,13 +2,10 @@ import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } fr
 import { getUser } from 'Api/usersApi';
 import { GET_USER_KEY } from 'Constants/queryKeys';
 import { handleRetry } from 'Lib/utilFunction';
-import { SharedspaceMembersRoles, TSharedspace, TUser } from 'Typings/types';
+import { TUser } from 'Typings/types';
 
 type TypeSafeReturnType = {
   data: TUser;
-  isOwner: (url: string | undefined) => boolean;
-  hasMemberPermission: (url: string | undefined) => boolean;
-  hasViewerPermission: (url: string | undefined) => boolean;
 };
 
 type FetchStateReturnType = {
@@ -19,9 +16,6 @@ type FetchStateReturnType = {
   ) => Promise<QueryObserverResult<TUser, unknown>>;
   isLogin: boolean;
   isNotLogin: boolean;
-  isOwner: (url: string | undefined) => boolean;
-  hasMemberPermission: (url: string | undefined) => boolean;
-  hasViewerPermission: (url: string | undefined) => boolean;
   error: unknown;
 };
 
@@ -45,37 +39,6 @@ function useUser(options = { suspense: false, throwOnError: false }) {
     retry: (failureCount, error) => handleRetry([200, 401], failureCount, error),
   });
 
-  const getRoleName = (url: string | undefined) => {
-    if (data && url) {
-      return data
-        .Sharedspacemembers
-        .filter((it: { Sharedspace: Pick<TSharedspace, 'url'> }) => it.Sharedspace.url === url)[0]
-        ?.Role.name;
-    }
-
-    return '';
-  };
-
-  const isOwner = (url: string | undefined) => {
-    return getRoleName(url) === SharedspaceMembersRoles.OWNER;
-  };
-
-  const hasMemberPermission = (url: string | undefined) => {
-    const roleName = getRoleName(url);
-    const isMember = roleName === SharedspaceMembersRoles.MEMBER;
-    const isOwner = roleName === SharedspaceMembersRoles.OWNER;
-
-    return isMember || isOwner;
-  };
-
-  const hasViewerPermission = (url: string | undefined) => {
-    const roleName = getRoleName(url);
-
-    return Object
-      .values(SharedspaceMembersRoles)
-      .filter((role: string) => role === roleName).length > 0;
-  };
-
   if (suspense) {
     if (isLoading) throw new Promise(() => {});
     if (error) throw error;
@@ -83,9 +46,6 @@ function useUser(options = { suspense: false, throwOnError: false }) {
 
     return {
       data,
-      isOwner,
-      hasMemberPermission,
-      hasViewerPermission,
     };
   }
 
@@ -95,9 +55,6 @@ function useUser(options = { suspense: false, throwOnError: false }) {
     isLoading,
     isLogin: Boolean(!isLoading && data),
     isNotLogin: Boolean(!isLoading && !data),
-    isOwner,
-    hasMemberPermission,
-    hasViewerPermission,
     error,
   };
 }
