@@ -1,10 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
+import { GET_SHAREDSPACE_CHATS_KEY, GET_USER_KEY } from "Constants/queryKeys";
 import { getOrigin } from "Lib/utilFunction";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { ChatsCommandList, TChatList, TChats } from "Typings/types";
+import { ChatsCommandList, TChatList, TChats, TUser } from "Typings/types";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
@@ -31,13 +31,21 @@ export function useChatSocket() {
     };
   }, [_url]);
 
-  const onChatCreated = (data: TChatList) => {
+  const onChatCreated = (data: Omit<TChatList, 'permission'>) => {
+    const userData = qc.getQueryData<TUser>([GET_USER_KEY]);
+
     qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
-      if (!prev || !Array.isArray(prev.chats)) {
-        return { chats: [ data ], hasMoreData: prev?.hasMoreData || false };
+      const withPermission = Object.assign(data, {
+        permission: {
+          isSender: data.SenderId === userData?.id,
+        }
+      });
+
+      if (!prev) {
+        return { chats: [ withPermission ], hasMoreData: false };
       }
 
-      return { chats: [ data, ...prev?.chats ], hasMoreData: prev?.hasMoreData };
+      return { chats: [ withPermission, ...prev.chats ], hasMoreData: prev.hasMoreData };
     });
 
     setShowNewChat({
