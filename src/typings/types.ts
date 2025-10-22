@@ -192,11 +192,13 @@ export type TChatList = Pick<TChat,
   'id' |
   'content' |
   'SenderId' |
-  'SharedspaceId' |
   'createdAt' |
   'updatedAt'> & {
     Sender: Pick<TUser, 'email' | 'profileImage'>,
     Images: Pick<TImages, 'id' | 'path'>[],
+    permission: {
+      isSender: boolean,
+    },
   };
 
 export type TChats = {
