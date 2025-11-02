@@ -10,6 +10,7 @@ export function useChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
   const socketRef = useRef<Socket>();
+  const userData = qc.getQueryData<TUser>([GET_USER_KEY]);
   const [ showNewChat, setShowNewChat ] = useState({
     active: false,
     chat: '',
@@ -32,8 +33,6 @@ export function useChatSocket() {
   }, [_url]);
 
   const onChatCreated = (data: Omit<TChatList, 'permission'>) => {
-    const userData = qc.getQueryData<TUser>([GET_USER_KEY]);
-
     qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
       const withPermission = Object.assign(data, {
         permission: {
@@ -56,15 +55,20 @@ export function useChatSocket() {
     });
   };
 
-  const onChatUpdated = (data: TChatList) => {
+  const onChatUpdated = (data: Omit<TChatList, 'permission'>) => {
     qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
       if (prev) {
+        const withPermission = Object.assign(data, {
+          permission: {
+            isSender: data.SenderId === userData?.id,
+          },
+        });
         const newChats = [ ...prev.chats ];
         const idx = newChats.findIndex(chat => chat.id === data.id);
 
         if (idx < 0) return;
 
-        newChats[idx] = data;
+        newChats[idx] = withPermission;
         return { chats: newChats, hasMoreData: prev.hasMoreData };
       }
     });
