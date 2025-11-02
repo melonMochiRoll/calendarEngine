@@ -102,11 +102,12 @@ export type TTodo = {
   } | null,
 };
 
-export type TSearchTodos = 
-  Pick<TTodo, 'id' | 'description' | 'date' | 'startTime' | 'endTime'> & {
-    Sharedspace: Pick<TSharedspace, 'url'>,
-  }
-;
+export type TSearchTodos = Pick<TTodo,
+  'id' |
+  'description' |
+  'date' |
+  'startTime' |
+  'endTime'>;
 
 export type TSharedspaceMembers = {
   SharedspaceId: number,
