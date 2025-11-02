@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import RenderUserProfile from 'Components/auth/RenderUserProfile';
 import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ModalName } from 'Typings/types';
 import { updateSharedspaceName } from 'Api/sharedspacesApi';
 import useUser from 'Hooks/queries/useUser';
@@ -11,19 +11,19 @@ import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import EditableTitle from 'Components/common/EditableTitle';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
-import ProfileImage from 'Components/ProfileImage';
 import { PATHS } from 'Constants/paths';
 import { useSharedspace } from 'Hooks/queries/useSharedspace';
+import TextButton from 'Src/components/common/TextButton';
 
 interface SharedspaceHeaderProps {};
 
 const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
-  const { data: userData, isOwner } = useUser({ suspense: true, throwOnError: true });
+  const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const { data: spaceData } = useSharedspace();
+  const { permission } = spaceData;
 
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { url } = useParams();
   const dispatch = useAppDispatch();
 
   const onUpdateSharedspaceName = async (name: string) => {
@@ -44,7 +44,7 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
             fontSize='large'
             sx={SatelliteIconInlineStyle} />
           {
-            isOwner(url) ?
+            permission.isOwner ?
             <EditableTitle
               initValue={spaceData.name}
               submitEvent={onUpdateSharedspaceName}/>
@@ -52,22 +52,11 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
             <SpaceTitle>{spaceData.name}</SpaceTitle>
           }
         </FlexBox>
-        {spaceData.Sharedspacemembers &&
-          <FlexBox onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACEMEMBERLIST }))}>
-            {
-              spaceData.Sharedspacemembers
-                .slice(0, 5)
-                .map((member: typeof spaceData.Sharedspacemembers[0], idx: number) => {
-                  const { User } = member;
-
-                  return <ProfileImage
-                    key={User.email}
-                    profileImage={User.profileImage}
-                    email={User.email} />;
-                })
-            }
-            {spaceData.Sharedspacemembers.length - 5 > 0 && <RestUserImg>{`+${spaceData.Sharedspacemembers.length - 5}`} </RestUserImg>}
-          </FlexBox>}
+        <TextButton
+          type='button'
+          onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACEMEMBERLIST }))}>
+          멤버 목록
+        </TextButton>
       </SpaceInfoWrapper>
       <ProfileWrapper>
         <RenderUserProfile userData={userData} />
