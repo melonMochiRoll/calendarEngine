@@ -1,36 +1,22 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { ModalName, TImages } from 'Typings/types';
-import { useParams } from 'react-router-dom';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
-import { deleteSharedspaceChatImage } from 'Api/sharedspacesApi';
 import ClearIcon from '@mui/icons-material/Clear';
-import { toast } from 'react-toastify';
-import { defaultToastOption, waitingMessage } from 'Constants/notices';
 
 interface MultipleImageProps {
-  isSender: boolean,
-  ChatId: number,
   image: Pick<TImages, 'id' | 'path'>,
+  isSender: boolean,
+  deleteImage: () => void,
 };
 
 const MultipleImage: FC<MultipleImageProps> = ({
-  isSender,
-  ChatId,
   image,
+  isSender,
+  deleteImage,
 }) => {
-  const { url } = useParams();
   const dispatch = useAppDispatch();
-
-  const deleteImage = () => {
-    deleteSharedspaceChatImage(url, ChatId, image.id)
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
-      });
-  };
 
   const openImageModal = () => {
     dispatch(openModal({

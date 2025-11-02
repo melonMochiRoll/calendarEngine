@@ -3,13 +3,18 @@ import styled from '@emotion/styled';
 import { ModalName, TImages } from 'Typings/types';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
+import ClearIcon from '@mui/icons-material/Clear';
 
 interface SingleImageProps {
   image: Pick<TImages, 'id' | 'path'>,
+  isSender: boolean,
+  deleteImage: () => void,
 };
 
 const SingleImage: FC<SingleImageProps> = ({
   image,
+  isSender,
+  deleteImage,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -25,7 +30,13 @@ const SingleImage: FC<SingleImageProps> = ({
       <Image
         onClick={openImageModal}
         src={`${process.env.REACT_APP_AWS_S3_BUCKET_URL}/${image.path}`}/>
-      <Buttons></Buttons>
+      {isSender &&
+        <Buttons>
+          <Button onClick={deleteImage}>
+            <ClearIcon />
+          </Button> 
+        </Buttons>
+      }
     </Block>
   );
 };
