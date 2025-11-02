@@ -4,7 +4,7 @@ import { getOrigin } from "Lib/utilFunction";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { ChatsCommandList, TChatList, TChats, TUser } from "Typings/types";
+import { ChatsCommandList, TChatPayload, TChats, TUser } from "Typings/types";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
@@ -32,7 +32,7 @@ export function useChatSocket() {
     };
   }, [_url]);
 
-  const onChatCreated = (data: Omit<TChatList, 'permission'>) => {
+  const onChatCreated = (data: Omit<TChatPayload, 'permission'>) => {
     qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
       const withPermission = Object.assign(data, {
         permission: {
@@ -55,7 +55,7 @@ export function useChatSocket() {
     });
   };
 
-  const onChatUpdated = (data: Omit<TChatList, 'permission'>) => {
+  const onChatUpdated = (data: Omit<TChatPayload, 'permission'>) => {
     qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
       if (prev) {
         const withPermission = Object.assign(data, {

@@ -8,7 +8,7 @@ import DateSeparator from 'Components/chat/DateSeparator';
 import NewChatNotifier from 'Components/chat/NewChatNotifier';
 import ImagePreviewer from 'Components/chat/ImagePreviewer';
 import { formatDate } from 'Lib/utilFunction';
-import { TChatList, TChats } from 'Typings/types';
+import { TChatPayload, TChats } from 'Typings/types';
 import { DebouncedFuncLeading } from 'lodash';
 
 interface ChatListProps {
@@ -50,7 +50,7 @@ const ChatList: FC<ChatListProps> = ({
           previews={previews}
           deleteFile={deleteFile} />}
       {chatList.chats.length ?
-        chatList.chats.map((chat: TChatList, idx: number) => {
+        chatList.chats.map((chat: TChatPayload, idx: number) => {
           const isLastChat = idx >= chatList.chats.length - 1 && !chatList.hasMoreData;
           const isDateBoundary = idx < chatList.chats.length - 1 && (dayjs(chat.createdAt).tz(localTimeZone).format('DD') !== dayjs(chatList.chats[idx + 1].createdAt).tz(localTimeZone).format('DD'));
           const hasDateSeparator = isLastChat || isDateBoundary;

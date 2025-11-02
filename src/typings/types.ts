@@ -189,7 +189,7 @@ export type TChat = {
   deletedAt: string | null;
 };
 
-export type TChatList = Pick<TChat,
+export type TChatPayload = Pick<TChat,
   'id' |
   'content' |
   'SenderId' |
@@ -203,7 +203,7 @@ export type TChatList = Pick<TChat,
   };
 
 export type TChats = {
-  chats: TChatList[],
+  chats: TChatPayload[],
   hasMoreData: boolean,
 };
 
