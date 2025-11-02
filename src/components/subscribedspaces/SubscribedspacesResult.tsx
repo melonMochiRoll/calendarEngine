@@ -15,10 +15,10 @@ const SubscribedSpacesResult: FC<SubscribedSpacesResultProps> = ({
   return (
     <List>
       {
-        spaces.map((space, idx) => {
+        spaces.map((space) => {
           return (
             <SubscribedspacesItem
-              key={`${space.id}+${idx}`}
+              key={space.url}
               space={space}
               onDeleteSharedspace={onDeleteSharedspace} />
           );
