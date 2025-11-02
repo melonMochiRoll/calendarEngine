@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
-import { TChatList } from 'Typings/types';
+import { TChatPayload } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -11,24 +11,22 @@ import { defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Constants
 import { Menu, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import { useParams } from 'react-router-dom';
-import { deleteSharedspaceChat, updateSharedspaceChat } from 'Api/sharedspacesApi';
+import { deleteSharedspaceChat, deleteSharedspaceChatImage, updateSharedspaceChat } from 'Api/sharedspacesApi';
 import EditIcon from '@mui/icons-material/Edit';
 import useInput from 'Hooks/utils/useInput';
 import EditContent from './EditContent';
 import SingleImage from './SingleImage';
 import MultipleImage from './MultipleImage';
-import useUser from 'Hooks/queries/useUser';
 import { toast } from 'react-toastify';
 
 interface ChatProps {
-  chat: TChatList,
+  chat: TChatPayload,
 };
 
 const Chat: FC<ChatProps> = ({
   chat,
 }) => {
   const { url } = useParams();
-  const { data: userData } = useUser({ suspense: false, throwOnError: false });
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ newContent, onChangeNewContent ] = useInput(chat.content);
   dayjs.extend(utc);
@@ -68,6 +66,25 @@ const Chat: FC<ChatProps> = ({
       });
   };
 
+  const deleteImage = (
+    url: string | undefined,
+    content: string,
+    ChatId: number,
+    imageId: number
+  ) => {
+    deleteSharedspaceChatImage(url, ChatId, imageId)
+      .then(() => {
+        if (!content) {
+          onDeleteChat(url, ChatId);
+        }
+      })
+      .catch(() => {
+        toast.error(waitingMessage, {
+          ...defaultToastOption,
+        });
+      });
+  };
+
   return (
     <Item hoverMenuId={hoverMenuId}>
       <ProfileWrapper>
@@ -95,26 +112,31 @@ const Chat: FC<ChatProps> = ({
               }} /> :
             <Content>{chat.content}</Content>
           }
-          <Images>
-            {
-              chat.Images.map((image) => {
-                if (chat.Images.length === 1) {
-                  return <SingleImage
-                    key={image.id}
-                    image={image} />
-                }
+          {
+            chat.Images &&
+              <Images>
+                {
+                  chat.Images.map((image) => {
+                    if (chat.Images.length === 1) {
+                      return <SingleImage
+                        key={image.id}
+                        image={image}
+                        isSender={chat.permission.isSender}
+                        deleteImage={() => deleteImage(url, chat.content, chat.id, image.id)} />
+                    }
 
-                return <MultipleImage
-                  key={image.id}
-                  isSender={chat.SenderId === userData?.id}
-                  ChatId={chat.id}
-                  image={image} />
-              })
-            }
-          </Images>
+                    return <MultipleImage
+                      key={image.id}
+                      image={image}
+                      isSender={chat.permission.isSender}
+                      deleteImage={() => deleteImage(url, chat.content, chat.id, image.id)} />
+                  })
+                }
+              </Images>
+          }
         </ContentWrapper>
       </ChatWrapper>
-      {chat.SenderId === userData?.id &&
+      {chat.permission.isSender &&
         <HoverMenu id={hoverMenuId}>
           <IconWrapper onClick={onOpen}>
             <MoreIcon fontSize='large' />
