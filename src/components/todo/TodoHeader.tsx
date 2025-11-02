@@ -5,11 +5,11 @@ import AddIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { openModal } from 'Features/modalSlice';
 import { ModalName } from 'Typings/types';
 
-interface TodoHeader {
-  hasMemberPermission: () => boolean;
+interface TodoHeaderProps {
+  hasMemberPermission: boolean,
 };
 
-const TodoHeader: FC<TodoHeader> = ({
+const TodoHeader: FC<TodoHeaderProps> = ({
   hasMemberPermission,
 }) => {
   const dispatch = useAppDispatch();
@@ -19,7 +19,7 @@ const TodoHeader: FC<TodoHeader> = ({
   return (
     <>
       <Title>{`${year}년 ${month}월 ${date}일`}</Title>
-      <FlexBox visibility={hasMemberPermission()}
+      <FlexBox visibility={hasMemberPermission}
         onClick={() => dispatch(openModal({ name: ModalName.TODO_INPUT }))}>
         <AddIcon fontSize='large' sx={{ color: 'var(--blue)' }}/>
         <Span>새 Todo 작성</Span>
