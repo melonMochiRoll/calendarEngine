@@ -2,20 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { getSubscribedspaces } from "Api/sharedspacesApi";
 import { GET_SUBSCRIBED_SPACES_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
-import { TSubscribedspaces, TSubscribedspacesFilter } from "Typings/types";
+import { TSubscribedspaces } from "Typings/types";
 
 type UseSubscribedspaceReturnType = {
-  data: TSubscribedspaces[];
+  data: TSubscribedspaces,
 };
 
-export function useSubscribedspace(filter: TSubscribedspacesFilter): UseSubscribedspaceReturnType {
+export function useSubscribedspace(sort: string, page: number): UseSubscribedspaceReturnType {
   const {
     data,
     isLoading,
     error,
-  } = useQuery<TSubscribedspaces[]>({
-    queryKey: [GET_SUBSCRIBED_SPACES_KEY, filter],
-    queryFn: () => getSubscribedspaces(filter),
+  } = useQuery<TSubscribedspaces>({
+    queryKey: [GET_SUBSCRIBED_SPACES_KEY, sort, page],
+    queryFn: () => getSubscribedspaces(sort, page),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
