@@ -21,6 +21,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { ModalName, TTodo } from 'Typings/types';
+import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 
 export interface TodoDetailProps {
   todo: TTodo;
@@ -37,7 +38,9 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
   const { todoTime } = useAppSelector(state => state.todoTime);
 
   const { url } = useParams();
-  const { data: userData, hasMemberPermission } = useUser({ suspense: false, throwOnError: false });
+  const { data: userData } = useUser({ suspense: false, throwOnError: false });
+  const { data: spaceData } = useSharedspace();
+  const { permission } = spaceData;
   
   const [ error, setError ] = useState('');
 
@@ -74,7 +77,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
     <Block onClick={e => e.stopPropagation()}>
       <Header>
         <MenuWrapper>
-          {hasMemberPermission(url) &&
+          {permission.isMember &&
             <MenuIcon
               onClick={onOpen}
               fontSize='large'
