@@ -10,7 +10,7 @@ interface SearchMainProps {
 const SearchMain: FC<SearchMainProps> = ({
   query,
 }) => {
-  const { data: todosData, canLoadMore, nextOffset } = useSearchTodos(query);
+  const { data: todosData, canLoadMore, nextPage } = useSearchTodos(query);
   
   return (
     <>
@@ -19,7 +19,7 @@ const SearchMain: FC<SearchMainProps> = ({
           query={query}
           todosData={todosData}
           canLoadMore={canLoadMore}
-          nextOffset={nextOffset} />
+          nextPage={nextPage} />
         :
         <SearchInit />}
     </>

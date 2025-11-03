@@ -11,14 +11,14 @@ interface SearchResultProps {
   query: string;
   todosData: TSearchTodos[];
   canLoadMore: boolean;
-  nextOffset: () => void;
+  nextPage: () => void;
 }; 
 
 const SearchResult: FC<SearchResultProps> = ({
   query,
   todosData,
   canLoadMore,
-  nextOffset,
+  nextPage,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -46,7 +46,7 @@ const SearchResult: FC<SearchResultProps> = ({
           }
           {
             canLoadMore ?
-              <LoadMore onClick={nextOffset}>Load More</LoadMore> :
+              <LoadMore onClick={nextPage}>Load More</LoadMore> :
               <LoadMore disabled>목록 없음</LoadMore>
           }
         </TodoList> :

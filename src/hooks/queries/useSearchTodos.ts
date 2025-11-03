@@ -9,13 +9,13 @@ import { handleRetry } from "Lib/utilFunction";
 type UseSearchTodosReturnType = {
   data: TSearchTodos[];
   canLoadMore: boolean;
-  nextOffset: () => void;
+  nextPage: () => void;
 };
 
 export function useSearchTodos(query: string): UseSearchTodosReturnType {
   const qc = useQueryClient();
   const { url: _url } = useParams();
-  const [ offset, setOffset ] = useState(1);
+  const [ page, setPage ] = useState(1);
   const [ canLoadMore, setCanLoadMore ] = useState(true);
 
   const {
@@ -24,7 +24,7 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
     error,
   } = useQuery<TSearchTodos[]>({
     queryKey: [SEARCH_TODOS_KEY, query],
-    queryFn: () => searchTodos(_url, query),
+    queryFn: () => searchTodos(_url, query, page),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
@@ -32,7 +32,7 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
   });
 
   useEffect(() => {
-    setOffset(1);
+    setPage(1);
     setCanLoadMore(true);
   }, [query]);
 
@@ -43,8 +43,8 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
   }, [data]);
 
   useEffect(() => {
-    if (offset > 1) {
-      searchTodos(_url, query, offset)
+    if (page > 1) {
+      searchTodos(_url, query, page)
         .then(res => {
           if (res?.length < 10) {
             setCanLoadMore(false);
@@ -52,7 +52,7 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
           qc.setQueryData([SEARCH_TODOS_KEY, query], [ ...data || [], ...res ]);
         });
     }
-  }, [offset]);
+  }, [page]);
 
   if (isLoading) throw new Promise(() => {});
   if (error) throw error;
@@ -61,6 +61,6 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
   return {
     data,
     canLoadMore,
-    nextOffset: () => setOffset((prev) => prev + 1),
+    nextPage: () => setPage((prev) => prev + 1),
   };
 }
