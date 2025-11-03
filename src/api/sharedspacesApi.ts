@@ -162,21 +162,15 @@ export const deleteSharedspaceMembers = async (
 
 export const getSharedspaceChats = async (
   url: string | undefined,
-  offset: number,
-  limit: number = 30,
+  page: number,
 ) => {
   if (!url) {
     return;
-  };
+  }
 
   try {
     const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/chats`, {
-        params: {
-          offset,
-          limit,
-        }
-      });
+      .get(`/api/sharedspaces/${url}/chats?page=${page}`);
 
     return data;
   } catch (error) {
