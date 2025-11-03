@@ -108,16 +108,15 @@ export const deleteTodo = async (
 export const searchTodos = async (
   url: string | undefined,
   query: string,
-  offset: number = 1,
-  limit: number = 10,
+  page: number,
 ) => {
   if (!url || !query) {
-    return [];
+    return;
   }
   
   try {
     const { data } = await axiosInstance.get(
-      `/api/sharedspaces/${url}/todos/search?query=${query}&offset=${offset}&limit=${limit}`
+      `/api/sharedspaces/${url}/todos/search?query=${query}&page=${page}`
     );
     
     return data;
