@@ -110,7 +110,11 @@ export const searchTodos = async (
   query: string,
   page: number,
 ) => {
-  if (!url || !query) {
+  if (!query) {
+    return [];
+  }
+
+  if (!url) {
     return;
   }
   
