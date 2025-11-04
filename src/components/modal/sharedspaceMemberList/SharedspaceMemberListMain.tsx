@@ -29,8 +29,8 @@ const SharedspaceMemberListMain: FC = () => {
       });
   };
 
-  const onUpdateOwner = (OwnerId: number, targetUserId: number) => {
-    updateSharedspaceOwner(url, OwnerId, targetUserId)
+  const onUpdateOwner = (UserId: number) => {
+    updateSharedspaceOwner(url, UserId)
       .then(async () => {
         await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
         toast.success(successMessage, {

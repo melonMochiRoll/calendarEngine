@@ -10,7 +10,7 @@ import { renderRole } from 'Lib/utilFunction';
 interface MemberItemProps {
   item: TSharedspaceMembersItem;
   onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => void;
-  onUpdateOwner: (OwnerId: number, targetUserId: number) => void;
+  onUpdateOwner: (UserId: number) => void;
   onDeleteMember: (UserId: number) => void;
 };
 
@@ -48,7 +48,7 @@ const MemberItem: FC<MemberItemProps> = ({
   const accessOption = [
     {
       text: `${RoleDictionary.OWNER} 변경`,
-      action: () => onUpdateOwner(0, UserId),
+      action: () => onUpdateOwner(UserId),
     },
     {
       text: '권한 삭제',
