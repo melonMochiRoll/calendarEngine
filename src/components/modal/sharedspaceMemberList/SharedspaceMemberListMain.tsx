@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
-import { useSharedspace } from 'Hooks/queries/useSharedspace';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
@@ -9,18 +8,19 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { TSharedspaceMembersRoles } from 'Typings/types';
 import MemberItem from '../sharedspaceManager/MemberItem';
+import { useSharedpacemembers } from 'Src/hooks/queries/useSharedpacemembers';
 
 const SharedspaceMemberListMain: FC = () => {
   const { url } = useParams();
   const qc = useQueryClient();
-  const { data: spaceData } = useSharedspace();
+  const { data: membersData, nextPage } = useSharedpacemembers(); 
   const [ error, setError ] = useState('');
 
   const onUpdateMemberRole = (UserId: number, roleName: TSharedspaceMembersRoles) => {
     updateSharedspaceMembers(url, UserId, roleName)
       .then(async () => {
         await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-          toast.success(successMessage, {
+        toast.success(successMessage, {
           ...defaultToastOption,
         });
       })
@@ -58,17 +58,21 @@ const SharedspaceMemberListMain: FC = () => {
   return (
     <>
       <List>
-        {spaceData.Sharedspacemembers.map((user) => {
+        {membersData.items.map((member) => {
           return (
             <MemberItem
-              key={user.UserId}
-              OwnerData={spaceData.Owner}
-              SharedspaceMembersAndUser={user}
+              key={member.UserId}
+              item={member}
               onUpdateMemberRole={onUpdateMemberRole}
               onUpdateOwner={onUpdateOwner}
               onDeleteMember={onDeleteMember} />
           );
         })}
+        {membersData.hasMoreData &&
+          <LoadMore onClick={nextPage}>
+            Load More
+          </LoadMore>
+        }
       </List>
       {error && <ErrorSpan>{error}</ErrorSpan>}
     </>
@@ -92,4 +96,22 @@ const List = styled.ul`
 const ErrorSpan = styled.span`
   font-size: 16px;
   color: var(--red);
+`;
+
+const LoadMore = styled.button`
+  font-size: 24px;
+  font-weight: 600;
+  padding: 10px 15px;
+  margin: 20px 0;
+  color: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: 5px;
+  background-color: var(--black);
+  cursor: pointer;
+  transition: all 0.1s linear;
+
+  &:hover {
+    background-color: var(--red);
+    border-color: var(--red);
+  }
 `;
