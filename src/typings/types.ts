@@ -157,13 +157,18 @@ export const subscribedspacesSortsMap: { [key: string]: string } = {
   unowned: '소유하지 않은 스페이스',
 } as const;
 
-export type TSharedspaceMembersAndUser = Pick<TSharedspaceMembers, 'UserId' | 'RoleId' | 'createdAt'> &
-{
-  User: Pick<TUser, 'email' | 'profileImage'>
-} & {
-  Role: {
-    name: string,
-  }
+export type TSharedspaceMembersItem = {
+  UserId: number,
+  email: string,
+  profileImage: string,
+  RoleId: number,
+  RoleName: string,
+  createdAt: string,
+};
+
+export type TSharedspaceMembersList = {
+  items: TSharedspaceMembersItem[],
+  hasMoreData: boolean,
 };
 
 export type TSearchUsers = Pick<TUser, 'id' | 'email' | 'profileImage'> &
