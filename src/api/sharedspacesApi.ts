@@ -86,6 +86,25 @@ export const deleteSharedspace = async (url: string) => {
   }
 };
 
+export const getSharedspaceMembers = async (
+  url: string | undefined,
+  page: number,
+) => {
+  if (!url) {
+    throw new Error;
+  }
+  
+  try {
+    const { data } = await axiosInstance.get(
+      `/api/sharedspaces/${url}/members?page=${page}`
+    );
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createSharedspaceMembers = async (
   url: string | undefined,
   UserId: number,
