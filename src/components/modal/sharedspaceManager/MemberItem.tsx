@@ -3,26 +3,24 @@ import styled from '@emotion/styled';
 import useMenu from 'Hooks/utils/useMenu';
 import { Divider, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { RoleDictionary, SharedspaceMembersRoles, TSharedspaceMembersAndUser, TSharedspaceMembersRoles, TUser } from 'Typings/types';
+import { RoleDictionary, SharedspaceMembersRoles, TSharedspaceMembersItem, TSharedspaceMembersRoles } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
 import { renderRole } from 'Lib/utilFunction';
 
 interface MemberItemProps {
-  OwnerData: Pick<TUser, 'id' | 'email'>;
-  SharedspaceMembersAndUser: TSharedspaceMembersAndUser;
+  item: TSharedspaceMembersItem;
   onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => void;
   onUpdateOwner: (OwnerId: number, targetUserId: number) => void;
   onDeleteMember: (UserId: number) => void;
 };
 
 const MemberItem: FC<MemberItemProps> = ({
-  OwnerData,
-  SharedspaceMembersAndUser,
+  item,
   onUpdateMemberRole,
   onUpdateOwner,
   onDeleteMember,
 }) => {
-  const { Role, UserId, User } = SharedspaceMembersAndUser;
+  const { UserId, email, profileImage, RoleName } = item;
 
   const {
     anchorEl,
@@ -50,7 +48,7 @@ const MemberItem: FC<MemberItemProps> = ({
   const accessOption = [
     {
       text: `${RoleDictionary.OWNER} 변경`,
-      action: () => onUpdateOwner(OwnerData.id, UserId),
+      action: () => onUpdateOwner(0, UserId),
     },
     {
       text: '권한 삭제',
@@ -62,20 +60,20 @@ const MemberItem: FC<MemberItemProps> = ({
     <Item>
       <ProfileWrapper>
         <ProfileImage
-          profileImage={User.profileImage}
-          email={User.email} />
+          profileImage={profileImage}
+          email={email} />
       </ProfileWrapper>
       <EmailWrapper>
-        <EmailText>{User.email}</EmailText>
+        <EmailText>{email}</EmailText>
       </EmailWrapper>
       {
-        Role.name === SharedspaceMembersRoles.OWNER ?
+        RoleName === SharedspaceMembersRoles.OWNER ?
         <DisableButton>
-          <CurrentOption>{renderRole(Role.name)}</CurrentOption>
+          <CurrentOption>{renderRole(RoleName)}</CurrentOption>
         </DisableButton>
         :
         <Button onClick={onOpenWithEvent}>
-          <CurrentOption>{renderRole(Role.name)}</CurrentOption>
+          <CurrentOption>{renderRole(RoleName)}</CurrentOption>
           <ArrowDropDownIcon fontSize='large' />
         </Button>
       }
@@ -88,7 +86,7 @@ const MemberItem: FC<MemberItemProps> = ({
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
         {
           updateRoleOptions.map((option: typeof updateRoleOptions[0]) => {
-            if (Role.name !== option.roleName) {
+            if (RoleName !== option.roleName) {
               return (
                 <MenuItem
                   key={option.text}
@@ -105,7 +103,7 @@ const MemberItem: FC<MemberItemProps> = ({
         }
         <Divider />
         {
-          accessOption.map((option: typeof accessOption[0], idx: number) => {
+          accessOption.map((option: typeof accessOption[0]) => {
             return (
               <MenuItem
                 key={option.text}
