@@ -11,6 +11,7 @@ import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { TSharedspaceMembersRoles } from 'Typings/types';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
+import { useSharedpacemembers } from 'Src/hooks/queries/useSharedpacemembers';
 
 interface SharedspaceManagerMainProps {
   query: string;
@@ -23,6 +24,7 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
   const { url } = useParams();
   const { data: spaceData } = useSharedspace();
   const { data: searchUsersData } = useSearchUsers(query);
+  const { data: membersData, nextPage } = useSharedpacemembers(); 
   const [ error, setError ] = useState('');
 
   const onCreateMember = (UserId: number, RoleName: TSharedspaceMembersRoles) => {
@@ -58,8 +60,8 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
       });
   };
 
-  const onUpdateOwner = (OwnerId: number, targetUserId: number) => {
-    updateSharedspaceOwner(url, OwnerId, targetUserId)
+  const onUpdateOwner = (UserId: number) => {
+    updateSharedspaceOwner(url, UserId)
       .then(async () => {
         await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
         toast.success(successMessage, {
@@ -93,7 +95,9 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
           searchUsersData={searchUsersData}
           onCreateMember={onCreateMember} /> :
         <SharedspaceManagerInitPage
-          spaceData={spaceData}
+          membersData={membersData}
+          spacePrivate={spaceData.private}
+          nextPage={nextPage}
           onUpdateSharedspacePrivate={onUpdateSharedspacePrivate}
           onUpdateMemberRole={onUpdateMemberRole}
           onUpdateOwner={onUpdateOwner}
