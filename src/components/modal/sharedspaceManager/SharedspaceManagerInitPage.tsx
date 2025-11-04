@@ -1,23 +1,27 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import ShieldIcon from '@mui/icons-material/VerifiedUser';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import useMenu from 'Hooks/utils/useMenu';
 import { Menu, MenuItem } from '@mui/material';
-import { TSharedspaceMembersRoles, TSharedspaceMetaData } from 'Typings/types';
+import { TSharedspaceMembersList, TSharedspaceMembersRoles } from 'Typings/types';
 import PeopleIcon from '@mui/icons-material/PeopleAltRounded';
 import MemberItem from './MemberItem';
 
 interface SharedspaceManagerInitPageProps {
-  spaceData: TSharedspaceMetaData;
-  onUpdateSharedspacePrivate: (Private: boolean) => void;
-  onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => void;
-  onUpdateOwner: (OwnerId: number, targetUserId: number) => void;
-  onDeleteMember: (UserId: number) => void;
+  membersData: TSharedspaceMembersList,
+  spacePrivate: boolean,
+  nextPage: () => void,
+  onUpdateSharedspacePrivate: (Private: boolean) => void,
+  onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => void,
+  onUpdateOwner: (UserId: number) => void,
+  onDeleteMember: (UserId: number) => void,
 };
 
 const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
-  spaceData,
+  membersData,
+  spacePrivate,
+  nextPage,
   onUpdateMemberRole,
   onUpdateSharedspacePrivate,
   onUpdateOwner,
@@ -42,17 +46,21 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
           <Title>권한이 있는 유저</Title>
         </Top>
         <MemberList>
-          {spaceData.Sharedspacemembers.map((user) => {
+          {membersData.items.map((member) => {
             return (
               <MemberItem
-                key={user.UserId}
-                OwnerData={spaceData.Owner}
-                SharedspaceMembersAndUser={user}
+                key={member.UserId}
+                item={member}
                 onUpdateMemberRole={onUpdateMemberRole}
                 onUpdateOwner={onUpdateOwner}
                 onDeleteMember={onDeleteMember} />
             );
           })}
+        {membersData.hasMoreData &&
+          <LoadMore onClick={nextPage}>
+            Load More
+          </LoadMore>
+        }
         </MemberList>
       </MemberDiv>
       <PrivateDiv>
@@ -64,7 +72,7 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
           <Span>이 스페이스를</Span>
           <PrivateSwitch
             onClick={onOpen}>
-            {renderPrivateText(spaceData?.private)}
+            {renderPrivateText(spacePrivate)}
             <ArrowDropDownIcon fontSize='large' />
           </PrivateSwitch>
           <Menu
@@ -79,11 +87,11 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
               <MenuItem
                 onClick={(e) => {
                   e.stopPropagation();
-                  onUpdateSharedspacePrivate(!spaceData?.private);
+                  onUpdateSharedspacePrivate(!spacePrivate);
                   onClose();
                 }}
                 sx={{ fontSize: '20px', fontWeight: '500' }}>
-                <span>{renderPrivateText(!spaceData?.private)}</span>
+                <span>{renderPrivateText(!spacePrivate)}</span>
               </MenuItem>
             }
           </Menu>
@@ -156,4 +164,22 @@ const PrivateSwitch = styled.div`
 
 const Span = styled.span`
   font-size: 22px;
+`;
+
+const LoadMore = styled.button`
+  font-size: 24px;
+  font-weight: 600;
+  padding: 10px 15px;
+  margin: 20px 0;
+  color: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: 5px;
+  background-color: var(--black);
+  cursor: pointer;
+  transition: all 0.1s linear;
+
+  &:hover {
+    background-color: var(--red);
+    border-color: var(--red);
+  }
 `;
