@@ -32,8 +32,13 @@ export function useSearchUsers(query: string): UseSearchUsersReturnType {
   useEffect(() => {
     if (page > 1) {
       searchUsers(_url, query, page)
-        .then((res) => {
-          qc.setQueryData([SEARCH_USERS_KEY, _url, query], [ ...data?.items || [], ...res?.items ]);
+        .then((res: TSearchUsersList) => {
+          qc.setQueryData<TSearchUsersList>([SEARCH_USERS_KEY, _url, query], (prev) => {
+            return {
+              items: [ ...prev?.items || [], ...res.items ],
+              hasMoreData: res.hasMoreData,
+            };
+          });
         });
     }
   }, [page]);

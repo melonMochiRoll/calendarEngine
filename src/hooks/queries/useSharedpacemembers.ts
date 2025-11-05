@@ -32,8 +32,13 @@ export function useSharedpacemembers(): UseSharedpacemembersReturnType {
   useEffect(() => {
     if (page > 1) {
       getSharedspaceMembers(_url, page)
-        .then((res) => {
-          qc.setQueryData([GET_SHAREDSPACE_MEMBERS_KEY, _url], [ ...data?.items || [], ...res?.items ]);
+        .then((res: TSharedspaceMembersList) => {
+          qc.setQueryData<TSharedspaceMembersList>([GET_SHAREDSPACE_MEMBERS_KEY, _url], (prev) => {
+            return {
+              items: [ ...prev?.items || [], ...res.items ],
+              hasMoreData: res.hasMoreData,
+            };
+          });
         });
     }
   }, [page]);
