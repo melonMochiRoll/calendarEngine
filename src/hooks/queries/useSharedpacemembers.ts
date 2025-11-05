@@ -33,7 +33,7 @@ export function useSharedpacemembers(): UseSharedpacemembersReturnType {
     if (page > 1) {
       getSharedspaceMembers(_url, page)
         .then((res) => {
-          qc.setQueryData([GET_SHAREDSPACE_MEMBERS_KEY, _url], [ ...data?.items || [], ...res ]);
+          qc.setQueryData([GET_SHAREDSPACE_MEMBERS_KEY, _url], [ ...data?.items || [], ...res?.items ]);
         });
     }
   }, [page]);
