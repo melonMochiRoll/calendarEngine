@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import useMenu from 'Hooks/utils/useMenu';
 import { Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { RoleDictionary, SharedspaceMembersRoles, TSearchUsers, TSharedspaceMembersRoles, TSharedspaceMetaData } from 'Typings/types';
+import { RoleDictionary, SharedspaceMembersRoles, TSearchUsersItem, TSharedspaceMembersRoles } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
 
 const createMemeberOption = [
@@ -18,16 +18,16 @@ const createMemeberOption = [
 ];
 
 interface UserItemProps {
-  spaceData: TSharedspaceMetaData,
-  searchUserData: TSearchUsers,
+  user: TSearchUsersItem,
   onCreateMember: (UserId: number, RoleName: TSharedspaceMembersRoles) => void;
 };
 
 const UserItem: FC<UserItemProps> = ({
-  spaceData,
-  searchUserData,
+  user,
   onCreateMember,
 }) => {
+  const { id: UserId, email, profileImage, permission } = user;
+
   const {
     anchorEl,
     open,
@@ -44,13 +44,13 @@ const UserItem: FC<UserItemProps> = ({
     <Item>
       <ProfileWrapper>
         <ProfileImage
-          profileImage={searchUserData.profileImage}
-          email={searchUserData.email} />
+          profileImage={profileImage}
+          email={email} />
       </ProfileWrapper>
       <EmailWrapper>
-        <EmailText>{searchUserData.email}</EmailText>
+        <EmailText>{email}</EmailText>
       </EmailWrapper>
-      {searchUserData.Sharedspacemembers.find((ele) => ele.SharedspaceId === spaceData.id) ?
+      {permission.isParticipant ?
         <DisableButton>
           <CurrentOption>이미 속한 유저</CurrentOption>
         </DisableButton>
@@ -72,7 +72,7 @@ const UserItem: FC<UserItemProps> = ({
               key={option.text}
               onClick={(e) => {
                 e.stopPropagation();
-                onCreateMember(searchUserData.id, option.roleName);
+                onCreateMember(UserId, option.roleName);
                 onClose();
               }}>
               <span>{option.text}</span>
