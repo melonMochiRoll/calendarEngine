@@ -171,9 +171,18 @@ export type TSharedspaceMembersList = {
   hasMoreData: boolean,
 };
 
-export type TSearchUsers = Pick<TUser, 'id' | 'email' | 'profileImage'> &
-{
-  Sharedspacemembers: Pick<TSharedspaceMembers, 'SharedspaceId' | 'RoleId'>[]
+export type TSearchUsersItem = {
+  id: number,
+  email: string,
+  profileImage: string,
+  permission: {
+    isParticipant: boolean,
+  },
+};
+
+export type TSearchUsersList = {
+  items: TSearchUsersItem[],
+  hasMoreData: boolean,
 };
 
 export type TJoinRequest = {
