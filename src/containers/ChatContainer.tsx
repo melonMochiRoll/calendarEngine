@@ -34,16 +34,14 @@ const ChatContainer: FC = () => {
     scrollbarRef?.current?.scrollTo(0, -200);
         
     getSharedspaceChats(url, offset + 1)
-      .then((res) => {
-        qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, url], (prev?: TChats) => {
-          if (prev) {
-            return { chats: [ ...prev?.chats, ...res.chats ], hasMoreData: res?.hasMoreData };
-          }
+      .then((res: TChats) => {
+        qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+          return {
+            chats: [ ...prev?.chats || [], ...res.chats ],
+            hasMoreData: res.hasMoreData,
+          };
         });
         setOffset(prev => prev + 1);
-      })
-      .catch(() => {
-        qc.invalidateQueries([GET_SHAREDSPACE_CHATS_KEY, url]);
       });
   };
 
