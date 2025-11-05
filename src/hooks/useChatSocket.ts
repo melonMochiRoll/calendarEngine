@@ -33,7 +33,7 @@ export function useChatSocket() {
   }, [_url]);
 
   const onChatCreated = (data: Omit<TChatPayload, 'permission'>) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       const withPermission = Object.assign(data, {
         permission: {
           isSender: data.SenderId === userData?.id,
@@ -44,7 +44,10 @@ export function useChatSocket() {
         return { chats: [ withPermission ], hasMoreData: false };
       }
 
-      return { chats: [ withPermission, ...prev.chats ], hasMoreData: prev.hasMoreData };
+      return {
+        chats: [ withPermission, ...prev.chats ],
+        hasMoreData: prev.hasMoreData,
+      };
     });
 
     setShowNewChat({
@@ -56,7 +59,7 @@ export function useChatSocket() {
   };
 
   const onChatUpdated = (data: Omit<TChatPayload, 'permission'>) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (prev) {
         const withPermission = Object.assign(data, {
           permission: {
@@ -69,13 +72,16 @@ export function useChatSocket() {
         if (idx < 0) return;
 
         newChats[idx] = withPermission;
-        return { chats: newChats, hasMoreData: prev.hasMoreData };
+        return {
+          chats: newChats,
+          hasMoreData: prev.hasMoreData,
+        };
       }
     });
   };
 
   const onChatDeleted = (ChatId: number) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (prev) {
         const idx = prev.chats.findIndex(chat => chat.id === ChatId);
 
@@ -84,7 +90,10 @@ export function useChatSocket() {
         const head = prev.chats.slice(0, idx);
         const tail = prev.chats.slice(idx + 1, prev.chats.length);
 
-        return { chats: [ ...head, ...tail ], hasMoreData: prev.hasMoreData };
+        return {
+          chats: [ ...head, ...tail ],
+          hasMoreData: prev.hasMoreData,
+        };
       }
     });
   };
