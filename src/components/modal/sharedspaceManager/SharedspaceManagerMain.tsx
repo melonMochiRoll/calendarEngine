@@ -23,8 +23,8 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
   const qc = useQueryClient();
   const { url } = useParams();
   const { data: spaceData } = useSharedspace();
-  const { data: searchUsersData } = useSearchUsers(query);
-  const { data: membersData, nextPage } = useSharedpacemembers(); 
+  const { data: searchUsersData, nextPage: searchUsersNextPage } = useSearchUsers(query);
+  const { data: membersData, nextPage: sharedspaceMembersNextPage } = useSharedpacemembers(); 
   const [ error, setError ] = useState('');
 
   const onCreateMember = (UserId: number, RoleName: TSharedspaceMembersRoles) => {
@@ -91,13 +91,13 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
       {query ?
         <SharedspaceManagerResult
           query={query}
-          spaceData={spaceData}
           searchUsersData={searchUsersData}
+          nextPage={searchUsersNextPage}
           onCreateMember={onCreateMember} /> :
         <SharedspaceManagerInitPage
           membersData={membersData}
           spacePrivate={spaceData.private}
-          nextPage={nextPage}
+          nextPage={sharedspaceMembersNextPage}
           onUpdateSharedspacePrivate={onUpdateSharedspacePrivate}
           onUpdateMemberRole={onUpdateMemberRole}
           onUpdateOwner={onUpdateOwner}
