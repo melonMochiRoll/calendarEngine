@@ -30,6 +30,10 @@ export function useSearchUsers(query: string): UseSearchUsersReturnType {
   });
 
   useEffect(() => {
+    setPage(1);
+  }, [query]);
+
+  useEffect(() => {
     if (page > 1) {
       searchUsers(_url, query, page)
         .then((res: TSearchUsersList) => {
