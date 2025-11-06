@@ -2,13 +2,12 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SEARCH_TODOS_KEY } from "Constants/queryKeys";
 import { searchTodos } from "Api/todosApi";
 import { useEffect, useState } from "react";
-import { TSearchTodos } from "Typings/types";
+import { TSearchTodosPayload } from "Typings/types";
 import { useParams } from "react-router-dom";
 import { handleRetry } from "Lib/utilFunction";
 
 type UseSearchTodosReturnType = {
-  data: TSearchTodos[];
-  canLoadMore: boolean;
+  data: TSearchTodosPayload;
   nextPage: () => void;
 };
 
@@ -16,14 +15,13 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
   const qc = useQueryClient();
   const { url: _url } = useParams();
   const [ page, setPage ] = useState(1);
-  const [ canLoadMore, setCanLoadMore ] = useState(true);
 
   const {
     data,
     isLoading,
     error,
-  } = useQuery<TSearchTodos[]>({
-    queryKey: [SEARCH_TODOS_KEY, query],
+  } = useQuery<TSearchTodosPayload>({
+    queryKey: [SEARCH_TODOS_KEY, _url, query],
     queryFn: () => searchTodos(_url, query, page),
     refetchOnWindowFocus: false,
     suspense: true,
@@ -33,23 +31,18 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
 
   useEffect(() => {
     setPage(1);
-    setCanLoadMore(true);
   }, [query]);
-
-  useEffect(() => {
-    if (!isLoading && data && data?.length < 10) {
-      setCanLoadMore(false);
-    }
-  }, [data]);
 
   useEffect(() => {
     if (page > 1) {
       searchTodos(_url, query, page)
-        .then(res => {
-          if (res?.length < 10) {
-            setCanLoadMore(false);
-          }
-          qc.setQueryData([SEARCH_TODOS_KEY, query], [ ...data || [], ...res ]);
+        .then((res: TSearchTodosPayload) => {
+          qc.setQueryData<TSearchTodosPayload>([SEARCH_TODOS_KEY, _url, query], (prev) => {
+            return {
+              items: [ ...prev?.items || [], ...res.items ],
+              hasMoreData: res.hasMoreData,
+            };
+          });
         });
     }
   }, [page]);
@@ -60,7 +53,6 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
 
   return {
     data,
-    canLoadMore,
     nextPage: () => setPage((prev) => prev + 1),
   };
 }
