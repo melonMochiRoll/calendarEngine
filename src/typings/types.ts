@@ -102,12 +102,18 @@ export type TTodo = {
   } | null,
 };
 
-export type TSearchTodos = Pick<TTodo,
-  'id' |
-  'description' |
-  'date' |
-  'startTime' |
-  'endTime'>;
+export type TSearchTodosItem = {
+  id: number,
+  description: string,
+  date: string,
+  startTime: string,
+  endTime: string,
+};
+
+export type TSearchTodosPayload = {
+  items: TSearchTodosItem[],
+  hasMoreData: boolean,
+};
 
 export type TSharedspaceMembers = {
   SharedspaceId: number,
