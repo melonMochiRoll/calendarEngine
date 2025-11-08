@@ -41,12 +41,15 @@ export function useChatSocket() {
       });
 
       if (!prev) {
-        return { chats: [ withPermission ], hasMoreData: false };
+        return {
+          chats: [ withPermission ],
+          hasMoreData: false,
+        };
       }
 
       return {
+        ...prev,
         chats: [ withPermission, ...prev.chats ],
-        hasMoreData: prev.hasMoreData,
       };
     });
 
@@ -73,8 +76,8 @@ export function useChatSocket() {
 
         newChats[idx] = withPermission;
         return {
+          ...prev,
           chats: newChats,
-          hasMoreData: prev.hasMoreData,
         };
       }
     });
@@ -91,8 +94,8 @@ export function useChatSocket() {
         const tail = prev.chats.slice(idx + 1, prev.chats.length);
 
         return {
+          ...prev,
           chats: [ ...head, ...tail ],
-          hasMoreData: prev.hasMoreData,
         };
       }
     });
@@ -111,8 +114,8 @@ export function useChatSocket() {
         const imagesTail = targetChat.Images.slice(imageIdx + 1, targetChat.Images.length);
 
         return {
+          ...prev,
           chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
-          hasMoreData: prev.hasMoreData
         };
       }
     });
