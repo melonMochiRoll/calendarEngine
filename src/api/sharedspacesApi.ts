@@ -1,4 +1,4 @@
-import { TSharedspaceMembersRoles } from "Typings/types";
+import { TChatPayload, TChats, TSharedspaceMembersRoles } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getSharedspace = async (url: string | undefined) => {
@@ -179,15 +179,22 @@ export const deleteSharedspaceMembers = async (
 
 export const getSharedspaceChats = async (
   url: string | undefined,
-  page: number,
+  beforeChatId?: number,
 ) => {
   if (!url) {
-    return;
+    return {
+      chats: [],
+      hasMoreData: false,
+    };
   }
 
   try {
     const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/chats?page=${page}`);
+      .get(`/api/sharedspaces/${url}/chats`, {
+        params: {
+          before: beforeChatId,
+        },
+      });
 
     return data;
   } catch (error) {
