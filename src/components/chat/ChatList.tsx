@@ -12,17 +12,17 @@ import { TChatPayload, TChats } from 'Typings/types';
 import { DebouncedFuncLeading } from 'lodash';
 
 interface ChatListProps {
-  chatList: TChats;
-  previews: Array<string | ArrayBuffer | null>;
+  chatList: TChats,
+  previews: Array<string | ArrayBuffer | null>,
   showNewChat: {
     chat: string,
     active: boolean,
     email: string,
     profileImage: string
   },
-  scrollbarRef: React.RefObject<HTMLUListElement>;
-  onScroll: DebouncedFuncLeading<() => void>;
-  deleteFile: (idx: number) => void;
+  scrollbarRef: React.RefObject<HTMLUListElement>,
+  onScroll: DebouncedFuncLeading<() => void>,
+  deleteFile: (idx: number) => void,
 };
 
 const ChatList: FC<ChatListProps> = ({
@@ -41,7 +41,7 @@ const ChatList: FC<ChatListProps> = ({
     <List
       ref={scrollbarRef}
       onScroll={onScroll}>
-      {showNewChat.active &&
+      {showNewChat.active && showNewChat.chat &&
         <NewChatNotifier
           chat={showNewChat.chat}
           onClick={() => scrollbarRef?.current?.scrollTo(0, 0)} />}

@@ -40,24 +40,19 @@ export function useChatSocket() {
         }
       });
 
-      if (!prev) {
-        return {
-          chats: [ withPermission ],
-          hasMoreData: false,
-        };
-      }
-
       return {
-        ...prev,
-        chats: [ withPermission, ...prev.chats ],
+        chats: [ withPermission, ...prev?.chats || [] ],
+        hasMoreData: prev?.hasMoreData || false,
       };
     });
 
-    setShowNewChat({
-      chat: data.content,
-      active: false,
-      email: data.Sender.email,
-      profileImage: data.Sender.profileImage,
+    setShowNewChat((prev) => {
+      return {
+        active: prev.active,
+        chat: data.content,
+        email: data.Sender.email,
+        profileImage: data.Sender.profileImage,
+      };
     });
   };
 
@@ -102,7 +97,7 @@ export function useChatSocket() {
   };
 
   const onChatImageDeleted = (ChatId: number, ImageId: number) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (prev) {
         const chatIdx = prev.chats.findIndex(chat => chat.id === ChatId);
         const head = prev.chats.slice(0, chatIdx);
