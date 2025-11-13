@@ -1,13 +1,10 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useChatSocket } from 'Hooks/useChatSocket';
-import { ChatsCommandList, TChats } from 'Typings/types';
 import { useChats } from 'Hooks/queries/useChats';
-import { createSharedspaceChat, getSharedspaceChats } from 'Api/sharedspacesApi';
+import { createSharedspaceChat } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_CHATS_KEY } from 'Constants/queryKeys';
 import { throttle } from 'lodash';
 import { toast } from 'react-toastify';
 import { defaultToastOption, imageTooLargeMessage, tooManyImagesMessage, waitingMessage } from 'Constants/notices';
@@ -16,10 +13,8 @@ import ChatList from 'Components/chat/ChatList';
 
 const ChatContainer: FC = () => {
   const { url } = useParams();
-  const qc = useQueryClient();
-  const [ offset, setOffset ] = useState(1);
 
-  const { data: chatList } = useChats(offset);
+  const { data: chatList, loadMore } = useChats();
   const {
     showNewChat,
     setShowNewChat,
@@ -30,32 +25,18 @@ const ChatContainer: FC = () => {
   const [ images, setImages ] = useState<File[]>([]);
   const [ previews, setPreviews ] = useState<Array<string | ArrayBuffer | null>>([]);
 
-  const loadMore = () => {
-    scrollbarRef?.current?.scrollTo(0, -200);
-        
-    getSharedspaceChats(url, offset + 1)
-      .then((res: TChats) => {
-        qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-          return {
-            chats: [ ...prev?.chats || [], ...res.chats ],
-            hasMoreData: res.hasMoreData,
-          };
-        });
-        setOffset(prev => prev + 1);
-      });
-  };
-
   const onScroll = throttle(() => {
     if (scrollbarRef.current) {
       const isTop = scrollbarRef.current.scrollHeight - 100 < scrollbarRef.current.clientHeight - scrollbarRef.current.scrollTop;
 
       if (isTop && chatList.hasMoreData) {
         loadMore();
+        scrollbarRef?.current?.scrollTo(0, -200);
       }
 
       const newChatNoticeBorder = (0 - scrollbarRef.current.scrollTop) > scrollbarRef.current.clientHeight / 2;
       if (newChatNoticeBorder) {
-        setShowNewChat(prev => { return { ...prev, active: true }});
+        setShowNewChat({ active: true, chat: '', email: '', profileImage: '', });
       }
 
       const isBottom = scrollbarRef.current.scrollTop > -100;
