@@ -4,7 +4,6 @@ import calendarTimeReducer from 'Features/calendarTimeSlice';
 import todoTimeReducer from 'Features/todoTimeSlice';
 import globalErrorReducer from 'Features/globalErrorSlice';
 import csrfTokenReducer from 'Features/csrfTokenSlice';
-import chatReducer from 'Features/chatSlice';
 
 export const reduxStore = configureStore({
   reducer: {
@@ -13,7 +12,6 @@ export const reduxStore = configureStore({
     todoTime: todoTimeReducer,
     globalError: globalErrorReducer,
     csrfToken: csrfTokenReducer,
-    chat: chatReducer,
   },
 });
 
