@@ -12,7 +12,6 @@ import { closeModal } from 'Features/modalSlice';
 import TextButton from 'Components/common/TextButton';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import useUser from 'Hooks/queries/useUser';
 import { createTodo } from 'Api/todosApi';
 import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
@@ -30,7 +29,6 @@ const TodoInput: FC = () => {
   const dispatch = useAppDispatch();
 
   const { url } = useParams();
-  const { data: userData } = useUser();
   const { todoTime } = useAppSelector(state => state.todoTime);
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
 
@@ -85,7 +83,6 @@ const TodoInput: FC = () => {
     todoTime: string,
     start: typeof startTime,
     end: typeof endTime,
-    UserId: number | undefined,
     url: string | undefined,
   ) => {
     setErrorMessage('');
@@ -122,7 +119,6 @@ const TodoInput: FC = () => {
       todoTime,
       startTimeFormat,
       endTimeFormat,
-      UserId,
       url,
     )
     .then(async () => {
@@ -210,7 +206,6 @@ const TodoInput: FC = () => {
                   todoTime,
                   startTime,
                   endTime,
-                  userData?.id,
                   url,
                 );
               }}>

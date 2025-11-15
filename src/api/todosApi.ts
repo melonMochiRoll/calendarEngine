@@ -42,10 +42,9 @@ export const createTodo = async (
   date: string,
   startTime: string,
   endTime: string,
-  UserId: number | undefined,
   url: string | undefined,
   ) => {
-  if (!UserId || !url) {
+  if (!url) {
     throw new Error;
   }
 
@@ -56,7 +55,6 @@ export const createTodo = async (
         date,
         startTime,
         endTime,
-        AuthorId: UserId,
       });
   } catch (error) {
     throw error;
@@ -82,7 +80,6 @@ export const updateTodo = async (
         description,
         startTime,
         endTime,
-        EditorId: UserId,
       });
   } catch (error) {
     throw error;
