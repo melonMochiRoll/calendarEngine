@@ -66,10 +66,9 @@ export const updateTodo = async (
   description: string,
   startTime: string,
   endTime: string,
-  UserId: number | undefined,
   url: string | undefined,
   ) => {
-  if (!UserId || !url) {
+  if (!url) {
     throw new Error;
   }
 

@@ -13,7 +13,6 @@ import { deleteTodo } from 'Api/todosApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
-import useUser from 'Hooks/queries/useUser';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { formatDateTime } from 'Lib/utilFunction';
@@ -38,7 +37,6 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
   const { todoTime } = useAppSelector(state => state.todoTime);
 
   const { url } = useParams();
-  const { data: userData } = useUser({ suspense: false, throwOnError: false });
   const { data: spaceData } = useSharedspace();
   const { permission } = spaceData;
   
@@ -66,10 +64,10 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
       });
   };
 
-  const openTodoUpdate = (todo: TTodo, url: string | undefined, UserId: number | undefined) => {
+  const openTodoUpdate = (todo: TTodo, url: string | undefined) => {
     dispatch(openModal({
       name: ModalName.TODO_UPDATE,
-      props: { todo, url, UserId }
+      props: { todo, url }
     }));
   };
   
@@ -91,7 +89,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
               <MenuItem
-                onClick={() => openTodoUpdate(todo, url, userData?.id)}>
+                onClick={() => openTodoUpdate(todo, url)}>
                 <span>수정</span>
               </MenuItem>
               <MenuItem

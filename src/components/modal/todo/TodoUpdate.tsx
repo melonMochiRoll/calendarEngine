@@ -19,14 +19,12 @@ import { toast } from 'react-toastify';
 import { TTodo } from 'Typings/types';
 
 export interface TodoUpdateProps {
-  todo: TTodo;
-  UserId: number | undefined;
-  url: string | undefined
+  todo: TTodo,
+  url: string | undefined,
 };
 
 const TodoUpdate: FC<TodoUpdateProps> = ({
   todo,
-  UserId,
   url,
 }) => {
   dayjs.extend(utc);
@@ -92,7 +90,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     newDescription: string,
     start: typeof startTime,
     end: typeof endTime,
-    UserId: number | undefined,
     url: string | undefined,
   ) => {
     setError('');
@@ -129,7 +126,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       newDescription,
       startTimeFormat,
       endTimeFormat,
-      UserId,
       url,
     )
     .then(async () => {
@@ -218,7 +214,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
                   description,
                   startTime,
                   endTime,
-                  UserId,
                   url,
                 );
               }}>
