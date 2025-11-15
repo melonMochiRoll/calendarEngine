@@ -1,4 +1,4 @@
-import { TChatPayload, TChats, TSharedspaceMembersRoles } from "Typings/types";
+import { TSharedspaceMembersRoles } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getSharedspace = async (url: string | undefined) => {
@@ -30,12 +30,10 @@ export const getSubscribedspaces = async (
   }
 };
 
-export const createSharedspace = async (UserId: number) => {
+export const createSharedspace = async () => {
   try {
     const { data } = await axiosInstance
-      .post(`api/sharedspaces`, {
-        OwnerId: UserId,
-      });
+      .post(`api/sharedspaces`);
 
     return data;
   } catch (error) {

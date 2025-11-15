@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import useUser from 'Hooks/queries/useUser';
 import { useSubscribedspace } from 'Hooks/queries/useSubscribedspaces';
 import SubscribedSpacesResult from 'Components/subscribedspaces/SubscribedspacesResult';
 import SubscribedSpacesHeader from 'Components/subscribedspaces/SubscribedspacesHeader';
@@ -22,10 +21,9 @@ const SubscribedSpacesContainer: FC = () => {
   const currentPage = Number(searchParams.get('page')) || 1;
 
   const { data: subscribedspaceData } = useSubscribedspace(sort, currentPage);
-  const { data: userData } = useUser({ suspense: true, throwOnError: true });
 
-  const onCreateSharedspace = (UserId: number) => {
-    createSharedspace(UserId)
+  const onCreateSharedspace = () => {
+    createSharedspace()
       .then((url) => {
         navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`);
       })
@@ -59,7 +57,7 @@ const SubscribedSpacesContainer: FC = () => {
   return (
     <Main>
       <SubscribedSpacesHeader
-        onCreateSharedspace={() => onCreateSharedspace(userData.id)}
+        onCreateSharedspace={() => onCreateSharedspace()}
         sort={sort}
         sortSpaces={sortSpaces} />
       {subscribedspaceData.spaces.length ?
