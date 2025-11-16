@@ -140,7 +140,7 @@ const HoverDiv = styled.div<{ x: number, y: number }>`
   position: absolute;
   display: flex;
   flex-direction: column;
-  left: ${({x}) => x + 15}px;
+  left: ${({x}) => x - 200}px;
   top: ${({y}) => y + 15}px;
   padding: 10px 15px;
   color: var(--white);
