@@ -13,7 +13,7 @@ import TextButton from 'Components/common/TextButton';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { createTodo } from 'Api/todosApi';
-import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
+import { GET_TODOS_BY_MONTH_KEY } from 'Constants/queryKeys';
 import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { getByteSize } from 'Lib/utilFunction';
 import { toast } from 'react-toastify';
@@ -122,8 +122,7 @@ const TodoInput: FC = () => {
       url,
     )
     .then(async () => {
-      await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
-      await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
+      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
       toast.success(successMessage, {
         ...defaultToastOption,
       });

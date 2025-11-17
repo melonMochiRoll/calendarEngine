@@ -12,14 +12,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { TODO_MAX_SIZE } from 'Constants/calendar';
 import { getByteSize } from 'Lib/utilFunction';
 import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
-import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import TextButton from 'Components/common/TextButton';
 import { updateTodo } from 'Api/todosApi';
 import { toast } from 'react-toastify';
-import { TTodo } from 'Typings/types';
+import { TTodoPayload } from 'Typings/types';
+import { GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
 
 export interface TodoUpdateProps {
-  todo: TTodo,
+  todo: TTodoPayload,
   url: string | undefined,
 };
 
@@ -129,8 +129,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       url,
     )
     .then(async () => {
-      await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
-      await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
+      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
       dispatch(clearModal());
       toast.success(successMessage, {
         ...defaultToastOption,

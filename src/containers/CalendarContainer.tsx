@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { useTodosList } from 'Hooks/queries/useTodosList';
 import DaysOfWeekHeader from 'Components/calendar/DaysOfWeekHeader';
 import CalendarDates from 'Components/calendar/CalendarDates';
 import { useAppSelector } from 'Hooks/reduxHooks';
+import { useTodosByMonth } from 'Src/hooks/queries/useTodosByMonth';
 
 interface CalendarContainerProps {};
 
 const CalendarContainer: FC<CalendarContainerProps> = () => {
-  const { data: todosListData } = useTodosList();
+  const { data: todosData } = useTodosByMonth();
   const {
     calendarYear,
     calendarMonth,
@@ -24,7 +24,7 @@ const CalendarContainer: FC<CalendarContainerProps> = () => {
         isNowYearAndMonth={isNowYearAndMonth}
         nowDay={nowDay} />
       <CalendarDates
-        todosListData={todosListData}
+        todosData={todosData}
         calendarYear={calendarYear}
         calendarMonth={calendarMonth}
         dates={dates}

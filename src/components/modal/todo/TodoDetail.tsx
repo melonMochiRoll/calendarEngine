@@ -12,18 +12,18 @@ import { Menu, MenuItem } from '@mui/material';
 import { deleteTodo } from 'Api/todosApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { formatDateTime } from 'Lib/utilFunction';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { ModalName, TTodo } from 'Typings/types';
+import { ModalName, TTodo, TTodoPayload } from 'Typings/types';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
+import { GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
 
 export interface TodoDetailProps {
-  todo: TTodo;
+  todo: TTodoPayload;
 };
 
 const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
@@ -55,8 +55,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
         toast.success(successMessage, {
           ...defaultToastOption,
         });
-        await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
-        await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
+        await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
         dispatch(closeModal());
       })
       .catch(() => {
@@ -64,7 +63,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
       });
   };
 
-  const openTodoUpdate = (todo: TTodo, url: string | undefined) => {
+  const openTodoUpdate = (todo: TTodoPayload, url: string | undefined) => {
     dispatch(openModal({
       name: ModalName.TODO_UPDATE,
       props: { todo, url }
@@ -119,11 +118,11 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
           </Content>
           <Content>
             <PencilIcon />
-            <ContentSpan>{`${todo?.Author.email}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
+            <ContentSpan>{`${todo?.Author}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
           </Content>
         </Contents>
         <UpdatedAtWrapper>
-          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor.email}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
+          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
           {error && <ErrorSpan>error</ErrorSpan>}
         </UpdatedAtWrapper>
       </ContentsWrapper>

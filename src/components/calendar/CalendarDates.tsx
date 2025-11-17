@@ -3,10 +3,10 @@ import styled from '@emotion/styled';
 import DateCover from 'Components/calendar/DateCover';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { setTodoTime } from 'Features/todoTimeSlice';
-import { TTodosList } from 'Hooks/queries/useTodosList';
+import { TTodoMap } from 'Src/typings/types';
 
 interface CalendarDatesProps {
-  todosListData: TTodosList;
+  todosData: TTodoMap;
   calendarYear: string;
   calendarMonth: string;
   dates: number[][];
@@ -15,7 +15,7 @@ interface CalendarDatesProps {
 };
 
 const CalendarDates: FC<CalendarDatesProps> = ({
-  todosListData,
+  todosData,
   calendarYear,
   calendarMonth,
   dates,
@@ -37,7 +37,7 @@ const CalendarDates: FC<CalendarDatesProps> = ({
                   key={`date-${dateIndex}`}
                   index={dateIndex}
                   setTodoTime={() => dispatch(setTodoTime(timeKey))}
-                  todosLength={todosListData[timeKey] || 0}
+                  todosLength={todosData[timeKey]?.length || 0}
                   date={date}
                   nowDate={nowDate}
                   isNowYearAndMonth={isNowYearAndMonth} />

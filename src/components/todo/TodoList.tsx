@@ -1,29 +1,29 @@
 import React, { FC, Fragment } from 'react';
 import styled from '@emotion/styled';
-import { TTodo } from 'Typings/types';
+import { TTodo, TTodoPayload } from 'Typings/types';
 import TodoItem from './TodoItem';
 import { TODO_PALETTE } from 'Constants/calendar';
 import { getTodoHeight, renderTime, timeToDayjs } from 'Lib/utilFunction';
 import TodoBlank from './TodoBlank';
 
 interface TodoListProps {
-  todosData: TTodo[];
+  todoData: TTodoPayload[];
 };
 
 const TodoList: FC<TodoListProps> = ({
-  todosData,
+  todoData,
 }) => {
   return (
     <Block>
       <ListHeader>
         <TimeDiv>
-          <TimeSpan>{renderTime(todosData[0]?.startTime)}</TimeSpan>
+          <TimeSpan>{renderTime(todoData[0]?.startTime)}</TimeSpan>
         </TimeDiv>
       </ListHeader>
       <ListBody>
         {
-          todosData.map((todo: TTodo, idx: number) => {
-            if (todosData.length === idx + 1) {
+          todoData.map((todo: TTodoPayload, idx: number) => {
+            if (todoData.length === idx + 1) {
               return (
                 <TodoItem
                   key={todo.id}
@@ -33,7 +33,7 @@ const TodoList: FC<TodoListProps> = ({
               );
             }
 
-            const nextTodo = todosData[idx + 1];
+            const nextTodo = todoData[idx + 1];
 
             if (timeToDayjs(todo.endTime) < timeToDayjs(nextTodo.startTime)) {
               return (
@@ -50,23 +50,13 @@ const TodoList: FC<TodoListProps> = ({
               );
             }
 
-            if (timeToDayjs(todo.endTime) > timeToDayjs(nextTodo.startTime)) {
-              return (
-                <TodoItem
-                  key={todo.id}
-                  todo={todo}
-                  todoHeight={getTodoHeight(todo.startTime, todo.endTime)}
-                  bgColor={TODO_PALETTE[idx % 7]}
-                  hideEndTime={true} />
-              );
-            }
-
             return (
               <TodoItem
                 key={todo.id}
                 todo={todo}
                 todoHeight={getTodoHeight(todo.startTime, todo.endTime)}
-                bgColor={TODO_PALETTE[idx % 7]} />
+                bgColor={TODO_PALETTE[idx % 7]}
+                hideEndTime={timeToDayjs(todo.endTime) > timeToDayjs(nextTodo.startTime)} />
             );
           })
         }
