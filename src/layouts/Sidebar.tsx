@@ -9,16 +9,17 @@ import { ModalName } from 'Typings/types';
 import PublicIcon from '@mui/icons-material/Public';
 import MailIcon from '@mui/icons-material/Mail';
 import MailReadIcon from '@mui/icons-material/MarkEmailRead';
-import useUser from 'Hooks/queries/useUser';
 import { PATHS } from 'Constants/paths';
+import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 
 const Sidebar: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
   const { url } = useParams();
-  const { isOwner, hasMemberPermission } = useUser({ suspense: true, throwOnError: true });
+  const { data: spaceData } = useSharedspace();
   const pageName = location.pathname.split('/')[2];
+  const { permission } = spaceData;
   
   return (
     <NavBlock>
@@ -35,7 +36,7 @@ const Sidebar: FC = () => {
         <span>채팅</span>
       </IconButton>
       {
-        isOwner(url) &&
+        permission.isOwner &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACEMANAGER }))}>
           <Icon>
             <PublicIcon />
@@ -44,7 +45,7 @@ const Sidebar: FC = () => {
         </IconButton>
       }
       {
-        isOwner(url) &&
+        permission.isOwner &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.JOINREQUEST_MANAGER }))}>
           <Icon>
             <MailIcon />
@@ -53,7 +54,7 @@ const Sidebar: FC = () => {
         </IconButton>
       }
       {
-        !hasMemberPermission(url) &&
+        !permission.isMember &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.JOINREQUEST_SENDER }))}>
           <Icon>
             <MailReadIcon />
