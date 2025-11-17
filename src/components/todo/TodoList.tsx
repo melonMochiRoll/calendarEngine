@@ -1,13 +1,13 @@
 import React, { FC, Fragment } from 'react';
 import styled from '@emotion/styled';
-import { TTodo, TTodoPayload } from 'Typings/types';
+import { TTodoPayload } from 'Typings/types';
 import TodoItem from './TodoItem';
 import { TODO_PALETTE } from 'Constants/calendar';
 import { getTodoHeight, renderTime, timeToDayjs } from 'Lib/utilFunction';
 import TodoBlank from './TodoBlank';
 
 interface TodoListProps {
-  todoData: TTodoPayload[];
+  todoData: TTodoPayload[],
 };
 
 const TodoList: FC<TodoListProps> = ({
@@ -23,12 +23,14 @@ const TodoList: FC<TodoListProps> = ({
       <ListBody>
         {
           todoData.map((todo: TTodoPayload, idx: number) => {
+            const height = getTodoHeight(todo.startTime, todo.endTime);
+
             if (todoData.length === idx + 1) {
               return (
                 <TodoItem
                   key={todo.id}
                   todo={todo}
-                  todoHeight={getTodoHeight(todo.startTime, todo.endTime)}
+                  todoHeight={height}
                   bgColor={TODO_PALETTE[idx % 7]} />
               );
             }
@@ -40,7 +42,7 @@ const TodoList: FC<TodoListProps> = ({
                 <Fragment key={todo.id}>
                   <TodoItem
                     todo={todo}
-                    todoHeight={getTodoHeight(todo.startTime, todo.endTime)}
+                    todoHeight={height}
                     bgColor={TODO_PALETTE[idx % 7]} />
                   <TodoBlank
                     blankHeight={getTodoHeight(todo.endTime, nextTodo.startTime)}
@@ -54,7 +56,7 @@ const TodoList: FC<TodoListProps> = ({
               <TodoItem
                 key={todo.id}
                 todo={todo}
-                todoHeight={getTodoHeight(todo.startTime, todo.endTime)}
+                todoHeight={height}
                 bgColor={TODO_PALETTE[idx % 7]}
                 hideEndTime={timeToDayjs(todo.endTime) > timeToDayjs(nextTodo.startTime)} />
             );
