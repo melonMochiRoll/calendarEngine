@@ -102,6 +102,22 @@ export type TTodo = {
   } | null,
 };
 
+export type TTodoPayload = {
+  id: number,
+  description: string,
+  date: string,
+  startTime: string,
+  endTime: string,
+  createdAt: string,
+  updatedAt: string,
+  Author: string,
+  Editor: string,
+};
+
+export type TTodoMap = {
+  [key: string]: TTodoPayload[],
+};
+
 export type TSearchTodosItem = {
   id: number,
   description: string,
