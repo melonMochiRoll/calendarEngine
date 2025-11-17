@@ -1,8 +1,9 @@
 import { axiosInstance } from "./axiosInstance";
 
-export const getTodosByDate = async (
+export const getTodosByMonth = async (
   url: string | undefined,
-  date: string,
+  year: string,
+  month: string,
 ) => {
   if (!url) {
     return;
@@ -10,27 +11,8 @@ export const getTodosByDate = async (
 
   try {
     const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/todos?date=${date}`);
+      .get(`/api/sharedspaces/${url}/todos?date=${year}-${month}`);
 
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getTodosCount = async (
-  url: string | undefined,
-  year: string,
-  month: string,
-  ) => {
-  if (!url) {
-    return;
-  }
-
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/todos/count?date=${year}-${month}`);
-      
     return data;
   } catch (error) {
     throw error;
