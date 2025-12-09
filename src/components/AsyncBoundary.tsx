@@ -2,32 +2,18 @@ import React, { FC, Suspense } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 
 interface AsyncBoundaryProps {
-  errorBoundaryFallback?: (errors: FallbackProps, errorRenderComponent?: React.ReactNode) => React.ReactNode;
-  errorRenderComponent?: React.ReactNode;
+  fallbackRender: (props: FallbackProps) => React.ReactNode;
   suspenseFallback: React.ReactNode;
   children: React.ReactNode;
 };
 
 const AsyncBoundary: FC<AsyncBoundaryProps> = ({
-  errorBoundaryFallback,
-  errorRenderComponent,
+  fallbackRender,
   suspenseFallback,
   children,
 }) => {
-  if (!errorBoundaryFallback) {
-    return (
-      <ErrorBoundary
-        fallbackRender={() => errorRenderComponent}>
-        <Suspense fallback={suspenseFallback}>
-          {children}
-        </Suspense>
-      </ErrorBoundary>
-    );
-  }
-
   return (
-    <ErrorBoundary
-      FallbackComponent={(error) => errorBoundaryFallback(error, errorRenderComponent)}>
+    <ErrorBoundary fallbackRender={fallbackRender}>
       <Suspense fallback={suspenseFallback}>
         {children}
       </Suspense>
