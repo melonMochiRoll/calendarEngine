@@ -41,8 +41,8 @@ function useUser(options = { suspense: false, throwOnError: false }) {
 
   if (suspense) {
     if (isLoading) throw new Promise(() => {});
-    if (error) throw error;
-    if (data === null || data === undefined) throw new Error();
+    if (throwOnError && error) throw error;
+    if (throwOnError && (data === null || data === undefined)) throw new Error();
 
     return {
       data,
