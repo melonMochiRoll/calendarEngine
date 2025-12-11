@@ -1,23 +1,19 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { PATHS } from "Constants/paths";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { addError, clearErrors, ErrorPriority } from "Features/globalErrorSlice";
-import { useAppDispatch, useAppSelector } from "Hooks/reduxHooks";
+import { ErrorPriority } from "Features/globalErrorSlice";
 import { FallbackProps } from "react-error-boundary";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { defaultToastOption, needLogin, privateTooltip, waitingMessage } from "Constants/notices";
+import { needLogin, privateTooltip, waitingMessage } from "Constants/notices";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export default function GlobalErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { url: _url } = useParams();
-  const errors = useAppSelector(state => state.globalError);
 
   const getErrorPayload = (error: any, status: number) => {
     const result = {
@@ -67,34 +63,11 @@ export default function GlobalErrorFallback({ error, resetErrorBoundary }: Fallb
   };
 
   useEffect(() => {
-    const debounce = setTimeout(() => {
-      dispatch(addError(
-        getErrorPayload(error, error?.response?.status || 500)
-      ));
-    }, 500);
-    
-    return () => {
-      clearTimeout(debounce);
-    };
+    const result = getErrorPayload(error, error?.response?.status || 500);
+
+    resetErrorBoundary();
+    navigate(result?.destination);
   }, []);
 
-  useEffect(() => {
-    const head = errors[0];
-
-    const debounce = setTimeout(() => {
-      toast.error(head?.message, {
-        ...defaultToastOption,
-        toastId: head?.message,
-      });
-      dispatch(clearErrors());
-      resetErrorBoundary();
-      navigate(head?.destination);
-    }, 500);
-
-    return () => {
-      clearTimeout(debounce);
-    };
-  }, [errors]);
-
-  return <></>;
+  return null;
 }
