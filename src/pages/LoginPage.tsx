@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import LoginContainer from 'Containers/LoginContainer';
 import { toast } from 'react-toastify';
 import { defaultToastOption } from 'Constants/notices';
-import LoadingPage from 'Src/components/skeleton/LoadingPage';
+import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
 import RequireLogout from 'Src/components/guard/RequireLogout';
 
 const LoginPage: FC = () => {

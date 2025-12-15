@@ -1,6 +1,6 @@
 import React, { FC, Suspense } from 'react';
 import RequireLogin from 'Src/components/guard/RequireLogin';
-import LoadingPage from 'Src/components/skeleton/LoadingPage';
+import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
 import JoinRequestSenderContainer from 'Src/containers/JoinRequestSenderContainer';
 
 const JoinRequestSenderPage: FC = () => {

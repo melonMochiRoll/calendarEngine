@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import SkeletonHeader from 'Components/skeleton/SkeletonHeader';
+import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
 import { Skeleton } from '@mui/material';
-import SkeletonSidebar from './skeleton/SkeletonSidebar';
+import SkeletonSidebar from './async/skeleton/SkeletonSidebar';
 
 const SkeletonSharedspacePage: FC = () => {
   return (

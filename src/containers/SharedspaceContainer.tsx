@@ -1,13 +1,13 @@
 import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
-import SkeletonHeader from 'Components/skeleton/SkeletonHeader';
+import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
 import Drawer from 'Components/common/Drawer';
 import TodoContainer from 'Containers/TodoContainer';
 import { useAppSelector } from 'Hooks/reduxHooks';
 import TodoInit from 'Components/todo/TodoInit';
-import LoadingCircular from 'Components/skeleton/LoadingCircular';
-import SkeletonSidebar from 'Components/skeleton/SkeletonSidebar';
+import LoadingCircular from 'Src/components/async/skeleton/LoadingCircular';
+import SkeletonSidebar from 'Src/components/async/skeleton/SkeletonSidebar';
 import Sidebar from 'Src/layouts/Sidebar';
 import SharedspaceHeader from 'Src/layouts/SharedspaceHeader';
 
