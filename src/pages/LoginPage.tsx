@@ -1,9 +1,10 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import LoginContainer from 'Containers/LoginContainer';
 import { toast } from 'react-toastify';
 import { defaultToastOption } from 'Constants/notices';
-import WithGuestGuard from 'Components/hoc/WithGuestGuard';
+import LoadingPage from 'Src/components/skeleton/LoadingPage';
+import RequireLogout from 'Src/components/guard/RequireLogout';
 
 const LoginPage: FC = () => {
   const [ searchParams ] = useSearchParams();
@@ -17,8 +18,12 @@ const LoginPage: FC = () => {
   }, []);
 
   return (
-    <LoginContainer />
+    <Suspense fallback={<LoadingPage />}>
+      <RequireLogout>
+        <LoginContainer />
+      </RequireLogout>
+    </Suspense>
   )
 };
 
-export default WithGuestGuard(LoginPage);
+export default LoginPage;
