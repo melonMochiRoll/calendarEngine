@@ -55,25 +55,34 @@ const SubscribedSpacesContainer: FC = () => {
   };
 
   return (
-    <Main>
-      <SubscribedSpacesHeader
-        onCreateSharedspace={() => onCreateSharedspace()}
-        sort={sort}
-        sortSpaces={sortSpaces} />
-      {subscribedspaceData.spaces.length ?
-        <SubscribedSpacesResult
-          spaces={subscribedspaceData.spaces}
-          onDeleteSharedspace={onDeleteSharedspace} /> :
-        <SubscribedSpacesNull />}
-      <SubscribedSpacesPagination
-        currentPage={currentPage}
-        totalCount={subscribedspaceData.totalCount}
-        goToPage={goToPage} />
-    </Main>
+    <Background>
+      <Main>
+        <SubscribedSpacesHeader
+          onCreateSharedspace={() => onCreateSharedspace()}
+          sort={sort}
+          sortSpaces={sortSpaces} />
+        {subscribedspaceData.spaces.length ?
+          <SubscribedSpacesResult
+            spaces={subscribedspaceData.spaces}
+            onDeleteSharedspace={onDeleteSharedspace} /> :
+          <SubscribedSpacesNull />}
+        <SubscribedSpacesPagination
+          currentPage={currentPage}
+          totalCount={subscribedspaceData.totalCount}
+          goToPage={goToPage} />
+      </Main>
+    </Background>
   );
 };
 
 export default SubscribedSpacesContainer;
+
+const Background = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--black);
+`;
 
 const Main = styled.main`
   display: flex;
