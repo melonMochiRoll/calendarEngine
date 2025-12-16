@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
-import styled from '@emotion/styled';
-import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
-import { closeModal } from 'Features/modalSlice';
+import { useAppSelector } from 'Hooks/reduxHooks';
 import { ModalName } from 'Typings/types';
 
 export const modals = {
@@ -18,7 +16,6 @@ export const modals = {
 };
 
 const RenderModal: FC = () => {
-  const dispatch = useAppDispatch();
   const modalStack = useAppSelector(state => state.modal);
 
   if (!modalStack.length) return null;
@@ -28,28 +25,10 @@ const RenderModal: FC = () => {
       const ModalComponent = modals[modal.name] as React.LazyExoticComponent<React.ComponentType<any>>;
 
       return (
-        <Backdrop
-          key={modal.name + i}
-          zIndex={100 + i}
-          isBottom={!i}
-          onClick={() => dispatch(closeModal())}>
-          <ModalComponent {...modal.props}/>
-        </Backdrop>
+        <ModalComponent { ...{ ...modal.props, idx: i } }/>
       );
     })
   );
 };
 
 export default RenderModal;
-
-const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
-  z-index: ${({ zIndex }) => zIndex};
-`;
