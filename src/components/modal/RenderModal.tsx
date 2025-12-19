@@ -29,7 +29,7 @@ export const modals = {
   },
   [ModalName.JOINREQUEST_SENDER]: {
     title: '스페이스 액세스 권한 요청',
-    component: React.lazy(() => import('Components/modal/joinrequest/JoinRequestSenderModal'))
+    component: React.lazy(() => import('Components/modal/joinrequest/joinrequestSender/JoinRequestSenderModal'))
   },
   [ModalName.JOINREQUEST_MANAGER]: {
     title: '액세스 권한 요청 목록',
