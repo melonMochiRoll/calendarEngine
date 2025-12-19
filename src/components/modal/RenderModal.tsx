@@ -33,7 +33,7 @@ export const modals = {
   },
   [ModalName.JOINREQUEST_MANAGER]: {
     title: '액세스 권한 요청 목록',
-    component: React.lazy(() => import('Components/modal/joinrequest/JoinRequestManagerModal')),
+    component: React.lazy(() => import('Components/modal/joinrequest/joinrequestManager/JoinRequestManagerModal')),
   },
   [ModalName.JOINREQUEST_DETAIL]: {
     title: '',
