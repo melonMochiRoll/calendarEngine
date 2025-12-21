@@ -1,5 +1,5 @@
 import { ImageViewerProps } from "Components/modal/imageViewer/ImageViewer";
-import { JoinRequestDetailProps } from "Components/modal/joinrequest/JoinRequestDetail";
+import { JoinRequestDetailProps } from "Components/modal/joinrequest/joinrequestManager/JoinRequestDetail";
 import { TodoDetailProps } from "Components/modal/todo/TodoDetail";
 import { TodoUpdateProps } from "Components/modal/todo/TodoUpdate";
 
@@ -33,13 +33,18 @@ export type ModalPayload =
   | { name: typeof ModalName.SEARCH, props?: {} }
   | { name: typeof ModalName.SHAREDSPACEMANAGER, props?: {} }
   | { name: typeof ModalName.TODO_INPUT, props?: {} }
-  | { name: typeof ModalName.TODO_DETAIL, props: TodoDetailProps }
-  | { name: typeof ModalName.TODO_UPDATE, props: TodoUpdateProps }
+  | { name: typeof ModalName.TODO_DETAIL, props: Pick<TodoDetailProps, 'payload'> }
+  | { name: typeof ModalName.TODO_UPDATE, props: Pick<TodoUpdateProps, 'payload'> }
   | { name: typeof ModalName.SHAREDSPACEMEMBERLIST, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_SENDER, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_MANAGER, props?: {} }
-  | { name: typeof ModalName.JOINREQUEST_DETAIL, props: JoinRequestDetailProps }
-  | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps };
+  | { name: typeof ModalName.JOINREQUEST_DETAIL, props: Pick<JoinRequestDetailProps, 'payload'> }
+  | { name: typeof ModalName.IMAGE_VIEWER, props: Pick<ImageViewerProps, 'payload'> };
+
+export interface BaseModalProps {
+  idx: number,
+  title: string,
+};
 
 export const RoleDictionary = {
   OWNER: '소유자',
