@@ -29,7 +29,7 @@ const TodoItem: FC<TodoItemProps> = ({
   const openTodoDetail = (todo: TTodoPayload) => {
     dispatch(openModal({
       name: ModalName.TODO_DETAIL,
-      props: { todo },
+      props: { payload: { todo } },
     }));
   };
 

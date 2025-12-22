@@ -50,7 +50,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
   const openJoinRequestDetail = (request: TJoinRequest) => {
     dispatch(openModal({
       name: ModalName.JOINREQUEST_DETAIL,
-      props: { request },
+      props: { payload: { request } },
     }));
   };
   

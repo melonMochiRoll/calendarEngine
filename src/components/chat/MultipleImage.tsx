@@ -21,7 +21,7 @@ const MultipleImage: FC<MultipleImageProps> = ({
   const openImageModal = () => {
     dispatch(openModal({
       name: ModalName.IMAGE_VIEWER,
-      props: { path: image.path },
+      props: { payload: { path: image.path } },
     }));
   };
 
