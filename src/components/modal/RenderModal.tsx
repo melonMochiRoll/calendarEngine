@@ -4,11 +4,11 @@ import { ModalName } from 'Typings/types';
 
 export const modals = {
   [ModalName.SEARCH]: {
-    title: '',
+    title: 'Todo 검색',
     component: React.lazy(() => import('Components/modal/search/SearchModal')),
   },
   [ModalName.SHAREDSPACEMANAGER]: {
-    title: '',
+    title: 'Space 설정',
     component: React.lazy(() => import('Components/modal/sharedspaceManager/SharedspaceManagerModal')),
   },
   [ModalName.TODO_INPUT]: {
@@ -16,7 +16,7 @@ export const modals = {
     component: React.lazy(() => import('Components/modal/todo/TodoInput')),
   },
   [ModalName.TODO_DETAIL]: {
-    title: 'Todo',
+    title: 'Todo 내용',
     component: React.lazy(() => import('Components/modal/todo/TodoDetail')),
   },
   [ModalName.TODO_UPDATE]: {
@@ -36,11 +36,11 @@ export const modals = {
     component: React.lazy(() => import('Components/modal/joinrequest/joinrequestManager/JoinRequestManagerModal')),
   },
   [ModalName.JOINREQUEST_DETAIL]: {
-    title: '',
-    component: React.lazy(() => import('Components/modal/joinrequest/JoinRequestDetail')),
+    title: '권한 요청 내용',
+    component: React.lazy(() => import('Components/modal/joinrequest/joinrequestManager/JoinRequestDetail')),
   },
   [ModalName.IMAGE_VIEWER]: {
-    title: '',
+    title: '이미지 뷰어',
     component: React.lazy(() => import('Components/modal/imageViewer/ImageViewer')),
   },
 };
