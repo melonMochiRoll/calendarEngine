@@ -18,9 +18,8 @@ import { formatDateTime } from 'Lib/utilFunction';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { BaseModalProps, ModalName, TTodoPayload } from 'Typings/types';
-import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
-import { GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
+import { BaseModalProps, ModalName, TSharedspaceMetaData, TTodoPayload } from 'Typings/types';
+import { GET_SHAREDSPACE_KEY, GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
 
 export interface TodoDetailProps extends BaseModalProps {
   payload: {
@@ -33,19 +32,17 @@ const TodoDetail: FC<TodoDetailProps> = ({
   idx,
   title,
 }) => {
-  const { todo } = payload;
   dayjs.extend(utc);
   dayjs.extend(timezone);
+
+  const { todo } = payload;
+  const { url } = useParams();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
   const localTimeZone = dayjs.tz.guess();
 
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
-
-  const { url } = useParams();
-  const { data: spaceData } = useSharedspace();
-  const { permission } = spaceData;
-  
+  const spaceData = qc.getQueryData<TSharedspaceMetaData>([GET_SHAREDSPACE_KEY, url]);
   const [ error, setError ] = useState('');
 
   const {
@@ -84,7 +81,7 @@ const TodoDetail: FC<TodoDetailProps> = ({
       <Block onClick={e => e.stopPropagation()}>
         <Header>
           <MenuWrapper>
-            {permission.isMember &&
+            {spaceData && spaceData.permission.isMember &&
               <MenuIcon
                 onClick={onOpen}
                 fontSize='large'
