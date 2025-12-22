@@ -15,18 +15,22 @@ import { checkContent, defaultToastOption, successMessage, waitingMessage } from
 import TextButton from 'Components/common/TextButton';
 import { updateTodo } from 'Api/todosApi';
 import { toast } from 'react-toastify';
-import { TTodoPayload } from 'Typings/types';
+import { BaseModalProps, TTodoPayload } from 'Typings/types';
 import { GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
 
-export interface TodoUpdateProps {
-  todo: TTodoPayload,
-  url: string | undefined,
+export interface TodoUpdateProps extends BaseModalProps {
+  payload: {
+    todo: TTodoPayload,
+    url: string | undefined,
+  },
 };
 
 const TodoUpdate: FC<TodoUpdateProps> = ({
-  todo,
-  url,
+  payload,
+  idx,
+  title,
 }) => {
+  const { todo, url } = payload;
   dayjs.extend(utc);
   dayjs.extend(timezone);
   dayjs.extend(customParseFormat);
@@ -35,7 +39,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
-  const { todoTime } = useAppSelector(state => state.todoTime);
 
   const [ start_hour, start_minute ] = todo.startTime.split(':');
   const [ end_hour, end_minute ] = todo.endTime.split(':');
@@ -141,91 +144,108 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   };
 
   return (
-    <Block
-      onClick={e => e.stopPropagation()}>
-      <Header>
-        <Left></Left>
-        <Center>
-          <ModalTitle>Todo 수정</ModalTitle>
-        </Center>
-        <Right>
-          <CloseIcon
-            onClick={() => dispatch(closeModal())}
-            sx={CloseIconInlineStyle} />
-        </Right>
-      </Header>
-      <Main>
-        <TimeDiv>
-          <TimeBox>
-            <span>시작 시간</span>
-            <TimeInput
-              value={startTime.hour}
-              onChange={onChangeStartTime}
-              name='hour'
-              type='text'
-              maxLength={2}
-              placeholder='00' />
-            <span>:</span>
-            <TimeInput
-              value={startTime.minute}
-              onChange={onChangeStartTime}
-              name='minute'
-              type='text'
-              maxLength={2}
-              placeholder='00' />
-          </TimeBox>
-          <TimeBox>
-            <span>종료 시간</span>
-            <TimeInput
-              value={endTime.hour}
-              onChange={onChangeEndTime}
-              name='hour'
-              type='text'
-              maxLength={2}
-              placeholder='00' />
-            <span>:</span>
-            <TimeInput
-              value={endTime.minute}
-              onChange={onChangeEndTime}
-              name='minute'
-              type='text'
-              maxLength={2}
-              placeholder='00' />
-          </TimeBox>
-        </TimeDiv>
-        <DescriptionDiv>
-          <DescriptionInput
-            value={description}
-            onChange={onChangeDescriptionWithMaxSize}
-            placeholder='내용' />
-        </DescriptionDiv>
-        <SubmitDiv>
+    <Backdrop
+      zIndex={100 + idx}
+      isBottom={!idx}
+      onClick={() => dispatch(closeModal())}>
+      <Block
+        onClick={e => e.stopPropagation()}>
+        <Header>
           <Left></Left>
           <Center>
-            {error && <ErrorSpan>{error}</ErrorSpan>}
+            <ModalTitle>{title}</ModalTitle>
           </Center>
           <Right>
-            <TextButton
-              type='button'
-              onClick={() => {
-                onSubmit(
-                  todo.id,
-                  description,
-                  startTime,
-                  endTime,
-                  url,
-                );
-              }}>
-              수정
-            </TextButton>
+            <CloseIcon
+              onClick={() => dispatch(closeModal())}
+              sx={CloseIconInlineStyle} />
           </Right>
-        </SubmitDiv>
-      </Main>
-    </Block>
+        </Header>
+        <Main>
+          <TimeDiv>
+            <TimeBox>
+              <span>시작 시간</span>
+              <TimeInput
+                value={startTime.hour}
+                onChange={onChangeStartTime}
+                name='hour'
+                type='text'
+                maxLength={2}
+                placeholder='00' />
+              <span>:</span>
+              <TimeInput
+                value={startTime.minute}
+                onChange={onChangeStartTime}
+                name='minute'
+                type='text'
+                maxLength={2}
+                placeholder='00' />
+            </TimeBox>
+            <TimeBox>
+              <span>종료 시간</span>
+              <TimeInput
+                value={endTime.hour}
+                onChange={onChangeEndTime}
+                name='hour'
+                type='text'
+                maxLength={2}
+                placeholder='00' />
+              <span>:</span>
+              <TimeInput
+                value={endTime.minute}
+                onChange={onChangeEndTime}
+                name='minute'
+                type='text'
+                maxLength={2}
+                placeholder='00' />
+            </TimeBox>
+          </TimeDiv>
+          <DescriptionDiv>
+            <DescriptionInput
+              value={description}
+              onChange={onChangeDescriptionWithMaxSize}
+              placeholder='내용' />
+          </DescriptionDiv>
+          <SubmitDiv>
+            <Left></Left>
+            <Center>
+              {error && <ErrorSpan>{error}</ErrorSpan>}
+            </Center>
+            <Right>
+              <TextButton
+                type='button'
+                onClick={() => {
+                  onSubmit(
+                    todo.id,
+                    description,
+                    startTime,
+                    endTime,
+                    url,
+                  );
+                }}>
+                수정
+              </TextButton>
+            </Right>
+          </SubmitDiv>
+        </Main>
+      </Block>
+    </Backdrop>
   );
 };
 
 export default TodoUpdate;
+
+const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
+  z-index: ${({ zIndex }) => zIndex};
+`;
 
 const Block = styled.div`
   display: flex;

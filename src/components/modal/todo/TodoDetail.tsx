@@ -18,15 +18,22 @@ import { formatDateTime } from 'Lib/utilFunction';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { ModalName, TTodo, TTodoPayload } from 'Typings/types';
+import { BaseModalProps, ModalName, TTodoPayload } from 'Typings/types';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 import { GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
 
-export interface TodoDetailProps {
-  todo: TTodoPayload;
+export interface TodoDetailProps extends BaseModalProps {
+  payload: {
+    todo: TTodoPayload,
+  },
 };
 
-const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
+const TodoDetail: FC<TodoDetailProps> = ({
+  payload,
+  idx,
+  title,
+}) => {
+  const { todo } = payload;
   dayjs.extend(utc);
   dayjs.extend(timezone);
   const qc = useQueryClient();
@@ -34,7 +41,6 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
   const localTimeZone = dayjs.tz.guess();
 
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
-  const { todoTime } = useAppSelector(state => state.todoTime);
 
   const { url } = useParams();
   const { data: spaceData } = useSharedspace();
@@ -66,71 +72,88 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
   const openTodoUpdate = (todo: TTodoPayload, url: string | undefined) => {
     dispatch(openModal({
       name: ModalName.TODO_UPDATE,
-      props: { todo, url }
+      props: { payload: { todo, url } }
     }));
   };
   
   return (
-    <Block onClick={e => e.stopPropagation()}>
-      <Header>
-        <MenuWrapper>
-          {permission.isMember &&
-            <MenuIcon
-              onClick={onOpen}
-              fontSize='large'
-              sx={{ color: 'var(--white)', cursor: 'pointer' }} />
-          }
-          <Menu
-            aria-labelledby='demo-positioned-button'
-            anchorEl={anchorEl}
-            open={open}
-            onClick={onClose}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
-              <MenuItem
-                onClick={() => openTodoUpdate(todo, url)}>
-                <span>수정</span>
-              </MenuItem>
-              <MenuItem
-                onClick={() => onClickTodoDelete(todo.id, url)}>
-                <span>삭제</span>
-              </MenuItem>
-            </Menu>
-        </MenuWrapper>
-        <TitleWrapper>
-          <ModalTitle>Todo</ModalTitle>
-        </TitleWrapper>
-        <CloseButtonWrapper>
-          <CloseIcon
-            onClick={() => dispatch(closeModal())}
-            sx={CloseIconInlineStyle} />
-        </CloseButtonWrapper>
-      </Header>
-      <ContentsWrapper>
-        <Contents>
-          <Content>
-            <ClockIcon sx={{ color: 'var(--blue)' }}/>
-            <ContentSpan>{`${todo?.startTime} ~ ${todo?.endTime}`}</ContentSpan>
-          </Content>
-          <Content>
-            <DescriptionIcon />
-            <ContentSpan>{todo?.description}</ContentSpan>
-          </Content>
-          <Content>
-            <PencilIcon />
-            <ContentSpan>{`${todo?.Author}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
-          </Content>
-        </Contents>
-        <UpdatedAtWrapper>
-          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
-          {error && <ErrorSpan>error</ErrorSpan>}
-        </UpdatedAtWrapper>
-      </ContentsWrapper>
-    </Block>
+    <Backdrop
+      zIndex={100 + idx}
+      isBottom={!idx}
+      onClick={() => dispatch(closeModal())}>
+      <Block onClick={e => e.stopPropagation()}>
+        <Header>
+          <MenuWrapper>
+            {permission.isMember &&
+              <MenuIcon
+                onClick={onOpen}
+                fontSize='large'
+                sx={{ color: 'var(--white)', cursor: 'pointer' }} />
+            }
+            <Menu
+              aria-labelledby='demo-positioned-button'
+              anchorEl={anchorEl}
+              open={open}
+              onClick={onClose}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <MenuItem
+                  onClick={() => openTodoUpdate(todo, url)}>
+                  <span>수정</span>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => onClickTodoDelete(todo.id, url)}>
+                  <span>삭제</span>
+                </MenuItem>
+              </Menu>
+          </MenuWrapper>
+          <TitleWrapper>
+            <ModalTitle>{title}</ModalTitle>
+          </TitleWrapper>
+          <CloseButtonWrapper>
+            <CloseIcon
+              onClick={() => dispatch(closeModal())}
+              sx={CloseIconInlineStyle} />
+          </CloseButtonWrapper>
+        </Header>
+        <ContentsWrapper>
+          <Contents>
+            <Content>
+              <ClockIcon sx={{ color: 'var(--blue)' }}/>
+              <ContentSpan>{`${todo?.startTime} ~ ${todo?.endTime}`}</ContentSpan>
+            </Content>
+            <Content>
+              <DescriptionIcon />
+              <ContentSpan>{todo?.description}</ContentSpan>
+            </Content>
+            <Content>
+              <PencilIcon />
+              <ContentSpan>{`${todo?.Author}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
+            </Content>
+          </Contents>
+          <UpdatedAtWrapper>
+            {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
+            {error && <ErrorSpan>error</ErrorSpan>}
+          </UpdatedAtWrapper>
+        </ContentsWrapper>
+      </Block>
+    </Backdrop>
   );
 };
 
 export default TodoDetail;
+
+const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
+  z-index: ${({ zIndex }) => zIndex};
+`;
 
 const Block = styled.div`
   display: flex;
