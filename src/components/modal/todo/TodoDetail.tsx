@@ -113,7 +113,7 @@ const TodoDetail: FC<TodoDetailProps> = ({
               sx={CloseIconInlineStyle} />
           </CloseButtonWrapper>
         </Header>
-        <ContentsWrapper>
+        <Main>
           <Contents>
             <Content>
               <ClockIcon sx={{ color: 'var(--blue)' }}/>
@@ -132,7 +132,7 @@ const TodoDetail: FC<TodoDetailProps> = ({
             {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
             {error && <ErrorSpan>error</ErrorSpan>}
           </UpdatedAtWrapper>
-        </ContentsWrapper>
+        </Main>
       </Block>
     </Backdrop>
   );
@@ -196,7 +196,7 @@ const CloseButtonWrapper = styled.div`
   width: 15%;
 `;
 
-const ContentsWrapper = styled.div`
+const Main = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
