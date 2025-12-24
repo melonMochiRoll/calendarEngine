@@ -1,44 +1,42 @@
-import React, { FC } from 'react';
-import styled from '@emotion/styled';
-import SharedspaceMemberListHeader from './SharedspaceMemberListHeader';
+import React, { FC, Suspense } from 'react';
 import SharedspaceMemberListMain from './SharedspaceMemberListMain';
-import AsyncBoundary from 'Components/AsyncBoundary';
-import LoadingCircular from 'Components/skeleton/LoadingCircular';
-import SharedspaceManagerError from '../sharedspaceManager/SharedspaceManagerError';
+import { ErrorBoundary } from 'react-error-boundary';
+import { BaseModalProps } from 'Src/typings/types';
+import ModalLoadingCircular from 'Src/components/async/skeleton/ModalLoadingCircular';
+import { useAppDispatch } from 'Src/hooks/reduxHooks';
+import { useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import ModalFallback from 'Src/components/async/fallbackUI/ModalFallback';
+import { closeModal } from 'Src/features/modalSlice';
+import { GET_SHAREDSPACE_MEMBERS_KEY } from 'Src/constants/queryKeys';
 
-const SharedspaceMemberListModal: FC = () => {
+interface SharedspaceMemberListModalProps extends BaseModalProps {};
+
+const SharedspaceMemberListModal: FC<SharedspaceMemberListModalProps> = ({
+  idx,
+  title,
+}) => {
+  const { url } = useParams();
+  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
+
+  function handleClose() {
+    dispatch(closeModal());
+  }
+
+  function removeQueries() {
+    qc.removeQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
+  }
+
   return (
-    <Block
-      onClick={e => e.stopPropagation()}>
-      <Main>
-        <SharedspaceMemberListHeader />
-        <AsyncBoundary
-          errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
-          suspenseFallback={<LoadingCircular />}>
-          <SharedspaceMemberListMain />
-        </AsyncBoundary>
-      </Main>
-    </Block>
+    <ErrorBoundary fallbackRender={(props) => ModalFallback(props, idx, title, handleClose, url, removeQueries)}>
+      <Suspense fallback={<ModalLoadingCircular idx={idx} handleClose={handleClose}/>}>
+        <SharedspaceMemberListMain
+          idx={idx}
+          title={title} />
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 
 export default SharedspaceMemberListModal;
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 650px;
-  height: 500px;
-  padding-bottom: 1%;
-  border-radius: 15px;
-  background-color: var(--black);
-  box-shadow: 1px 1px 10px 2px #000;
-`;
-
-const Main = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 85%;
-  color: var(--white);
-`;

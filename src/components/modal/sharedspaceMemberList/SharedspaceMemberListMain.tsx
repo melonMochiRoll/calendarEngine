@@ -9,10 +9,22 @@ import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { TSharedspaceMembersRoles } from 'Typings/types';
 import MemberItem from '../sharedspaceManager/MemberItem';
 import { useSharedpacemembers } from 'Src/hooks/queries/useSharedpacemembers';
+import SharedspaceMemberListHeader from './SharedspaceMemberListHeader';
+import { useAppDispatch } from 'Src/hooks/reduxHooks';
+import { closeModal } from 'Src/features/modalSlice';
 
-const SharedspaceMemberListMain: FC = () => {
+interface SharedspaceMemberListMainProps {
+  idx: number,
+  title: string,
+};
+
+const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({
+  idx,
+  title,
+}) => {
   const { url } = useParams();
   const qc = useQueryClient();
+  const dispatch = useAppDispatch();
   const { data: membersData, nextPage } = useSharedpacemembers(); 
   const [ error, setError ] = useState('');
 
@@ -56,30 +68,69 @@ const SharedspaceMemberListMain: FC = () => {
   };
   
   return (
-    <>
-      <List>
-        {membersData.items.map((member) => {
-          return (
-            <MemberItem
-              key={member.UserId}
-              item={member}
-              onUpdateMemberRole={onUpdateMemberRole}
-              onUpdateOwner={onUpdateOwner}
-              onDeleteMember={onDeleteMember} />
-          );
-        })}
-        {membersData.hasMoreData &&
-          <LoadMore onClick={nextPage}>
-            Load More
-          </LoadMore>
-        }
-      </List>
-      {error && <ErrorSpan>{error}</ErrorSpan>}
-    </>
+    <Backdrop
+      zIndex={100 + idx}
+      isBottom={!idx}
+      onClick={() => dispatch(closeModal())}>
+      <Block onClick={e => e.stopPropagation()}>
+        <SharedspaceMemberListHeader title={title} />
+        <Main>
+          {error && <ErrorSpan>{error}</ErrorSpan>}
+          <List>
+            {membersData.items.map((member) => {
+              return (
+                <MemberItem
+                  key={member.UserId}
+                  item={member}
+                  onUpdateMemberRole={onUpdateMemberRole}
+                  onUpdateOwner={onUpdateOwner}
+                  onDeleteMember={onDeleteMember} />
+              );
+            })}
+            {membersData.hasMoreData &&
+              <LoadMore onClick={nextPage}>
+                Load More
+              </LoadMore>
+            }
+          </List>
+        </Main>
+      </Block>
+    </Backdrop>
   );
 };
 
 export default SharedspaceMemberListMain;
+
+const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
+  z-index: ${({ zIndex }) => zIndex};
+`;
+
+const Block = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 650px;
+  height: 500px;
+  padding-bottom: 1%;
+  border-radius: 15px;
+  background-color: var(--black);
+  box-shadow: 1px 1px 10px 2px #000;
+`;
+
+const Main = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 85%;
+  color: var(--white);
+`;
 
 const List = styled.ul`
   display: flex;
