@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { TSearchUsersList, TSharedspaceMembersRoles } from 'Typings/types';
 import UserItem from './UserItem';
-import SharedspaceManagerError from './SharedspaceManagerError';
+import ErrorIcon from '@mui/icons-material/ErrorOutline';
 
 interface SharedspaceManagerResultProps {
   query: string,
@@ -37,7 +37,11 @@ const SharedspaceManagerResult: FC<SharedspaceManagerResultProps> = ({
               </LoadMore>
             }
           </UserList> :
-        <SharedspaceManagerError message={`"${query}" 에 대한 검색 결과가 없습니다.`} />}
+          <NotFoundBlock>
+            <ErrorIcon sx={ErrorInlineStyle} />
+            <NotFoundMessage>{`"${query}" 에 대한 검색 결과가 없습니다.`}</NotFoundMessage>
+          </NotFoundBlock>
+      }
     </>
   );
 };
@@ -70,4 +74,25 @@ const LoadMore = styled.button`
     background-color: var(--red);
     border-color: var(--red);
   }
+`;
+
+const NotFoundBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
+
+const ErrorInlineStyle = {
+  color: 'var(--white)',
+  fontSize: '64px',
+  paddingBottom: '15px',
+};
+
+const NotFoundMessage = styled.span`
+  color: var(--white);
+  font-size: 20px;
+  font-weight: 600;
 `;
