@@ -1,15 +1,19 @@
 import React, { FC, useState } from 'react';
-import styled from '@emotion/styled';
 import { closeModal } from 'Features/modalSlice';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { createJoinRequest } from 'Api/joinrequestApi';
 import { alreadyRequest, checkURL, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { toast } from 'react-toastify';
-import JoinRequestSenderHeader from './JoinRequestSenderHeader';
 import JoinRequestSenderMain from './JoinRequestSenderMain';
 import { useParams } from 'react-router-dom';
+import { BaseModalProps } from 'Src/typings/types';
 
-const JoinRequestSenderModal: FC = () => {
+interface JoinRequestSenderModalProps extends BaseModalProps {};
+
+const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({
+  idx,
+  title,
+}) => {
   const { url } = useParams();
   const dispatch = useAppDispatch();
   const [ error, setError ] = useState('');
@@ -39,23 +43,12 @@ const JoinRequestSenderModal: FC = () => {
   };
 
   return (
-    <Block onClick={e => e.stopPropagation()}>
-      <JoinRequestSenderHeader />
-      <JoinRequestSenderMain
-        onSubmit={onSubmit}
-        error={error} />
-    </Block>
+    <JoinRequestSenderMain
+      onSubmit={onSubmit}
+      idx={idx}
+      title={title}
+      error={error} />
   );
 };
 
 export default JoinRequestSenderModal;
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 550px;
-  height: 350px;
-  border-radius: 15px;
-  background-color: var(--black);
-  box-shadow: 1px 1px 10px 2px #000;
-`;
