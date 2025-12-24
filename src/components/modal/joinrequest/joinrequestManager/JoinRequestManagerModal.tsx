@@ -8,11 +8,9 @@ import { closeModal } from 'Src/features/modalSlice';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_JOINREQUEST_KEY } from 'Src/constants/queryKeys';
+import { BaseModalProps } from 'Src/typings/types';
 
-interface JoinRequestManagerModalProps {
-  idx: number,
-  title: string,
-};
+interface JoinRequestManagerModalProps extends BaseModalProps {};
 
 const JoinRequestManagerModal: FC<JoinRequestManagerModalProps> = ({
   idx,
