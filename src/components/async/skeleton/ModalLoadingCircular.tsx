@@ -2,23 +2,36 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { CircularProgress } from '@mui/material';
 
-const ModalLoadingCircular: FC = () => {
+interface ModalLoadingCircularProps {
+  idx: number,
+  handleClose: () => void,
+};
+
+const ModalLoadingCircular: FC<ModalLoadingCircularProps> = ({
+  idx,
+  handleClose,
+}) => {
   return (
-    <Block>
-      <CircularProgress size={100}/>
-    </Block>
+    <Backdrop
+      key={idx}
+      zIndex={100 + idx}
+      isBottom={!idx}
+      onClick={handleClose}>
+      <CircularProgress size={80}/>
+    </Backdrop>
   );
 };
 
 export default ModalLoadingCircular;
 
-const Block = styled.div`
+const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   min-height: 100vh;
+  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
+  z-index: ${({ zIndex }) => zIndex};
 `;
