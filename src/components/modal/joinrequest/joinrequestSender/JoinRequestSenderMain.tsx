@@ -9,74 +9,53 @@ import CloseIcon from '@mui/icons-material/CloseRounded';
 
 interface JoinRequestSenderMainProps {
   onSubmit: (message: string) => void,
-  idx: number,
-  title: string,
   error: string,
 };
 
 const JoinRequestSenderMain: FC<JoinRequestSenderMainProps> = ({
   onSubmit,
-  idx,
-  title,
   error,
 }) => {
   const dispatch = useAppDispatch();
   const [ message, onChangeMessage ] = useInput('');
 
   return (
-    <Backdrop
-      zIndex={100 + idx}
-      isBottom={!idx}
-      onClick={() => dispatch(closeModal())}>
-      <Block onClick={e => e.stopPropagation()}>
-        <Header>
-          <Left></Left>
-          <Center>
-            <MailIcon fontSize='large' />
-            <ModalTitle>{title}</ModalTitle>
-          </Center>
-          <Right>
-            <CloseIcon
-              onClick={() => dispatch(closeModal())}
-              sx={CloseIconInlineStyle} />
-          </Right>
-        </Header>
-        <Main>
-          <TextField
-            value={message}
-            onChange={onChangeMessage}
-            placeholder='메세지' />
-        </Main>
-        <Footer>
-          <ErrorSpan>{error}</ErrorSpan>
-          <Buttons>
-            <TextButton
-              type='button'
-              onClick={() => {
-                onSubmit(message);
-              }}>
-                전송
-            </TextButton>
-          </Buttons>
-        </Footer>
-      </Block>
-    </Backdrop>
+    <Block onClick={e => e.stopPropagation()}>
+      <Header>
+        <Left></Left>
+        <Center>
+          <MailIcon fontSize='large' />
+          <ModalTitle>스페이스 액세스 권한 요청</ModalTitle>
+        </Center>
+        <Right>
+          <CloseIcon
+            onClick={() => dispatch(closeModal())}
+            sx={CloseIconInlineStyle} />
+        </Right>
+      </Header>
+      <Main>
+        <TextField
+          value={message}
+          onChange={onChangeMessage}
+          placeholder='메세지' />
+      </Main>
+      <Footer>
+        <ErrorSpan>{error}</ErrorSpan>
+        <Buttons>
+          <TextButton
+            type='button'
+            onClick={() => {
+              onSubmit(message);
+            }}>
+              전송
+          </TextButton>
+        </Buttons>
+      </Footer>
+    </Block>
   );
 };
 
 export default JoinRequestSenderMain;
-
-const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
-  z-index: ${({ zIndex }) => zIndex};
-`;
 
 const Block = styled.div`
   display: flex;

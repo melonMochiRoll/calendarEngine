@@ -1,42 +1,35 @@
 import React, { FC, Suspense } from 'react';
+import styled from '@emotion/styled';
 import SharedspaceMemberListMain from './SharedspaceMemberListMain';
 import { ErrorBoundary } from 'react-error-boundary';
-import { BaseModalProps } from 'Src/typings/types';
 import ModalLoadingCircular from 'Src/components/async/skeleton/ModalLoadingCircular';
-import { useAppDispatch } from 'Src/hooks/reduxHooks';
-import { useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
 import ModalFallback from 'Src/components/async/fallbackUI/ModalFallback';
-import { closeModal } from 'Src/features/modalSlice';
-import { GET_SHAREDSPACE_MEMBERS_KEY } from 'Src/constants/queryKeys';
+import SharedspaceMemberListHeader from './SharedspaceMemberListHeader';
 
-interface SharedspaceMemberListModalProps extends BaseModalProps {};
+interface SharedspaceMemberListModalProps {};
 
-const SharedspaceMemberListModal: FC<SharedspaceMemberListModalProps> = ({
-  idx,
-  title,
-}) => {
-  const { url } = useParams();
-  const qc = useQueryClient();
-  const dispatch = useAppDispatch();
-
-  function handleClose() {
-    dispatch(closeModal());
-  }
-
-  function removeQueries() {
-    qc.removeQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
-  }
-
+const SharedspaceMemberListModal: FC<SharedspaceMemberListModalProps> = ({}) => {
   return (
-    <ErrorBoundary fallbackRender={(props) => ModalFallback(props, idx, title, handleClose, url, removeQueries)}>
-      <Suspense fallback={<ModalLoadingCircular idx={idx} handleClose={handleClose}/>}>
-        <SharedspaceMemberListMain
-          idx={idx}
-          title={title} />
-      </Suspense>
-    </ErrorBoundary>
+    <Block onClick={e => e.stopPropagation()}>
+      <SharedspaceMemberListHeader />
+      <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
+        <Suspense fallback={<ModalLoadingCircular />}>
+          <SharedspaceMemberListMain />
+        </Suspense>
+      </ErrorBoundary>
+    </Block>
   );
 };
 
 export default SharedspaceMemberListModal;
+
+const Block = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 650px;
+  height: 500px;
+  padding-bottom: 1%;
+  border-radius: 15px;
+  background-color: var(--black);
+  box-shadow: 1px 1px 10px 2px #000;
+`;

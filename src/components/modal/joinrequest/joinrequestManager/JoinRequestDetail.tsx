@@ -2,60 +2,39 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import { useAppDispatch } from 'Hooks/reduxHooks';
-import { BaseModalProps, TJoinRequest } from 'Typings/types';
+import { TJoinRequest } from 'Typings/types';
 import { closeModal } from 'Features/modalSlice';
 
-export interface JoinRequestDetailProps extends BaseModalProps {
-  payload: {
-    request: TJoinRequest,
-  },
+export interface JoinRequestDetailProps {
+  request: TJoinRequest,
 };
 
 const JoinRequestDetail: FC<JoinRequestDetailProps> = ({
-  payload,
-  idx,
+  request,
 }) => {
   const dispatch = useAppDispatch();
-  const { request } = payload;
   
   return (
-    <Backdrop
-      zIndex={100 + idx}
-      isBottom={!idx}
-      onClick={() => dispatch(closeModal())}>
-      <Block onClick={e => e.stopPropagation()}>
-        <Header>
-          <Left></Left>
-          <Center>
-            <ModalTitle>{request.Requestor.email}</ModalTitle>
-          </Center>
-          <Right>
-            <CloseIcon
-              onClick={() => dispatch(closeModal())}
-              sx={CloseIconInlineStyle} />
-          </Right>
-        </Header>
-        <Body>
-          <Span>{request.message}</Span>
-        </Body>
-      </Block>
-    </Backdrop>
+    <Block onClick={e => e.stopPropagation()}>
+      <Header>
+        <Left></Left>
+        <Center>
+          <ModalTitle>{request.Requestor.email}</ModalTitle>
+        </Center>
+        <Right>
+          <CloseIcon
+            onClick={() => dispatch(closeModal())}
+            sx={CloseIconInlineStyle} />
+        </Right>
+      </Header>
+      <Body>
+        <Span>{request.message}</Span>
+      </Body>
+    </Block>
   );
 };
 
 export default JoinRequestDetail;
-
-const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
-  z-index: ${({ zIndex }) => zIndex};
-`;
 
 const Block = styled.div`
   display: flex;

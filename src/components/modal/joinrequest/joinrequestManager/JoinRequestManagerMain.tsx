@@ -7,22 +7,12 @@ import { rejectJoinRequest, resolveJoinRequest } from 'Api/joinrequestApi';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { useQueryClient } from '@tanstack/react-query';
-import JoinRequestManagerHeader from './JoinRequestManagerHeader';
-import { useAppDispatch } from 'Src/hooks/reduxHooks';
-import { closeModal } from 'Src/features/modalSlice';
 import ThreeDotIcon from '@mui/icons-material/PendingOutlined';
 
-interface JoinRequestManagerMainProps {
-  idx: number,
-  title: string,
-};
+interface JoinRequestManagerMainProps {};
 
-const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({
-  idx,
-  title,
-}) => {
+const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
   const qc = useQueryClient();
-  const dispatch = useAppDispatch();
   const [ error, setError ] = useState('');
   const { data: joinRequestsData } = useJoinRequest();
 
@@ -62,61 +52,31 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({
   };
 
   return (
-    <Backdrop
-      zIndex={100 + idx}
-      isBottom={!idx}
-      onClick={() => dispatch(closeModal())}>
-      <Block onClick={e => e.stopPropagation()}>
-        <JoinRequestManagerHeader title={title} />
-        <Main>
-          {error && <ErrorSpan>{error}</ErrorSpan>}
-          {
-            joinRequestsData?.length ?
-              <List>
-                {joinRequestsData.map((request) => {
-                  return (
-                    <JoinRequestItem
-                      key={request.id}
-                      request={request}
-                      onResolveMenuClick={onResolveMenuClick}
-                      onRejectMenuClick={onRejectMenuClick} />
-                  );
-                })}
-              </List> :
-              <>
-                <ThreeDotIcon sx={IconInlineStyle} />
-                <NotFoundMessage>요청이 없습니다.</NotFoundMessage>
-              </>
-          }
-        </Main>
-      </Block>
-    </Backdrop>
+    <Main>
+      {error && <ErrorSpan>{error}</ErrorSpan>}
+      {
+        joinRequestsData?.length ?
+          <List>
+            {joinRequestsData.map((request) => {
+              return (
+                <JoinRequestItem
+                  key={request.id}
+                  request={request}
+                  onResolveMenuClick={onResolveMenuClick}
+                  onRejectMenuClick={onRejectMenuClick} />
+              );
+            })}
+          </List> :
+          <>
+            <ThreeDotIcon sx={IconInlineStyle} />
+            <NotFoundMessage>요청이 없습니다.</NotFoundMessage>
+          </>
+      }
+    </Main>
   );
 };
 
 export default JoinRequestManagerMain;
-
-const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
-  z-index: ${({ zIndex }) => zIndex};
-`;
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 650px;
-  height: 500px;
-  border-radius: 15px;
-  background-color: var(--black);
-  box-shadow: 1px 1px 10px 2px #000;
-`;
 
 const Main = styled.div`
   display: flex;

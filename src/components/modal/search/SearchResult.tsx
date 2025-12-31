@@ -66,7 +66,7 @@ const Block = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 80%;
+  height: 85%;
 `;
 
 const TodoList = styled.ul`

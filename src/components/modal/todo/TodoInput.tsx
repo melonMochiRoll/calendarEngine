@@ -17,14 +17,10 @@ import { GET_TODOS_BY_MONTH_KEY } from 'Constants/queryKeys';
 import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { getByteSize } from 'Lib/utilFunction';
 import { toast } from 'react-toastify';
-import { BaseModalProps } from 'Src/typings/types';
 
-interface TodoInputProps extends BaseModalProps {};
+interface TodoInputProps {};
 
-const TodoInput: FC<TodoInputProps> = ({
-  idx,
-  title,
-}) => {
+const TodoInput: FC<TodoInputProps> = ({}) => {
   dayjs.extend(utc);
   dayjs.extend(timezone);
   dayjs.extend(customParseFormat);
@@ -140,91 +136,86 @@ const TodoInput: FC<TodoInputProps> = ({
   };
 
   return (
-    <Backdrop
-      zIndex={100 + idx}
-      isBottom={!idx}
-      onClick={() => dispatch(closeModal())}>
-      <Block onClick={e => e.stopPropagation()}>
-        <Header>
+    <Block onClick={e => e.stopPropagation()}>
+      <Header>
+        <Left></Left>
+        <Center>
+          <ModalTitle>Todo 작성</ModalTitle>
+        </Center>
+        <Right>
+          <CloseIcon
+            onClick={() => dispatch(closeModal())}
+            sx={CloseIconInlineStyle} />
+        </Right>
+      </Header>
+      <Main>
+        <TimeDiv>
+          <TimeBox>
+            <span>시작 시간</span>
+            <TimeInput
+              value={startTime.hour}
+              onChange={onChangeStartTime}
+              name='hour'
+              type='text'
+              maxLength={2}
+              placeholder='00' />
+            <span>:</span>
+            <TimeInput
+              value={startTime.minute}
+              onChange={onChangeStartTime}
+              name='minute'
+              type='text'
+              maxLength={2}
+              placeholder='00' />
+          </TimeBox>
+          <TimeBox>
+            <span>종료 시간</span>
+            <TimeInput
+              value={endTime.hour}
+              onChange={onChangeEndTime}
+              name='hour'
+              type='text'
+              maxLength={2}
+              placeholder='00' />
+            <span>:</span>
+            <TimeInput
+              value={endTime.minute}
+              onChange={onChangeEndTime}
+              name='minute'
+              type='text'
+              maxLength={2}
+              placeholder='00' />
+          </TimeBox>
+        </TimeDiv>
+        <DescriptionDiv>
+          <DescriptionInput
+            value={description}
+            onChange={onChangeDescriptionWithMaxSize}
+            placeholder='내용' />
+        </DescriptionDiv>
+        <SubmitDiv>
           <Left></Left>
           <Center>
-            <ModalTitle>{title}</ModalTitle>
+            {errorMessage && <ErrorSpan>{errorMessage}</ErrorSpan>}
           </Center>
           <Right>
-            <CloseIcon
-              onClick={() => dispatch(closeModal())}
-              sx={CloseIconInlineStyle} />
+            <TextButton
+              type='button'
+              onClick={() => {
+                onSubmit(
+                  description,
+                  todoTime,
+                  startTime,
+                  endTime,
+                  url,
+                );
+              }}>
+              공유
+            </TextButton>
           </Right>
-        </Header>
-        <Main>
-          <TimeDiv>
-            <TimeBox>
-              <span>시작 시간</span>
-              <TimeInput
-                value={startTime.hour}
-                onChange={onChangeStartTime}
-                name='hour'
-                type='text'
-                maxLength={2}
-                placeholder='00' />
-              <span>:</span>
-              <TimeInput
-                value={startTime.minute}
-                onChange={onChangeStartTime}
-                name='minute'
-                type='text'
-                maxLength={2}
-                placeholder='00' />
-            </TimeBox>
-            <TimeBox>
-              <span>종료 시간</span>
-              <TimeInput
-                value={endTime.hour}
-                onChange={onChangeEndTime}
-                name='hour'
-                type='text'
-                maxLength={2}
-                placeholder='00' />
-              <span>:</span>
-              <TimeInput
-                value={endTime.minute}
-                onChange={onChangeEndTime}
-                name='minute'
-                type='text'
-                maxLength={2}
-                placeholder='00' />
-            </TimeBox>
-          </TimeDiv>
-          <DescriptionDiv>
-            <DescriptionInput
-              value={description}
-              onChange={onChangeDescriptionWithMaxSize}
-              placeholder='내용' />
-          </DescriptionDiv>
-          <SubmitDiv>
-            <Left></Left>
-            <Center>
-              {errorMessage && <ErrorSpan>{errorMessage}</ErrorSpan>}
-            </Center>
-            <Right>
-              <TextButton
-                type='button'
-                onClick={() => {
-                  onSubmit(
-                    description,
-                    todoTime,
-                    startTime,
-                    endTime,
-                    url,
-                  );
-                }}>
-                공유
-              </TextButton>
-            </Right>
-          </SubmitDiv>
-        </Main>
-      </Block>
-    </Backdrop>
+        </SubmitDiv>
+      </Main>
+    </Block>
   );
 };
 

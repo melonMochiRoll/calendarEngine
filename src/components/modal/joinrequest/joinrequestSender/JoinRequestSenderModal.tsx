@@ -6,14 +6,10 @@ import { alreadyRequest, checkURL, defaultToastOption, successMessage, waitingMe
 import { toast } from 'react-toastify';
 import JoinRequestSenderMain from './JoinRequestSenderMain';
 import { useParams } from 'react-router-dom';
-import { BaseModalProps } from 'Src/typings/types';
 
-interface JoinRequestSenderModalProps extends BaseModalProps {};
+interface JoinRequestSenderModalProps {};
 
-const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({
-  idx,
-  title,
-}) => {
+const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({}) => {
   const { url } = useParams();
   const dispatch = useAppDispatch();
   const [ error, setError ] = useState('');
@@ -45,8 +41,6 @@ const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({
   return (
     <JoinRequestSenderMain
       onSubmit={onSubmit}
-      idx={idx}
-      title={title}
       error={error} />
   );
 };

@@ -33,18 +33,13 @@ export type ModalPayload =
   | { name: typeof ModalName.SEARCH, props?: {} }
   | { name: typeof ModalName.SHAREDSPACEMANAGER, props?: {} }
   | { name: typeof ModalName.TODO_INPUT, props?: {} }
-  | { name: typeof ModalName.TODO_DETAIL, props: Pick<TodoDetailProps, 'payload'> }
-  | { name: typeof ModalName.TODO_UPDATE, props: Pick<TodoUpdateProps, 'payload'> }
+  | { name: typeof ModalName.TODO_DETAIL, props: TodoDetailProps }
+  | { name: typeof ModalName.TODO_UPDATE, props: TodoUpdateProps }
   | { name: typeof ModalName.SHAREDSPACEMEMBERLIST, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_SENDER, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_MANAGER, props?: {} }
-  | { name: typeof ModalName.JOINREQUEST_DETAIL, props: Pick<JoinRequestDetailProps, 'payload'> }
-  | { name: typeof ModalName.IMAGE_VIEWER, props: Pick<ImageViewerProps, 'payload'> };
-
-export interface BaseModalProps {
-  idx: number,
-  title: string,
-};
+  | { name: typeof ModalName.JOINREQUEST_DETAIL, props: JoinRequestDetailProps }
+  | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps };
 
 export const RoleDictionary = {
   OWNER: '소유자',

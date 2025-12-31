@@ -5,11 +5,9 @@ import PeopleIcon from '@mui/icons-material/PeopleAltRounded';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { closeModal } from 'Features/modalSlice';
 
-interface SharedspaceMemberListHeaderProps {
-  title: string,
-};
+interface SharedspaceMemberListHeaderProps {};
 
-const SharedspaceMemberListHeader: FC<SharedspaceMemberListHeaderProps> = ({ title }) => {
+const SharedspaceMemberListHeader: FC<SharedspaceMemberListHeaderProps> = ({}) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -17,7 +15,7 @@ const SharedspaceMemberListHeader: FC<SharedspaceMemberListHeaderProps> = ({ tit
       <Left></Left>
       <Center>
         <PeopleIcon fontSize='large' />
-        <ModalTitle>{title}</ModalTitle>
+        <ModalTitle>멤버 목록</ModalTitle>
       </Center>
       <Right>
         <CloseIcon

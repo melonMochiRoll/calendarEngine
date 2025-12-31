@@ -5,11 +5,9 @@ import CloseIcon from '@mui/icons-material/CloseRounded';
 import MailIcon from '@mui/icons-material/Mail';
 import { closeModal } from 'Features/modalSlice';
 
-interface JoinRequestManagerHeaderProps {
-  title: string,
-};
+interface JoinRequestManagerHeaderProps {};
 
-const JoinRequestManagerHeader: FC<JoinRequestManagerHeaderProps> = ({ title }) => {
+const JoinRequestManagerHeader: FC<JoinRequestManagerHeaderProps> = ({}) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -17,7 +15,7 @@ const JoinRequestManagerHeader: FC<JoinRequestManagerHeaderProps> = ({ title }) 
       <Left></Left>
       <Center>
         <MailIcon fontSize='large' />
-        <ModalTitle>{title}</ModalTitle>
+        <ModalTitle>액세스 권한 요청 목록</ModalTitle>
       </Center>
       <Right>
         <CloseIcon
