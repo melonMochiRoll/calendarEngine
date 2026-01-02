@@ -1,73 +1,36 @@
-import { useEffect } from "react";
+import React, { FC } from "react";
 import { PATHS } from "Constants/paths";
-import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import { ErrorPriority } from "Features/globalErrorSlice";
 import { FallbackProps } from "react-error-boundary";
-import { useNavigate, useParams } from "react-router-dom";
-import { needLogin, privateTooltip, waitingMessage } from "Constants/notices";
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+interface GlobalErrorFallbackProps {
+  errorProps: FallbackProps,
+};
 
-export default function GlobalErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
-  const navigate = useNavigate();
-  const { url: _url } = useParams();
+const GlobalErrorFallback: FC<GlobalErrorFallbackProps> = ({ errorProps }) => {
+  const { error, resetErrorBoundary } = errorProps;
+  let status = error?.response?.status || 500;
+  let destination = PATHS.INTERNAL;
 
-  const getErrorPayload = (error: any, status: number) => {
-    const result = {
-      code: error?.response?.data?.code || '',
-      priority: 99,
-      status,
-      timestamp: error?.response?.data?.timestamp || dayjs.utc().tz(dayjs.tz.guess()).format('YYYY-MM-DD HH:mm:ss'),
-      message: waitingMessage,
-      path: error?.response?.data?.path || '',
-      destination: PATHS.INTERNAL,
-    };
+  if (status === 400) {
+    destination = PATHS.SHAREDSPACE;
+  }
 
-    switch (error?.code) {
-      case 'ERR_NETWORK':
-        result.priority = ErrorPriority.NETWORK_ERROR;
-        break;
-      case 'ERR_BAD_RESPONSE':
-        result.priority = ErrorPriority.SERVER_5XX;
-        break;
-      case 'ERR_BAD_REQUEST':
-        if (status === 401) {
-          result.priority = ErrorPriority.SERVER_401;
-          result.message = needLogin;
-          result.destination = PATHS.LOGIN;
-          break;
-        }
-        if (status === 403) {
-          result.priority = ErrorPriority.SERVER_403;
-          result.message = privateTooltip;
-          result.destination = `${PATHS.JOINREQUEST_SENDER}/${_url}`;
-          break;
-        }
-        if (status === 404) {
-          result.priority = ErrorPriority.SERVER_404;
-          result.destination = PATHS.NOTFOUND;
-          break;
-        }
+  if (status === 401) {
+    destination = PATHS.LOGIN;
+  }
 
-        result.priority = ErrorPriority.SERVER_4XX;
-        break;
-      default:
-        result.priority = ErrorPriority.UNKNOWN_ERROR;
-        break;
-    }
+  if (status === 403) {
+    destination = error?.response?.data?.metaData?.spaceUrl ?
+      `${PATHS.JOINREQUEST_SENDER}/${error?.response?.data?.metaData?.spaceUrl}` :
+      PATHS.SHAREDSPACE;
+  }
 
-    return result;
-  };
+  if (status === 404) {
+    destination = PATHS.NOTFOUND;
+  }
 
-  useEffect(() => {
-    const result = getErrorPayload(error, error?.response?.status || 500);
+  window.location.href = destination;
+  return <></>;
+};
 
-    resetErrorBoundary();
-    navigate(result?.destination);
-  }, []);
-
-  return null;
-}
+export default GlobalErrorFallback;
