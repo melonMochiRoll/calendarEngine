@@ -1,30 +1,20 @@
-import React, { FC } from 'react';
-import styled from '@emotion/styled';
-import Header from 'Layouts/Header';
+import React, { FC, Suspense } from 'react';
 import SubscribedSpacesContainer from 'Containers/SubscribedSpacesContainer';
-import WithAuthGuard from 'Components/hoc/WithAuthGuard';
-import SkeletonSharedspacePage from 'Components/SkeletonSharedspacePage';
-import AsyncBoundary from 'Components/AsyncBoundary';
-import GlobalErrorFallback from 'Components/errors/GlobalErrorFallback';
+import { ErrorBoundary } from 'react-error-boundary';
+import RequireLogin from 'Src/components/guard/RequireLogin';
+import SharedspaceFallback from 'Src/components/async/fallbackUI/SharedspaceFallback';
+import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
 
 const SharedspacesPage: FC = () => {
   return (
-    <Background>
-      <AsyncBoundary
-        errorBoundaryFallback={GlobalErrorFallback}
-        suspenseFallback={<SkeletonSharedspacePage />}>
-        <Header />
-        <SubscribedSpacesContainer />
-      </AsyncBoundary>
-    </Background>
+    <ErrorBoundary fallbackRender={(props) => <SharedspaceFallback errorProps={props} />}>
+      <Suspense fallback={<LoadingPage />}>
+        <RequireLogin>
+          <SubscribedSpacesContainer />
+        </RequireLogin>
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 
-export default WithAuthGuard(SharedspacesPage);
-
-const Background = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--black);
-`;
+export default SharedspacesPage;
