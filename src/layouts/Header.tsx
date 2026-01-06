@@ -1,14 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
 import RenderUserProfile from 'Components/auth/RenderUserProfile';
 import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
-import useUser from 'Hooks/queries/useUser';
+import SkeletonUserProfile from 'Src/components/async/skeleton/SkeletonUserProfile';
 
 const Header: FC = () => {
   const navigate = useNavigate();
-  const { data: userData } = useUser({ suspense: true, throwOnError: true });
   
   return (
     <HeaderBlock>
@@ -20,9 +19,9 @@ const Header: FC = () => {
             sx={{ color: 'var(--blue)', cursor: 'pointer', marginRight: '10px' }}/>
         </FlexBox>
       </InfoWrapper>
-      <ProfileWrapper>
-        <RenderUserProfile userData={userData} />
-      </ProfileWrapper>
+      <Suspense fallback={<SkeletonUserProfile />}>
+        <RenderUserProfile />
+      </Suspense>
     </HeaderBlock>
   );
 };
@@ -51,12 +50,4 @@ const FlexBox = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-`;
-
-const ProfileWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 30%;
-  gap: 12px;
 `;

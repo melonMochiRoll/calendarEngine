@@ -1,56 +1,34 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
 import RenderUserProfile from 'Components/auth/RenderUserProfile';
 import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
 import { useNavigate } from 'react-router-dom';
 import { ModalName } from 'Typings/types';
-import { updateSharedspaceName } from 'Api/sharedspacesApi';
-import useUser from 'Hooks/queries/useUser';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
-import EditableTitle from 'Components/common/EditableTitle';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
 import { PATHS } from 'Constants/paths';
-import { useSharedspace } from 'Hooks/queries/useSharedspace';
 import TextButton from 'Src/components/common/TextButton';
+import SkeletonUserProfile from 'Src/components/async/skeleton/SkeletonUserProfile';
+import RenderSpaceTitle from 'Src/components/layouts/RenderSpaceTitle';
+import { Skeleton } from '@mui/material';
 
 interface SharedspaceHeaderProps {};
 
 const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
-  const { data: userData } = useUser({ suspense: true, throwOnError: true });
-  const { data: spaceData } = useSharedspace();
-  const { permission } = spaceData;
-
   const navigate = useNavigate();
-  const qc = useQueryClient();
   const dispatch = useAppDispatch();
-
-  const onUpdateSharedspaceName = async (name: string) => {
-    if (spaceData?.name === name) {
-      return;
-    }
-
-    await updateSharedspaceName(name, spaceData?.url);
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY, spaceData?.url]);
-  };
   
   return (
-    <HeaderBlock>
+    <Header>
       <SpaceInfoWrapper>
         <FlexBox>
           <SatelliteIcon
             onClick={() => navigate(PATHS.SHAREDSPACE)}
             fontSize='large'
             sx={SatelliteIconInlineStyle} />
-          {
-            permission.isOwner ?
-            <EditableTitle
-              initValue={spaceData.name}
-              submitEvent={onUpdateSharedspaceName}/>
-              :
-            <SpaceTitle>{spaceData.name}</SpaceTitle>
-          }
+            <Suspense fallback={<Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={200} height={40} />}>
+              <RenderSpaceTitle />
+            </Suspense>
         </FlexBox>
         <TextButton
           type='button'
@@ -58,16 +36,16 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
           멤버 목록
         </TextButton>
       </SpaceInfoWrapper>
-      <ProfileWrapper>
-        <RenderUserProfile userData={userData} />
-      </ProfileWrapper>
-    </HeaderBlock>
+      <Suspense fallback={<SkeletonUserProfile />}>
+        <RenderUserProfile />
+      </Suspense>
+    </Header>
   );
 };
 
 export default SharedspaceHeader;
 
-const HeaderBlock = styled.header`
+const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -91,50 +69,8 @@ const FlexBox = styled.div`
   gap: 10px;
 `;
 
-const SpaceTitle = styled.h1`
-  font-size: 28px;
-  color: var(--white);
-  margin: 0;
-`;
-
-const RestUserImg = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-  color: var(--white);
-  width: 35px;
-  height: 35px;
-  border-radius: 35px;
-  background-color: var(--light-gray);
-  cursor: pointer;
-`;
-
-const ProfileWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 30%;
-  gap: 15px;
-`;
-
 const SatelliteIconInlineStyle = {
   color: 'var(--blue)',
   cursor: 'pointer',
   marginRight: '10px',
 };
-
-const IconButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background-color: var(--black);
-  padding: 3px;
-  border: none;
-  border-radius: 15px;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-`;

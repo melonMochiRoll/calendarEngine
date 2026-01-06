@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { logout } from 'Api/authApi';
 import { useNavigate } from 'react-router-dom';
@@ -7,17 +7,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_USER_KEY } from 'Constants/queryKeys';
 import ProfileImage from 'Components/ProfileImage';
 import { PATHS } from 'Constants/paths';
-import { TUser } from 'Typings/types';
+import useUser from 'Src/hooks/queries/useUser';
 
-interface RenderUserProfileProps {
-  userData: TUser;
-};
+interface RenderUserProfileProps {};
 
-const RenderUserProfile: FC<RenderUserProfileProps> = ({
-  userData,
-}) => {
+const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { data: userData } = useUser({ suspense: true, throwOnError: true });
 
   const onLogout = () => {
     logout()
@@ -28,7 +25,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({
   };
   
   return (
-    <>
+    <Block>
       {
         userData ?
           <>
@@ -56,11 +53,19 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({
             </TextButton>
           </>
       }
-    </>
+    </Block>
   );
 };
 
 export default RenderUserProfile;
+
+const Block = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 30%;
+  gap: 15px;
+`;
 
 const Email = styled.span`
   color: var(--white);
