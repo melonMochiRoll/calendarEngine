@@ -2,11 +2,15 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { Skeleton } from '@mui/material';
 
-const SkeletonSidebar: FC = () => {
+interface SkeletonMenusProps {
+  length: number,
+};
+
+const SkeletonMenus: FC<SkeletonMenusProps> = ({ length }) => {
   return (
-    <NavBlock>
+    <>
       {
-        Array.from({ length: 4 }, (_, i) => i).map((i) => {
+        Array.from({ length }, (_, i) => i).map((i) => {
           return (
             <IconButton key={i}>
               <Icon>
@@ -17,23 +21,11 @@ const SkeletonSidebar: FC = () => {
           );
         })
       }
-    </NavBlock>
+    </>
   );
 };
 
-export default SkeletonSidebar;
-
-const NavBlock = styled.nav`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 75px;
-  height: 100vh;
-  padding: 30px 10px;
-  background-color: var(--dark-gray);
-  gap: 30px;
-  z-index: 1;
-`;
+export default SkeletonMenus;
 
 const IconButton = styled.div`
   display: flex;
