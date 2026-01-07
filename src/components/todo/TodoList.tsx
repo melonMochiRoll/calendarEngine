@@ -5,65 +5,74 @@ import TodoItem from './TodoItem';
 import { TODO_PALETTE } from 'Constants/calendar';
 import { getTodoHeight, renderTime, timeToDayjs } from 'Lib/utilFunction';
 import TodoBlank from './TodoBlank';
+import { useTodosByMonth } from 'Src/hooks/queries/useTodosByMonth';
+import { useAppSelector } from 'Src/hooks/reduxHooks';
+import TodoNull from './TodoNull';
 
-interface TodoListProps {
-  todoData: TTodoPayload[],
-};
+interface TodoListProps {};
 
-const TodoList: FC<TodoListProps> = ({
-  todoData,
-}) => {
+const TodoList: FC<TodoListProps> = ({}) => {
+  const { data: todosData } = useTodosByMonth();
+  const { todoTime } = useAppSelector(state => state.todoTime);
+  const todoData = todosData[todoTime];
+
   return (
-    <Block>
-      <ListHeader>
-        <TimeDiv>
-          <TimeSpan>{renderTime(todoData[0]?.startTime)}</TimeSpan>
-        </TimeDiv>
-      </ListHeader>
-      <ListBody>
-        {
-          todoData.map((todo: TTodoPayload, idx: number) => {
-            const height = getTodoHeight(todo.startTime, todo.endTime);
+    <>
+    {
+      todoData?.length ?
+        <Block>
+          <ListHeader>
+            <TimeDiv>
+              <TimeSpan>{renderTime(todoData[0]?.startTime)}</TimeSpan>
+            </TimeDiv>
+          </ListHeader>
+          <ListBody>
+            {
+              todoData.map((todo: TTodoPayload, idx: number) => {
+                const height = getTodoHeight(todo.startTime, todo.endTime);
 
-            if (todoData.length === idx + 1) {
-              return (
-                <TodoItem
-                  key={todo.id}
-                  todo={todo}
-                  todoHeight={height}
-                  bgColor={TODO_PALETTE[idx % 7]} />
-              );
-            }
+                if (todoData.length === idx + 1) {
+                  return (
+                    <TodoItem
+                      key={todo.id}
+                      todo={todo}
+                      todoHeight={height}
+                      bgColor={TODO_PALETTE[idx % 7]} />
+                  );
+                }
 
-            const nextTodo = todoData[idx + 1];
+                const nextTodo = todoData[idx + 1];
 
-            if (timeToDayjs(todo.endTime) < timeToDayjs(nextTodo.startTime)) {
-              return (
-                <Fragment key={todo.id}>
+                if (timeToDayjs(todo.endTime) < timeToDayjs(nextTodo.startTime)) {
+                  return (
+                    <Fragment key={todo.id}>
+                      <TodoItem
+                        todo={todo}
+                        todoHeight={height}
+                        bgColor={TODO_PALETTE[idx % 7]} />
+                      <TodoBlank
+                        blankHeight={getTodoHeight(todo.endTime, nextTodo.startTime)}
+                        nextTodoStartTime={nextTodo.startTime}
+                        borderBottomColor={TODO_PALETTE[(idx + 1) % 7]} />
+                    </Fragment>
+                  );
+                }
+
+                return (
                   <TodoItem
+                    key={todo.id}
                     todo={todo}
                     todoHeight={height}
-                    bgColor={TODO_PALETTE[idx % 7]} />
-                  <TodoBlank
-                    blankHeight={getTodoHeight(todo.endTime, nextTodo.startTime)}
-                    nextTodoStartTime={nextTodo.startTime}
-                    borderBottomColor={TODO_PALETTE[(idx + 1) % 7]} />
-                </Fragment>
-              );
+                    bgColor={TODO_PALETTE[idx % 7]}
+                    hideEndTime={timeToDayjs(todo.endTime) > timeToDayjs(nextTodo.startTime)} />
+                );
+              })
             }
-
-            return (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                todoHeight={height}
-                bgColor={TODO_PALETTE[idx % 7]}
-                hideEndTime={timeToDayjs(todo.endTime) > timeToDayjs(nextTodo.startTime)} />
-            );
-          })
-        }
-      </ListBody>
-    </Block>
+          </ListBody>
+        </Block> :
+        <TodoNull />
+    }
+    </>
   );
 };
 

@@ -1,48 +1,42 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
+import { useAppDispatch } from 'Hooks/reduxHooks';
 import AddIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { openModal } from 'Features/modalSlice';
 import { ModalName } from 'Typings/types';
+import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 
-interface TodoHeaderProps {
-  hasMemberPermission: boolean,
-};
+interface TodoHeaderProps {};
 
-const TodoHeader: FC<TodoHeaderProps> = ({
-  hasMemberPermission,
-}) => {
+const TodoHeader: FC<TodoHeaderProps> = ({}) => {
   const dispatch = useAppDispatch();
-  const { todoTime } = useAppSelector(state => state.todoTime);
-  const [ year, month, date ] = todoTime.split('-');
+  const { data: spaceData } = useSharedspace();
+  const { permission } = spaceData;
 
   return (
     <>
-      <Title>{`${year}년 ${month}월 ${date}일`}</Title>
-      <FlexBox visibility={hasMemberPermission}
-        onClick={() => dispatch(openModal({ name: ModalName.TODO_INPUT }))}>
-        <AddIcon fontSize='large' sx={{ color: 'var(--blue)' }}/>
-        <Span>새 Todo 작성</Span>
-      </FlexBox>
+      {
+        permission.isMember ?
+          <FlexBox
+            onClick={() => dispatch(openModal({ name: ModalName.TODO_INPUT }))}>
+            <AddIcon fontSize='large' sx={{ color: 'var(--blue)' }}/>
+            <Span>새 Todo 작성</Span>
+          </FlexBox> :
+          <DisableFlexBox />
+      }
     </>
   );
 };
 
 export default TodoHeader;
 
-const Title = styled.h1`
-  font-size: 46px;
-  font-weigth: 800;
-  color: var(--white);
-  margin-top: 0px;
-  margin-bottom: 10px;
-`;
-
-const FlexBox = styled.div<{ visibility: boolean }>`
-  visibility: ${({ visibility }) => visibility ? 'visible' : 'hidden'};
+const FlexBox = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  width: 175px;
+  height: 100px;
   margin: 10px 0;
   padding: 10px 20px;
   color: var(--white);
@@ -58,4 +52,9 @@ const FlexBox = styled.div<{ visibility: boolean }>`
 const Span = styled.span`
   font-size: 22px;
   font-weight: 700;
+`;
+
+const DisableFlexBox = styled.div`
+  width: 175px;
+  height: 100px;
 `;
