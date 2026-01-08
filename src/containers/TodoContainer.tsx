@@ -3,9 +3,10 @@ import styled from '@emotion/styled';
 import TodoList from 'Components/todo/TodoList';
 import TodoHeader from 'Components/todo/TodoHeader';
 import { useAppSelector } from 'Src/hooks/reduxHooks';
-import { Skeleton } from '@mui/material';
 import LoadingCircular from 'Src/components/async/skeleton/LoadingCircular';
 import TodoInit from 'Src/components/todo/TodoInit';
+import { ErrorBoundary } from 'react-error-boundary';
+import TodoFallback from 'Src/components/async/fallbackUI/TodoFallback';
 
 interface TodoContainerProps {};
 
@@ -19,12 +20,12 @@ const TodoContainer: FC<TodoContainerProps> = ({}) => {
         todoTime ?
           <Block>
             <Title>{`${year}년 ${month}월 ${date}일`}</Title>
-            <Suspense fallback={<Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={150} height={100} />}>
-              <TodoHeader />
-            </Suspense>
-            <Suspense fallback={<LoadingCircular />}>
-              <TodoList />
-            </Suspense>
+            <ErrorBoundary fallbackRender={(props) => <TodoFallback errorProps={props} />}>
+              <Suspense fallback={<LoadingCircular />}>
+                <TodoHeader />
+                <TodoList />
+              </Suspense>
+            </ErrorBoundary>
           </Block>
           :
           <TodoInit />
