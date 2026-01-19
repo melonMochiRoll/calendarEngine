@@ -56,20 +56,20 @@ export function useChatSocket() {
     });
   };
 
-  const onChatUpdated = (data: Omit<TChatPayload, 'permission'>) => {
+  const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'>) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (prev) {
-        const withPermission = Object.assign(data, {
-          permission: {
-            isSender: data.SenderId === userData?.id,
-          },
-        });
         const newChats = [ ...prev.chats ];
         const idx = newChats.findIndex(chat => chat.id === data.id);
 
         if (idx < 0) return;
 
-        newChats[idx] = withPermission;
+        newChats[idx] = {
+          ...newChats[idx],
+          content: data.content,
+          updatedAt: data.updatedAt,
+        };
+        
         return {
           ...prev,
           chats: newChats,
