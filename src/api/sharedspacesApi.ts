@@ -275,3 +275,22 @@ export const deleteSharedspaceChatImage = async (
     throw error;
   }
 };
+
+export const generatePresignedPutUrl = async (
+  url: string | undefined,
+  fileNames: string[],
+): Promise<string[]> => {
+  try {
+    const { data } = await axiosInstance
+      .post(
+        `/api/sharedspaces/${url}/chats/images/presigned-url`,
+        {
+          fileNames,
+        },
+      );
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
