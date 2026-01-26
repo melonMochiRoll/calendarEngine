@@ -1,5 +1,6 @@
 import { TSharedspaceMembersRoles } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
+import axios from "axios";
 
 export const getSharedspace = async (url: string | undefined) => {
   if (!url) {
@@ -291,6 +292,26 @@ export const generatePresignedPutUrl = async (
 
     return data;
   } catch (error) {
+    throw error;
+  }
+};
+
+export const uploadImageToPresignedUrl = async (
+  url: string,
+  file: File,
+) => {
+  try {
+    await axios
+      .put(
+        url, file,
+        {
+          headers: {
+            'Cache-Control': 'public, max-age=31536000, immutable',
+          },
+        }
+      );
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 };
