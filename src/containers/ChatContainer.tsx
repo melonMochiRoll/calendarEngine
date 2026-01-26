@@ -2,7 +2,7 @@ import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useChatSocket } from 'Hooks/useChatSocket';
 import { useChats } from 'Hooks/queries/useChats';
-import { createSharedspaceChat } from 'Api/sharedspacesApi';
+import { createSharedspaceChat, generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
 import { throttle } from 'lodash';
@@ -79,38 +79,62 @@ const ChatContainer: FC = () => {
     setImages(prev => [ ...prev, ...newImages ]);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const trimmedChat = chat.trim();
+    const imageKeys = [];
 
     if (!trimmedChat && !images.length) {
       setChat('');
       return;
     }
 
-    const formData = new FormData();
+    try {
+      if (images.length) {
+        const imageNames = images.map(image => image.name);
+        const presignedUrls = await generatePresignedPutUrl(url, imageNames)
+          .catch(() => {
+            toast.error(waitingMessage, {
+              ...defaultToastOption,
+              toastId: waitingMessage,
+            });
+          });
+        
+        if (!presignedUrls) {
+          return;
+        }
 
-    formData.append('content', trimmedChat);
-    images.forEach((image) => {
-      formData.append('images', image);
-    });
+        await Promise.all(
+          presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i]))
+        );
 
-    createSharedspaceChat(url, formData)
-      .then(() => {
-        scrollbarRef?.current?.scrollTo(0, 0);
-        setChat('');
-        setImages([]);
-        setPreviews([]);
-      })
-      .catch((error) => {
-        const errorMessage = error?.response?.status === 413 ?
-          imageTooLargeMessage :
-          waitingMessage;
+        for (const { key, presignedUrl } of presignedUrls) {
+          imageKeys.push(key);
+        }
+      }
 
-        toast.error(errorMessage, {
-          ...defaultToastOption,
-          toastId: errorMessage,
+      createSharedspaceChat(url, trimmedChat, imageKeys)
+        .then(() => {
+          scrollbarRef?.current?.scrollTo(0, 0);
+          setChat('');
+          setImages([]);
+          setPreviews([]);
+        })
+        .catch((error) => {
+          const errorMessage = error?.response?.status === 413 ?
+            imageTooLargeMessage :
+            waitingMessage;
+
+          toast.error(errorMessage, {
+            ...defaultToastOption,
+            toastId: errorMessage,
+          });
         });
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
+        toastId: waitingMessage,
       });
+    }
   };
 
   return (
