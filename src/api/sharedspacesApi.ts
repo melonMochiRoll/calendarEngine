@@ -280,7 +280,7 @@ export const deleteSharedspaceChatImage = async (
 export const generatePresignedPutUrl = async (
   url: string | undefined,
   fileNames: string[],
-): Promise<string[]> => {
+): Promise<Array<{ key: string, presignedUrl: string }>> => {
   try {
     const { data } = await axiosInstance
       .post(
