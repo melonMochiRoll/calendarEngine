@@ -11,7 +11,7 @@ const ImageViewer: FC<ImageViewerProps> = ({
   return (
     <Block onClick={e => e.stopPropagation()}>
       <Img
-        src={`${process.env.REACT_APP_AWS_S3_BUCKET_URL}/${path}`}
+        src={path}
         alt={path} />
     </Block>
   );
