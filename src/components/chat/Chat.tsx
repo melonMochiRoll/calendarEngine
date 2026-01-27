@@ -15,8 +15,7 @@ import { deleteSharedspaceChat, deleteSharedspaceChatImage, updateSharedspaceCha
 import EditIcon from '@mui/icons-material/Edit';
 import useInput from 'Hooks/utils/useInput';
 import EditContent from './EditContent';
-import SingleImage from './SingleImage';
-import MultipleImage from './MultipleImage';
+import ChatImage from './ChatImage';
 import { toast } from 'react-toastify';
 
 interface ChatProps {
@@ -117,15 +116,7 @@ const Chat: FC<ChatProps> = ({
               <Images>
                 {
                   chat.Images.map((image) => {
-                    if (chat.Images.length === 1) {
-                      return <SingleImage
-                        key={image.id}
-                        image={image}
-                        isSender={chat.permission.isSender}
-                        deleteImage={() => deleteImage(url, chat.content, chat.id, image.id)} />
-                    }
-
-                    return <MultipleImage
+                    return <ChatImage
                       key={image.id}
                       image={image}
                       isSender={chat.permission.isSender}
@@ -237,6 +228,7 @@ const Content = styled.p`
 
 const Images = styled.div`
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 5px;
 `;

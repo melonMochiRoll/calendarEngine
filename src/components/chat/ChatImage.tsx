@@ -11,7 +11,7 @@ interface SingleImageProps {
   deleteImage: () => void,
 };
 
-const SingleImage: FC<SingleImageProps> = ({
+const ChatImage: FC<SingleImageProps> = ({
   image,
   isSender,
   deleteImage,
@@ -29,7 +29,7 @@ const SingleImage: FC<SingleImageProps> = ({
     <Block>
       <Image
         onClick={openImageModal}
-        src={`${process.env.REACT_APP_AWS_S3_BUCKET_URL}/${image.path}`}/>
+        src={image.path}/>
       {isSender &&
         <Buttons>
           <Button onClick={deleteImage}>
@@ -41,7 +41,7 @@ const SingleImage: FC<SingleImageProps> = ({
   );
 };
 
-export default SingleImage;
+export default ChatImage;
 
 const Block = styled.div`
   position: relative;
