@@ -67,16 +67,10 @@ const Chat: FC<ChatProps> = ({
 
   const deleteImage = (
     url: string | undefined,
-    content: string,
     ChatId: number,
-    imageId: number
+    ImageId: number
   ) => {
-    deleteSharedspaceChatImage(url, ChatId, imageId)
-      .then(() => {
-        if (!content) {
-          onDeleteChat(url, ChatId);
-        }
-      })
+    deleteSharedspaceChatImage(url, ChatId, ImageId)
       .catch(() => {
         toast.error(waitingMessage, {
           ...defaultToastOption,
@@ -120,7 +114,7 @@ const Chat: FC<ChatProps> = ({
                       key={image.id}
                       image={image}
                       isSender={chat.permission.isSender}
-                      deleteImage={() => deleteImage(url, chat.content, chat.id, image.id)} />
+                      deleteImage={() => deleteImage(url, chat.id, image.id)} />
                   })
                 }
               </Images>
