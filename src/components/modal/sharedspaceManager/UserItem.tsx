@@ -6,7 +6,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { RoleDictionary, SharedspaceMembersRoles, TSearchUsersItem, TSharedspaceMembersRoles } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
 
-const createMemeberOption = [
+const createMemberOption = [
   {
     text: RoleDictionary.MEMBER,
     roleName: SharedspaceMembersRoles.MEMBER,
@@ -19,7 +19,7 @@ const createMemeberOption = [
 
 interface UserItemProps {
   user: TSearchUsersItem,
-  onCreateMember: (UserId: number, RoleName: TSharedspaceMembersRoles) => void;
+  onCreateMember: (UserId: number, RoleName: TSharedspaceMembersRoles) => void,
 };
 
 const UserItem: FC<UserItemProps> = ({
@@ -66,7 +66,7 @@ const UserItem: FC<UserItemProps> = ({
         onClick={onClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        {createMemeberOption.map((option: typeof createMemeberOption[0]) => {
+        {createMemberOption.map((option: typeof createMemberOption[0]) => {
           return (
             <MenuItem
               key={option.text}
