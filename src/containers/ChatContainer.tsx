@@ -10,9 +10,12 @@ import { toast } from 'react-toastify';
 import { defaultToastOption, imageTooLargeMessage, tooManyImagesMessage, waitingMessage } from 'Constants/notices';
 import ChatFooter from 'Components/chat/ChatFooter';
 import ChatList from 'Components/chat/ChatList';
+import ChatDisableFooter from 'Src/components/chat/ChatDisableFooter';
+import useUser from 'Src/hooks/queries/useUser';
 
 const ChatContainer: FC = () => {
   const { url } = useParams();
+  const { data: userData } = useUser({ suspense: true, throwOnError: false });
 
   const { data: chatList, loadMore } = useChats();
   const {
@@ -147,11 +150,16 @@ const ChatContainer: FC = () => {
           scrollbarRef={scrollbarRef}
           onScroll={onScroll}
           deleteFile={deleteFile} />
-        <ChatFooter
-          onSubmit={onSubmit}
-          chat={chat}
-          onChangeChat={onChangeChat}
-          onChangeImageFiles={onChangeImageFiles} />
+        {
+          userData ?
+            <ChatFooter
+              onSubmit={onSubmit}
+              chat={chat}
+              onChangeChat={onChangeChat}
+              onChangeImageFiles={onChangeImageFiles} />
+              :
+              <ChatDisableFooter />
+        }
       </ChatWrapper>
     </ChatBlock>
   );
