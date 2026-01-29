@@ -8,14 +8,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { TSharedspaceMembersRoles } from 'Typings/types';
 import MemberItem from '../sharedspaceManager/MemberItem';
-import { useSharedpacemembers } from 'Src/hooks/queries/useSharedpacemembers';
+import { useSharedspacemembers } from 'Src/hooks/queries/useSharedspacemembers';
 
 interface SharedspaceMemberListMainProps {};
 
 const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   const { url } = useParams();
   const qc = useQueryClient();
-  const { data: membersData, nextPage } = useSharedpacemembers(); 
+  const { data: membersData, nextPage } = useSharedspacemembers(); 
   const [ error, setError ] = useState('');
 
   const onUpdateMemberRole = (UserId: number, roleName: TSharedspaceMembersRoles) => {

@@ -6,12 +6,12 @@ import { GET_SHAREDSPACE_MEMBERS_KEY } from "Src/constants/queryKeys";
 import { handleRetry } from "Src/lib/utilFunction";
 import { TSharedspaceMembersList } from "Src/typings/types";
 
-type UseSharedpacemembersReturnType = {
+type UseSharedspacemembersReturnType = {
   data: TSharedspaceMembersList,
   nextPage: () => void,
 };
 
-export function useSharedpacemembers(): UseSharedpacemembersReturnType {
+export function useSharedspacemembers(): UseSharedspacemembersReturnType {
   const { url: _url } = useParams();
   const qc = useQueryClient();
   const [ page, setPage ] = useState(1);
