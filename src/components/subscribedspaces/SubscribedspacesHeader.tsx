@@ -138,7 +138,7 @@ const ItemPrivate = styled.div`
   justify-content: center;
   align-items: center;
   width: 10%;
-  font-size: 20px;
+  font-size: 16px;
   text-align: center;
   cursor: help;
   gap: 5px;
