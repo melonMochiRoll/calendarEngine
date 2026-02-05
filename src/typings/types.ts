@@ -26,6 +26,7 @@ export const ModalName = {
   JOINREQUEST_DETAIL: 'JOINREQUEST_DETAIL',
   IMAGE_VIEWER: 'IMAGE_VIEWER',
   SHAREDSPACE_INVITE_RECEIVED: 'SHAREDSPACE_INVITE_RECEIVED',
+  SHAREDSPACE_INVITE_SEND: 'SHAREDSPACE_INVITE_SEND',
 } as const;
 
 export type TModalName = typeof ModalName[keyof typeof ModalName];
@@ -41,7 +42,8 @@ export type ModalPayload =
   | { name: typeof ModalName.JOINREQUEST_MANAGER, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_DETAIL, props: JoinRequestDetailProps }
   | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps }
-  | { name: typeof ModalName.SHAREDSPACE_INVITE_RECEIVED, props?: {} };
+  | { name: typeof ModalName.SHAREDSPACE_INVITE_RECEIVED, props?: {} }
+  | { name: typeof ModalName.SHAREDSPACE_INVITE_SEND, props?: {} };
 
 export const RoleDictionary = {
   OWNER: '소유자',
