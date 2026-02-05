@@ -6,6 +6,7 @@ import { ModalName } from 'Src/typings/types';
 import PublicIcon from '@mui/icons-material/Public';
 import MailIcon from '@mui/icons-material/Mail';
 import MailReadIcon from '@mui/icons-material/MarkEmailRead';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 
 const DynamicMenus: FC = () => {
@@ -31,6 +32,15 @@ const DynamicMenus: FC = () => {
             <MailIcon />
           </Icon>
           <span>권한 요청 관리</span>
+        </IconButton>
+      }
+      {
+        permission.isMember &&
+        <IconButton onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACE_INVITE_SEND }))}>
+          <Icon>
+            <GroupAddIcon />
+          </Icon>
+          <span>유저 초대</span>
         </IconButton>
       }
       {
