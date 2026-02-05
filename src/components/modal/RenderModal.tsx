@@ -15,6 +15,8 @@ export const modals = {
   [ModalName.JOINREQUEST_MANAGER]: React.lazy(() => import('Components/modal/joinrequest/joinrequestManager/JoinRequestManagerModal')),
   [ModalName.JOINREQUEST_DETAIL]: React.lazy(() => import('Components/modal/joinrequest/joinrequestManager/JoinRequestDetail')),
   [ModalName.IMAGE_VIEWER]: React.lazy(() => import('Components/modal/imageViewer/ImageViewer')),
+  [ModalName.SHAREDSPACE_INVITE_SEND]: React.lazy(() => import('Components/modal/sharedspaceInviteSend/SharedspaceInviteSendModal')),
+  [ModalName.SHAREDSPACE_INVITE_RECEIVED]: React.lazy(() => import('Components/modal/sharedspaceInviteReceived/SharedspaceInviteReceivedModal')),
 };
 
 const RenderModal: FC = () => {
