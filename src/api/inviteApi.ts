@@ -30,3 +30,21 @@ export const sendInvite = async (
     throw err;
   }
 };
+
+export const acceptInvite = async (
+  id: number,
+  url: string | undefined,
+) => {
+  try {
+    await axiosInstance
+      .post(
+        `api/invites/accept`,
+        {
+          id,
+          url,
+        }
+      );
+  } catch (err) {
+    throw err;
+  }
+};
