@@ -259,3 +259,16 @@ export const ChatsCommandList = {
   CHAT_DELETED: 'chat_deleted',
   CHAT_IMAGE_DELETED: 'chat_image_deleted',
 } as const;
+
+export type TInvite = {
+  id: number,
+  createdAt: string,
+  SharedspaceName: string,
+  url: string,
+  OwnerEmail: string,
+};
+
+export type TInvitePayload = {
+  invites: TInvite[],
+  hasMoreData: boolean,
+};
