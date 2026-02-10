@@ -33,7 +33,7 @@ export const sendInvite = async (
 
 export const acceptInvite = async (
   id: number,
-  url: string | undefined,
+  url: string,
 ) => {
   try {
     await axiosInstance
@@ -51,7 +51,7 @@ export const acceptInvite = async (
 
 export const declineInvite = async (
   id: number,
-  url: string | undefined,
+  url: string,
 ) => {
   try {
     await axiosInstance
