@@ -9,13 +9,15 @@ import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { TSharedspaceMembersRoles } from 'Typings/types';
 import MemberItem from '../sharedspaceManager/MemberItem';
 import { useSharedspacemembers } from 'Src/hooks/queries/useSharedspacemembers';
+import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 
 interface SharedspaceMemberListMainProps {};
 
 const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   const { url } = useParams();
   const qc = useQueryClient();
-  const { data: membersData, nextPage } = useSharedspacemembers(); 
+  const { data: membersData, nextPage } = useSharedspacemembers();
+  const { data: spaceData } = useSharedspace();
   const [ error, setError ] = useState('');
 
   const onUpdateMemberRole = (UserId: number, roleName: TSharedspaceMembersRoles) => {
@@ -66,6 +68,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
             <MemberItem
               key={member.UserId}
               item={member}
+              isOwner={spaceData.permission.isOwner}
               onUpdateMemberRole={onUpdateMemberRole}
               onUpdateOwner={onUpdateOwner}
               onDeleteMember={onDeleteMember} />

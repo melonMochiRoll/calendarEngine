@@ -11,6 +11,7 @@ import MemberItem from './MemberItem';
 interface SharedspaceManagerInitPageProps {
   membersData: TSharedspaceMembersList,
   spacePrivate: boolean,
+  isOwner: boolean,
   nextPage: () => void,
   onUpdateSharedspacePrivate: (Private: boolean) => void,
   onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => void,
@@ -21,6 +22,7 @@ interface SharedspaceManagerInitPageProps {
 const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
   membersData,
   spacePrivate,
+  isOwner,
   nextPage,
   onUpdateMemberRole,
   onUpdateSharedspacePrivate,
@@ -51,6 +53,7 @@ const SharedspaceManagerInitPage: FC<SharedspaceManagerInitPageProps> = ({
               <MemberItem
                 key={member.UserId}
                 item={member}
+                isOwner={isOwner}
                 onUpdateMemberRole={onUpdateMemberRole}
                 onUpdateOwner={onUpdateOwner}
                 onDeleteMember={onDeleteMember} />

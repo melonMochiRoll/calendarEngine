@@ -8,14 +8,16 @@ import ProfileImage from 'Components/ProfileImage';
 import { renderRole } from 'Lib/utilFunction';
 
 interface MemberItemProps {
-  item: TSharedspaceMembersItem;
-  onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => void;
-  onUpdateOwner: (UserId: number) => void;
-  onDeleteMember: (UserId: number) => void;
+  item: TSharedspaceMembersItem,
+  isOwner: boolean,
+  onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => void,
+  onUpdateOwner: (UserId: number) => void,
+  onDeleteMember: (UserId: number) => void,
 };
 
 const MemberItem: FC<MemberItemProps> = ({
   item,
+  isOwner,
   onUpdateMemberRole,
   onUpdateOwner,
   onDeleteMember,
@@ -67,15 +69,15 @@ const MemberItem: FC<MemberItemProps> = ({
         <EmailText>{email}</EmailText>
       </EmailWrapper>
       {
-        RoleName === SharedspaceMembersRoles.OWNER ?
-        <DisableButton>
-          <CurrentOption>{renderRole(RoleName)}</CurrentOption>
-        </DisableButton>
-        :
-        <Button onClick={onOpenWithEvent}>
-          <CurrentOption>{renderRole(RoleName)}</CurrentOption>
-          <ArrowDropDownIcon fontSize='large' />
-        </Button>
+        isOwner ?
+          <Button onClick={onOpenWithEvent}>
+            <CurrentOption>{renderRole(RoleName)}</CurrentOption>
+            <ArrowDropDownIcon fontSize='large' />
+          </Button>
+          :
+          <DisableButton>
+            <CurrentOption>{renderRole(RoleName)}</CurrentOption>
+          </DisableButton>
       }
       <Menu
         aria-labelledby='demo-positioned-button'

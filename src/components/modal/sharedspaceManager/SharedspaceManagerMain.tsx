@@ -100,6 +100,7 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({ query }) => {
         <SharedspaceManagerInitPage
           membersData={membersData}
           spacePrivate={spaceData.private}
+          isOwner={spaceData.permission.isOwner}
           nextPage={sharedspaceMembersNextPage}
           onUpdateSharedspacePrivate={onUpdateSharedspacePrivate}
           onUpdateMemberRole={onUpdateMemberRole}
