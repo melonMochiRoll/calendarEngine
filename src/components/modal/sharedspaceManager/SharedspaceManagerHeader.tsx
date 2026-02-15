@@ -1,35 +1,27 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { closeModal } from 'Features/modalSlice';
-import SearchIcon from '@mui/icons-material/SearchRounded';
+import PublicIcon from '@mui/icons-material/Public';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 
-interface SharedspaceMangerHeaderProps {
-  query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
-};
+interface SharedspaceMangerHeaderProps {};
 
-const SharedspaceManagerHeader: FC<SharedspaceMangerHeaderProps> = ({
-  query,
-  setQuery,
-}) => {
+const SharedspaceManagerHeader: FC<SharedspaceMangerHeaderProps> = ({}) => {
   const dispatch = useAppDispatch();
 
   return (
     <Header>
-      <SearchIcon
-        fontSize='large'
-        sx={{ color: '#66B3FF' }} />
-      <Input
-        autoFocus
-        type='text'
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder='초대 할 유저 검색' />
-      <CloseIcon
-        onClick={() => dispatch(closeModal())}
-        sx={CloseIconInlineStyle} />
+      <Left></Left>
+      <Center>
+        <PublicIcon fontSize='large' />
+        <ModalTitle>채널 관리</ModalTitle>
+      </Center>
+      <Right>
+        <CloseIcon
+          onClick={() => dispatch(closeModal())}
+          sx={CloseIconInlineStyle} />
+      </Right>
     </Header>
   );
 };
@@ -38,21 +30,38 @@ export default SharedspaceManagerHeader;
 
 const Header = styled.header`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 15%;
-  padding: 20px 25px;
+  height: 20%;
+  padding: 20px 0;
   border-bottom: 1px solid var(--light-gray);
 `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 0 20px;
+const Left = styled.div`
+  width: 15%;
+`;
+
+const Center = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+  color: var(--white);
+  gap: 15px;
+`;
+
+const ModalTitle = styled.h1`
   color: var(--white);
   font-size: 24px;
-  background-color: var(--black);
-  border: none;
-  outline: none;
+  font-weight 600;
+  margin: 0;
+`;
+
+const Right = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 15%;
 `;
 
 const CloseIconInlineStyle = {
