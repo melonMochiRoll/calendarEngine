@@ -1,13 +1,11 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
 import { TSharedspaceMembersRoles } from 'Typings/types';
-import MemberItem from '../sharedspaceManager/MemberItem';
+import MemberItem from './MemberItem';
 import { useSharedspacemembers } from 'Src/hooks/queries/useSharedspacemembers';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 
@@ -18,50 +16,36 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   const qc = useQueryClient();
   const { data: membersData, nextPage } = useSharedspacemembers();
   const { data: spaceData } = useSharedspace();
-  const [ error, setError ] = useState('');
 
-  const onUpdateMemberRole = (UserId: number, roleName: TSharedspaceMembersRoles) => {
-    updateSharedspaceMembers(url, UserId, roleName)
-      .then(async () => {
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      })
-      .catch(() => {
-        setError(waitingMessage);
-      });
+  const onUpdateMemberRole = async (UserId: number, roleName: TSharedspaceMembersRoles) => {
+    try {
+      await updateSharedspaceMembers(url, UserId, roleName);
+      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+    } catch (err) {
+      throw err;
+    }
   };
 
-  const onUpdateOwner = (UserId: number) => {
-    updateSharedspaceOwner(url, UserId)
-      .then(async () => {
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      })
-      .catch(() => {
-        setError(waitingMessage);
-      });
+  const onUpdateOwner = async (UserId: number) => {
+    try {
+      await updateSharedspaceOwner(url, UserId);
+      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+    } catch (err) {
+      throw err;
+    }
   };
 
-  const onDeleteMember = (UserId: number) => {
-    deleteSharedspaceMembers(url, UserId)
-      .then(async () => {
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      })
-      .catch(() => {
-        setError(waitingMessage);
-      });
+  const onDeleteMember = async (UserId: number) => {
+    try {
+      await deleteSharedspaceMembers(url, UserId);
+      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+    } catch (err) {
+      throw err;
+    }
   };
   
   return (
     <Main>
-      {error && <ErrorSpan>{error}</ErrorSpan>}
       <List>
         {membersData.items.map((member) => {
           return (
