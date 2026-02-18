@@ -42,40 +42,47 @@ const Chat: FC<ChatProps> = ({
   const hoverMenuId = 'hoverMenu';
   const isUpdated = chat.createdAt !== chat.updatedAt;
 
-  const onUpdateChat = (
+  const onUpdateChat = async (
     url: string | undefined,
     ChatId: number,
     oldContent: string,
     newContent: string,
   ) => {
-    updateSharedspaceChat(url, ChatId, oldContent, newContent.trim())
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
+    try {
+      await updateSharedspaceChat(url, ChatId, oldContent, newContent.trim());
+      setIsEditMode(false);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
       });
+    }
   };
 
-  const onDeleteChat = (url: string | undefined, chatId: number) => {
-    deleteSharedspaceChat(url, chatId)
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
+  const onDeleteChat = async (
+    url: string | undefined,
+    chatId: number,
+  ) => {
+    try {
+      await deleteSharedspaceChat(url, chatId);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
       });
+    }
   };
 
-  const deleteImage = (
+  const deleteImage = async (
     url: string | undefined,
     ChatId: number,
     ImageId: number
   ) => {
-    deleteSharedspaceChatImage(url, ChatId, ImageId)
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
+    try {
+      await deleteSharedspaceChatImage(url, ChatId, ImageId);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
       });
+    }
   };
 
   return (
@@ -98,10 +105,9 @@ const Chat: FC<ChatProps> = ({
               onClose={() => setIsEditMode(false)}
               content={newContent}
               onChangeContent={onChangeNewContent}
-              onSubmit={(e) => {
+              onSubmit={e => {
                 e.preventDefault();
                 onUpdateChat(url, chat.id, chat.content, newContent);
-                setIsEditMode(false);
               }} /> :
             <Content>{chat.content}</Content>
           }
