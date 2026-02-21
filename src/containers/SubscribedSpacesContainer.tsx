@@ -22,28 +22,26 @@ const SubscribedSpacesContainer: FC = () => {
 
   const { data: subscribedspaceData } = useSubscribedspace(sort, currentPage);
 
-  const onCreateSharedspace = () => {
-    createSharedspace()
-      .then((url) => {
-        navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`);
-      })
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
+  const onCreateSharedspace = async () => {
+    try {
+      const url = await createSharedspace();
+      navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
       });
+    }
   };
 
-  const onDeleteSharedspace = (url: string) => {
-    deleteSharedspace(url)
-      .then(async () => {
-        await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY, sort, currentPage]);
-      })
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
+  const onDeleteSharedspace = async (url: string) => {
+    try {
+      await deleteSharedspace(url);
+      await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY, sort, currentPage]);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
       });
+    }
   };
 
   const sortSpaces = (sort: string) => {
