@@ -34,7 +34,7 @@ export const getSubscribedspaces = async (
 export const createSharedspace = async () => {
   try {
     const { data } = await axiosInstance
-      .post(`api/sharedspaces`);
+      .post<string>(`api/sharedspaces`);
 
     return data;
   } catch (error) {
