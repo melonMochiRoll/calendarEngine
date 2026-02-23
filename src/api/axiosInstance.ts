@@ -1,9 +1,8 @@
 import axios from "axios";
-import { getOrigin } from "Lib/utilFunction";
 import { reduxStore } from "Src/store";
 
 export const axiosInstance = axios.create({
-  baseURL: getOrigin(),
+  baseURL: process.env.REACT_APP_SERVER_ORIGIN,
   headers: { "Content-Type" : "application/json" },
   withCredentials: true,
 });

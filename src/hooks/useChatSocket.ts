@@ -1,6 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { GET_SHAREDSPACE_CHATS_KEY, GET_USER_KEY } from "Constants/queryKeys";
-import { getOrigin } from "Lib/utilFunction";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
@@ -19,7 +18,7 @@ export function useChatSocket() {
   });
 
   useEffect(() => {
-    socketRef.current = io(`${getOrigin()}/sharedspace-${_url}`);
+    socketRef.current = io(`${process.env.REACT_APP_SERVER_ORIGIN}/sharedspace-${_url}`);
     const socket = socketRef.current;
 
     socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
