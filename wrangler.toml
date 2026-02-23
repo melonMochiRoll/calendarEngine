@@ -2,3 +2,6 @@ name = "calendarengine"
 main = "src/client.tsx"
 compatibility_date = "2026-02-23"
 workers_dev = false
+
+[build.upload]
+format = "modules"
