@@ -1,5 +1,5 @@
 import { ImageViewerProps } from "Components/modal/imageViewer/ImageViewer";
-import { JoinRequestDetailProps } from "Components/modal/joinrequest/JoinRequestDetail";
+import { JoinRequestDetailProps } from "Components/modal/joinrequest/joinrequestManager/JoinRequestDetail";
 import { TodoDetailProps } from "Components/modal/todo/TodoDetail";
 import { TodoUpdateProps } from "Components/modal/todo/TodoUpdate";
 
@@ -25,6 +25,8 @@ export const ModalName = {
   JOINREQUEST_MANAGER: 'JOINREQUEST_MANAGER',
   JOINREQUEST_DETAIL: 'JOINREQUEST_DETAIL',
   IMAGE_VIEWER: 'IMAGE_VIEWER',
+  SHAREDSPACE_INVITE_RECEIVED: 'SHAREDSPACE_INVITE_RECEIVED',
+  SHAREDSPACE_INVITE_SEND: 'SHAREDSPACE_INVITE_SEND',
 } as const;
 
 export type TModalName = typeof ModalName[keyof typeof ModalName];
@@ -39,7 +41,9 @@ export type ModalPayload =
   | { name: typeof ModalName.JOINREQUEST_SENDER, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_MANAGER, props?: {} }
   | { name: typeof ModalName.JOINREQUEST_DETAIL, props: JoinRequestDetailProps }
-  | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps };
+  | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps }
+  | { name: typeof ModalName.SHAREDSPACE_INVITE_RECEIVED, props?: {} }
+  | { name: typeof ModalName.SHAREDSPACE_INVITE_SEND, props?: {} };
 
 export const RoleDictionary = {
   OWNER: '소유자',
@@ -102,11 +106,34 @@ export type TTodo = {
   } | null,
 };
 
-export type TSearchTodos = 
-  Pick<TTodo, 'id' | 'description' | 'date' | 'startTime' | 'endTime'> & {
-    Sharedspace: Pick<TSharedspace, 'url'>,
-  }
-;
+export type TTodoPayload = {
+  id: number,
+  description: string,
+  date: string,
+  startTime: string,
+  endTime: string,
+  createdAt: string,
+  updatedAt: string,
+  Author: string,
+  Editor: string,
+};
+
+export type TTodoMap = {
+  [key: string]: TTodoPayload[],
+};
+
+export type TSearchTodosItem = {
+  id: number,
+  description: string,
+  date: string,
+  startTime: string,
+  endTime: string,
+};
+
+export type TSearchTodosPayload = {
+  items: TSearchTodosItem[],
+  hasMoreData: boolean,
+};
 
 export type TSharedspaceMembers = {
   SharedspaceId: number,
@@ -130,53 +157,58 @@ export type TSharedspace = {
   url: string,
 };
 
-export type TSubscribedspaces = {
-  Sharedspace: Pick<TSharedspace, 'name' | 'url' | 'private'> & { Owner: Pick<TUser, 'email'> },
-} & TSharedspaceMembers;
+export type TSharedspaceMetaData = TSharedspace & {
+  permission: {
+    isOwner: boolean,
+    isMember: boolean,
+    isViewer: boolean,
+  },
+};
 
-export const SubscribedspacesFilter = {
-  ALL: 'all',
-  OWNED: 'owned',
-  UNOWNED: 'unowned',
+export type TSubscribedspace = Pick<TSharedspace, 'name' | 'url' | 'private'> & {
+  owner: string,
+  permission: {
+    isOwner: boolean,
+  }
+};
+
+export type TSubscribedspaces = {
+  spaces: TSubscribedspace[],
+  totalCount: number,
+};
+
+export const subscribedspacesSortsMap: { [key: string]: string } = {
+  all: '모든 스페이스',
+  owned: '소유한 스페이스',
+  unowned: '소유하지 않은 스페이스',
 } as const;
 
-export type TSubscribedspacesFilter = typeof SubscribedspacesFilter[keyof typeof SubscribedspacesFilter];
-
-export const SubscribedspacesSortOptions: { text: string, filter: TSubscribedspacesFilter }[] = [
-  {
-    text: '모든 스페이스',
-    filter: SubscribedspacesFilter.ALL,
-  },
-  {
-    text: '소유한 스페이스',
-    filter: SubscribedspacesFilter.OWNED,
-  },
-  {
-    text: '소유하지 않은 스페이스',
-    filter: SubscribedspacesFilter.UNOWNED,
-  }
-];
-
-export type TSharedspaceMembersAndUser = Pick<TSharedspaceMembers, 'UserId' | 'RoleId' | 'createdAt'> &
-{
-  User: Pick<TUser, 'email' | 'profileImage'>
-} & {
-  Role: {
-    name: string,
-  }
+export type TSharedspaceMembersItem = {
+  UserId: number,
+  email: string,
+  profileImage: string,
+  RoleId: number,
+  RoleName: string,
+  createdAt: string,
 };
 
-export type TSharedspaceMetaData = Pick<TSharedspace, 'id' | 'name' | 'url' | 'private'> &
-{
-  Owner: Pick<TUser, 'id' | 'email'>,
-} &
-{
-  Sharedspacemembers: TSharedspaceMembersAndUser[],
+export type TSharedspaceMembersList = {
+  items: TSharedspaceMembersItem[],
+  hasMoreData: boolean,
 };
 
-export type TSearchUsers = Pick<TUser, 'id' | 'email' | 'profileImage'> &
-{
-  Sharedspacemembers: Pick<TSharedspaceMembers, 'SharedspaceId' | 'RoleId'>[]
+export type TSearchUsersItem = {
+  id: number,
+  email: string,
+  profileImage: string,
+  permission: {
+    isParticipant: boolean,
+  },
+};
+
+export type TSearchUsersList = {
+  items: TSearchUsersItem[],
+  hasMoreData: boolean,
 };
 
 export type TJoinRequest = {
@@ -197,19 +229,21 @@ export type TChat = {
   deletedAt: string | null;
 };
 
-export type TChatList = Pick<TChat,
+export type TChatPayload = Pick<TChat,
   'id' |
   'content' |
   'SenderId' |
-  'SharedspaceId' |
   'createdAt' |
   'updatedAt'> & {
     Sender: Pick<TUser, 'email' | 'profileImage'>,
     Images: Pick<TImages, 'id' | 'path'>[],
+    permission: {
+      isSender: boolean,
+    },
   };
 
 export type TChats = {
-  chats: TChatList[],
+  chats: TChatPayload[],
   hasMoreData: boolean,
 };
 
@@ -225,3 +259,16 @@ export const ChatsCommandList = {
   CHAT_DELETED: 'chat_deleted',
   CHAT_IMAGE_DELETED: 'chat_image_deleted',
 } as const;
+
+export type TInvite = {
+  id: number,
+  createdAt: string,
+  SharedspaceName: string,
+  url: string,
+  OwnerEmail: string,
+};
+
+export type TInvitePayload = {
+  invites: TInvite[],
+  hasMoreData: boolean,
+};

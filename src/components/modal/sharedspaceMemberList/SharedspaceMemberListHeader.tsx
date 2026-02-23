@@ -5,7 +5,9 @@ import PeopleIcon from '@mui/icons-material/PeopleAltRounded';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { closeModal } from 'Features/modalSlice';
 
-const SharedspaceMemberListHeader: FC = () => {
+interface SharedspaceMemberListHeaderProps {};
+
+const SharedspaceMemberListHeader: FC<SharedspaceMemberListHeaderProps> = ({}) => {
   const dispatch = useAppDispatch();
 
   return (

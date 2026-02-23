@@ -1,33 +1,26 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useChatSocket } from 'Hooks/useChatSocket';
-import { ChatsCommandList, TChats } from 'Typings/types';
 import { useChats } from 'Hooks/queries/useChats';
-import { createSharedspaceChat, getSharedspaceChats } from 'Api/sharedspacesApi';
+import { createSharedspaceChat, generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_CHATS_KEY } from 'Constants/queryKeys';
 import { throttle } from 'lodash';
 import { toast } from 'react-toastify';
 import { defaultToastOption, imageTooLargeMessage, tooManyImagesMessage, waitingMessage } from 'Constants/notices';
 import ChatFooter from 'Components/chat/ChatFooter';
 import ChatList from 'Components/chat/ChatList';
+import ChatDisableFooter from 'Src/components/chat/ChatDisableFooter';
+import useUser from 'Src/hooks/queries/useUser';
 
 const ChatContainer: FC = () => {
   const { url } = useParams();
-  const qc = useQueryClient();
-  const [ offset, setOffset ] = useState(1);
+  const { data: userData } = useUser({ suspense: true, throwOnError: false });
 
-  const { data: chatList } = useChats(offset);
+  const { data: chatList, loadMore } = useChats();
   const {
-    socket,
     showNewChat,
     setShowNewChat,
-    onChatCreated,
-    onChatUpdated,
-    onChatDeleted,
-    onChatImageDeleted,
   } = useChatSocket();
 
   const scrollbarRef = useRef<HTMLUListElement>(null);
@@ -35,48 +28,18 @@ const ChatContainer: FC = () => {
   const [ images, setImages ] = useState<File[]>([]);
   const [ previews, setPreviews ] = useState<Array<string | ArrayBuffer | null>>([]);
 
-  useEffect(() => {
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
-
-    return () => {
-      socket?.off(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
-      socket?.off(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
-      socket?.off(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
-      socket?.off(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
-    };
-  }, [socket]);
-
-  const loadMore = () => {
-    scrollbarRef?.current?.scrollTo(0, -200);
-        
-    getSharedspaceChats(url, offset + 1)
-      .then((res) => {
-        qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, url], (prev?: TChats) => {
-          if (prev) {
-            return { chats: [ ...prev?.chats, ...res.chats ], hasMoreData: res?.hasMoreData };
-          }
-        });
-        setOffset(prev => prev + 1);
-      })
-      .catch(() => {
-        qc.invalidateQueries([GET_SHAREDSPACE_CHATS_KEY, url]);
-      });
-  };
-
   const onScroll = throttle(() => {
     if (scrollbarRef.current) {
       const isTop = scrollbarRef.current.scrollHeight - 100 < scrollbarRef.current.clientHeight - scrollbarRef.current.scrollTop;
 
       if (isTop && chatList.hasMoreData) {
         loadMore();
+        scrollbarRef?.current?.scrollTo(0, -200);
       }
 
       const newChatNoticeBorder = (0 - scrollbarRef.current.scrollTop) > scrollbarRef.current.clientHeight / 2;
       if (newChatNoticeBorder) {
-        setShowNewChat(prev => { return { ...prev, active: true }});
+        setShowNewChat({ active: true, chat: '', email: '', profileImage: '', });
       }
 
       const isBottom = scrollbarRef.current.scrollTop > -100;
@@ -119,38 +82,62 @@ const ChatContainer: FC = () => {
     setImages(prev => [ ...prev, ...newImages ]);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const trimmedChat = chat.trim();
+    const imageKeys = [];
 
     if (!trimmedChat && !images.length) {
       setChat('');
       return;
     }
 
-    const formData = new FormData();
+    try {
+      if (images.length) {
+        const imageNames = images.map(image => image.name);
+        const presignedUrls = await generatePresignedPutUrl(url, imageNames)
+          .catch(() => {
+            toast.error(waitingMessage, {
+              ...defaultToastOption,
+              toastId: waitingMessage,
+            });
+          });
+        
+        if (!presignedUrls) {
+          return;
+        }
 
-    formData.append('content', trimmedChat);
-    images.forEach((image) => {
-      formData.append('images', image);
-    });
+        await Promise.all(
+          presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i]))
+        );
 
-    createSharedspaceChat(url, formData)
-      .then(() => {
-        scrollbarRef?.current?.scrollTo(0, 0);
-        setChat('');
-        setImages([]);
-        setPreviews([]);
-      })
-      .catch((error) => {
-        const errorMessage = error?.response?.status === 413 ?
-          imageTooLargeMessage :
-          waitingMessage;
+        for (const { key, presignedUrl } of presignedUrls) {
+          imageKeys.push(key);
+        }
+      }
 
-        toast.error(errorMessage, {
-          ...defaultToastOption,
-          toastId: errorMessage,
+      createSharedspaceChat(url, trimmedChat, imageKeys)
+        .then(() => {
+          scrollbarRef?.current?.scrollTo(0, 0);
+          setChat('');
+          setImages([]);
+          setPreviews([]);
+        })
+        .catch((error) => {
+          const errorMessage = error?.response?.status === 413 ?
+            imageTooLargeMessage :
+            waitingMessage;
+
+          toast.error(errorMessage, {
+            ...defaultToastOption,
+            toastId: errorMessage,
+          });
         });
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
+        toastId: waitingMessage,
       });
+    }
   };
 
   return (
@@ -163,11 +150,16 @@ const ChatContainer: FC = () => {
           scrollbarRef={scrollbarRef}
           onScroll={onScroll}
           deleteFile={deleteFile} />
-        <ChatFooter
-          onSubmit={onSubmit}
-          chat={chat}
-          onChangeChat={onChangeChat}
-          onChangeImageFiles={onChangeImageFiles} />
+        {
+          userData ?
+            <ChatFooter
+              onSubmit={onSubmit}
+              chat={chat}
+              onChangeChat={onChangeChat}
+              onChangeImageFiles={onChangeImageFiles} />
+              :
+              <ChatDisableFooter />
+        }
       </ChatWrapper>
     </ChatBlock>
   );

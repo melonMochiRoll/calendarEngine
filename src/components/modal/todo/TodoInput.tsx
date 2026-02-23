@@ -12,14 +12,15 @@ import { closeModal } from 'Features/modalSlice';
 import TextButton from 'Components/common/TextButton';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import useUser from 'Hooks/queries/useUser';
 import { createTodo } from 'Api/todosApi';
-import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
+import { GET_TODOS_BY_MONTH_KEY } from 'Constants/queryKeys';
 import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { getByteSize } from 'Lib/utilFunction';
 import { toast } from 'react-toastify';
 
-const TodoInput: FC = () => {
+interface TodoInputProps {};
+
+const TodoInput: FC<TodoInputProps> = ({}) => {
   dayjs.extend(utc);
   dayjs.extend(timezone);
   dayjs.extend(customParseFormat);
@@ -30,7 +31,6 @@ const TodoInput: FC = () => {
   const dispatch = useAppDispatch();
 
   const { url } = useParams();
-  const { data: userData } = useUser();
   const { todoTime } = useAppSelector(state => state.todoTime);
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
 
@@ -85,7 +85,6 @@ const TodoInput: FC = () => {
     todoTime: string,
     start: typeof startTime,
     end: typeof endTime,
-    UserId: number | undefined,
     url: string | undefined,
   ) => {
     setErrorMessage('');
@@ -122,12 +121,10 @@ const TodoInput: FC = () => {
       todoTime,
       startTimeFormat,
       endTimeFormat,
-      UserId,
       url,
     )
     .then(async () => {
-      await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
-      await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
+      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
       toast.success(successMessage, {
         ...defaultToastOption,
       });
@@ -210,7 +207,6 @@ const TodoInput: FC = () => {
                   todoTime,
                   startTime,
                   endTime,
-                  userData?.id,
                   url,
                 );
               }}>
@@ -224,6 +220,18 @@ const TodoInput: FC = () => {
 };
 
 export default TodoInput;
+
+const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
+  z-index: ${({ zIndex }) => zIndex};
+`;
 
 const Block = styled.div`
   display: flex;

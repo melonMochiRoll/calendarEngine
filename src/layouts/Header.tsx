@@ -1,35 +1,34 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
 import RenderUserProfile from 'Components/auth/RenderUserProfile';
-import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
-import { useNavigate } from 'react-router-dom';
-import { PATHS } from 'Constants/paths';
-import useUser from 'Hooks/queries/useUser';
+import SkeletonUserProfile from 'Src/components/async/skeleton/SkeletonUserProfile';
+import TextButton from 'Src/components/common/TextButton';
+import { useAppDispatch } from 'Src/hooks/reduxHooks';
+import { ModalName } from 'Src/typings/types';
+import { openModal } from 'Src/features/modalSlice';
 
 const Header: FC = () => {
-  const navigate = useNavigate();
-  const { data: userData } = useUser({ suspense: true, throwOnError: true });
-  
+  const dispatch = useAppDispatch();
+
   return (
-    <HeaderBlock>
-      <InfoWrapper>
-        <FlexBox>
-          <SatelliteIcon
-            onClick={() => navigate(PATHS.SHAREDSPACE)}
-            fontSize='large'
-            sx={{ color: 'var(--blue)', cursor: 'pointer', marginRight: '10px' }}/>
-        </FlexBox>
-      </InfoWrapper>
-      <ProfileWrapper>
-        <RenderUserProfile userData={userData} />
-      </ProfileWrapper>
-    </HeaderBlock>
+    <Block>
+      <TextButton
+        type='button'
+        onClick={() => {
+          dispatch(openModal({ name: ModalName.SHAREDSPACE_INVITE_RECEIVED }));
+        }}>
+        받은 초대
+      </TextButton>
+      <Suspense fallback={<SkeletonUserProfile />}>
+        <RenderUserProfile />
+      </Suspense>
+    </Block>
   );
 };
 
 export default Header;
 
-const HeaderBlock = styled.header`
+const Block = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,25 +37,4 @@ const HeaderBlock = styled.header`
   padding: 10px 5%;
   border-bottom: 1px solid var(--light-gray);
   background-color: var(--black);
-`;
-
-const InfoWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 70%;
-`;
-
-const FlexBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-const ProfileWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 30%;
-  gap: 12px;
 `;

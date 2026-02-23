@@ -1,8 +1,9 @@
 import { axiosInstance } from "./axiosInstance";
 
-export const getTodosByDate = async (
+export const getTodosByMonth = async (
   url: string | undefined,
-  date: string,
+  year: string,
+  month: string,
 ) => {
   if (!url) {
     return;
@@ -10,27 +11,8 @@ export const getTodosByDate = async (
 
   try {
     const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/todos?date=${date}`);
+      .get(`/api/sharedspaces/${url}/todos?date=${year}-${month}`);
 
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getTodosCount = async (
-  url: string | undefined,
-  year: string,
-  month: string,
-  ) => {
-  if (!url) {
-    return;
-  }
-
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/todos/count?date=${year}-${month}`);
-      
     return data;
   } catch (error) {
     throw error;
@@ -42,10 +24,9 @@ export const createTodo = async (
   date: string,
   startTime: string,
   endTime: string,
-  UserId: number | undefined,
   url: string | undefined,
   ) => {
-  if (!UserId || !url) {
+  if (!url) {
     throw new Error;
   }
 
@@ -56,7 +37,6 @@ export const createTodo = async (
         date,
         startTime,
         endTime,
-        AuthorId: UserId,
       });
   } catch (error) {
     throw error;
@@ -68,10 +48,9 @@ export const updateTodo = async (
   description: string,
   startTime: string,
   endTime: string,
-  UserId: number | undefined,
   url: string | undefined,
   ) => {
-  if (!UserId || !url) {
+  if (!url) {
     throw new Error;
   }
 
@@ -82,7 +61,6 @@ export const updateTodo = async (
         description,
         startTime,
         endTime,
-        EditorId: UserId,
       });
   } catch (error) {
     throw error;
@@ -108,16 +86,19 @@ export const deleteTodo = async (
 export const searchTodos = async (
   url: string | undefined,
   query: string,
-  offset: number = 1,
-  limit: number = 10,
+  page: number,
 ) => {
-  if (!url || !query) {
+  if (!query) {
     return [];
+  }
+
+  if (!url) {
+    return;
   }
   
   try {
     const { data } = await axiosInstance.get(
-      `/api/sharedspaces/${url}/todos/search?query=${query}&offset=${offset}&limit=${limit}`
+      `/api/sharedspaces/${url}/todos/search?query=${query}&page=${page}`
     );
     
     return data;

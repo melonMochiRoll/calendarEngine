@@ -1,31 +1,17 @@
-import React, { FC } from 'react';
-import styled from '@emotion/styled';
+import React, { FC, Suspense } from 'react';
 import CalendarContainer from 'Containers/CalendarContainer';
-import CalendarHeader from 'Components/calendar/CalendarHeader';
-import AsyncBoundary from 'Components/AsyncBoundary';
-import GlobalErrorFallback from 'Components/errors/GlobalErrorFallback';
-import SkeletonSharedspacePage from 'Components/SkeletonSharedspacePage';
+import { ErrorBoundary } from 'react-error-boundary';
+import SharedspaceFallback from 'Src/components/async/fallbackUI/SharedspaceFallback';
+import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
 
 const SharedspacesViewPage: FC = () => {
   return (
-    <Background>
-      <CalendarHeader />
-      <AsyncBoundary
-        errorBoundaryFallback={GlobalErrorFallback}
-        suspenseFallback={<SkeletonSharedspacePage />}>
+    <ErrorBoundary fallbackRender={(props) => <SharedspaceFallback errorProps={props}/>}>
+      <Suspense fallback={<LoadingPage />}>
         <CalendarContainer />
-      </AsyncBoundary>
-    </Background>
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 
 export default SharedspacesViewPage;
-
-const Background = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 70%;
-  height: 100%;
-  padding: 20px 80px;
-  background-color: var(--black);
-`;

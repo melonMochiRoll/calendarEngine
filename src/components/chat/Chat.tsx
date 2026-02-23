@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
-import { TChatList } from 'Typings/types';
+import { TChatPayload } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -11,24 +11,21 @@ import { defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Constants
 import { Menu, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import { useParams } from 'react-router-dom';
-import { deleteSharedspaceChat, updateSharedspaceChat } from 'Api/sharedspacesApi';
+import { deleteSharedspaceChat, deleteSharedspaceChatImage, updateSharedspaceChat } from 'Api/sharedspacesApi';
 import EditIcon from '@mui/icons-material/Edit';
 import useInput from 'Hooks/utils/useInput';
 import EditContent from './EditContent';
-import SingleImage from './SingleImage';
-import MultipleImage from './MultipleImage';
-import useUser from 'Hooks/queries/useUser';
+import ChatImage from './ChatImage';
 import { toast } from 'react-toastify';
 
 interface ChatProps {
-  chat: TChatList,
+  chat: TChatPayload,
 };
 
 const Chat: FC<ChatProps> = ({
   chat,
 }) => {
   const { url } = useParams();
-  const { data: userData } = useUser({ suspense: false, throwOnError: false });
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ newContent, onChangeNewContent ] = useInput(chat.content);
   dayjs.extend(utc);
@@ -45,27 +42,47 @@ const Chat: FC<ChatProps> = ({
   const hoverMenuId = 'hoverMenu';
   const isUpdated = chat.createdAt !== chat.updatedAt;
 
-  const onUpdateChat = (
+  const onUpdateChat = async (
     url: string | undefined,
     ChatId: number,
     oldContent: string,
     newContent: string,
   ) => {
-    updateSharedspaceChat(url, ChatId, oldContent, newContent.trim())
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
+    try {
+      await updateSharedspaceChat(url, ChatId, oldContent, newContent.trim());
+      setIsEditMode(false);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
       });
+    }
   };
 
-  const onDeleteChat = (url: string | undefined, chatId: number) => {
-    deleteSharedspaceChat(url, chatId)
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
+  const onDeleteChat = async (
+    url: string | undefined,
+    chatId: number,
+  ) => {
+    try {
+      await deleteSharedspaceChat(url, chatId);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
       });
+    }
+  };
+
+  const deleteImage = async (
+    url: string | undefined,
+    ChatId: number,
+    ImageId: number
+  ) => {
+    try {
+      await deleteSharedspaceChatImage(url, ChatId, ImageId);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
+      });
+    }
   };
 
   return (
@@ -88,33 +105,29 @@ const Chat: FC<ChatProps> = ({
               onClose={() => setIsEditMode(false)}
               content={newContent}
               onChangeContent={onChangeNewContent}
-              onSubmit={(e) => {
+              onSubmit={e => {
                 e.preventDefault();
                 onUpdateChat(url, chat.id, chat.content, newContent);
-                setIsEditMode(false);
               }} /> :
             <Content>{chat.content}</Content>
           }
-          <Images>
-            {
-              chat.Images.map((image) => {
-                if (chat.Images.length === 1) {
-                  return <SingleImage
-                    key={image.id}
-                    image={image} />
+          {
+            chat.Images &&
+              <Images>
+                {
+                  chat.Images.map((image) => {
+                    return <ChatImage
+                      key={image.id}
+                      image={image}
+                      isSender={chat.permission.isSender}
+                      deleteImage={() => deleteImage(url, chat.id, image.id)} />
+                  })
                 }
-
-                return <MultipleImage
-                  key={image.id}
-                  isSender={chat.SenderId === userData?.id}
-                  ChatId={chat.id}
-                  image={image} />
-              })
-            }
-          </Images>
+              </Images>
+          }
         </ContentWrapper>
       </ChatWrapper>
-      {chat.SenderId === userData?.id &&
+      {chat.permission.isSender &&
         <HoverMenu id={hoverMenuId}>
           <IconWrapper onClick={onOpen}>
             <MoreIcon fontSize='large' />
@@ -215,6 +228,7 @@ const Content = styled.p`
 
 const Images = styled.div`
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 5px;
 `;

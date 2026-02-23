@@ -31,12 +31,18 @@ export const createUser = async (email: string, password: string) => {
   }
 };
 
-export const searchUsers = async (query: string) => {
-  if (!query) return [];
+export const searchUsers = async (
+  url: string | undefined,
+  query: string,
+  page: number,
+) => {
+  if (!url || !query) {
+    return [];
+  }
   
   try {
     const { data } = await axiosInstance
-      .get(`/api/users/search?query=${query}`);
+      .get(`/api/sharedspaces/${url}/users/search?query=${query}&page=${page}`);
 
     return data;
   } catch (error) {

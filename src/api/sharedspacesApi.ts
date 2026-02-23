@@ -1,5 +1,6 @@
 import { TSharedspaceMembersRoles } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
+import axios from "axios";
 
 export const getSharedspace = async (url: string | undefined) => {
   if (!url) {
@@ -16,10 +17,13 @@ export const getSharedspace = async (url: string | undefined) => {
   }
 };
 
-export const getSubscribedspaces = async (filter: string) => {
+export const getSubscribedspaces = async (
+  sort: string,
+  page = 1,
+) => {
   try {
     const { data } = await axiosInstance
-      .get(`/api/sharedspaces/subscribed?filter=${filter}`);
+      .get(`/api/sharedspaces/subscribed?sort=${sort}&page=${page}`);
 
     return data;
   } catch (error) {
@@ -27,12 +31,10 @@ export const getSubscribedspaces = async (filter: string) => {
   }
 };
 
-export const createSharedspace = async (UserId: number) => {
+export const createSharedspace = async () => {
   try {
     const { data } = await axiosInstance
-      .post(`api/sharedspaces`, {
-        OwnerId: UserId,
-      });
+      .post<string>(`api/sharedspaces`);
 
     return data;
   } catch (error) {
@@ -56,8 +58,7 @@ export const updateSharedspaceName = async (
 
 export const updateSharedspaceOwner = async (
   url: string | undefined,
-  OwnerId: number,
-  newOwnerId: number,
+  UserId: number,
 ) => {
   if (!url) {
     throw new Error;
@@ -66,8 +67,7 @@ export const updateSharedspaceOwner = async (
   try {
     await axiosInstance
       .patch(`api/sharedspaces/${url}/owner`, {
-        OwnerId,
-        newOwnerId
+        newOwnerId: UserId,
       });
   } catch (error) {
     throw error;
@@ -78,6 +78,25 @@ export const deleteSharedspace = async (url: string) => {
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}`);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getSharedspaceMembers = async (
+  url: string | undefined,
+  page: number,
+) => {
+  if (!url) {
+    throw new Error;
+  }
+  
+  try {
+    const { data } = await axiosInstance.get(
+      `/api/sharedspaces/${url}/members?page=${page}`
+    );
+
+    return data;
   } catch (error) {
     throw error;
   }
@@ -159,20 +178,21 @@ export const deleteSharedspaceMembers = async (
 
 export const getSharedspaceChats = async (
   url: string | undefined,
-  offset: number,
-  limit: number = 30,
+  beforeChatId?: number,
 ) => {
   if (!url) {
-    return;
-  };
+    return {
+      chats: [],
+      hasMoreData: false,
+    };
+  }
 
   try {
     const { data } = await axiosInstance
       .get(`/api/sharedspaces/${url}/chats`, {
         params: {
-          offset,
-          limit,
-        }
+          before: beforeChatId,
+        },
       });
 
     return data;
@@ -183,7 +203,8 @@ export const getSharedspaceChats = async (
 
 export const createSharedspaceChat = async (
   url: string | undefined,
-  formData: FormData,
+  content: string,
+  imageKeys: string[],
 ) => {
   if (!url) {
     throw new Error;
@@ -191,11 +212,13 @@ export const createSharedspaceChat = async (
 
   try {
     await axiosInstance
-      .post(`/api/sharedspaces/${url}/chats`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      .post(
+        `/api/sharedspaces/${url}/chats`,
+        {
+          content,
+          imageKeys,
+        }
+      );
   } catch (error) {
     throw error;
   }
@@ -253,6 +276,45 @@ export const deleteSharedspaceChatImage = async (
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/chats/${ChatId}/images/${ImageId}`);
   } catch (error) {
+    throw error;
+  }
+};
+
+export const generatePresignedPutUrl = async (
+  url: string | undefined,
+  fileNames: string[],
+): Promise<Array<{ key: string, presignedUrl: string }>> => {
+  try {
+    const { data } = await axiosInstance
+      .post(
+        `/api/sharedspaces/${url}/chats/images/presigned-url`,
+        {
+          fileNames,
+        },
+      );
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const uploadImageToPresignedUrl = async (
+  url: string,
+  file: File,
+) => {
+  try {
+    await axios
+      .put(
+        url, file,
+        {
+          headers: {
+            'Cache-Control': 'public, max-age=31536000, immutable',
+          },
+        }
+      );
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 };

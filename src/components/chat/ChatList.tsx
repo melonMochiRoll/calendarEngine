@@ -8,21 +8,21 @@ import DateSeparator from 'Components/chat/DateSeparator';
 import NewChatNotifier from 'Components/chat/NewChatNotifier';
 import ImagePreviewer from 'Components/chat/ImagePreviewer';
 import { formatDate } from 'Lib/utilFunction';
-import { TChatList, TChats } from 'Typings/types';
+import { TChatPayload, TChats } from 'Typings/types';
 import { DebouncedFuncLeading } from 'lodash';
 
 interface ChatListProps {
-  chatList: TChats;
-  previews: Array<string | ArrayBuffer | null>;
+  chatList: TChats,
+  previews: Array<string | ArrayBuffer | null>,
   showNewChat: {
     chat: string,
     active: boolean,
     email: string,
     profileImage: string
   },
-  scrollbarRef: React.RefObject<HTMLUListElement>;
-  onScroll: DebouncedFuncLeading<() => void>;
-  deleteFile: (idx: number) => void;
+  scrollbarRef: React.RefObject<HTMLUListElement>,
+  onScroll: DebouncedFuncLeading<() => void>,
+  deleteFile: (idx: number) => void,
 };
 
 const ChatList: FC<ChatListProps> = ({
@@ -41,16 +41,16 @@ const ChatList: FC<ChatListProps> = ({
     <List
       ref={scrollbarRef}
       onScroll={onScroll}>
-      {showNewChat.active &&
+      {showNewChat.active && showNewChat.chat &&
         <NewChatNotifier
           chat={showNewChat.chat}
           onClick={() => scrollbarRef?.current?.scrollTo(0, 0)} />}
-      {previews.length &&
+      {Boolean(previews.length) &&
         <ImagePreviewer
           previews={previews}
           deleteFile={deleteFile} />}
       {chatList.chats.length ?
-        chatList.chats.map((chat: TChatList, idx: number) => {
+        chatList.chats.map((chat: TChatPayload, idx: number) => {
           const isLastChat = idx >= chatList.chats.length - 1 && !chatList.hasMoreData;
           const isDateBoundary = idx < chatList.chats.length - 1 && (dayjs(chat.createdAt).tz(localTimeZone).format('DD') !== dayjs(chatList.chats[idx + 1].createdAt).tz(localTimeZone).format('DD'));
           const hasDateSeparator = isLastChat || isDateBoundary;

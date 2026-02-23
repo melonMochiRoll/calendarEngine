@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
-import { ModalName, TTodo } from 'Typings/types';
+import { ModalName, TTodoPayload } from 'Typings/types';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
 import { renderTime } from 'Lib/utilFunction';
@@ -10,10 +10,10 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import PencilIcon from '@mui/icons-material/Create';
 
 interface TodoItemProps {
-  todo: TTodo;
-  todoHeight: number;
-  bgColor: string;
-  hideEndTime?: boolean;
+  todo: TTodoPayload,
+  todoHeight: number,
+  bgColor: string,
+  hideEndTime?: boolean,
 };
 
 const TodoItem: FC<TodoItemProps> = ({
@@ -26,7 +26,7 @@ const TodoItem: FC<TodoItemProps> = ({
   const { description, endTime } = todo;
   const [ hover, setHover ] = useState({ visible: false, x: 0, y: 0 });
 
-  const openTodoDetail = (todo: TTodo) => {
+  const openTodoDetail = (todo: TTodoPayload) => {
     dispatch(openModal({
       name: ModalName.TODO_DETAIL,
       props: { todo },
@@ -66,7 +66,7 @@ const TodoItem: FC<TodoItemProps> = ({
             </FlexDiv>
             <FlexDiv>
               <PencilIcon fontSize='small' />
-              <span>{`${todo.Author.email}`}</span>
+              <span>{`${todo.Author}`}</span>
             </FlexDiv>
         </HoverDiv>
       }
@@ -140,7 +140,7 @@ const HoverDiv = styled.div<{ x: number, y: number }>`
   position: absolute;
   display: flex;
   flex-direction: column;
-  left: ${({x}) => x + 15}px;
+  left: ${({x}) => x - 200}px;
   top: ${({y}) => y + 15}px;
   padding: 10px 15px;
   color: var(--white);

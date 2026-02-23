@@ -1,13 +1,15 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import SkeletonHeader from 'Components/skeleton/SkeletonHeader';
+import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
 import { Skeleton } from '@mui/material';
-import SkeletonSidebar from './skeleton/SkeletonSidebar';
+import SkeletonMenus from './async/skeleton/SkeletonMenus';
 
 const SkeletonSharedspacePage: FC = () => {
   return (
     <Background>
-      <SkeletonSidebar />
+      <Nav>
+        <SkeletonMenus length={4} />
+      </Nav>
       <PageWrapper>
         <SkeletonHeader />
         <ContentWrapper>
@@ -32,6 +34,18 @@ const Background = styled.div`
   height: 100vh;
   justify-content: center;
   background-color: var(--black);
+`;
+
+const Nav = styled.nav`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 75px;
+  height: 100vh;
+  padding: 30px 10px;
+  background-color: var(--dark-gray);
+  gap: 30px;
+  z-index: 1;
 `;
 
 const PageWrapper = styled.div`

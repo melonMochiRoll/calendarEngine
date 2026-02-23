@@ -6,18 +6,18 @@ import HelpIcon from '@mui/icons-material/HelpRounded';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Menu, MenuItem, Tooltip } from '@mui/material';
 import { privateTooltip } from 'Constants/notices';
-import { SubscribedspacesSortOptions } from 'Typings/types';
+import { subscribedspacesSortsMap } from 'Src/typings/types';
 
 interface SubscribedSpacesHeaderProps {
-  optionText: string;
+  sort: string;
   onCreateSharedspace: () => void;
-  filterSpaces: (option: typeof SubscribedspacesSortOptions[0]) => void;
+  sortSpaces: (sort: string) => void;
 };
 
 const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
-  optionText,
+  sort,
   onCreateSharedspace,
-  filterSpaces,
+  sortSpaces,
 }) => {
   const {
     anchorEl,
@@ -25,11 +25,6 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
     onOpen,
     onClose,
   } = useMenu();
-  
-  const onMenuClick = (value: typeof SubscribedspacesSortOptions[0]) => {
-    filterSpaces(value);
-    onClose();
-  };
 
   return (
     <Header>
@@ -50,7 +45,7 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
           </Tooltip>
           <ItemTitle>스페이스 이름</ItemTitle>
           <ItemOwner onClick={onOpen}>
-            {optionText}
+            {subscribedspacesSortsMap[sort]}
             <ArrowDropDownIcon fontSize='large' />
           </ItemOwner>
           <Menu
@@ -62,12 +57,12 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}
             sx={{ marginTop: '10px' }}>
             {
-              SubscribedspacesSortOptions.map((option, idx) => {
+              Object.entries(subscribedspacesSortsMap).map((option) => {
                 return (
                   <MenuItem
-                    key={option.text}
-                    onClick={() => onMenuClick(SubscribedspacesSortOptions[idx])}>
-                    <span>{option.text}</span>
+                    key={option[0]}
+                    onClick={() => sortSpaces(option[0])}>
+                    <span>{option[1]}</span>
                   </MenuItem>
                 );
               })
@@ -143,7 +138,7 @@ const ItemPrivate = styled.div`
   justify-content: center;
   align-items: center;
   width: 10%;
-  font-size: 20px;
+  font-size: 16px;
   text-align: center;
   cursor: help;
   gap: 5px;

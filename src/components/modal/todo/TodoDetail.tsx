@@ -12,29 +12,32 @@ import { Menu, MenuItem } from '@mui/material';
 import { deleteTodo } from 'Api/todosApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
-import useUser from 'Hooks/queries/useUser';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { formatDateTime } from 'Lib/utilFunction';
 import dayjs from 'dayjs';
-import { ModalName, TTodo } from 'Typings/types';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import { ModalName, TSharedspaceMetaData, TTodoPayload } from 'Typings/types';
+import { GET_SHAREDSPACE_KEY, GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
 
 export interface TodoDetailProps {
-  todo: TTodo;
+  todo: TTodoPayload,
 };
 
-const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
+const TodoDetail: FC<TodoDetailProps> = ({
+  todo,
+}) => {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+
+  const { url } = useParams();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
   const localTimeZone = dayjs.tz.guess();
 
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
-  const { todoTime } = useAppSelector(state => state.todoTime);
-
-  const { url } = useParams();
-  const { data: userData, hasMemberPermission } = useUser({ suspense: false, throwOnError: false });
-  
+  const spaceData = qc.getQueryData<TSharedspaceMetaData>([GET_SHAREDSPACE_KEY, url]);
   const [ error, setError ] = useState('');
 
   const {
@@ -50,8 +53,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
         toast.success(successMessage, {
           ...defaultToastOption,
         });
-        await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
-        await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
+        await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
         dispatch(closeModal());
       })
       .catch(() => {
@@ -59,10 +61,10 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
       });
   };
 
-  const openTodoUpdate = (todo: TTodo, url: string | undefined, UserId: number | undefined) => {
+  const openTodoUpdate = (todo: TTodoPayload, url: string | undefined) => {
     dispatch(openModal({
       name: ModalName.TODO_UPDATE,
-      props: { todo, url, UserId }
+      props: { todo, url },
     }));
   };
   
@@ -70,7 +72,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
     <Block onClick={e => e.stopPropagation()}>
       <Header>
         <MenuWrapper>
-          {hasMemberPermission(url) &&
+          {spaceData && spaceData.permission.isMember &&
             <MenuIcon
               onClick={onOpen}
               fontSize='large'
@@ -84,7 +86,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
               <MenuItem
-                onClick={() => openTodoUpdate(todo, url, userData?.id)}>
+                onClick={() => openTodoUpdate(todo, url)}>
                 <span>수정</span>
               </MenuItem>
               <MenuItem
@@ -94,7 +96,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
             </Menu>
         </MenuWrapper>
         <TitleWrapper>
-          <ModalTitle>Todo</ModalTitle>
+          <ModalTitle>Todo 내용</ModalTitle>
         </TitleWrapper>
         <CloseButtonWrapper>
           <CloseIcon
@@ -102,7 +104,7 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
             sx={CloseIconInlineStyle} />
         </CloseButtonWrapper>
       </Header>
-      <ContentsWrapper>
+      <Main>
         <Contents>
           <Content>
             <ClockIcon sx={{ color: 'var(--blue)' }}/>
@@ -114,14 +116,14 @@ const TodoDetail: FC<TodoDetailProps> = ({ todo }) => {
           </Content>
           <Content>
             <PencilIcon />
-            <ContentSpan>{`${todo?.Author.email}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
+            <ContentSpan>{`${todo?.Author}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
           </Content>
         </Contents>
         <UpdatedAtWrapper>
-          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor.email}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
+          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
           {error && <ErrorSpan>error</ErrorSpan>}
         </UpdatedAtWrapper>
-      </ContentsWrapper>
+      </Main>
     </Block>
   );
 };
@@ -172,7 +174,7 @@ const CloseButtonWrapper = styled.div`
   width: 15%;
 `;
 
-const ContentsWrapper = styled.div`
+const Main = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;

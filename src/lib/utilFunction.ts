@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
+import React from 'react';
 import { RoleDictionary } from 'Typings/types';
 
 export const getOrigin = () => {
@@ -70,4 +71,11 @@ export const renderRole = (roleName: string) => {
     .find((ele) => ele[0] === roleName.toUpperCase());
 
   return result ? result[1] : '';
+};
+
+export const lazyComponentWithPreload = (fetchFunction: () => Promise<{ default: React.ComponentType<any> }>)  => {
+  return {
+    component: React.lazy(fetchFunction),
+    preload: fetchFunction,
+  };
 };

@@ -1,27 +1,27 @@
 import React, { FC } from 'react';
+import styled from '@emotion/styled';
 import SearchResult from './SearchResult';
 import SearchInit from './SearchInit';
 import { useSearchTodos } from 'Hooks/queries/useSearchTodos';
 
 interface SearchMainProps {
-  query: string;
+  query: string,
 };
 
-const SearchMain: FC<SearchMainProps> = ({
-  query,
-}) => {
-  const { data: todosData, canLoadMore, nextOffset } = useSearchTodos(query);
+const SearchMain: FC<SearchMainProps> = ({ query }) => {
+  const { data: todosData, nextPage } = useSearchTodos(query);
   
   return (
     <>
-      {query ?
+    {
+      query ?
         <SearchResult
           query={query}
           todosData={todosData}
-          canLoadMore={canLoadMore}
-          nextOffset={nextOffset} />
+          nextPage={nextPage} />
         :
-        <SearchInit />}
+        <SearchInit />
+    }
     </>
   );
 };

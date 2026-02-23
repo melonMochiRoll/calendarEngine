@@ -12,21 +12,19 @@ import { useQueryClient } from '@tanstack/react-query';
 import { TODO_MAX_SIZE } from 'Constants/calendar';
 import { getByteSize } from 'Lib/utilFunction';
 import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
-import { GET_TODOS_KEY, GET_TODOS_LIST_KEY } from 'Constants/queryKeys';
 import TextButton from 'Components/common/TextButton';
 import { updateTodo } from 'Api/todosApi';
 import { toast } from 'react-toastify';
-import { TTodo } from 'Typings/types';
+import { TTodoPayload } from 'Typings/types';
+import { GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
 
 export interface TodoUpdateProps {
-  todo: TTodo;
-  UserId: number | undefined;
-  url: string | undefined
+  todo: TTodoPayload,
+  url: string | undefined,
 };
 
 const TodoUpdate: FC<TodoUpdateProps> = ({
   todo,
-  UserId,
   url,
 }) => {
   dayjs.extend(utc);
@@ -37,7 +35,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
-  const { todoTime } = useAppSelector(state => state.todoTime);
 
   const [ start_hour, start_minute ] = todo.startTime.split(':');
   const [ end_hour, end_minute ] = todo.endTime.split(':');
@@ -92,7 +89,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     newDescription: string,
     start: typeof startTime,
     end: typeof endTime,
-    UserId: number | undefined,
     url: string | undefined,
   ) => {
     setError('');
@@ -129,12 +125,10 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       newDescription,
       startTimeFormat,
       endTimeFormat,
-      UserId,
       url,
     )
     .then(async () => {
-      await qc.refetchQueries([GET_TODOS_KEY, url, todoTime]);
-      await qc.refetchQueries([GET_TODOS_LIST_KEY, url, calendarYear, calendarMonth]);
+      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
       dispatch(clearModal());
       toast.success(successMessage, {
         ...defaultToastOption,
@@ -146,8 +140,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   };
 
   return (
-    <Block
-      onClick={e => e.stopPropagation()}>
+    <Block onClick={e => e.stopPropagation()}>
       <Header>
         <Left></Left>
         <Center>
@@ -218,7 +211,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
                   description,
                   startTime,
                   endTime,
-                  UserId,
                   url,
                 );
               }}>
@@ -232,6 +224,18 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
 };
 
 export default TodoUpdate;
+
+const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
+  z-index: ${({ zIndex }) => zIndex};
+`;
 
 const Block = styled.div`
   display: flex;

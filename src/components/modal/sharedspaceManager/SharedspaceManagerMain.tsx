@@ -1,112 +1,89 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { useSharedspace } from 'Hooks/queries/useSharedspace';
-import SharedspaceManagerInitPage from './SharedspaceManagerInitPage';
-import SharedspaceManagerResult from './SharedspaceManagerResult';
-import { useSearchUsers } from 'Hooks/queries/useSearchUsers';
-import { createSharedspaceMembers, deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner, updateSharedspacePrivate } from 'Api/sharedspacesApi';
+import { updateSharedspacePrivate } from 'Api/sharedspacesApi';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
-import { TSharedspaceMembersRoles } from 'Typings/types';
-import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
+import { waitingMessage } from 'Constants/notices';
+import ShieldIcon from '@mui/icons-material/VerifiedUser';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import useMenu from 'Hooks/utils/useMenu';
+import { Menu, MenuItem } from '@mui/material';
 
-interface SharedspaceManagerMainProps {
-  query: string;
-};
+interface SharedspaceManagerMainProps {};
 
-const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({
-  query,
-}) => {
-  const qc = useQueryClient();
+const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
   const { url } = useParams();
+  const qc = useQueryClient();
+
   const { data: spaceData } = useSharedspace();
-  const { data: searchUsersData } = useSearchUsers(query);
   const [ error, setError ] = useState('');
 
-  const onCreateMember = (UserId: number, RoleName: TSharedspaceMembersRoles) => {
-    createSharedspaceMembers(url, UserId, RoleName)
-      .then(async () => {
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-      })
-      .catch(() => {
-        setError(waitingMessage);
-      });
+  const {
+    anchorEl,
+    open,
+    onOpen,
+    onClose,
+  } = useMenu();
+
+  const handleUpdateSharedspacePrivate = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, Private: boolean) => {
+    e.stopPropagation();
+    onClose();
+
+    try {
+      await updateSharedspacePrivate(url, Private);
+      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+    } catch (err) {
+      setError(waitingMessage);
+    }
   };
 
-  const onUpdateSharedspacePrivate = (Private: boolean) => {
-    updateSharedspacePrivate(url, Private)
-      .then(async () => {
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-      })
-      .catch(() => {
-        setError(waitingMessage);
-      });
-  };
-
-  const onUpdateMemberRole = (UserId: number, roleName: TSharedspaceMembersRoles) => {
-    updateSharedspaceMembers(url, UserId, roleName)
-      .then(async () => {
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-          toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      })
-      .catch(() => {
-        setError(waitingMessage);
-      });
-  };
-
-  const onUpdateOwner = (OwnerId: number, targetUserId: number) => {
-    updateSharedspaceOwner(url, OwnerId, targetUserId)
-      .then(async () => {
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      })
-      .catch(() => {
-        setError(waitingMessage);
-      });
-  };
-
-  const onDeleteMember = (UserId: number) => {
-    deleteSharedspaceMembers(url, UserId)
-      .then(async () => {
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      })
-      .catch(() => {
-        setError(waitingMessage);
-      });
+  const renderPrivateText = (status: boolean) => {
+    return status ? '권한이 있는 유저' : '모든 유저';
   };
 
   return (
-    <Block>
-      {query ?
-        <SharedspaceManagerResult
-          query={query}
-          spaceData={spaceData}
-          searchUsersData={searchUsersData}
-          onCreateMember={onCreateMember} /> :
-        <SharedspaceManagerInitPage
-          spaceData={spaceData}
-          onUpdateSharedspacePrivate={onUpdateSharedspacePrivate}
-          onUpdateMemberRole={onUpdateMemberRole}
-          onUpdateOwner={onUpdateOwner}
-          onDeleteMember={onDeleteMember} />
-      }
+    <Main>
+      <PrivateDiv>
+        <Top>
+          <ShieldIcon fontSize='large' sx={{ marginRight: '15px' }}/>
+          <Title>액세스 권한 설정</Title>
+        </Top>
+        <Bottom>
+          <Span>이 스페이스를</Span>
+          <PrivateSwitch
+            onClick={onOpen}>
+            {renderPrivateText(spaceData.private)}
+            <ArrowDropDownIcon fontSize='large' />
+          </PrivateSwitch>
+          <Menu
+            aria-labelledby='demo-positioned-button'
+            anchorEl={anchorEl}
+            open={open}
+            onClick={onClose}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+            sx={{ marginTop: '10px' }}>
+            {
+              <MenuItem
+                onClick={(e) => handleUpdateSharedspacePrivate(e, !spaceData.private)}
+                sx={{ fontSize: '20px', fontWeight: '500' }}>
+                <span>{renderPrivateText(!spaceData.private)}</span>
+              </MenuItem>
+            }
+          </Menu>
+          <Span>가 접근하도록 합니다.</Span>
+        </Bottom>
+      </PrivateDiv>
       {error && <ErrorSpan>{error}</ErrorSpan>}
-    </Block>
+    </Main>
   );
 };
 
 export default SharedspaceManagerMain;
 
-const Block = styled.div`
+const Main = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -120,4 +97,48 @@ const Block = styled.div`
 const ErrorSpan = styled.span`
   font-size: 16px;
   color: var(--red);
+`;
+
+const PrivateDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+`;
+
+const Top = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 0 5%;
+`;
+
+const Title = styled.h2`
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+`;
+
+const Bottom = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 5%;
+`;
+
+const PrivateSwitch = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 220px;
+  font-size: 24px;
+  font-weight: 500;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--white);
+  cursor: pointer;
+`;
+
+const Span = styled.span`
+  font-size: 22px;
 `;

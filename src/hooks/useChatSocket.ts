@@ -1,15 +1,16 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
+import { GET_SHAREDSPACE_CHATS_KEY, GET_USER_KEY } from "Constants/queryKeys";
 import { getOrigin } from "Lib/utilFunction";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { TChatList, TChats } from "Typings/types";
+import { ChatsCommandList, TChatPayload, TChats, TUser } from "Typings/types";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
   const socketRef = useRef<Socket>();
+  const userData = qc.getQueryData<TUser>([GET_USER_KEY]);
   const [ showNewChat, setShowNewChat ] = useState({
     active: false,
     chat: '',
@@ -19,45 +20,66 @@ export function useChatSocket() {
 
   useEffect(() => {
     socketRef.current = io(`${getOrigin()}/sharedspace-${_url}`);
+    const socket = socketRef.current;
+
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
 
     return () => {
-      socketRef.current?.disconnect();
+      socket?.disconnect();
     };
   }, [_url]);
 
-  const onChatCreated = (data: TChatList) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
-      if (!prev || !Array.isArray(prev.chats)) {
-        return { chats: [ data ], hasMoreData: prev?.hasMoreData || false };
-      }
+  const onChatCreated = (data: Omit<TChatPayload, 'permission'>) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      const withPermission = Object.assign(data, {
+        permission: {
+          isSender: data.SenderId === userData?.id,
+        }
+      });
 
-      return { chats: [ data, ...prev?.chats ], hasMoreData: prev?.hasMoreData };
+      return {
+        chats: [ withPermission, ...prev?.chats || [] ],
+        hasMoreData: prev?.hasMoreData || false,
+      };
     });
 
-    setShowNewChat({
-      chat: data.content,
-      active: false,
-      email: data.Sender.email,
-      profileImage: data.Sender.profileImage,
+    setShowNewChat((prev) => {
+      return {
+        active: prev.active,
+        chat: data.content,
+        email: data.Sender.email,
+        profileImage: data.Sender.profileImage,
+      };
     });
   };
 
-  const onChatUpdated = (data: TChatList) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
+  const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'>) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (prev) {
         const newChats = [ ...prev.chats ];
         const idx = newChats.findIndex(chat => chat.id === data.id);
 
         if (idx < 0) return;
 
-        newChats[idx] = data;
-        return { chats: newChats, hasMoreData: prev.hasMoreData };
+        newChats[idx] = {
+          ...newChats[idx],
+          content: data.content,
+          updatedAt: data.updatedAt,
+        };
+        
+        return {
+          ...prev,
+          chats: newChats,
+        };
       }
     });
   };
 
   const onChatDeleted = (ChatId: number) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (prev) {
         const idx = prev.chats.findIndex(chat => chat.id === ChatId);
 
@@ -66,13 +88,16 @@ export function useChatSocket() {
         const head = prev.chats.slice(0, idx);
         const tail = prev.chats.slice(idx + 1, prev.chats.length);
 
-        return { chats: [ ...head, ...tail ], hasMoreData: prev.hasMoreData };
+        return {
+          ...prev,
+          chats: [ ...head, ...tail ],
+        };
       }
     });
   };
 
   const onChatImageDeleted = (ChatId: number, ImageId: number) => {
-    qc.setQueryData([GET_SHAREDSPACE_CHATS_KEY, _url], (prev?: TChats) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (prev) {
         const chatIdx = prev.chats.findIndex(chat => chat.id === ChatId);
         const head = prev.chats.slice(0, chatIdx);
@@ -84,8 +109,8 @@ export function useChatSocket() {
         const imagesTail = targetChat.Images.slice(imageIdx + 1, targetChat.Images.length);
 
         return {
+          ...prev,
           chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
-          hasMoreData: prev.hasMoreData
         };
       }
     });

@@ -1,72 +1,86 @@
-import React, { FC, useDeferredValue, useState } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import useUser from 'Hooks/queries/useUser';
 import { useSubscribedspace } from 'Hooks/queries/useSubscribedspaces';
 import SubscribedSpacesResult from 'Components/subscribedspaces/SubscribedspacesResult';
 import SubscribedSpacesHeader from 'Components/subscribedspaces/SubscribedspacesHeader';
 import SubscribedSpacesNull from 'Components/subscribedspaces/SubscribedSpacesNull';
-import { SubscribedspacesSortOptions } from 'Typings/types';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createSharedspace, deleteSharedspace } from 'Api/sharedspacesApi';
 import { PATHS } from 'Constants/paths';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SUBSCRIBED_SPACES_KEY } from 'Constants/queryKeys';
 import { toast } from 'react-toastify';
 import { defaultToastOption, waitingMessage } from 'Constants/notices';
+import SubscribedSpacesPagination from 'Src/components/subscribedspaces/SubscribedSpacesPagination';
 
 const SubscribedSpacesContainer: FC = () => {
   const navigate = useNavigate();
+  const [ searchParams, setSearchParams ] = useSearchParams();
   const qc = useQueryClient();
-  const [ option, setOption ] = useState(SubscribedspacesSortOptions[0]);
-  const deferredInput = useDeferredValue(option);
+  const sort = searchParams.get('sort') || 'all';
+  const currentPage = Number(searchParams.get('page')) || 1;
 
-  const { data: subscribedspaceData } = useSubscribedspace(deferredInput.filter);
-  const { data: userData } = useUser({ suspense: true, throwOnError: true });
+  const { data: subscribedspaceData } = useSubscribedspace(sort, currentPage);
 
-  const onCreateSharedspace = (UserId: number) => {
-    createSharedspace(UserId)
-      .then((url) => {
-        navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`);
-      })
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
+  const onCreateSharedspace = async () => {
+    try {
+      const url = await createSharedspace();
+      navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
       });
+    }
   };
 
-  const onDeleteSharedspace = (url: string) => {
-    deleteSharedspace(url)
-      .then(async () => {
-        await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY]);
-      })
-      .catch(() => {
-        toast.error(waitingMessage, {
-          ...defaultToastOption,
-        });
+  const onDeleteSharedspace = async (url: string) => {
+    try {
+      await deleteSharedspace(url);
+      await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY, sort, currentPage]);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
       });
+    }
   };
 
-  const filterSpaces = (option: typeof SubscribedspacesSortOptions[0]) => {
-    setOption(option);
+  const sortSpaces = (sort: string) => {
+    setSearchParams({ sort });
+  };
+
+  const goToPage = (page: number) => {
+    setSearchParams({ sort, page: String(page) });
   };
 
   return (
-    <Main>
-      <SubscribedSpacesHeader
-        onCreateSharedspace={() => onCreateSharedspace(userData.id)}
-        optionText={deferredInput.text}
-        filterSpaces={filterSpaces} />
-      {subscribedspaceData?.length ?
-        <SubscribedSpacesResult
-          subscribedspaceData={subscribedspaceData}
-          onDeleteSharedspace={onDeleteSharedspace} /> :
-        <SubscribedSpacesNull />}
-    </Main>
+    <Background>
+      <Main>
+        <SubscribedSpacesHeader
+          onCreateSharedspace={() => onCreateSharedspace()}
+          sort={sort}
+          sortSpaces={sortSpaces} />
+        {subscribedspaceData.spaces.length ?
+          <SubscribedSpacesResult
+            spaces={subscribedspaceData.spaces}
+            onDeleteSharedspace={onDeleteSharedspace} /> :
+          <SubscribedSpacesNull />}
+        <SubscribedSpacesPagination
+          currentPage={currentPage}
+          totalCount={subscribedspaceData.totalCount}
+          goToPage={goToPage} />
+      </Main>
+    </Background>
   );
 };
 
 export default SubscribedSpacesContainer;
+
+const Background = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--black);
+`;
 
 const Main = styled.main`
   display: flex;

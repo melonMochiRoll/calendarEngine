@@ -1,46 +1,23 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
-import SharedspaceHeader from './SharedspaceHeader';
-import Sidebar from './Sidebar';
-import SkeletonHeader from 'Components/skeleton/SkeletonHeader';
 import Drawer from 'Components/common/Drawer';
-import AsyncBoundary from 'Components/AsyncBoundary';
 import TodoContainer from 'Containers/TodoContainer';
-import { useAppSelector } from 'Hooks/reduxHooks';
-import TodoInit from 'Components/todo/TodoInit';
-import LoadingCircular from 'Components/skeleton/LoadingCircular';
-import GlobalErrorFallback from 'Components/errors/GlobalErrorFallback';
-import SkeletonSidebar from 'Components/skeleton/SkeletonSidebar';
+import Sidebar from 'Src/layouts/Sidebar';
+import SharedspaceHeader from 'Src/layouts/SharedspaceHeader';
 
 interface SharedspacesLayoutProps {};
 
 const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
-  const { todoTime } = useAppSelector(state => state.todoTime);
-
   return (
     <Block>
-      <AsyncBoundary
-        errorBoundaryFallback={GlobalErrorFallback}
-        suspenseFallback={<SkeletonSidebar />}>
-        <Sidebar />
-      </AsyncBoundary>
+      <Sidebar />
       <PageWrapper>
-        <AsyncBoundary
-          errorBoundaryFallback={GlobalErrorFallback}
-          suspenseFallback={<SkeletonHeader />}>
-          <SharedspaceHeader />
-        </AsyncBoundary>
+        <SharedspaceHeader />
         <ContentWrapper>
           <Outlet />
           <Drawer>
-            {todoTime ?
-              <AsyncBoundary
-                errorBoundaryFallback={GlobalErrorFallback}
-                suspenseFallback={<LoadingCircular />}>
-                <TodoContainer />
-              </AsyncBoundary> :
-              <TodoInit />}
+            <TodoContainer />
           </Drawer>
         </ContentWrapper>
       </PageWrapper>

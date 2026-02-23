@@ -5,22 +5,21 @@ import { useAppDispatch } from 'Hooks/reduxHooks';
 import { closeModal } from 'Features/modalSlice';
 import { setCalendarTime } from 'Features/calendarTimeSlice';
 import { setTodoTime } from 'Features/todoTimeSlice';
-import { TSearchTodos } from 'Typings/types';
+import { TSearchTodosPayload } from 'Typings/types';
 
 interface SearchResultProps {
-  query: string;
-  todosData: TSearchTodos[];
-  canLoadMore: boolean;
-  nextOffset: () => void;
+  query: string,
+  todosData: TSearchTodosPayload,
+  nextPage: () => void,
 }; 
 
 const SearchResult: FC<SearchResultProps> = ({
   query,
   todosData,
-  canLoadMore,
-  nextOffset,
+  nextPage,
 }) => {
   const dispatch = useAppDispatch();
+  const { items, hasMoreData } = todosData;
 
   const onClickTodo = (date: string) => {
     dispatch(setCalendarTime(date));
@@ -30,10 +29,10 @@ const SearchResult: FC<SearchResultProps> = ({
 
   return (
     <Block>
-      {todosData?.length ?
+      {items.length ?
         <TodoList>
           {
-            todosData.map((todo: TSearchTodos) => {
+            items.map((todo) => {
               return (
                 <TodoItem
                   key={todo.id}
@@ -44,10 +43,10 @@ const SearchResult: FC<SearchResultProps> = ({
               );
             })
           }
-          {
-            canLoadMore ?
-              <LoadMore onClick={nextOffset}>Load More</LoadMore> :
-              <LoadMore disabled>목록 없음</LoadMore>
+          {hasMoreData &&
+            <LoadMore onClick={nextPage}>
+              Load More
+            </LoadMore>
           }
         </TodoList> :
         <>
@@ -67,7 +66,7 @@ const Block = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 80%;
+  height: 85%;
 `;
 
 const TodoList = styled.ul`

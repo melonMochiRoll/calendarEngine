@@ -1,23 +1,22 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
-import SharedspaceMemberListHeader from './SharedspaceMemberListHeader';
 import SharedspaceMemberListMain from './SharedspaceMemberListMain';
-import AsyncBoundary from 'Components/AsyncBoundary';
-import LoadingCircular from 'Components/skeleton/LoadingCircular';
-import SharedspaceManagerError from '../sharedspaceManager/SharedspaceManagerError';
+import { ErrorBoundary } from 'react-error-boundary';
+import ModalLoadingCircular from 'Src/components/async/skeleton/ModalLoadingCircular';
+import ModalFallback from 'Src/components/async/fallbackUI/ModalFallback';
+import SharedspaceMemberListHeader from './SharedspaceMemberListHeader';
 
-const SharedspaceMemberListModal: FC = () => {
+interface SharedspaceMemberListModalProps {};
+
+const SharedspaceMemberListModal: FC<SharedspaceMemberListModalProps> = ({}) => {
   return (
-    <Block
-      onClick={e => e.stopPropagation()}>
-      <Main>
-        <SharedspaceMemberListHeader />
-        <AsyncBoundary
-          errorRenderComponent={<SharedspaceManagerError message={'에러가 발생했습니다.'} />}
-          suspenseFallback={<LoadingCircular />}>
+    <Block onClick={e => e.stopPropagation()}>
+      <SharedspaceMemberListHeader />
+      <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
+        <Suspense fallback={<ModalLoadingCircular />}>
           <SharedspaceMemberListMain />
-        </AsyncBoundary>
-      </Main>
+        </Suspense>
+      </ErrorBoundary>
     </Block>
   );
 };
@@ -33,12 +32,4 @@ const Block = styled.div`
   border-radius: 15px;
   background-color: var(--black);
   box-shadow: 1px 1px 10px 2px #000;
-`;
-
-const Main = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 85%;
-  color: var(--white);
 `;

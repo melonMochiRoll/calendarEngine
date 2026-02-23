@@ -1,11 +1,16 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import JoinContainer from 'Containers/JoinContainer';
-import WithGuestGuard from 'Components/hoc/WithGuestGuard';
+import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
+import RequireLogout from 'Src/components/guard/RequireLogout';
 
 const JoinPage: FC = () => {
   return (
-    <JoinContainer />
+    <Suspense fallback={<LoadingPage />}>
+      <RequireLogout>
+        <JoinContainer />
+      </RequireLogout>
+    </Suspense>
   );
 };
 
-export default WithGuestGuard(JoinPage);
+export default JoinPage;

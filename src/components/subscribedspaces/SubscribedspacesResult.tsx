@@ -1,24 +1,24 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { TSubscribedspaces } from 'Typings/types';
+import { TSubscribedspace } from 'Typings/types';
 import SubscribedspacesItem from './SubscribedspacesItem';
 
 interface SubscribedSpacesResultProps {
-  subscribedspaceData: TSubscribedspaces[];
+  spaces: TSubscribedspace[];
   onDeleteSharedspace: (url: string) => void;
 };
 
 const SubscribedSpacesResult: FC<SubscribedSpacesResultProps> = ({
-  subscribedspaceData,
+  spaces,
   onDeleteSharedspace,
 }) => {
   return (
     <List>
       {
-        subscribedspaceData.map((space: TSubscribedspaces, idx: number) => {
+        spaces.map((space) => {
           return (
             <SubscribedspacesItem
-              key={`${space.SharedspaceId}+${idx}`}
+              key={space.url}
               space={space}
               onDeleteSharedspace={onDeleteSharedspace} />
           );
@@ -35,8 +35,6 @@ const List = styled.ul`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  min-height: 70vh;
-  padding: 0 20%;
+  padding: 0 20% 2% 20%;
   margin: 0;
-  border-bottom: 1px solid var(--light-gray);
 `;

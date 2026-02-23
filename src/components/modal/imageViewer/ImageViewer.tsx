@@ -2,14 +2,16 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 
 export interface ImageViewerProps {
-  path: string;
+  path: string,
 };
 
-const ImageViewer: FC<ImageViewerProps> = ({ path }) => {
+const ImageViewer: FC<ImageViewerProps> = ({
+  path,
+}) => {
   return (
-    <Block>
+    <Block onClick={e => e.stopPropagation()}>
       <Img
-        src={`${process.env.REACT_APP_AWS_S3_BUCKET_URL}/${path}`}
+        src={path}
         alt={path} />
     </Block>
   );
