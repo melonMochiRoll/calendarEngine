@@ -1,5 +1,5 @@
 name = "calendarengine"
-main = "src/client.tsx"
+main = "src/client.js"
 # Set this to today's date
 compatibility_date = "2026-02-24"
 workers_dev = false
