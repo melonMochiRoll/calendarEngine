@@ -53,7 +53,7 @@ const CalendarTitle = styled.div`
 const Title = styled.h1`
   font-size: 48px;
   text-align: center;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--white);
   padding: 3px;
   margin: 0;
