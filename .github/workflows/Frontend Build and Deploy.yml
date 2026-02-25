@@ -13,10 +13,6 @@ jobs:
     env:
       REACT_APP_NODE_ENV: production
 
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
     strategy:
       matrix:
         node-version: [22.x]
@@ -63,6 +59,7 @@ jobs:
       with:
         project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
 
     - name: 🔧 Set up Cloud SDK
       uses: 'google-github-actions/setup-gcloud@v3'
