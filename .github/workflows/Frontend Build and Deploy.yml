@@ -1,9 +1,9 @@
 name: Frontend Build and Deploy
 run-name: 🚀 Deploying
 
-# on:
-#   push:
-#     branches: [ "release" ]
+on:
+  push:
+    branches: [ "release" ]
 
 jobs:
   build_and_deploy:
@@ -12,6 +12,10 @@ jobs:
     environment: production
     env:
       REACT_APP_NODE_ENV: production
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     strategy:
       matrix:
@@ -43,39 +47,49 @@ jobs:
         filename="calendar-engine-front-$(date +%Y%m%d)"
         echo "dist_filename=$filename" >> $GITHUB_OUTPUT
 
-    - name: 🔧 Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ vars.AWS_REGION }}
+    # - name: 🔧 Configure AWS Credentials
+    #   uses: aws-actions/configure-aws-credentials@v1
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: ${{ vars.AWS_REGION }}
 
-    - name: 🔑 Add Github Actions IP to Security group
-      run: |
-        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port ${{ secrets.EC2_SSH_PORT }} --cidr ${{ steps.ip.outputs.ipv4 }}/32
+    # - name: 🔑 Add Github Actions IP to Security group
+    #   run: |
+    #     aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port ${{ secrets.EC2_SSH_PORT }} --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
     - name: 📦 Compress Build Files
       run: tar cvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./dist .
 
-    - name: 🚛 Upload to S3
-      run: aws s3 cp --region ${{ vars.AWS_REGION }} ./${{ steps.dist.outputs.dist_filename }}.tar s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar
-
-    - name: ⬇️ Download from S3
-      uses: appleboy/ssh-action@master
+    - name: 🔧 Configure R2 Credentials
+      uses: ryand56/r2-upload-action@latest
       with:
-        host: ${{ secrets.EC2_HOST }} # 
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        port: ${{ secrets.EC2_SSH_PORT }}
-        script_stop: true
-        script: |
-          aws s3 cp --region ${{ vars.AWS_REGION }} s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar /home/ec2-user/
-          rm -rf client_dist/*
-          tar xvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./client_dist .
-          rm -r ${{ steps.dist.outputs.dist_filename }}.tar
-          sudo service nginx restart
+        r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+        r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+        r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        r2-bucket: ${{ secrets.R2_BUCKET }}
+        source-dir: ./${{ steps.dist.outputs.dist_filename }}.tar
+        destination-dir: artifacts
+
+    # - name: 🚛 Upload to S3
+    #   run: aws s3 cp --region ${{ vars.AWS_REGION }} ./${{ steps.dist.outputs.dist_filename }}.tar s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar
+
+    # - name: ⬇️ Download from S3
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.EC2_HOST }} # 
+    #     username: ${{ secrets.EC2_USERNAME }}
+    #     key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+    #     port: ${{ secrets.EC2_SSH_PORT }}
+    #     script_stop: true
+    #     script: |
+    #       aws s3 cp --region ${{ vars.AWS_REGION }} s3://${{ secrets.S3_BUCKET_NAME }}/${{ steps.dist.outputs.dist_filename }}.tar /home/ec2-user/
+    #       rm -rf client_dist/*
+    #       tar xvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./client_dist .
+    #       rm -r ${{ steps.dist.outputs.dist_filename }}.tar
+    #       sudo service nginx restart
         
-    - name: 🔑 Remove Github Actions IP From Security Group
-      if: always()
-      run: |
-        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port ${{ secrets.EC2_SSH_PORT }} --cidr ${{ steps.ip.outputs.ipv4 }}/32
+    # - name: 🔑 Remove Github Actions IP From Security Group
+    #   if: always()
+    #   run: |
+    #     aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port ${{ secrets.EC2_SSH_PORT }} --cidr ${{ steps.ip.outputs.ipv4 }}/32
