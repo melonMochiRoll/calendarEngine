@@ -62,9 +62,8 @@ jobs:
       uses: 'google-github-actions/auth@v3'
       with:
         create_credentials_file: true
-        project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
-        workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
-        audience: ${{ secrets.GOOGLE_AUDIENCE }}
+        project_id: project-3739142a-3b07-4f1f-981
+        workload_identity_provider: projects\524323867905\locations\global\workloadIdentityPools\github\providers\calendarengine
 
     - name: 🔧 Set up Cloud SDK
       uses: 'google-github-actions/setup-gcloud@v3'
