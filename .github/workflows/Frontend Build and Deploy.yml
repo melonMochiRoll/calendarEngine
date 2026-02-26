@@ -50,6 +50,7 @@ jobs:
     - name: 🔧 Authenticate to Google Cloud
       uses: 'google-github-actions/auth@v3'
       with:
+        project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
         create_credentials_file: true
@@ -71,7 +72,7 @@ jobs:
     #     destination-dir: artifacts
 
     - name: ✅ Test gcloud ssh
-      run: gcloud compute ssh instance-20260219-055555 --zone="us-west1-a" --command="echo hello ssh"
+      run: gcloud compute ssh ${{ secrets.GOOGLE_VM_NAME }} --zone=${{ secrets.GOOGLE_VM_REGION }} --command="echo hello ssh" -- -t
 
     # - name: 🚀 Deploy from R2
     #   run: |
