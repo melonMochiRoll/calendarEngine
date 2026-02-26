@@ -62,10 +62,8 @@ jobs:
       uses: 'google-github-actions/auth@v3'
       with:
         create_credentials_file: true
-        project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
         service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-        audience: ${{ secrets.GOOGLE_AUDIENCE }}
 
     # - name: 🔧 Set up Cloud SDK
     #   uses: 'google-github-actions/setup-gcloud@v3'
