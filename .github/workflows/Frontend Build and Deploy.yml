@@ -5,12 +5,8 @@ on:
   push:
     branches: [ "release" ]
 
-permissions:
-  contents: 'read'
-  id-token: 'write'
-
 jobs:
-  build_and_deploy:
+  job_id:
     name: Build And Deploy
     runs-on: ubuntu-latest
     environment: production
@@ -20,6 +16,10 @@ jobs:
     strategy:
       matrix:
         node-version: [24.x]
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
     - name: ✅ Check out repository code
@@ -65,11 +65,11 @@ jobs:
         project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
 
-    - name: 🔧 Set up Cloud SDK
-      uses: 'google-github-actions/setup-gcloud@v3'
+    # - name: 🔧 Set up Cloud SDK
+    #   uses: 'google-github-actions/setup-gcloud@v3'
 
-    - name: Use gcloud CLI
-      run: 'gcloud info'
+    # - name: Use gcloud CLI
+    #   run: 'gcloud info'
 
     # - name: 📦 Compress Build Files
     #   run: tar cvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./dist .
