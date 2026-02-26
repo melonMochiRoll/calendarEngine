@@ -64,6 +64,7 @@ jobs:
         create_credentials_file: true
         project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
+        audience: ${{ secrets.GOOGLE_AUDIENCE }}
 
     # - name: 🔧 Set up Cloud SDK
     #   uses: 'google-github-actions/setup-gcloud@v3'
