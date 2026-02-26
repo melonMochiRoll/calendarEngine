@@ -6,8 +6,8 @@ on:
     branches: [ "release" ]
 
 permissions:
-  contents: 'read'
-  id-token: 'write'
+  contents: read
+  id-token: write
 
 jobs:
   build_and_deploy:
