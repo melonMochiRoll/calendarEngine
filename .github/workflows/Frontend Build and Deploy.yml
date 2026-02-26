@@ -6,16 +6,16 @@ on:
     branches: [ "release" ]
 
 jobs:
-  job_id:
+  Build_And_Deploy:
     name: Build And Deploy
     runs-on: ubuntu-latest
     environment: production
     env:
       REACT_APP_NODE_ENV: production
 
-    strategy:
-      matrix:
-        node-version: [24.x]
+    # strategy:
+    #   matrix:
+    #     node-version: [24.x]
 
     permissions:
       contents: 'read'
@@ -25,11 +25,11 @@ jobs:
     - name: ✅ Check out repository code
       uses: actions/checkout@v4
     
-    - name: 🧾 Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+    # - name: 🧾 Use Node.js ${{ matrix.node-version }}
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: ${{ matrix.node-version }}
+    #     cache: 'npm'
         
     # - name: ✨ Install dependencies
     #   run: npm ci
@@ -61,9 +61,8 @@ jobs:
     - name: 🔧 Authenticate to Google Cloud
       uses: 'google-github-actions/auth@v3'
       with:
-        create_credentials_file: true
+        project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
-        service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
 
     # - name: 🔧 Set up Cloud SDK
     #   uses: 'google-github-actions/setup-gcloud@v3'
