@@ -64,11 +64,11 @@ jobs:
         project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
 
-    # - name: 🔧 Set up Cloud SDK
-    #   uses: 'google-github-actions/setup-gcloud@v3'
+    - name: 🔧 Set up Cloud SDK
+      uses: 'google-github-actions/setup-gcloud@v3'
 
-    # - name: Use gcloud CLI
-    #   run: 'gcloud info'
+    - name: Use gcloud CLI
+      run: 'gcloud info'
 
     # - name: 📦 Compress Build Files
     #   run: tar cvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./dist .
