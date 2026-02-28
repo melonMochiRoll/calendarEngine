@@ -52,7 +52,7 @@ jobs:
       with:
         project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
-        # service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
         create_credentials_file: true
 
     - name: 🔧 Set up Cloud SDK
