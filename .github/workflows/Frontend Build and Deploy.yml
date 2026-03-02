@@ -72,13 +72,10 @@ jobs:
     - name: 🚀 Deploy from R2
       run: |
         gcloud compute ssh ${{ secrets.GOOGLE_VM_NAME }} --zone=${{ secrets.GOOGLE_VM_REGION }} --command="
-          BUCKETNAME='${{ secrets.R2_BUCKET }}'
-          FILENAME='${{ steps.dist.outputs.dist_filename }}'
-          
-          aws s3 cp --region auto s3://$BUCKETNAME/$FILENAME.tar /var/www/html/
+          aws s3 cp --region auto s3://${{ secrets.R2_BUCKET }}/${{ steps.dist.outputs.dist_filename }}.tar /var/www/html/
           rm -rf dist/*
-          tar xvf $FILENAME.tar -C ./dist .
-          rm -r $FILENAME.tar
+          tar xvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./dist .
+          rm -r ${{ steps.dist.outputs.dist_filename }}.tar
           sudo service nginx restart
         "
 
