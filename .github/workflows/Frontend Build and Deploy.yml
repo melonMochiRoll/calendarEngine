@@ -44,7 +44,7 @@ jobs:
     - name: 🔧 Set Dist Filename
       id: dist
       run: |
-        filename="calendar-engine-front-$(date +%Y%m%d)"
+        filename="calendar-engine-front-$(date +%Y%m%d_%H%M%S)"
         echo "dist_filename=$filename" >> $GITHUB_OUTPUT
 
     - name: 🔧 Authenticate to Google Cloud
@@ -72,7 +72,7 @@ jobs:
     - name: 🚀 Deploy from R2
       run: |
         gcloud compute ssh ${{ secrets.GOOGLE_VM_NAME }} --zone=${{ secrets.GOOGLE_VM_REGION }} --command="
-          aws s3 cp --region auto s3://${{ secrets.R2_BUCKET }}/${{ steps.dist.outputs.dist_filename }}.tar /var/www/html/
+          aws s3 cp --region auto s3://${{ secrets.R2_BUCKET }}/artifacts/${{ steps.dist.outputs.dist_filename }}.tar /var/www/html/
           rm -rf dist/*
           tar xvf ${{ steps.dist.outputs.dist_filename }}.tar -C ./dist .
           rm -r ${{ steps.dist.outputs.dist_filename }}.tar
