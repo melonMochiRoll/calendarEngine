@@ -69,9 +69,6 @@ jobs:
         source-dir: ./${{ steps.dist.outputs.dist_filename }}.tar
         destination-dir: artifacts
 
-    # - name: ✅ Test gcloud ssh
-    #   run: gcloud compute ssh ${{ secrets.GOOGLE_VM_NAME }} --zone=${{ secrets.GOOGLE_VM_REGION }} --command="echo hello ssh" -- -t
-
     - name: 🚀 Deploy from R2
       run: |
         gcloud compute ssh ${{ secrets.GOOGLE_VM_NAME }} --zone=${{ secrets.GOOGLE_VM_REGION }} --command="
