@@ -12,6 +12,7 @@ jobs:
     environment: production
     env:
       REACT_APP_NODE_ENV: production
+      REACT_APP_SERVER_ORIGIN: ${{ vars.SERVER_ORIGIN }}
 
     strategy:
       matrix:
