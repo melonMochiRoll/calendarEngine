@@ -79,7 +79,7 @@ jobs:
 
           aws s3 cp s3://${{ secrets.R2_BUCKET }}/artifacts/calendar-engine-front-20260302_075316.tar /var/www/html/ --endpoint-url $R2_ENDPOINT_URL
           rm -rf dist/*
-          tar xvf /var/www/html/calendar-engine-front-20260302_075316.tar -C ./dist
+          tar xvf /var/www/html/calendar-engine-front-20260302_075316.tar -C /var/www/html/dist
           rm /var/www/html/calendar-engine-front-20260302_075316.tar
         "
         
