@@ -77,7 +77,7 @@ jobs:
           export AWS_ACCESS_KEY_ID="${{ secrets.R2_ACCESS_KEY_ID }}"
           export AWS_SECRET_ACCESS_KEY="${{ secrets.R2_SECRET_ACCESS_KEY }}"
 
-          echo pwd
+          pwd
           exit
           aws s3 cp s3://${{ secrets.R2_BUCKET }}/artifacts/calendar-engine-front-20260302_075316.tar /var/www/html/ --endpoint-url $R2_ENDPOINT_URL
           rm -rf dist/*
