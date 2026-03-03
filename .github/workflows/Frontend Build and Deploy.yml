@@ -79,8 +79,8 @@ jobs:
 
           aws s3 cp s3://${{ secrets.R2_BUCKET }}/artifacts/calendar-engine-front-20260302_075316.tar /var/www/html/ --endpoint-url $R2_ENDPOINT_URL
           rm -rf dist/*
-          tar xvf calendar-engine-front-20260302_075316.tar -C ./dist .
-          rm calendar-engine-front-20260302_075316.tar
+          tar xvf /var/www/html/calendar-engine-front-20260302_075316.tar -C ./dist .
+          rm /var/www/html/calendar-engine-front-20260302_075316.tar
         "
         
     # - name: 🚀 Deploy from R2
