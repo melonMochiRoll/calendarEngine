@@ -73,11 +73,11 @@ jobs:
     - name: 🚀 Deploy from R2
       env:
         R2_ENDPOINT_URL: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        COMPRESS_FILENAME: ${{ steps.dist.outputs.dist_filename }}.tar
       run: |
         gcloud compute ssh ${{ secrets.GOOGLE_VM_NAME }} --zone=${{ secrets.GOOGLE_VM_REGION }} --command="
           export AWS_ACCESS_KEY_ID="${{ secrets.R2_ACCESS_KEY_ID }}"
           export AWS_SECRET_ACCESS_KEY="${{ secrets.R2_SECRET_ACCESS_KEY }}"
-          export COMPRESS_FILENAME="${{ steps.dist.outputs.dist_filename }}.tar"
 
           aws s3 cp s3://${{ secrets.R2_BUCKET }}/artifacts/$COMPRESS_FILENAME /var/www/html/ --endpoint-url $R2_ENDPOINT_URL
           rm -rf dist/*
