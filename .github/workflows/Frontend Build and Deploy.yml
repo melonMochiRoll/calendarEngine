@@ -1,4 +1,4 @@
-name: Frontend Build and Deploy
+name: Frontend Deploy
 run-name: 🚀 Deploying
 
 on:
@@ -6,8 +6,8 @@ on:
     branches: [ "release" ]
 
 jobs:
-  Build_And_Deploy:
-    name: Build And Deploy
+  Deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     environment: production
     env:
@@ -80,7 +80,7 @@ jobs:
           export AWS_SECRET_ACCESS_KEY="${{ secrets.R2_SECRET_ACCESS_KEY }}"
 
           aws s3 cp s3://${{ secrets.R2_BUCKET }}/artifacts/$COMPRESS_FILENAME /var/www/html/ --endpoint-url $R2_ENDPOINT_URL
-          rm -rf dist/*
+          rm -rf /var/www/html/dist/*
           tar xvf /var/www/html/$COMPRESS_FILENAME -C /var/www/html/dist
           rm /var/www/html/$COMPRESS_FILENAME
           sudo service nginx restart
