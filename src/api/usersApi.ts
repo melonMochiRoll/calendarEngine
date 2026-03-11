@@ -16,9 +16,9 @@ export const isUser = async (email: string) => {
     const { data } = await axiosInstance
       .get(`/api/users/email?e=${email}`);
 
-    return data ? true : false;
+    return data;
   } catch (err) {
-    return false;
+    throw err;
   }
 };
 
