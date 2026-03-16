@@ -3,9 +3,10 @@ import styled from '@emotion/styled';
 import { createUser } from 'Api/usersApi';
 import { useNavigate } from 'react-router-dom';
 import JoinForm from 'Components/auth/JoinForm';
-import { waitingMessage } from 'Constants/notices';
+import { defaultToastOption, successJoin, waitingMessage } from 'Constants/notices';
 import { PATHS } from 'Constants/paths';
 import { useJoinValidator } from 'Hooks/utils/useJoinValidator';
+import { toast } from 'react-toastify';
 
 interface JoinContainerProps {};
 
@@ -42,17 +43,19 @@ const JoinContainer: FC<JoinContainerProps> = ({}) => {
       return;
     }
 
-    createUser(email, password)
-      .then(() => {
-        navigate(PATHS.LOGIN);
-      })
-      .catch(() => {
-        setErrors({
-          email: waitingMessage,
-          password: '',
-          passwordChk: '',
-        });
+    try {
+      await createUser(email, password);
+      toast.success(successJoin, {
+        ...defaultToastOption,
       });
+      navigate(PATHS.LOGIN);
+    } catch (err) {
+      setErrors({
+        email: waitingMessage,
+        password: '',
+        passwordChk: '',
+      });
+    }
   };
 
   return (
