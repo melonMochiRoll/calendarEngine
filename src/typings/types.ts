@@ -187,7 +187,6 @@ export type TSharedspaceMembersItem = {
   UserId: number,
   email: string,
   profileImage: string,
-  RoleId: number,
   RoleName: string,
   createdAt: string,
 };
