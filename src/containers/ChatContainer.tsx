@@ -58,28 +58,30 @@ const ChatContainer: FC = () => {
     e.preventDefault();
     if (!e.target.files) return;
 
-    if (images.length > 5) {
+    if (images.length + e.target.files.length > 6) {
       toast.info(tooManyImagesMessage, {
         ...defaultToastOption,
       });
       return;
     }
 
-    const newImages =
-      Object
-      .values(e.target.files)
-      .map((file) => {
-        const reader = new FileReader();
+    const newImages = Array.from(e.target.files);
+    const newPreviews: string[] = [];
 
-        reader.onloadend = () => {
-          setPreviews(prev => [ ...prev, reader.result ]);
-        };
-        reader.readAsDataURL(file);
+    for (const file of newImages) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(imageTooLargeMessage, {
+          ...defaultToastOption,
+          toastId: waitingMessage,
+        });
+        return;
+      }
 
-        return file;
-      });
+      newPreviews.push(URL.createObjectURL(file));
+    }
 
     setImages(prev => [ ...prev, ...newImages ]);
+    setPreviews(prev => [ ...prev, ...newPreviews ]);
   };
 
   const onSubmit = async () => {
