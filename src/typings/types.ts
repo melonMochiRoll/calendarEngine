@@ -252,6 +252,12 @@ export type TImages = {
   ChatId: number;
 };
 
+export type TImageMetaData = {
+  fileName: string,
+  fileSize: number,
+  contentType: string,
+};
+
 export const ChatsCommandList = {
   CHAT_CREATED: 'chat_created',
   CHAT_UPDATED: 'chat_updated',
