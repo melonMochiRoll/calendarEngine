@@ -1,6 +1,6 @@
-import { TSharedspaceMembersRoles } from "Typings/types";
+import { TImageMetaData, TSharedspaceMembersRoles } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
-import axios from "axios";
+import axios, { Axios } from "axios";
 
 export const getSharedspace = async (url: string | undefined) => {
   if (!url) {
@@ -282,14 +282,14 @@ export const deleteSharedspaceChatImage = async (
 
 export const generatePresignedPutUrl = async (
   url: string | undefined,
-  fileNames: string[],
-): Promise<Array<{ key: string, presignedUrl: string }>> => {
+  metaDatas: TImageMetaData[],
+): Promise<Array<{ key: string, presignedUrl: string, contentType: string }>> => {
   try {
     const { data } = await axiosInstance
       .post(
         `/api/sharedspaces/${url}/chats/images/presigned-url`,
         {
-          fileNames,
+          metaDatas,
         },
       );
 
@@ -302,14 +302,17 @@ export const generatePresignedPutUrl = async (
 export const uploadImageToPresignedUrl = async (
   url: string,
   file: File,
+  contentType: string,
 ) => {
   try {
     await axios
       .put(
-        url, file,
+        url,
+        file,
         {
           headers: {
             'Cache-Control': 'public, max-age=31536000, immutable',
+            'Content-Type': contentType,
           },
         }
       );

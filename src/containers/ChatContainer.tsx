@@ -95,45 +95,30 @@ const ChatContainer: FC = () => {
 
     try {
       if (images.length) {
-        const imageNames = images.map(image => image.name);
-        const presignedUrls = await generatePresignedPutUrl(url, imageNames)
-          .catch(() => {
-            toast.error(waitingMessage, {
-              ...defaultToastOption,
-              toastId: waitingMessage,
-            });
-          });
+        const metaDatas = images.map(image => {
+          return { fileName: image.name, fileSize: image.size, contentType: image.type };
+        });
+
+        const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
         
         if (!presignedUrls) {
           return;
         }
 
         await Promise.all(
-          presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i]))
+          presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType))
         );
 
-        for (const { key, presignedUrl } of presignedUrls) {
+        for (const { key } of presignedUrls) {
           imageKeys.push(key);
         }
       }
 
-      createSharedspaceChat(url, trimmedChat, imageKeys)
-        .then(() => {
-          scrollbarRef?.current?.scrollTo(0, 0);
-          setChat('');
-          setImages([]);
-          setPreviews([]);
-        })
-        .catch((error) => {
-          const errorMessage = error?.response?.status === 413 ?
-            imageTooLargeMessage :
-            waitingMessage;
-
-          toast.error(errorMessage, {
-            ...defaultToastOption,
-            toastId: errorMessage,
-          });
-        });
+      await createSharedspaceChat(url, trimmedChat, imageKeys);
+      scrollbarRef?.current?.scrollTo(0, 0);
+      setChat('');
+      setImages([]);
+      setPreviews([]);
     } catch (err) {
       toast.error(waitingMessage, {
         ...defaultToastOption,
