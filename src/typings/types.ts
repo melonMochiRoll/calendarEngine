@@ -68,14 +68,9 @@ export const MemberOptions = {
 export type TUser = {
   id: number,
   email: string,
+  nickname: string,
+  provider: string,
   profileImage: string,
-  Sharedspacemembers: Array<
-    {
-      SharedspaceId: Pick<TSharedspaceMembers, 'SharedspaceId'>,
-      Sharedspace: Pick<TSharedspace, 'url' | 'private'>,
-      Role: { name: string },
-    }
-  >
 };
 
 export type TLocalTodo = {
