@@ -1,7 +1,6 @@
-import React, { FC, Suspense } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import RenderUserProfile from 'Components/auth/RenderUserProfile';
-import SkeletonUserProfile from 'Src/components/async/skeleton/SkeletonUserProfile';
 import TextButton from 'Src/components/common/TextButton';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { ModalName } from 'Src/typings/types';
@@ -19,9 +18,7 @@ const Header: FC = () => {
         }}>
         받은 초대
       </TextButton>
-      <Suspense fallback={<SkeletonUserProfile />}>
-        <RenderUserProfile />
-      </Suspense>
+      <RenderUserProfile />
     </Block>
   );
 };

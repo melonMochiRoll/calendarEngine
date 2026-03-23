@@ -6,11 +6,14 @@ import RequireLogin from 'Src/components/guard/RequireLogin';
 import SharedspaceFallback from 'Src/components/async/fallbackUI/SharedspaceFallback';
 import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
 import Header from 'Src/layouts/Header';
+import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
 
 const SharedspacesPage: FC = () => {
   return (
     <Block>
-      <Header />
+      <Suspense fallback={<SkeletonHeader />}>
+        <Header />
+      </Suspense>
       <ErrorBoundary fallbackRender={(props) => <SharedspaceFallback errorProps={props} />}>
         <Suspense fallback={<LoadingPage />}>
           <RequireLogin>
