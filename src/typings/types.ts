@@ -73,34 +73,6 @@ export type TUser = {
   profileImage: string,
 };
 
-export type TLocalTodo = {
-  id: string,
-  contents: string,
-  isComplete: boolean,
-  date: string,
-  createdAt: string,
-};
-
-export type TTodo = {
-  id: number,
-  description: string,
-  startTime: string,
-  endTime: string,
-  date: string,
-  createdAt: string,
-  updatedAt: string,
-  deletedAt: string | null,
-  AuthorId: number,
-  EditorId: number | null,
-  SharedspaceId: number,
-  Author: {
-    email: Pick<TUser, 'email'>
-  },
-  Editor: {
-    email: Pick<TUser, 'email'>,
-  } | null,
-};
-
 export type TTodoPayload = {
   id: number,
   description: string,
