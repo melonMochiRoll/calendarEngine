@@ -22,6 +22,17 @@ export const isUser = async (email: string) => {
   }
 };
 
+export const existsByNickname = async (nickname: string) => {
+  try {
+    const { data } = await axiosInstance
+      .get(`/api/users/nickname?n=${nickname}`);
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const createUser = async (email: string, password: string) => {
   try {
     await axiosInstance
