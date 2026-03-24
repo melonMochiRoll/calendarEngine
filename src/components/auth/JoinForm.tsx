@@ -8,9 +8,10 @@ import { PATHS } from 'Constants/paths';
 import useInput from 'Hooks/utils/useInput';
 
 interface JoinFormProps {
-  onSubmit: (email: string, password: string, passwordChk: string) => void;
+  onSubmit: (email: string, nickname: string, password: string, passwordChk: string) => void;
   errors: {
     email: string,
+    nickname: string,
     password: string,
     passwordChk: string
   };
@@ -22,21 +23,24 @@ const JoinForm: FC<JoinFormProps> = ({
 }) => {
   const navigate = useNavigate();
   const [ email, onChangeEmail ] = useInput('');
+  const [ nickname, onChangeNickname ] = useInput('');
   const [ password, onChangePassword ] = useInput('');
   const [ passwordChk, onChangePasswordChk ] = useInput('');
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>,
     email: string,
+    nickname: string,
     password: string,
     passwordChk: string,
   ) => {
-    e.preventDefault();
-    onSubmit(email.trim(), password.trim(), passwordChk.trim());
+    onSubmit(email.trim(), nickname.trim(), password.trim(), passwordChk.trim());
   };
   
   return (
-    <Form onSubmit={(e) => handleSubmit(e, email, password, passwordChk)}>
+    <Form onSubmit={(e) => {
+      e.preventDefault();
+      handleSubmit(email, nickname, password, passwordChk);
+    }}>
       <Title>회원가입</Title>
       <LabelInput
         id='email'
@@ -46,6 +50,14 @@ const JoinForm: FC<JoinFormProps> = ({
         title='이메일'
         type='text' />
       {errors.email ? <ErrorSpan>{errors.email}</ErrorSpan> : <ErrorSpan />}
+      <LabelInput
+        id='nickname'
+        name='nickname'
+        value={nickname}
+        onChangeValue={onChangeNickname}
+        title='닉네임'
+        type='text' />
+      {errors.nickname ? <ErrorSpan>{errors.nickname}</ErrorSpan> : <ErrorSpan />}
       <LabelInput
         id='password'
         name='password'

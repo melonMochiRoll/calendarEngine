@@ -33,10 +33,13 @@ export const existsByNickname = async (nickname: string) => {
   }
 };
 
-export const createUser = async (email: string, password: string) => {
+export const createUser = async (email: string, nickname: string, password: string) => {
   try {
     await axiosInstance
-      .post('/api/users', { email, password });
+      .post(
+        '/api/users',
+        { email, nickname, password },
+      );
   } catch (error) {
     throw error;
   }
