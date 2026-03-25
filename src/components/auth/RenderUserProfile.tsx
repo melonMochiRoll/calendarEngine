@@ -30,7 +30,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
             <ProfileImage
               profileImage={userData.profileImage}
               email={userData.email} />
-            <Email>{userData.email}</Email>
+            <Email>{userData.nickname}</Email>
             <TextButton
               onClick={() => onLogout()}
               type={'button'}>
