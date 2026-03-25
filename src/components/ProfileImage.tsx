@@ -6,12 +6,14 @@ interface ProfileImageProps {
   profileImage?: string,
   email?: string,
   size?: 'large' | 'small',
+  onClick?: (e?: any) => void,
 };
 
 const ProfileImage: FC<ProfileImageProps> = ({
   profileImage,
   email = 'unknown@gmail.com',
   size,
+  onClick,
 }) => {
 
   const renderSize = (size: string | undefined) => {
@@ -28,6 +30,7 @@ const ProfileImage: FC<ProfileImageProps> = ({
 
   return (
     <Img
+      onClick={onClick}
       size={renderSize(size)}
       alt={`${email}`}
       src={profileImage ? profileImage : gravatar.url(email, { s: '25px', d: 'retro' })} />
