@@ -6,6 +6,7 @@ import JoinForm from 'Components/auth/JoinForm';
 import { defaultToastOption, successJoin, waitingMessage } from 'Constants/notices';
 import { PATHS } from 'Constants/paths';
 import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
 
 interface JoinContainerProps {};
 
@@ -91,7 +92,7 @@ const JoinContainer: FC<JoinContainerProps> = ({}) => {
       navigate(PATHS.LOGIN);
     } catch (err) {
       setErrors({
-        email: waitingMessage,
+        email: err instanceof AxiosError ? err?.response?.data?.message : waitingMessage,
         nickname: '',
         password: '',
         passwordChk: '',
