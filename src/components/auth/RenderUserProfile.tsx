@@ -16,12 +16,10 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
   const qc = useQueryClient();
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
 
-  const onLogout = () => {
-    logout()
-      .then(() => {
-        qc.removeQueries([GET_USER_KEY]);
-        navigate(PATHS.LOGIN);
-      });
+  const onLogout = async () => {
+    await logout();
+    qc.removeQueries([GET_USER_KEY]);
+    navigate(PATHS.LOGIN);
   };
   
   return (
