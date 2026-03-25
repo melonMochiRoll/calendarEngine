@@ -10,9 +10,9 @@ import useInput from 'Hooks/utils/useInput';
 import { useNavigate } from 'react-router-dom';
 
 interface LoginFormProps {
-  onSubmit: (email: string, password: string) => void;
-  onGoogleLogin: () => void;
-  onNaverLogin: () => void;
+  onSubmit: (email: string, password: string) => Promise<void>;
+  onGoogleLogin: () => Promise<void>;
+  onNaverLogin: () => Promise<void>;
   errors: {
     email: string,
     password: string,
@@ -29,17 +29,11 @@ const LoginForm: FC<LoginFormProps> = ({
   const [ email, onChangeEmail ] = useInput('');
   const [ password, onChangePassword ] = useInput('');
 
-  const handleSubmit = (
-    e: React.FormEvent<HTMLFormElement>,
-    email: string,
-    password: string,
-  ) => {
-    e.preventDefault();
-    onSubmit(email.trim(), password.trim());
-  };
-
   return (
-    <Form onSubmit={(e) => handleSubmit(e, email, password)}>
+    <Form onSubmit={(e) => {
+      e.preventDefault();
+      onSubmit(email.trim(), password.trim());
+    }}>
       <Title>로그인</Title>
       <LabelInput
         id='email'
