@@ -6,10 +6,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_USER_KEY } from 'Constants/queryKeys';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
-import { useLoginValidator } from 'Hooks/utils/useLoginValidator';
-import { incorrectCredentialsMessage, waitingMessage } from 'Constants/notices';
+import { waitingMessage } from 'Constants/notices';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { setCsrfToken } from 'Src/features/csrfTokenSlice';
+import { AxiosError } from 'axios';
 
 interface LoginContainerProps {};
 
@@ -17,34 +17,30 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { emailConfirmation, passwordConfirmation } = useLoginValidator();
   const [ errors, setErrors ] = useState({
     email: '',
     password: '',
   });
 
-  const onGoogleLogin = () => {
-    loginOAuth2Google()
-      .then((res) => {
-        window.open(res, '_self');
-      });
+  const onGoogleLogin = async () => {
+    const url = await loginOAuth2Google();
+    window.open(url, '_self');
   };
 
-  const onNaverLogin = () => {
-    loginOAuth2Naver()
-      .then((res) => {
-        window.open(res, '_self');
-      });
+  const onNaverLogin = async () => {
+    const url = await loginOAuth2Naver();
+    window.open(url, '_self');
   };
 
-  const onSubmit = (email: string, password: string) => {
+  const onSubmit = async (email: string, password: string) => {
     setErrors({
       email: '',
       password: '',
     });
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    const emailConfirm = emailConfirmation(email);
-    const passwordConfirm = passwordConfirmation(password);
+    const emailConfirm = !emailPattern.test(email) ? '이메일 형식을 확인해주세요' : '';;
+    const passwordConfirm = password.length < 8 ? '비밀번호는 8자 이상이어야 합니다.' : '';
 
     if (emailConfirm || passwordConfirm) {
       setErrors({
@@ -54,25 +50,20 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
       return;
     }
 
-    login(email, password)
-      .then(async (user) => {
-        qc.setQueryData([GET_USER_KEY], user);
+    try {
+      const userData = await login(email, password);
+      qc.setQueryData([GET_USER_KEY], userData);
 
-        const token = await getCsrfToken();
-        dispatch(setCsrfToken({ token }));
-        
-        navigate(PATHS.SHAREDSPACE);
-      })
-      .catch((error) => {
-        const errorMessage = error?.response?.status === 401 ?
-          incorrectCredentialsMessage :
-          waitingMessage
-
-        setErrors({
-          email: errorMessage,
-          password: '',
-        })
+      const token = await getCsrfToken();
+      dispatch(setCsrfToken({ token }));
+      
+      navigate(PATHS.SHAREDSPACE);
+    } catch (err) {
+      setErrors({
+        email: err instanceof AxiosError ? err?.response?.data.message : waitingMessage,
+        password: '',
       });
+    }
   };
   
   return (
