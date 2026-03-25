@@ -133,7 +133,7 @@ export type TSharedspaceMetaData = TSharedspace & {
 };
 
 export type TSubscribedspace = Pick<TSharedspace, 'name' | 'url' | 'private'> & {
-  owner: string,
+  Owner: Pick<TUser, 'email' | 'nickname' | 'profileImage'>,
   permission: {
     isOwner: boolean,
   }

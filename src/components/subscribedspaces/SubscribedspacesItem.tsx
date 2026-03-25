@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { TSubscribedspace } from 'Typings/types';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';
+import ProfileImage from '../ProfileImage';
 
 interface TSubscribedspacesItemProps {
   space: TSubscribedspace,
@@ -21,7 +22,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
   onDeleteSharedspace,
 }) => {
   const navigate = useNavigate();
-  const { name, url, private: privateBool, owner, permission } = space;
+  const { name, url, private: privateBool, Owner, permission } = space;
 
   const {
     anchorEl,
@@ -53,7 +54,12 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
       onClick={() => navigate(`/sharedspaces/view/${url}`)}>
       <ItemPrivate>{privateBool ? <LockIcon /> : <UnlockIcon />}</ItemPrivate>
       <ItemTitle>{name}</ItemTitle>
-      <ItemOwner>{owner}</ItemOwner>
+      <ItemOwner>
+        <ProfileImage
+          profileImage={Owner.profileImage}
+          email={Owner.email} />
+        {Owner.nickname}
+      </ItemOwner>
       {
         permission.isOwner ?
         <ItemMoreMenu onClick={onClickMoreMenu}>
@@ -122,6 +128,7 @@ const ItemOwner = styled.div`
   font-size: 20px;
   text-align: center;
   cursor: pointer;
+  gap: 10px;
 `;
 
 const ItemMoreMenu = styled.div`
