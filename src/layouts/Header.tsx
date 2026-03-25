@@ -1,23 +1,10 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import RenderUserProfile from 'Components/auth/RenderUserProfile';
-import TextButton from 'Src/components/common/TextButton';
-import { useAppDispatch } from 'Src/hooks/reduxHooks';
-import { ModalName } from 'Src/typings/types';
-import { openModal } from 'Src/features/modalSlice';
 
 const Header: FC = () => {
-  const dispatch = useAppDispatch();
-
   return (
     <Block>
-      <TextButton
-        type='button'
-        onClick={() => {
-          dispatch(openModal({ name: ModalName.SHAREDSPACE_INVITE_RECEIVED }));
-        }}>
-        받은 초대
-      </TextButton>
       <RenderUserProfile />
     </Block>
   );
@@ -27,7 +14,7 @@ export default Header;
 
 const Block = styled.header`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   width: 100%;
   height: 50px;
