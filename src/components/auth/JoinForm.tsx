@@ -26,20 +26,11 @@ const JoinForm: FC<JoinFormProps> = ({
   const [ nickname, onChangeNickname ] = useInput('');
   const [ password, onChangePassword ] = useInput('');
   const [ passwordChk, onChangePasswordChk ] = useInput('');
-
-  const handleSubmit = async (
-    email: string,
-    nickname: string,
-    password: string,
-    passwordChk: string,
-  ) => {
-    onSubmit(email.trim(), nickname.trim(), password.trim(), passwordChk.trim());
-  };
   
   return (
     <Form onSubmit={(e) => {
       e.preventDefault();
-      handleSubmit(email, nickname, password, passwordChk);
+      onSubmit(email.trim(), nickname.trim(), password.trim(), passwordChk.trim());
     }}>
       <Title>회원가입</Title>
       <LabelInput
