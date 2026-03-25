@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
 import Drawer from 'Components/common/Drawer';
 import TodoContainer from 'Containers/TodoContainer';
 import Sidebar from 'Src/layouts/Sidebar';
 import SharedspaceHeader from 'Src/layouts/SharedspaceHeader';
+import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
 
 interface SharedspacesLayoutProps {};
 
@@ -13,7 +14,9 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
     <Block>
       <Sidebar />
       <PageWrapper>
-        <SharedspaceHeader />
+        <Suspense fallback={<SkeletonHeader />}>
+          <SharedspaceHeader />
+        </Suspense>
         <ContentWrapper>
           <Outlet />
           <Drawer>

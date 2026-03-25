@@ -8,9 +8,7 @@ import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
 import { PATHS } from 'Constants/paths';
 import TextButton from 'Src/components/common/TextButton';
-import SkeletonUserProfile from 'Src/components/async/skeleton/SkeletonUserProfile';
 import RenderSpaceTitle from 'Src/components/layouts/RenderSpaceTitle';
-import { Skeleton } from '@mui/material';
 
 interface SharedspaceHeaderProps {};
 
@@ -26,9 +24,7 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
             onClick={() => navigate(PATHS.SHAREDSPACE)}
             fontSize='large'
             sx={SatelliteIconInlineStyle} />
-            <Suspense fallback={<Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={200} height={40} />}>
-              <RenderSpaceTitle />
-            </Suspense>
+          <RenderSpaceTitle />
         </FlexBox>
         <TextButton
           type='button'
@@ -36,9 +32,7 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
           멤버 목록
         </TextButton>
       </SpaceInfoWrapper>
-      <Suspense fallback={<SkeletonUserProfile />}>
-        <RenderUserProfile />
-      </Suspense>
+      <RenderUserProfile />
     </Header>
   );
 };
