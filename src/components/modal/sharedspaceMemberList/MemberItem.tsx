@@ -24,7 +24,7 @@ const MemberItem: FC<MemberItemProps> = ({
 }) => {
   const [ isResponded, setIsResponded ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
-  const { UserId, email, profileImage, RoleName } = item;
+  const { UserId, email, nickname, profileImage, RoleName } = item;
   const label = isResponded || renderRole(RoleName);
 
   const {
@@ -86,9 +86,10 @@ const MemberItem: FC<MemberItemProps> = ({
           profileImage={profileImage}
           email={email} />
       </ProfileWrapper>
-      <EmailWrapper>
-        <EmailText>{email}</EmailText>
-      </EmailWrapper>
+      <InfoWrapper>
+        <InfoNickname>{nickname}</InfoNickname>
+        <InfoEmail>{email}</InfoEmail>
+      </InfoWrapper>
       {
         isLoading ?
           <CircularProgress size={30} />
@@ -154,15 +155,20 @@ const ProfileWrapper = styled.div`
   width: 10%;
 `;
 
-const EmailWrapper = styled.div`
+const InfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 70%;
 `;
 
-const EmailText = styled.span`
+const InfoNickname = styled.span`
   font-size: 20px;
+`;
+
+const InfoEmail = styled.span`
+  font-size: 18px;
+  color: var(--gray-6);
 `;
 
 const DisableButton = styled.div`

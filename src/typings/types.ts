@@ -153,6 +153,7 @@ export const subscribedspacesSortsMap: { [key: string]: string } = {
 export type TSharedspaceMembersItem = {
   UserId: number,
   email: string,
+  nickname: string,
   profileImage: string,
   RoleName: string,
   createdAt: string,
