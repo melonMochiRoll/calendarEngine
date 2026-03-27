@@ -184,7 +184,7 @@ export type TJoinRequest = {
   RequestorId: number,
   createdAt: string,
   message: string,
-  Requestor: Pick<TUser, 'email' | 'profileImage'>,
+  Requestor: Pick<TUser, 'email' | 'nickname' | 'profileImage'>,
 };
 
 export type TChat = {

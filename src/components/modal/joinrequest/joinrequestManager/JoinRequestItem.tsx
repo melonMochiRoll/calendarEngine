@@ -62,8 +62,8 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
           email={Requestor.email} />
       </Left>
       <Center>
+        <Nickname>{Requestor.nickname}</Nickname>
         <Email>{Requestor.email}</Email>
-        <Message>{message}</Message>
       </Center>
       <Right onClick={onOpenWithEvent}>
         <CurrentOption>메뉴</CurrentOption>
@@ -136,8 +136,13 @@ const Center = styled.div`
   width: 70%;
 `;
 
-const Email = styled.span`
+const Nickname = styled.span`
   font-size: 20px;
+`;
+
+const Email = styled.span`
+  font-size: 18px;
+  color: var(--gray-6);
 `;
 
 const Message = styled.span`
