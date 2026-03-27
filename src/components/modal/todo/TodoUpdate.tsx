@@ -225,18 +225,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
 
 export default TodoUpdate;
 
-const Backdrop = styled.div<{ zIndex: number, isBottom: boolean }>`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  background-color: ${({ isBottom }) => isBottom ? 'rgba(0, 0, 0, 0.8)' : ''};
-  z-index: ${({ zIndex }) => zIndex};
-`;
-
 const Block = styled.div`
   display: flex;
   flex-direction: column;
