@@ -22,8 +22,8 @@ const resolveMenuOption = [
 
 interface JoinRequestItemProps {
   request: TJoinRequest;
-  onResolveMenuClick: (url: string | undefined, id: number, roleName: string) => void;
-  onRejectMenuClick: (url: string | undefined, id: number) => void;
+  onResolveMenuClick: (url: string | undefined, id: number, roleName: string) => Promise<void>;
+  onRejectMenuClick: (url: string | undefined, id: number) => Promise<void>;
 };
 
 const JoinRequestItem: FC<JoinRequestItemProps> = ({

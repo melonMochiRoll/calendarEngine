@@ -16,39 +16,39 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
   const [ error, setError ] = useState('');
   const { data: joinRequestsData } = useJoinRequest();
 
-  const onResolveMenuClick = (
+  const onResolveMenuClick = async (
     url: string | undefined,
     id: number,
     roleName: string,
   ) => {
-    resolveJoinRequest(url, id, roleName)
-      .then(async () => {
-        await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      })
-      .catch(() => {
-        setError(waitingMessage);
+    try {
+      await resolveJoinRequest(url, id, roleName);
+
+      await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
+      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+      toast.success(successMessage, {
+        ...defaultToastOption,
       });
+    } catch (err) {
+      setError(waitingMessage);
+    }
   };
 
-  const onRejectMenuClick = (
+  const onRejectMenuClick = async (
     url: string | undefined,
     id: number,
   ) => {
-    rejectJoinRequest(url, id)
-      .then(async () => {
-        await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
-        await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-      })
-      .catch(() => {
-        setError(waitingMessage);
+    try {
+      await rejectJoinRequest(url, id);
+      
+      await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
+      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+      toast.success(successMessage, {
+        ...defaultToastOption,
       });
+    } catch (err) {
+      setError(waitingMessage);
+    }
   };
 
   return (
