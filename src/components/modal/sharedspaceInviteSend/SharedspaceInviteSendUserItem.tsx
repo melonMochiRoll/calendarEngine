@@ -18,7 +18,7 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
   const { url } = useParams();
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isSent, setIsSent ] = useState('');
-  const { email, profileImage, permission } = user;
+  const { email, nickname, profileImage, permission } = user;
   const label = isSent || '이미 속한 유저';
 
   const handleSendInvite = async () => {
@@ -41,9 +41,10 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
           profileImage={profileImage}
           email={email} />
       </ProfileWrapper>
-      <EmailWrapper>
-        <EmailText>{email}</EmailText>
-      </EmailWrapper>
+      <InfoWrapper>
+        <InfoNickname>{nickname}</InfoNickname>
+        <InfoEmail>{email}</InfoEmail>
+      </InfoWrapper>
       {
         isLoading ?
           <CircularProgress size={30} />
@@ -82,15 +83,20 @@ const ProfileWrapper = styled.div`
   width: 10%;
 `;
 
-const EmailWrapper = styled.div`
+const InfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 70%;
 `;
 
-const EmailText = styled.span`
+const InfoNickname = styled.span`
   font-size: 20px;
+`;
+
+const InfoEmail = styled.span`
+  font-size: 18px;
+  color: var(--gray-6);
 `;
 
 const DisableButton = styled.div`

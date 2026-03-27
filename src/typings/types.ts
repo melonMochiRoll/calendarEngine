@@ -167,6 +167,7 @@ export type TSharedspaceMembersList = {
 export type TSearchUsersItem = {
   id: number,
   email: string,
+  nickname: string,
   profileImage: string,
   permission: {
     isParticipant: boolean,
