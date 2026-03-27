@@ -6,7 +6,7 @@ export const privateTooltip = '비공개 스페이스는 멤버로 초대받은 
 
 export const emptyspaces = '스페이스가 없습니다.';
 
-export const checkContent = '내용을 확인해주세요.';
+export const checkContent = '빈 항목이 없는지 확인해주세요';
 
 export const waitingMessage = '잠시후에 다시 시도해주세요.';
 
