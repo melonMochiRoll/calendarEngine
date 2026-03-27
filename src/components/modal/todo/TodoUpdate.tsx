@@ -11,7 +11,7 @@ import { clearModal, closeModal } from 'Features/modalSlice';
 import { useQueryClient } from '@tanstack/react-query';
 import { TODO_MAX_SIZE } from 'Constants/calendar';
 import { getByteSize } from 'Lib/utilFunction';
-import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
+import { checkContent, checkTimeFormat, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import TextButton from 'Components/common/TextButton';
 import { updateTodo } from 'Api/todosApi';
 import { toast } from 'react-toastify';
@@ -116,7 +116,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       !dayjs_endTime.isValid() ||
       dayjs(dayjs_startTime).isSameOrAfter(dayjs_endTime)
     ) {
-      setError(checkContent);
+      setError(checkTimeFormat);
       return;
     }
 

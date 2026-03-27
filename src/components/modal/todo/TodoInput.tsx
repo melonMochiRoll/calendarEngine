@@ -14,7 +14,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { createTodo } from 'Api/todosApi';
 import { GET_TODOS_BY_MONTH_KEY } from 'Constants/queryKeys';
-import { checkContent, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
+import { checkContent, checkTimeFormat, defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { getByteSize } from 'Lib/utilFunction';
 import { toast } from 'react-toastify';
 
@@ -112,7 +112,7 @@ const TodoInput: FC<TodoInputProps> = ({}) => {
       !dayjs_endTime.isValid() ||
       dayjs(dayjs_startTime).isSameOrAfter(dayjs_endTime)
     ) {
-      setErrorMessage(checkContent);
+      setErrorMessage(checkTimeFormat);
       return;
     }
 
