@@ -39,12 +39,12 @@ const ChatContainer: FC = () => {
 
       const newChatNoticeBorder = (0 - scrollbarRef.current.scrollTop) > scrollbarRef.current.clientHeight / 2;
       if (newChatNoticeBorder) {
-        setShowNewChat({ active: true, chat: '', email: '', profileImage: '', });
+        setShowNewChat({ active: true, chat: '', nickname: '', profileImage: '', });
       }
 
       const isBottom = scrollbarRef.current.scrollTop > -100;
       if (isBottom) {
-        setShowNewChat({ active: false, chat: '', email: '', profileImage: '', });
+        setShowNewChat({ active: false, chat: '', nickname: '', profileImage: '', });
       }
     }
   }, 300);

@@ -95,7 +95,7 @@ const Chat: FC<ChatProps> = ({
       </ProfileWrapper>
       <ChatWrapper>
         <InfoWrapper>
-          <ProfileName>{chat.Sender.email}</ProfileName>
+          <ProfileName>{chat.Sender.nickname}</ProfileName>
           <Timestamp>{dayjs(chat.createdAt).tz(localTimeZone).format('A hh:mm')}</Timestamp>
           {isUpdated && <UpdatedSpan>수정됨</UpdatedSpan>}
         </InfoWrapper>

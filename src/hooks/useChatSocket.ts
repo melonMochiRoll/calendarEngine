@@ -13,7 +13,7 @@ export function useChatSocket() {
   const [ showNewChat, setShowNewChat ] = useState({
     active: false,
     chat: '',
-    email: '',
+    nickname: '',
     profileImage: '',
   });
 
@@ -49,7 +49,7 @@ export function useChatSocket() {
       return {
         active: prev.active,
         chat: data.content,
-        email: data.Sender.email,
+        nickname: data.Sender.nickname,
         profileImage: data.Sender.profileImage,
       };
     });

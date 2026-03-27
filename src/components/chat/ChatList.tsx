@@ -17,7 +17,7 @@ interface ChatListProps {
   showNewChat: {
     chat: string,
     active: boolean,
-    email: string,
+    nickname: string,
     profileImage: string
   },
   scrollbarRef: React.RefObject<HTMLUListElement>,
