@@ -80,7 +80,7 @@ const TodoInput: FC<TodoInputProps> = ({}) => {
     setDescription(e.target.value);
   };
 
-  const onSubmit = (
+  const onSubmit = async (
     description: string,
     todoTime: string,
     start: typeof startTime,
@@ -116,23 +116,17 @@ const TodoInput: FC<TodoInputProps> = ({}) => {
       return;
     }
 
-    createTodo(
-      description,
-      todoTime,
-      startTimeFormat,
-      endTimeFormat,
-      url,
-    )
-    .then(async () => {
+    try {
+      await createTodo(description, todoTime, startTimeFormat, endTimeFormat, url);
+
       await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
+      dispatch(closeModal());
       toast.success(successMessage, {
         ...defaultToastOption,
       });
-      dispatch(closeModal());
-    })
-    .catch(() => {
+    } catch (err) {
       setErrorMessage(waitingMessage);
-    });
+    }
   };
 
   return (

@@ -84,7 +84,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     setDescription(e.target.value);
   };
 
-  const onSubmit = (
+  const onSubmit = async (
     todoId: number,
     newDescription: string,
     start: typeof startTime,
@@ -120,23 +120,17 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       return;
     }
 
-    updateTodo(
-      todoId,
-      newDescription,
-      startTimeFormat,
-      endTimeFormat,
-      url,
-    )
-    .then(async () => {
+    try {
+      await updateTodo(todoId, newDescription, startTimeFormat, endTimeFormat, url);
+
       await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
       dispatch(clearModal());
       toast.success(successMessage, {
         ...defaultToastOption,
       });
-    })
-    .catch(() => {
+    } catch (err) {
       setError(waitingMessage);
-    });
+    }
   };
 
   return (
