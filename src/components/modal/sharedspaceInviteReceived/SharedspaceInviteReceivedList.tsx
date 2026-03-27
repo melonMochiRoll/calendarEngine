@@ -4,6 +4,7 @@ import { TInvite } from 'Src/typings/types';
 import CheckIcon from '@mui/icons-material/CheckRounded';
 import ClearIcon from '@mui/icons-material/ClearRounded';
 import { CircularProgress } from '@mui/material';
+import ProfileImage from 'Src/components/ProfileImage';
 
 interface SharedspaceInviteReceivedListProp {
   invites: TInvite[],
@@ -57,10 +58,15 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
             <Item key={invite.id}>
               <Left>
                 <Title>{invite.SharedspaceName}</Title>
-                <OnwerInfo>
-                  소유자 :&nbsp;
-                  <Owner>{invite.OwnerEmail}</Owner>
-                </OnwerInfo>
+                <OwnerInfo>
+                  <ProfileImage
+                    profileImage={invite.Owner.profileImage}
+                    email={invite.Owner.email} />
+                  <OwnerText>
+                    <OwnerNickname>{invite.Owner.nickname}</OwnerNickname>
+                    <OwnerEmail>{invite.Owner.email}</OwnerEmail>
+                  </OwnerText>
+                </OwnerInfo>
               </Left>
               <Right>
                 {
@@ -124,6 +130,7 @@ const Item = styled.li`
 const Left = styled.div`
   display: flex;
   align-items: center;
+  width: 80%;
   gap: 20px;
 `;
 
@@ -138,16 +145,30 @@ const Right = styled.div`
 const Title = styled.span`
   font-size: 24px;
   font-weight: 600;
+  width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
-const OnwerInfo = styled.div`
+const OwnerInfo = styled.div`
   display: flex;
-  font-size: 18px;
+  width: 50%;
+  gap: 20px;
 `;
 
-const Owner = styled.span`
-  color: var(--google-blue);
-  font-weight: 500;
+const OwnerText = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const OwnerNickname = styled.span`
+  font-size: 20px;
+`;
+
+const OwnerEmail = styled.span`
+  color: var(--gray-6);
+  font-size: 18px;
 `;
 
 const IconWrapper = styled.div`

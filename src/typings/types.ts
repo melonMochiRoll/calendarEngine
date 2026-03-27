@@ -239,7 +239,7 @@ export type TInvite = {
   createdAt: string,
   SharedspaceName: string,
   url: string,
-  OwnerEmail: string,
+  Owner: Pick<TUser, 'email' | 'nickname' | 'profileImage'>,
 };
 
 export type TInvitePayload = {
