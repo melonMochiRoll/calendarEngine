@@ -312,7 +312,6 @@ const TimeBox = styled.div`
 const TimeInput = styled.input`
   width: 40px;
   font-size: 22px;
-  font-weight: 500;
   text-align: center;
   color: var(--white);
   font-weight: 600;
@@ -339,6 +338,7 @@ const DescriptionDiv = styled.div`
 const DescriptionInput = styled.textarea`
   width: 100%;
   height: 100%;
+  font-family: inherit;
   font-size: 18px;
   font-weight: 500;
   color: var(--white);
