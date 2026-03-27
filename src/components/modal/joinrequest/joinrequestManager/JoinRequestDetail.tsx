@@ -19,7 +19,7 @@ const JoinRequestDetail: FC<JoinRequestDetailProps> = ({
       <Header>
         <Left></Left>
         <Center>
-          <ModalTitle>{request.Requestor.email}</ModalTitle>
+          <ModalTitle>요청 사항</ModalTitle>
         </Center>
         <Right>
           <CloseIcon
