@@ -66,7 +66,7 @@ const TodoItem: FC<TodoItemProps> = ({
             </FlexDiv>
             <FlexDiv>
               <PencilIcon fontSize='small' />
-              <span>{`${todo.Author}`}</span>
+              <span>{`${todo.Author.nickname}`}</span>
             </FlexDiv>
         </HoverDiv>
       }

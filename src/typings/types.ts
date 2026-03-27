@@ -81,8 +81,8 @@ export type TTodoPayload = {
   endTime: string,
   createdAt: string,
   updatedAt: string,
-  Author: string,
-  Editor: string,
+  Author: Pick<TUser, 'nickname'>,
+  Editor: Pick<TUser, 'nickname'>,
 };
 
 export type TTodoMap = {

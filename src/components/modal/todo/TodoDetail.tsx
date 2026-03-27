@@ -116,11 +116,11 @@ const TodoDetail: FC<TodoDetailProps> = ({
           </Content>
           <Content>
             <PencilIcon />
-            <ContentSpan>{`${todo?.Author}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
+            <ContentSpan>{`${todo?.Author?.nickname}, ${formatDateTime(dayjs(todo?.createdAt).tz(localTimeZone).format())}`}</ContentSpan>
           </Content>
         </Contents>
         <UpdatedAtWrapper>
-          {todo?.Editor && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
+          {todo?.Editor?.nickname && <LastupdatedAt>{`Last UpdatedAt : ${todo?.Editor?.nickname}, ${formatDateTime(dayjs(todo?.updatedAt).tz(localTimeZone).format())}`}</LastupdatedAt>}
           {error && <ErrorSpan>error</ErrorSpan>}
         </UpdatedAtWrapper>
       </Main>
