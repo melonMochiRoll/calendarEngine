@@ -23,7 +23,6 @@ export function useTodosByMonth(): UseTodosByMonthReturnType {
   } = useQuery<TTodoMap>({
     queryKey: [GET_TODOS_BY_MONTH_KEY, _url, calendarYear, calendarMonth],
     queryFn: () => getTodosByMonth(_url, calendarYear, calendarMonth),
-    refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
   });
