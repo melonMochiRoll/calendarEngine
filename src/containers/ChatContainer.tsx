@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useChatSocket } from 'Hooks/useChatSocket';
 import { useChats } from 'Hooks/queries/useChats';
@@ -26,7 +26,13 @@ const ChatContainer: FC = () => {
   const scrollbarRef = useRef<HTMLUListElement>(null);
   const [ chat, onChangeChat, setChat ] = useInput('');
   const [ images, setImages ] = useState<File[]>([]);
-  const [ previews, setPreviews ] = useState<Array<string | ArrayBuffer | null>>([]);
+  const [ previews, setPreviews ] = useState<string[]>([]);
+
+  useEffect(() => {
+    return () => {
+      previews.forEach(preview => URL.revokeObjectURL(preview));
+    };
+  }, [previews]);
 
   const onScroll = throttle(() => {
     if (scrollbarRef.current) {
