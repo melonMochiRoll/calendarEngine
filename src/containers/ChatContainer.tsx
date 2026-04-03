@@ -111,9 +111,8 @@ const ChatContainer: FC = () => {
           return;
         }
 
-        await Promise.all(
-          presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType))
-        );
+        const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
+        await Promise.all(uploadPromises);
 
         for (const { key } of presignedUrls) {
           imageKeys.push(key);
