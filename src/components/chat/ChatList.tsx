@@ -13,7 +13,7 @@ import { DebouncedFuncLeading } from 'lodash';
 
 interface ChatListProps {
   chatList: TChats,
-  previews: Array<string | ArrayBuffer | null>,
+  previews: string[],
   showNewChat: {
     chat: string,
     active: boolean,

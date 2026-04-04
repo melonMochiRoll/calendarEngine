@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 
 interface ImagePreviewerProps {
-  previews: Array<string | ArrayBuffer | null>,
+  previews: string[],
   deleteFile: (idx: number) => void,
 };
 
@@ -25,7 +25,7 @@ const ImagePreviewer: FC<ImagePreviewerProps> = ({
                       fontSize: '100px'
                     }}/>
                 </ImgCover>
-                <Img src={preview as string} />
+                <Img src={preview} />
               </Item>
             );
           })
