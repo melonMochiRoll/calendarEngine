@@ -30,7 +30,8 @@ const ChatImage: FC<SingleImageProps> = ({
       <Image
         onClick={openImageModal}
         src={image.path}/>
-      {isSender &&
+      {
+        isSender &&
         <Buttons>
           <Button onClick={deleteImage}>
             <ClearIcon />
@@ -65,7 +66,7 @@ const Buttons = styled.div`
   position: absolute;
   display: none;
   top: 0;
-  right: 0;
+  left: 0;
   padding: 10px;
 `;
 
