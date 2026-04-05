@@ -32,7 +32,7 @@ const ChatImage: FC<SingleImageProps> = ({
         src={image.path}/>
       {
         isSender &&
-        <Buttons>
+        <Buttons id='buttons'>
           <Button onClick={deleteImage}>
             <ClearIcon />
           </Button> 
@@ -48,7 +48,7 @@ const Block = styled.div`
   position: relative;
 
   &:hover {
-    div {
+    #buttons {
       display: block;
     }
   }
