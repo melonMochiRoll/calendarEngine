@@ -211,7 +211,7 @@ export const createSharedspaceChat = async (
   }
 
   try {
-    await axiosInstance
+    const { data } = await axiosInstance
       .post(
         `/api/sharedspaces/${url}/chats`,
         {
@@ -219,6 +219,7 @@ export const createSharedspaceChat = async (
           imageKeys,
         }
       );
+    return data;
   } catch (error) {
     throw error;
   }
