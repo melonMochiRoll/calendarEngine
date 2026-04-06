@@ -62,7 +62,10 @@ const ChatContainer: FC = () => {
 
   const deleteFile = (idx: number) => {
     setImages(prev => [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ]);
-    setPreviews(prev => [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ]);
+    setPreviews(prev => {
+      URL.revokeObjectURL(prev[idx]);
+      return [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ];
+    });
   };
 
   const onChangeImageFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
