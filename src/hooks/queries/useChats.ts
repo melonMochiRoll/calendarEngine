@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSharedspaceChats } from "Api/sharedspacesApi";
 import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { TChats } from "Typings/types";
 
@@ -31,7 +32,7 @@ export function useChats(): UseChatsReturnType {
   if (error) throw error;
   if (data === null || data === undefined) throw new Error();
 
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     getSharedspaceChats(_url, data.chats[data.chats.length-1].id)
       .then((res: TChats) => {
         qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
@@ -41,7 +42,7 @@ export function useChats(): UseChatsReturnType {
           };
         });
       });
-  };
+  }, []);
 
   return {
     data,
