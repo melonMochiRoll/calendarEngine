@@ -12,10 +12,15 @@ import ChatFooter from 'Components/chat/ChatFooter';
 import ChatList from 'Components/chat/ChatList';
 import ChatDisableFooter from 'Src/components/chat/ChatDisableFooter';
 import useUser from 'Src/hooks/queries/useUser';
+import { useQueryClient } from '@tanstack/react-query';
+import { ChatStatus, TChats } from 'Src/typings/types';
+import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
+import dayjs from 'dayjs';
 
 const ChatContainer: FC = () => {
   const { url } = useParams();
-  const { data: userData } = useUser({ suspense: true, throwOnError: false });
+  const qc = useQueryClient();
+  const { data: userData } = useUser({ suspense: true, throwOnError: true });
 
   const { data: chatList, loadMore } = useChats();
   const {
@@ -90,7 +95,7 @@ const ChatContainer: FC = () => {
     setPreviews(prev => [ ...prev, ...newPreviews ]);
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (chat: string, images: File[], previews: string[]) => {
     const trimmedChat = chat.trim();
     const imageKeys = [];
 
@@ -99,6 +104,41 @@ const ChatContainer: FC = () => {
       return;
     }
 
+    scrollbarRef?.current?.scrollTo(0, 0);
+    setChat('');
+    setImages([]);
+    setPreviews([]);
+
+    const tempId = -Date.now();
+
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+      const now = dayjs().toISOString();
+      const Images = images.length ? previews.map((url, idx) => {return { id: -idx, path: url }}) : [];
+
+      const tempChat = {
+        id: tempId,
+        content: trimmedChat,
+        SenderId: userData.id,
+        createdAt: now,
+        updatedAt: now,
+        Sender: {
+          email: userData.email,
+          nickname: userData.nickname,
+          profileImage: userData.profileImage,
+        },
+        Images,
+        permission: {
+          isSender: true,
+        },
+        _status: ChatStatus.PENDING,
+      };
+
+      return {
+        chats: [ tempChat, ...prev?.chats || [] ],
+        hasMoreData: prev?.hasMoreData || false,
+      };
+    });
+
     try {
       if (images.length) {
         const metaDatas = images.map(image => {
@@ -106,10 +146,6 @@ const ChatContainer: FC = () => {
         });
 
         const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
-        
-        if (!presignedUrls) {
-          return;
-        }
 
         const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
         await Promise.all(uploadPromises);
@@ -119,15 +155,35 @@ const ChatContainer: FC = () => {
         }
       }
 
-      await createSharedspaceChat(url, trimmedChat, imageKeys);
-      scrollbarRef?.current?.scrollTo(0, 0);
-      setChat('');
-      setImages([]);
-      setPreviews([]);
+      const success = await createSharedspaceChat(url, trimmedChat, imageKeys);
+
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+        const chats = prev?.chats.map(chat => {
+          if (chat.id === tempId) {
+            chat.Images.forEach(image => URL.revokeObjectURL(image.path));
+            return success;
+          }
+          return chat;
+        });
+
+        return {
+          chats: chats || [], 
+          hasMoreData: prev?.hasMoreData || false,
+        };
+      });
     } catch (err) {
-      toast.error(waitingMessage, {
-        ...defaultToastOption,
-        toastId: waitingMessage,
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+        const chats = prev?.chats.map(chat => {
+          if (chat.id === tempId) {
+            return { ...chat, _status: ChatStatus.ERROR, _imageFiles: [ ...images ] };
+          }
+          return chat;
+        });
+
+        return {
+          chats: chats || [], 
+          hasMoreData: prev?.hasMoreData || false,
+        };
       });
     }
   };
@@ -141,12 +197,15 @@ const ChatContainer: FC = () => {
           showNewChat={showNewChat}
           scrollbarRef={scrollbarRef}
           onScroll={onScroll}
+          onSubmit={onSubmit}
           deleteFile={deleteFile} />
         {
           userData ?
             <ChatFooter
               onSubmit={onSubmit}
               chat={chat}
+              images={images}
+              previews={previews}
               onChangeChat={onChangeChat}
               onChangeImageFiles={onChangeImageFiles} />
               :

@@ -32,27 +32,31 @@ export function useChatSocket() {
   }, [_url]);
 
   const onChatCreated = (data: Omit<TChatPayload, 'permission'>) => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-      const withPermission = Object.assign(data, {
-        permission: {
-          isSender: data.SenderId === userData?.id,
-        }
+    const isSender = data.SenderId === userData?.id;
+    
+    if (!isSender) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        const withPermission = Object.assign(data, {
+          permission: {
+            isSender: isSender,
+          }
+        });
+
+        return {
+          chats: [ withPermission, ...prev?.chats || [] ],
+          hasMoreData: prev?.hasMoreData || false,
+        };
       });
 
-      return {
-        chats: [ withPermission, ...prev?.chats || [] ],
-        hasMoreData: prev?.hasMoreData || false,
-      };
-    });
-
-    setShowNewChat((prev) => {
-      return {
-        active: prev.active,
-        chat: data.content,
-        nickname: data.Sender.nickname,
-        profileImage: data.Sender.profileImage,
-      };
-    });
+      setShowNewChat((prev) => {
+        return {
+          active: prev.active,
+          chat: data.content,
+          nickname: data.Sender.nickname,
+          profileImage: data.Sender.profileImage,
+        };
+      });
+    }
   };
 
   const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'>) => {

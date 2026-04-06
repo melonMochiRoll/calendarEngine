@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
-import { TChatPayload } from 'Typings/types';
+import { ChatStatus, TChatPayload, TChats } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -8,7 +8,7 @@ import timezone from 'dayjs/plugin/timezone';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import useMenu from 'Hooks/utils/useMenu';
 import { defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Constants/notices';
-import { Menu, MenuItem } from '@mui/material';
+import { CircularProgress, Menu, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import { useParams } from 'react-router-dom';
 import { deleteSharedspaceChat, deleteSharedspaceChatImage, updateSharedspaceChat } from 'Api/sharedspacesApi';
@@ -17,15 +17,24 @@ import useInput from 'Hooks/utils/useInput';
 import EditContent from './EditContent';
 import ChatImage from './ChatImage';
 import { toast } from 'react-toastify';
+import RetryIcon from '@mui/icons-material/Replay';
+import CrossIcon from '@mui/icons-material/Clear';
+import { useQueryClient } from '@tanstack/react-query';
+import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 
 interface ChatProps {
+  idx: number,
   chat: TChatPayload,
+  onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
 };
 
 const Chat: FC<ChatProps> = ({
+  idx,
   chat,
+  onSubmit,
 }) => {
   const { url } = useParams();
+  const qc = useQueryClient();
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ newContent, onChangeNewContent ] = useInput(chat.content);
   dayjs.extend(utc);
@@ -85,6 +94,34 @@ const Chat: FC<ChatProps> = ({
     }
   };
 
+  const deleteErrorChat = () => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+      if (prev) {
+        const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
+        prev.chats[idx].Images.forEach(image => URL.revokeObjectURL(image.path));
+
+        return {
+          ...prev,
+          chats: rest || [], 
+        };
+      }
+    });
+  };
+
+  const reSubmit = async () => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+      if (prev) {
+        const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
+
+        return {
+          ...prev,
+          chats: rest || [], 
+        };
+      }
+    });
+    await onSubmit(chat.content, chat._imageFiles || [], chat.Images.map(image => image.path));
+  };
+
   return (
     <Item hoverMenuId={hoverMenuId}>
       <ProfileWrapper>
@@ -98,6 +135,14 @@ const Chat: FC<ChatProps> = ({
           <ProfileName>{chat.Sender.nickname}</ProfileName>
           <Timestamp>{dayjs(chat.createdAt).tz(localTimeZone).format('A hh:mm')}</Timestamp>
           {isUpdated && <UpdatedSpan>수정됨</UpdatedSpan>}
+          {chat._status === ChatStatus.PENDING && <CircularProgress size={15} sx={{ color: 'var(--white)' }}/>}
+          {chat._status === ChatStatus.ERROR &&
+            <ErrorWrapper>
+              <CrossIcon fontSize='small' onClick={deleteErrorChat} />
+              :
+              <RetryIcon fontSize="small" onClick={reSubmit} />
+            </ErrorWrapper>
+          }
         </InfoWrapper>
         <ContentWrapper>
           {isEditMode ?
@@ -190,7 +235,7 @@ const ChatWrapper = styled.div`
 
 const InfoWrapper = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   width: 100%;
   gap: 10px;
 `;
@@ -258,4 +303,20 @@ const UpdatedSpan = styled.span`
   color: var(--gray-6);
   font-size: 14px;
   padding-bottom: 1px;
+`;
+
+const ErrorWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--white);
+  border-radius: 6px;
+  padding: 1px 3px;
+  background-color: var(--red);
+  gap: 3px;
+  user-select: none;
+
+  svg {
+    cursor: pointer;
+  }
 `;

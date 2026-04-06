@@ -22,6 +22,7 @@ interface ChatListProps {
   },
   scrollbarRef: React.RefObject<HTMLUListElement>,
   onScroll: DebouncedFuncLeading<() => void>,
+  onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
   deleteFile: (idx: number) => void,
 };
 
@@ -31,6 +32,7 @@ const ChatList: FC<ChatListProps> = ({
   showNewChat,
   scrollbarRef,
   onScroll,
+  onSubmit,
   deleteFile,
 }) => {
   dayjs.extend(utc);
@@ -60,7 +62,9 @@ const ChatList: FC<ChatListProps> = ({
               <Fragment key={chat.id}>
                 <Chat
                   key={chat.id}
-                  chat={chat} />
+                  idx={idx}
+                  chat={chat}
+                  onSubmit={onSubmit} />
                 <DateSeparator date={formatDate(dayjs(chat.createdAt).tz(localTimeZone).format())} />
               </Fragment>
             );
@@ -68,7 +72,9 @@ const ChatList: FC<ChatListProps> = ({
 
           return <Chat
             key={chat.id}
-            chat={chat} />;
+            idx={idx}
+            chat={chat}
+            onSubmit={onSubmit} />;
         })
         :
         <FirstChatNotice>첫 메시지를 전송해보세요</FirstChatNotice>}
