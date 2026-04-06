@@ -204,7 +204,7 @@ const Chat: FC<ChatProps> = ({
   );
 };
 
-export default Chat;
+export default React.memo(Chat);
 
 const Item = styled.li<{ hoverMenuId?: string }>`
   position: relative;
