@@ -208,7 +208,18 @@ export type TChatPayload = Pick<TChat,
     permission: {
       isSender: boolean,
     },
+  } & {
+    _status?: TChatStatus,
+    _imageFiles?: File[],
   };
+
+export const ChatStatus = {
+  SUCCESS: 'success',
+  PENDING: 'pending',
+  ERROR: 'error',
+} as const;
+
+export type TChatStatus = typeof ChatStatus[keyof typeof ChatStatus];
 
 export type TChats = {
   chats: TChatPayload[],
