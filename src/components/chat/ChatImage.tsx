@@ -55,8 +55,7 @@ const Block = styled.div`
 `;
 
 const Image = styled.img`
-  height: 100%;
-  max-height: 300px;
+  height: 300px;
   border-radius: 12px;
   object-fit: contain;
   cursor: pointer;
