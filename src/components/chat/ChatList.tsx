@@ -36,6 +36,7 @@ const ChatList: FC<ChatListProps> = ({
   const {
     showNewChat,
     setShowNewChat,
+    canShowNotify,
   } = useChatSocket();
 
   const onScroll = throttle(() => {
@@ -48,13 +49,14 @@ const ChatList: FC<ChatListProps> = ({
       }
 
       const newChatNoticeBorder = (0 - scrollbarRef.current.scrollTop) > scrollbarRef.current.clientHeight / 2;
-      if (newChatNoticeBorder) {
-        setShowNewChat({ active: true, chat: '', nickname: '', profileImage: '', });
+      if (newChatNoticeBorder && !canShowNotify.current) {
+        canShowNotify.current = true;
       }
 
       const isBottom = scrollbarRef.current.scrollTop > -100;
-      if (isBottom) {
-        setShowNewChat({ active: false, chat: '', nickname: '', profileImage: '', });
+      if (isBottom && canShowNotify.current) {
+        canShowNotify.current = false;
+        setShowNewChat(null);
       }
     }
   }, 300);
@@ -63,9 +65,9 @@ const ChatList: FC<ChatListProps> = ({
     <List
       ref={scrollbarRef}
       onScroll={onScroll}>
-      {showNewChat.active && showNewChat.chat &&
+      {canShowNotify.current && showNewChat &&
         <NewChatNotifier
-          chat={showNewChat.chat}
+          newChat={showNewChat}
           onClick={() => scrollbarRef?.current?.scrollTo(0, 0)} />}
       {Boolean(previews.length) &&
         <ImagePreviewer

@@ -10,12 +10,8 @@ export function useChatSocket() {
   const qc = useQueryClient();
   const socketRef = useRef<Socket>();
   const userData = qc.getQueryData<TUser>([GET_USER_KEY]);
-  const [ showNewChat, setShowNewChat ] = useState({
-    active: false,
-    chat: '',
-    nickname: '',
-    profileImage: '',
-  });
+  const canShowNotify = useRef(false);
+  const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
 
   useEffect(() => {
     socketRef.current = io(`${process.env.REACT_APP_SERVER_ORIGIN}/sharedspace-${_url}`);
@@ -48,14 +44,14 @@ export function useChatSocket() {
         };
       });
 
-      setShowNewChat((prev) => {
-        return {
-          active: prev.active,
+      if (canShowNotify.current) {
+        setShowNewChat({
           chat: data.content,
+          email: data.Sender.email,
           nickname: data.Sender.nickname,
           profileImage: data.Sender.profileImage,
-        };
-      });
+        });
+      }
     }
   };
 
@@ -120,12 +116,8 @@ export function useChatSocket() {
   };
 
   return {
-    socket: socketRef.current,
     showNewChat,
     setShowNewChat,
-    onChatCreated,
-    onChatUpdated,
-    onChatDeleted,
-    onChatImageDeleted,
+    canShowNotify,
   } as const;
 };

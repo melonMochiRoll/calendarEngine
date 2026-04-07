@@ -4,29 +4,35 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownwardRounded';
 import ProfileImage from 'Components/ProfileImage';
 
 interface NewChatNotifierProps {
-  chat: string,
-  email?: string,
-  profileImage?: string,
-  onClick?: () => void,
+  newChat: {
+    chat: string,
+    email: string,
+    nickname: string,
+    profileImage: string,
+  },
+  onClick: () => void,
 };
 
 const NewChatNotifier: FC<NewChatNotifierProps> = ({
-  chat,
-  email,
-  profileImage,
+  newChat,
   onClick,
 }) => {
+  const { chat, email, nickname, profileImage } = newChat;
+
   return (
     <Block onClick={onClick}>
       <ProfileImage
         size='small'
         email={email} 
         profileImage={profileImage} />
+      <Nickname>{nickname}</Nickname>
       {chat.length > 15 ?
-        <Span>{`${chat?.slice(0, 15)}...`}</Span> :
-        <Span>{chat}</Span>
+        <Content>{`${chat?.slice(0, 15)}...`}</Content> :
+        <Content>{chat}</Content>
       }
-      <ArrowDownwardIcon sx={{ color: 'var(--white)' }} />
+      <ArrowDownwardIcon
+        onClick={onClick}
+        sx={{ color: 'var(--white)' }} />
     </Block>
   );
 };
@@ -41,15 +47,22 @@ const Block = styled.div`
   left: 50%;
   top: 0;
   padding: 7px 10px;
-  margin-top: 35px;
+  margin-top: 50px;
   border-radius: 10px;
   transform: translate(-50%, -50%);
   background-color: var(--gray-7);
   cursor: pointer;
   gap: 10px;
+  z-index: 1;
 `;
 
-const Span = styled.span`
+const Nickname = styled.span`
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const Content = styled.span`
   color: var(--white);
   text-align: center;
 `;
