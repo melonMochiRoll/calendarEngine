@@ -6,6 +6,7 @@ import { closeModal } from 'Features/modalSlice';
 import { setCalendarTime } from 'Features/calendarTimeSlice';
 import { setTodoTime } from 'Features/todoTimeSlice';
 import { TSearchTodosPayload } from 'Typings/types';
+import SearchIcon from '@mui/icons-material/SearchRounded';
 
 interface SearchResultProps {
   query: string,
@@ -28,7 +29,7 @@ const SearchResult: FC<SearchResultProps> = ({
   };
 
   return (
-    <Block>
+    <>
       {items.length ?
         <TodoList>
           {
@@ -54,20 +55,11 @@ const SearchResult: FC<SearchResultProps> = ({
           <NotFoundMessage>{`"${query}" 에 대한 검색 결과가 없습니다.`}</NotFoundMessage>
         </>
       }
-    </Block>
+    </>
   );
 };
 
 export default memo(SearchResult);
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 85%;
-`;
 
 const TodoList = styled.ul`
   width: 100%;

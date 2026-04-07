@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import SearchResult from './SearchResult';
-import SearchInit from './SearchInit';
+import SearchIcon from '@mui/icons-material/SearchRounded';
 import { useSearchTodos } from 'Hooks/queries/useSearchTodos';
 
 interface SearchMainProps {
@@ -12,7 +12,7 @@ const SearchMain: FC<SearchMainProps> = ({ query }) => {
   const { data: todosData, nextPage } = useSearchTodos(query);
   
   return (
-    <>
+    <Main>
     {
       query ?
         <SearchResult
@@ -20,10 +20,19 @@ const SearchMain: FC<SearchMainProps> = ({ query }) => {
           todosData={todosData}
           nextPage={nextPage} />
         :
-        <SearchInit />
+        <SearchIcon sx={{ color: 'var(--light-gray)', fontSize: '250px' }} />
     }
-    </>
+    </Main>
   );
 };
 
 export default SearchMain;
+
+const Main = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 85%;
+`;
