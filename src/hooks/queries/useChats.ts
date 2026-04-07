@@ -2,16 +2,12 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSharedspaceChats } from "Api/sharedspacesApi";
 import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
+import { debounce } from "lodash";
 import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { TChats } from "Typings/types";
 
-type UseChatsReturnType = {
-  data: TChats,
-  loadMore: () => void,
-};
-
-export function useChats(): UseChatsReturnType {
+export function useChats() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
 
@@ -32,20 +28,19 @@ export function useChats(): UseChatsReturnType {
   if (error) throw error;
   if (data === null || data === undefined) throw new Error();
 
-  const loadMore = useCallback(() => {
-    getSharedspaceChats(_url, data.chats[data.chats.length-1].id)
-      .then((res: TChats) => {
-        qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-          return {
-            ...res,
-            chats: [ ...prev?.chats || [], ...res.chats ],
-          };
-        });
-      });
-  }, []);
+  const loadMore = useCallback(debounce(async () => {
+    const moreChats = await getSharedspaceChats(_url, data.chats[data.chats.length-1].id);
+
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      return {
+        ...moreChats,
+        chats: [ ...prev?.chats || [], ...moreChats.chats ],
+      };
+    });
+  }, 300), []);
 
   return {
     data,
     loadMore,
-  };
+  } as const;
 }
