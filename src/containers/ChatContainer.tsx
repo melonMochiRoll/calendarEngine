@@ -1,11 +1,9 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { useChatSocket } from 'Hooks/useChatSocket';
 import { useChats } from 'Hooks/queries/useChats';
 import { createSharedspaceChat, generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
-import { throttle } from 'lodash';
 import { toast } from 'react-toastify';
 import { defaultToastOption, imageTooLargeMessage, tooManyImagesMessage, waitingMessage } from 'Constants/notices';
 import ChatFooter from 'Components/chat/ChatFooter';
@@ -23,10 +21,6 @@ const ChatContainer: FC = () => {
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
 
   const { data: chatList, loadMore } = useChats();
-  const {
-    showNewChat,
-    setShowNewChat,
-  } = useChatSocket();
 
   const scrollbarRef = useRef<HTMLUListElement>(null);
   const [ chat, onChangeChat, setChat ] = useInput('');
@@ -39,34 +33,13 @@ const ChatContainer: FC = () => {
     };
   }, [previews]);
 
-  const onScroll = throttle(() => {
-    if (scrollbarRef.current) {
-      const isTop = scrollbarRef.current.scrollHeight - 100 < scrollbarRef.current.clientHeight - scrollbarRef.current.scrollTop;
-
-      if (isTop && chatList.hasMoreData) {
-        loadMore();
-        scrollbarRef?.current?.scrollTo(0, -200);
-      }
-
-      const newChatNoticeBorder = (0 - scrollbarRef.current.scrollTop) > scrollbarRef.current.clientHeight / 2;
-      if (newChatNoticeBorder) {
-        setShowNewChat({ active: true, chat: '', nickname: '', profileImage: '', });
-      }
-
-      const isBottom = scrollbarRef.current.scrollTop > -100;
-      if (isBottom) {
-        setShowNewChat({ active: false, chat: '', nickname: '', profileImage: '', });
-      }
-    }
-  }, 300);
-
-  const deleteFile = (idx: number) => {
+  const deleteFile = useCallback((idx: number) => {
     setImages(prev => [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ]);
     setPreviews(prev => {
       URL.revokeObjectURL(prev[idx]);
       return [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ];
     });
-  };
+  }, []);
 
   const onChangeImageFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -98,7 +71,7 @@ const ChatContainer: FC = () => {
     setPreviews(prev => [ ...prev, ...newPreviews ]);
   };
 
-  const onSubmit = async (chat: string, images: File[], previews: string[]) => {
+  const onSubmit = useCallback(async (chat: string, images: File[], previews: string[]) => {
     const trimmedChat = chat.trim();
     const imageKeys = [];
 
@@ -189,7 +162,7 @@ const ChatContainer: FC = () => {
         };
       });
     }
-  };
+  }, []);
 
   return (
     <ChatBlock>
@@ -197,9 +170,8 @@ const ChatContainer: FC = () => {
         <ChatList
           chatList={chatList}
           previews={previews}
-          showNewChat={showNewChat}
           scrollbarRef={scrollbarRef}
-          onScroll={onScroll}
+          loadMore={loadMore}
           onSubmit={onSubmit}
           deleteFile={deleteFile} />
         {

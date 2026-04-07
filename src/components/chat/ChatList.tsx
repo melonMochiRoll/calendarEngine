@@ -1,4 +1,4 @@
-import React, { FC, Fragment } from 'react';
+import React, { FC, Fragment, memo } from 'react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -9,19 +9,14 @@ import NewChatNotifier from 'Components/chat/NewChatNotifier';
 import ImagePreviewer from 'Components/chat/ImagePreviewer';
 import { formatDate } from 'Lib/utilFunction';
 import { TChatPayload, TChats } from 'Typings/types';
-import { DebouncedFuncLeading } from 'lodash';
+import { throttle } from 'lodash';
+import { useChatSocket } from 'Src/hooks/useChatSocket';
 
 interface ChatListProps {
   chatList: TChats,
   previews: string[],
-  showNewChat: {
-    chat: string,
-    active: boolean,
-    nickname: string,
-    profileImage: string
-  },
   scrollbarRef: React.RefObject<HTMLUListElement>,
-  onScroll: DebouncedFuncLeading<() => void>,
+  loadMore: () => void,
   onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
   deleteFile: (idx: number) => void,
 };
@@ -29,15 +24,40 @@ interface ChatListProps {
 const ChatList: FC<ChatListProps> = ({
   chatList,
   previews,
-  showNewChat,
   scrollbarRef,
-  onScroll,
+  loadMore,
   onSubmit,
   deleteFile,
 }) => {
   dayjs.extend(utc);
   dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
+
+  const {
+    showNewChat,
+    setShowNewChat,
+  } = useChatSocket();
+
+  const onScroll = throttle(() => {
+    if (scrollbarRef.current) {
+      const isTop = scrollbarRef.current.scrollHeight - 100 < scrollbarRef.current.clientHeight - scrollbarRef.current.scrollTop;
+
+      if (isTop && chatList.hasMoreData) {
+        loadMore();
+        scrollbarRef?.current?.scrollTo(0, -200);
+      }
+
+      const newChatNoticeBorder = (0 - scrollbarRef.current.scrollTop) > scrollbarRef.current.clientHeight / 2;
+      if (newChatNoticeBorder) {
+        setShowNewChat({ active: true, chat: '', nickname: '', profileImage: '', });
+      }
+
+      const isBottom = scrollbarRef.current.scrollTop > -100;
+      if (isBottom) {
+        setShowNewChat({ active: false, chat: '', nickname: '', profileImage: '', });
+      }
+    }
+  }, 300);
 
   return (
     <List
@@ -82,7 +102,7 @@ const ChatList: FC<ChatListProps> = ({
   );
 };
 
-export default ChatList;
+export default memo(ChatList);
 
 const List = styled.ul`
   display: flex;
