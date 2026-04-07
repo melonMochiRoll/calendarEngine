@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import styled from '@emotion/styled';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import { useAppDispatch } from 'Hooks/reduxHooks';
@@ -58,7 +58,7 @@ const SearchResult: FC<SearchResultProps> = ({
   );
 };
 
-export default SearchResult;
+export default memo(SearchResult);
 
 const Block = styled.div`
   display: flex;
