@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SEARCH_TODOS_KEY } from "Constants/queryKeys";
 import { searchTodos } from "Api/todosApi";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TSearchTodosPayload } from "Typings/types";
 import { useParams } from "react-router-dom";
 import { handleRetry } from "Lib/utilFunction";
@@ -53,6 +53,6 @@ export function useSearchTodos(query: string): UseSearchTodosReturnType {
 
   return {
     data,
-    nextPage: () => setPage((prev) => prev + 1),
+    nextPage: useCallback(() => setPage((prev) => prev + 1), []),
   };
 }
