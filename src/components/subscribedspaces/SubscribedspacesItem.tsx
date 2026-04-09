@@ -14,7 +14,7 @@ import ProfileImage from '../ProfileImage';
 
 interface TSubscribedspacesItemProps {
   space: TSubscribedspace,
-  onDeleteSharedspace: (url: string) => void,
+  onDeleteSharedspace: (url: string) => Promise<void>,
 };
 
 const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
@@ -41,8 +41,10 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
     onClose();
   };
 
-  const onClickDelete = (e: React.MouseEvent<HTMLLIElement, MouseEvent>, url: string) => {
-    onDeleteSharedspace(url);
+  const onClickDelete = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, url: string) => {
+    e.stopPropagation();
+    
+    await onDeleteSharedspace(url);
     onClose();
     toast.success(successMessage, {
       ...defaultToastOption,

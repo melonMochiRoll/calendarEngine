@@ -5,7 +5,7 @@ import SubscribedspacesItem from './SubscribedspacesItem';
 
 interface SubscribedSpacesResultProps {
   spaces: TSubscribedspace[];
-  onDeleteSharedspace: (url: string) => void;
+  onDeleteSharedspace: (url: string) => Promise<void>;
 };
 
 const SubscribedSpacesResult: FC<SubscribedSpacesResultProps> = ({
