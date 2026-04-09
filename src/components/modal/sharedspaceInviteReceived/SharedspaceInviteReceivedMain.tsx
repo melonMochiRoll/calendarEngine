@@ -27,8 +27,7 @@ const SharedspaceInviteReceivedMain: FC<SharedspaceInviteReceivedMainProps> = ({
       {
         invitesData.invites.length ?
           <SharedspaceInviteReceivedList
-            invites={invitesData.invites} 
-            hasMoreData={invitesData.hasMoreData}
+            invitesData={invitesData}
             nextPage={nextPage}
             acceptInvite={handleAcceptInvite}
             declineInvite={handleDeclineInvite} />

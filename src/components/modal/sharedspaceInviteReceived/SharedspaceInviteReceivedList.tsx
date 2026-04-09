@@ -7,20 +7,19 @@ import ProfileImage from 'Src/components/ProfileImage';
 import { UseInviteListReturnType } from 'Src/hooks/queries/useInvites';
 
 interface SharedspaceInviteReceivedListProp {
-  invites: UseInviteListReturnType['data']['invites'],
-  hasMoreData: UseInviteListReturnType['data']['hasMoreData'],
+  invitesData: UseInviteListReturnType['data']
   nextPage: UseInviteListReturnType['nextPage'],
   acceptInvite: (id: number, url: string) => Promise<void>,
   declineInvite: (id: number, url: string) => Promise<void>,
 };
 
 const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
-  invites,
-  hasMoreData,
+  invitesData,
   nextPage,
   acceptInvite,
   declineInvite,
 }) => {
+  const { invites, hasMoreData } = invitesData;
   const [ isResponded, setIsResponded ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
 
