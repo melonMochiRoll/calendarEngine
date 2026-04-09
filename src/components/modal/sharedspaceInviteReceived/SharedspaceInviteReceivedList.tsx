@@ -1,15 +1,15 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
-import { TInvite } from 'Src/typings/types';
 import CheckIcon from '@mui/icons-material/CheckRounded';
 import ClearIcon from '@mui/icons-material/ClearRounded';
 import { CircularProgress } from '@mui/material';
 import ProfileImage from 'Src/components/ProfileImage';
+import { UseInviteListReturnType } from 'Src/hooks/queries/useInvites';
 
 interface SharedspaceInviteReceivedListProp {
-  invites: TInvite[],
-  hasMoreData: boolean,
-  nextPage: () => void,
+  invites: UseInviteListReturnType['data']['invites'],
+  hasMoreData: UseInviteListReturnType['data']['hasMoreData'],
+  nextPage: UseInviteListReturnType['nextPage'],
   acceptInvite: (id: number, url: string) => Promise<void>,
   declineInvite: (id: number, url: string) => Promise<void>,
 };
