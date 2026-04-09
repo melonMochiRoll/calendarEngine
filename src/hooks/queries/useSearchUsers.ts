@@ -6,7 +6,7 @@ import { handleRetry } from "Lib/utilFunction";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-type UseSearchUsersReturnType = {
+export type UseSearchUsersReturnType = {
   data: TSearchUsersList,
   nextPage: () => void,
 };
