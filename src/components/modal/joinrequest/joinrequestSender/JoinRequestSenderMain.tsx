@@ -8,7 +8,7 @@ import MailIcon from '@mui/icons-material/MarkEmailRead';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 
 interface JoinRequestSenderMainProps {
-  onSubmit: (message: string) => void,
+  onSubmit: (message: string) => Promise<void>,
   error: string,
 };
 

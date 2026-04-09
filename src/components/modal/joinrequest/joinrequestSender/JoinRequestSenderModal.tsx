@@ -6,6 +6,7 @@ import { alreadyRequest, checkURL, defaultToastOption, successMessage, waitingMe
 import { toast } from 'react-toastify';
 import JoinRequestSenderMain from './JoinRequestSenderMain';
 import { useParams } from 'react-router-dom';
+import { AxiosError } from 'axios';
 
 interface JoinRequestSenderModalProps {};
 
@@ -14,7 +15,7 @@ const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({}) => {
   const dispatch = useAppDispatch();
   const [ error, setError ] = useState('');
   
-  const onSubmit = (message: string) => {
+  const onSubmit = async (message: string) => {
     setError('');
 
     if (!url) {
@@ -22,20 +23,16 @@ const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({}) => {
       return;
     }
 
-    createJoinRequest(url, message)
-      .then(() => {
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-        dispatch(closeModal());
-      })
-      .catch((error) => {
-        const errorMessage = error?.response?.status === 409 ?
-          alreadyRequest :
-          waitingMessage;
-        
-        setError(errorMessage);
+    try {
+      await createJoinRequest(url, message);
+
+      toast.success(successMessage, {
+        ...defaultToastOption,
       });
+      dispatch(closeModal());
+    } catch (err) {
+      setError(err instanceof AxiosError ? err?.response?.data.message : waitingMessage);
+    }
   };
 
   return (
