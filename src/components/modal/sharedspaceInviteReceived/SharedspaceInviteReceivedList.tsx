@@ -4,11 +4,11 @@ import CheckIcon from '@mui/icons-material/CheckRounded';
 import ClearIcon from '@mui/icons-material/ClearRounded';
 import { CircularProgress } from '@mui/material';
 import ProfileImage from 'Src/components/ProfileImage';
-import { UseInviteListReturnType } from 'Src/hooks/queries/useInvites';
+import { TInvitePayload } from 'Src/typings/types';
 
 interface SharedspaceInviteReceivedListProp {
-  invitesData: UseInviteListReturnType['data']
-  nextPage: UseInviteListReturnType['nextPage'],
+  invitesData: TInvitePayload,
+  nextPage: () => void,
   acceptInvite: (id: number, url: string) => Promise<void>,
   declineInvite: (id: number, url: string) => Promise<void>,
 };

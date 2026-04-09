@@ -2,14 +2,13 @@ import React, { FC, memo } from 'react';
 import styled from '@emotion/styled';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import SharedspaceInviteUserItem from './SharedspaceInviteSendUserItem';
-import { UseSearchUsersReturnType } from 'Src/hooks/queries/useSearchUsers';
-import { TSharedspaceMetaData } from 'Src/typings/types';
+import { TSearchUsersList, TSharedspaceMetaData } from 'Src/typings/types';
 
 interface SharedspaceInviteUserListProps {
   query: string,
-  isOwner: TSharedspaceMetaData['permission']['isOwner'],
-  searchUsersData: UseSearchUsersReturnType['data'],
-  nextPage: UseSearchUsersReturnType['nextPage'],
+  isOwner: boolean,
+  searchUsersData: TSearchUsersList,
+  nextPage: () => void,
 }
 
 const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({

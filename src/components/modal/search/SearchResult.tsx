@@ -5,12 +5,12 @@ import { useAppDispatch } from 'Hooks/reduxHooks';
 import { closeModal } from 'Features/modalSlice';
 import { setCalendarTime } from 'Features/calendarTimeSlice';
 import { setTodoTime } from 'Features/todoTimeSlice';
-import { UseSearchTodosReturnType } from 'Src/hooks/queries/useSearchTodos';
+import { TSearchTodosPayload } from 'Src/typings/types';
 
 interface SearchResultProps {
   query: string,
-  todosData: UseSearchTodosReturnType['data'],
-  nextPage: UseSearchTodosReturnType['nextPage'],
+  todosData: TSearchTodosPayload,
+  nextPage: () => void,
 }; 
 
 const SearchResult: FC<SearchResultProps> = ({
