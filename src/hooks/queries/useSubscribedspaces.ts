@@ -4,7 +4,7 @@ import { GET_SUBSCRIBED_SPACES_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
 import { TSubscribedspaces } from "Typings/types";
 
-type UseSubscribedspaceReturnType = {
+export type UseSubscribedspaceReturnType = {
   data: TSubscribedspaces,
 };
 

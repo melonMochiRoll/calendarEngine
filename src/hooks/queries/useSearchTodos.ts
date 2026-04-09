@@ -6,9 +6,9 @@ import { TSearchTodosPayload } from "Typings/types";
 import { useParams } from "react-router-dom";
 import { handleRetry } from "Lib/utilFunction";
 
-type UseSearchTodosReturnType = {
-  data: TSearchTodosPayload;
-  nextPage: () => void;
+export type UseSearchTodosReturnType = {
+  data: TSearchTodosPayload,
+  nextPage: () => void,
 };
 
 export function useSearchTodos(query: string): UseSearchTodosReturnType {

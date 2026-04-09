@@ -6,7 +6,7 @@ import { GET_SHAREDSPACE_MEMBERS_KEY } from "Src/constants/queryKeys";
 import { handleRetry } from "Src/lib/utilFunction";
 import { TSharedspaceMembersList } from "Src/typings/types";
 
-type UseSharedspacemembersReturnType = {
+export type UseSharedspacemembersReturnType = {
   data: TSharedspaceMembersList,
   nextPage: () => void,
 };

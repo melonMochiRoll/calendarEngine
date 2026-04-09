@@ -5,8 +5,8 @@ import { handleRetry } from "Lib/utilFunction";
 import { useParams } from "react-router-dom";
 import { TSharedspaceMetaData } from "Typings/types";
 
-type UseSharedspaceReturnType = {
-  data: TSharedspaceMetaData;
+export type UseSharedspaceReturnType = {
+  data: TSharedspaceMetaData,
 };
 
 export function useSharedspace(): UseSharedspaceReturnType {

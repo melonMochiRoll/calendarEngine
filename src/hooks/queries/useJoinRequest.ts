@@ -5,8 +5,8 @@ import { handleRetry } from "Lib/utilFunction";
 import { useParams } from "react-router-dom";
 import { TJoinRequest } from "Typings/types";
 
-type UseJoinRequestReturnType = {
-  data: TJoinRequest[];
+export type UseJoinRequestReturnType = {
+  data: TJoinRequest[],
 };
 
 export function useJoinRequest(): UseJoinRequestReturnType {

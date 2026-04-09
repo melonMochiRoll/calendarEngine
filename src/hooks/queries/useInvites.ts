@@ -5,9 +5,9 @@ import { GET_INVITES_KEY } from "Src/constants/queryKeys";
 import { handleRetry } from "Src/lib/utilFunction";
 import { TInvitePayload } from "Src/typings/types";
 
-type UseInviteListReturnType = {
+export type UseInviteListReturnType = {
   data: TInvitePayload,
-  nextPage: () => void;
+  nextPage: () => void,
 };
 
 export function useInvites(): UseInviteListReturnType {

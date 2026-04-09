@@ -5,7 +5,7 @@ import { getTodosByMonth } from "Src/api/todosApi";
 import { GET_TODOS_BY_MONTH_KEY } from "Src/constants/queryKeys";
 import { TTodoMap } from "Src/typings/types";
 
-type UseTodosByMonthReturnType = {
+export type UseTodosByMonthReturnType = {
   data: TTodoMap,
 };
 
