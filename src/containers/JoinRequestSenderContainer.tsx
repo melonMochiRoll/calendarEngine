@@ -8,6 +8,7 @@ import { alreadyRequest, checkURL, defaultToastOption, successMessage, waitingMe
 import { createJoinRequest } from 'Api/joinrequestApi';
 import { toast } from 'react-toastify';
 import { PATHS } from 'Constants/paths';
+import { AxiosError } from 'axios';
 
 const JoinRequestSenderContainer: FC = () => {
   const { url } = useParams();
@@ -15,7 +16,7 @@ const JoinRequestSenderContainer: FC = () => {
   const [ message, onChangeMessage ] = useInput('');
   const [ error, setError ] = useState('');
   
-  const onSubmit = (url: string | undefined, message: string) => {
+  const onSubmit = async (url: string | undefined, message: string) => {
     setError('');
 
     if (!url) {
@@ -23,20 +24,16 @@ const JoinRequestSenderContainer: FC = () => {
       return;
     }
 
-    createJoinRequest(url, message)
-      .then(() => {
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-        navigate(PATHS.SHAREDSPACE);
-      })
-      .catch((error) => {
-        const errorMessage = error?.response?.status === 409 ?
-          alreadyRequest :
-          waitingMessage;
-        
-        setError(errorMessage);
+    try {
+      await createJoinRequest(url, message);
+
+      toast.success(successMessage, {
+        ...defaultToastOption,
       });
+      navigate(PATHS.SHAREDSPACE);
+    } catch (err) {
+      setError(err instanceof AxiosError ? err?.response?.data?.message : waitingMessage);
+    }
   };
 
   return (
