@@ -3,7 +3,7 @@ import { TSearchUsersList } from "Typings/types";
 import { searchUsers } from "Api/usersApi";
 import { SEARCH_USERS_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 type UseSearchUsersReturnType = {
@@ -53,6 +53,6 @@ export function useSearchUsers(query: string): UseSearchUsersReturnType {
 
   return {
     data,
-    nextPage: () => setPage(prev => prev + 1)
+    nextPage: useCallback(() => setPage(prev => prev + 1), []),
   };
 }

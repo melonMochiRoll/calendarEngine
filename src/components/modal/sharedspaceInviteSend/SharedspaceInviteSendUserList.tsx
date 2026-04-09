@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import styled from '@emotion/styled';
 import { TSearchUsersList } from 'Src/typings/types';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
@@ -49,7 +49,7 @@ const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
   );
 };
 
-export default SharedspaceInviteUserList;
+export default memo(SharedspaceInviteUserList);
 
 const UserList = styled.ul`
   display: flex;
