@@ -47,18 +47,18 @@ const TodoDetail: FC<TodoDetailProps> = ({
     onClose,
   } = useMenu();
 
-  const onClickTodoDelete = (todoId: number, url: string | undefined) => {
-    deleteTodo(todoId, url)
-      .then(async () => {
-        toast.success(successMessage, {
-          ...defaultToastOption,
-        });
-        await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
-        dispatch(closeModal());
-      })
-      .catch(() => {
-        setError(waitingMessage);
+  const onClickTodoDelete = async (todoId: number, url: string | undefined) => {
+    try {
+      await deleteTodo(todoId, url);
+
+      toast.success(successMessage, {
+        ...defaultToastOption,
       });
+      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
+      dispatch(closeModal());
+    } catch (err) {
+      setError(waitingMessage);
+    }
   };
 
   const openTodoUpdate = (todo: TTodoPayload, url: string | undefined) => {
