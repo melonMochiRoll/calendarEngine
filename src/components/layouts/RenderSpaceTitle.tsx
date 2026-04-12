@@ -13,13 +13,13 @@ const RenderSpaceTitle: FC = () => {
   const { data: spaceData } = useSharedspace();
   const { permission } = spaceData;
 
-  const onUpdateSharedspaceName = async (name: string) => {
-    if (spaceData?.name === name) {
+  const onUpdateSharedspaceName = async (value: string) => {
+    if (spaceData?.name === value) {
       return;
     }
 
     try {
-      await updateSharedspaceName(name, spaceData?.url);
+      await updateSharedspaceName(value, spaceData?.url);
       await qc.refetchQueries([GET_SHAREDSPACE_KEY, spaceData?.url]);
     } catch (err) {
       toast.error(waitingMessage, {

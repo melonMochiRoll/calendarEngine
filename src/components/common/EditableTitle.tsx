@@ -5,7 +5,7 @@ import useDoubleClick from 'Hooks/utils/useDoubleClick';
 
 interface EditableTitleProps {
   initValue: string,
-  submitEvent: Function,
+  submitEvent: (value: string) => Promise<void>,
 };
 
 const EditableTitle: FC<EditableTitleProps> = ({
