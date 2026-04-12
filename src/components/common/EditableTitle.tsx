@@ -20,7 +20,7 @@ const EditableTitle: FC<EditableTitleProps> = ({
     setValue(initValue);
   }, [initValue]);
 
-  const onSubmit = (e: any) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     submitEvent(value);
