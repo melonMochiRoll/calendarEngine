@@ -5,6 +5,8 @@ import { GET_SHAREDSPACE_KEY } from 'Src/constants/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';
 import { updateSharedspaceName } from 'Src/api/sharedspacesApi';
 import EditableTitle from '../common/EditableTitle';
+import { toast } from 'react-toastify';
+import { defaultToastOption, waitingMessage } from 'Src/constants/notices';
 
 const RenderSpaceTitle: FC = () => {
   const qc = useQueryClient();
@@ -16,8 +18,14 @@ const RenderSpaceTitle: FC = () => {
       return;
     }
 
-    await updateSharedspaceName(name, spaceData?.url);
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY, spaceData?.url]);
+    try {
+      await updateSharedspaceName(name, spaceData?.url);
+      await qc.refetchQueries([GET_SHAREDSPACE_KEY, spaceData?.url]);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
+      });
+    }
   };
 
   return (
