@@ -60,7 +60,7 @@ export const rejectJoinRequest = async (
 
   try {
     await axiosInstance
-      .delete(`api/sharedspaces/${url}/joinrequest/${id}`);
+      .post(`api/sharedspaces/${url}/joinrequest/${id}`);
   } catch (error) {
     throw error;
   }
