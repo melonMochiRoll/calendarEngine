@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
+import { GET_SHAREDSPACE_MEMBERS_KEY } from 'Constants/queryKeys';
 import { TSharedspaceMembersRoles } from 'Typings/types';
 import MemberItem from './MemberItem';
 import { useSharedspacemembers } from 'Src/hooks/queries/useSharedspacemembers';
@@ -20,7 +20,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   const onUpdateMemberRole = async (UserId: number, roleName: TSharedspaceMembersRoles) => {
     try {
       await updateSharedspaceMembers(url, UserId, roleName);
-      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
     } catch (err) {
       throw err;
     }
@@ -29,7 +29,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   const onUpdateOwner = async (UserId: number) => {
     try {
       await updateSharedspaceOwner(url, UserId);
-      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
     } catch (err) {
       throw err;
     }
@@ -38,7 +38,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   const onDeleteMember = async (UserId: number) => {
     try {
       await deleteSharedspaceMembers(url, UserId);
-      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
     } catch (err) {
       throw err;
     }
