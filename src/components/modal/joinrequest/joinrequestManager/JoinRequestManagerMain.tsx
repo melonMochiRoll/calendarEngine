@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { useJoinRequest } from 'Hooks/queries/useJoinRequest';
 import JoinRequestItem from './JoinRequestItem';
-import { GET_JOINREQUEST_KEY, GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
+import { GET_JOINREQUEST_KEY } from 'Constants/queryKeys';
 import { rejectJoinRequest, resolveJoinRequest } from 'Api/joinrequestApi';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
@@ -25,7 +25,6 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
       await resolveJoinRequest(url, id, roleName);
 
       await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
-      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
       toast.success(successMessage, {
         ...defaultToastOption,
       });
@@ -42,7 +41,6 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
       await rejectJoinRequest(url, id);
       
       await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
-      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
       toast.success(successMessage, {
         ...defaultToastOption,
       });
