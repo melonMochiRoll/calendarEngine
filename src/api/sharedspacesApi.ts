@@ -1,4 +1,4 @@
-import { TImageMetaData, TSharedspaceMembersRoles } from "Typings/types";
+import { TChatPayload, TImageMetaData, TSharedspaceMembersRoles } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
 import axios, { Axios } from "axios";
 
@@ -205,7 +205,7 @@ export const createSharedspaceChat = async (
   url: string | undefined,
   content: string,
   imageKeys: string[],
-) => {
+): Promise<TChatPayload> => {
   if (!url) {
     throw new Error;
   }
