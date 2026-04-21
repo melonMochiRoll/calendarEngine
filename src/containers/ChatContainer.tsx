@@ -27,12 +27,6 @@ const ChatContainer: FC = () => {
   const [ images, setImages ] = useState<File[]>([]);
   const [ previews, setPreviews ] = useState<string[]>([]);
 
-  useEffect(() => {
-    return () => {
-      previews.forEach(preview => URL.revokeObjectURL(preview));
-    };
-  }, [previews]);
-
   const deleteFile = useCallback((idx: number) => {
     setImages(prev => [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ]);
     setPreviews(prev => {
@@ -89,7 +83,7 @@ const ChatContainer: FC = () => {
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       const now = dayjs().toISOString();
-      const Images = images.length ? previews.map((url, idx) => {return { id: -idx, path: url }}) : [];
+      const tempImages = previews.map((url, idx) => {return { id: -idx, path: '', _tempPath: url }});
 
       const tempChat = {
         id: tempId,
@@ -102,7 +96,7 @@ const ChatContainer: FC = () => {
           nickname: userData.nickname,
           profileImage: userData.profileImage,
         },
-        Images,
+        Images: images.length ? tempImages : [],
         permission: {
           isSender: true,
         },
@@ -136,7 +130,7 @@ const ChatContainer: FC = () => {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
         const chats = prev?.chats.map(chat => {
           if (chat.id === tempId) {
-            chat.Images.forEach(image => URL.revokeObjectURL(image.path));
+            success.Images = success.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath }));
             return success;
           }
           return chat;

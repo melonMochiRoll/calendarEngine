@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { ModalName, TImages } from 'Typings/types';
 import { useAppDispatch } from 'Hooks/reduxHooks';
@@ -6,7 +6,7 @@ import { openModal } from 'Features/modalSlice';
 import ClearIcon from '@mui/icons-material/Clear';
 
 interface SingleImageProps {
-  image: Pick<TImages, 'id' | 'path'>,
+  image: Pick<TImages, 'id' | 'path'> & { _tempPath?: string },
   isSender: boolean,
   deleteImage: () => void,
 };
@@ -17,6 +17,7 @@ const ChatImage: FC<SingleImageProps> = ({
   deleteImage,
 }) => {
   const dispatch = useAppDispatch();
+  const [ isImageLoaded, setIsImageLoaded ] = useState(false);
 
   const openImageModal = () => {
     dispatch(openModal({
@@ -28,8 +29,16 @@ const ChatImage: FC<SingleImageProps> = ({
   return (
     <Block>
       <Image
+        src={image?._tempPath}
+        isImageLoaded={!isImageLoaded} />
+      <Image
+        src={image.path}
         onClick={openImageModal}
-        src={image.path}/>
+        onLoad={() => {
+          setIsImageLoaded(true);
+          URL.revokeObjectURL(image?._tempPath || '');
+        }}
+        isImageLoaded={isImageLoaded} />
       {
         isSender &&
         <Buttons id='buttons'>
@@ -54,7 +63,8 @@ const Block = styled.div`
   }
 `;
 
-const Image = styled.img`
+const Image = styled.img<{ isImageLoaded?: boolean }>`
+  display: ${({isImageLoaded}) => isImageLoaded ? 'block' : 'none'};
   height: 300px;
   border-radius: 12px;
   object-fit: contain;
