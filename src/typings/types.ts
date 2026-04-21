@@ -204,7 +204,7 @@ export type TChatPayload = Pick<TChat,
   'createdAt' |
   'updatedAt'> & {
     Sender: Pick<TUser, 'email' | 'nickname' | 'profileImage'>,
-    Images: Pick<TImages, 'id' | 'path'>[],
+    Images: Array<Pick<TImages, 'id' | 'path'> & { _tempPath?: string }>,
     permission: {
       isSender: boolean,
     },
