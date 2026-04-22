@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { InputTypeAttribute } from 'src/typings/types';
+import { InputTypeAttribute } from 'Src/typings/types';
 
 interface InputFieldProps {
   id: string;
