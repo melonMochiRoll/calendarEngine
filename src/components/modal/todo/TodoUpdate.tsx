@@ -87,6 +87,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   const onSubmit = async (
     todoId: number,
     newDescription: string,
+    date: string,
     start: typeof startTime,
     end: typeof endTime,
     url: string | undefined,
@@ -121,7 +122,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     }
 
     try {
-      await updateTodo(todoId, newDescription, startTimeFormat, endTimeFormat, url);
+      await updateTodo(todoId, newDescription, date, startTimeFormat, endTimeFormat, url);
 
       await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
       dispatch(clearModal());
@@ -203,6 +204,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
                 onSubmit(
                   todo.id,
                   description,
+                  todo.date,
                   startTime,
                   endTime,
                   url,

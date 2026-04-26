@@ -25,7 +25,7 @@ export const createTodo = async (
   startTime: string,
   endTime: string,
   url: string | undefined,
-  ) => {
+) => {
   if (!url) {
     throw new Error;
   }
@@ -46,10 +46,11 @@ export const createTodo = async (
 export const updateTodo = async (
   id: number,
   description: string,
+  date: string,
   startTime: string,
   endTime: string,
   url: string | undefined,
-  ) => {
+) => {
   if (!url) {
     throw new Error;
   }
@@ -59,6 +60,7 @@ export const updateTodo = async (
       .put(`/api/sharedspaces/${url}/todos`, {
         id,
         description,
+        date,
         startTime,
         endTime,
       });
