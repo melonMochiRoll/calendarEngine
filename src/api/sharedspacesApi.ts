@@ -12,8 +12,8 @@ export const getSharedspace = async (url: string | undefined) => {
       .get(`/api/sharedspaces/${url}/view`);
 
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -26,8 +26,8 @@ export const getSubscribedspaces = async (
       .get(`/api/sharedspaces/subscribed?sort=${sort}&page=${page}`);
 
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -37,8 +37,8 @@ export const createSharedspace = async () => {
       .post<string>(`api/sharedspaces`);
 
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -51,8 +51,8 @@ export const updateSharedspaceName = async (
       .patch(`api/sharedspaces/${url}/name`, {
         name,
       });
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -69,8 +69,8 @@ export const updateSharedspaceOwner = async (
       .patch(`api/sharedspaces/${url}/owner`, {
         newOwnerId: UserId,
       });
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -78,8 +78,8 @@ export const deleteSharedspace = async (url: string) => {
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}`);
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -97,8 +97,8 @@ export const getSharedspaceMembers = async (
     );
 
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -117,8 +117,8 @@ export const createSharedspaceMembers = async (
         UserId,
         RoleName,
       });
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -137,8 +137,8 @@ export const updateSharedspaceMembers = async (
         UserId,
         RoleName,
       })
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -155,8 +155,8 @@ export const updateSharedspacePrivate = async (
       .patch(`/api/sharedspaces/${url}/private`, {
         private: Private,
       });
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -171,8 +171,8 @@ export const deleteSharedspaceMembers = async (
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/members/${UserId}`);
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -196,8 +196,8 @@ export const getSharedspaceChats = async (
       });
 
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -220,8 +220,8 @@ export const createSharedspaceChat = async (
         }
       );
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -243,8 +243,8 @@ export const updateSharedspaceChat = async (
       });
 
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -259,8 +259,8 @@ export const deleteSharedspaceChat = async (
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/chats/${ChatId}`);
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -276,8 +276,8 @@ export const deleteSharedspaceChatImage = async (
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/chats/${ChatId}/images/${ImageId}`);
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -295,8 +295,8 @@ export const generatePresignedPutUrl = async (
       );
 
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -317,8 +317,7 @@ export const uploadImageToPresignedUrl = async (
           },
         }
       );
-  } catch (error) {
-    console.log(error);
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };

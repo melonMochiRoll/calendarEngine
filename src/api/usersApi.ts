@@ -6,8 +6,8 @@ export const getUser = async () => {
       .get('/api/users');
     
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -40,8 +40,8 @@ export const createUser = async (email: string, nickname: string, password: stri
         '/api/users',
         { email, nickname, password },
       );
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -59,7 +59,7 @@ export const searchUsers = async (
       .get(`/api/sharedspaces/${url}/users/search?query=${query}&page=${page}`);
 
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };

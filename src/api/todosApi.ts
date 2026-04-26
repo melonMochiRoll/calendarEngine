@@ -14,8 +14,8 @@ export const getTodosByMonth = async (
       .get(`/api/sharedspaces/${url}/todos?date=${year}-${month}`);
 
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -38,8 +38,8 @@ export const createTodo = async (
         startTime,
         endTime,
       });
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -64,8 +64,8 @@ export const updateTodo = async (
         startTime,
         endTime,
       });
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -80,8 +80,8 @@ export const deleteTodo = async (
   try {
     await axiosInstance
       .delete(`/api/sharedspaces/${url}/todos/${todoId}`);
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -104,7 +104,7 @@ export const searchTodos = async (
     );
     
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };
