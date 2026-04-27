@@ -98,7 +98,7 @@ const Chat: FC<ChatProps> = ({
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (prev) {
         const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
-        prev.chats[idx].Images.forEach(image => URL.revokeObjectURL(image.path));
+        prev.chats[idx].Images.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
 
         return {
           ...prev,
