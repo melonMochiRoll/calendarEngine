@@ -66,7 +66,7 @@ export const MemberOptions = {
 } as const;
 
 export type TUser = {
-  id: number,
+  id: string,
   email: string,
   nickname: string,
   provider: string,
@@ -74,7 +74,7 @@ export type TUser = {
 };
 
 export type TTodoPayload = {
-  id: number,
+  id: string,
   description: string,
   date: string,
   startTime: string,
@@ -90,7 +90,7 @@ export type TTodoMap = {
 };
 
 export type TSearchTodosItem = {
-  id: number,
+  id: string,
   description: string,
   date: string,
   startTime: string,
@@ -103,9 +103,9 @@ export type TSearchTodosPayload = {
 };
 
 export type TSharedspaceMembers = {
-  SharedspaceId: number,
-  UserId: number,
-  RoleId: number,
+  SharedspaceId: string,
+  UserId: string,
+  RoleId: string,
   createdAt: string,
   updatedAt: string,
   Role: {
@@ -114,7 +114,7 @@ export type TSharedspaceMembers = {
 };
 
 export type TSharedspace = {
-  id: number,
+  id: string,
   name: string,
   private: boolean,
   createdAt: string,
@@ -151,7 +151,7 @@ export const subscribedspacesSortsMap: { [key: string]: string } = {
 } as const;
 
 export type TSharedspaceMembersItem = {
-  UserId: number,
+  UserId: string,
   email: string,
   nickname: string,
   profileImage: string,
@@ -165,7 +165,7 @@ export type TSharedspaceMembersList = {
 };
 
 export type TSearchUsersItem = {
-  id: number,
+  id: string,
   email: string,
   nickname: string,
   profileImage: string,
@@ -180,7 +180,7 @@ export type TSearchUsersList = {
 };
 
 export type TJoinRequest = {
-  id: number,
+  id: string,
   RequestorId: number,
   createdAt: string,
   message: string,
@@ -188,10 +188,10 @@ export type TJoinRequest = {
 };
 
 export type TChat = {
-  id: number;
+  id: string;
   content: string;
-  SenderId: number | null;
-  SharedspaceId: number;
+  SenderId: string | null;
+  SharedspaceId: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -227,9 +227,9 @@ export type TChats = {
 };
 
 export type TImages = {
-  id: number;
+  id: string;
   path: string;
-  ChatId: number;
+  ChatId: string;
 };
 
 export type TImageMetaData = {
@@ -246,7 +246,7 @@ export const ChatsCommandList = {
 } as const;
 
 export type TInvite = {
-  id: number,
+  id: string,
   createdAt: string,
   SharedspaceName: string,
   url: string,

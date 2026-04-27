@@ -10,9 +10,9 @@ import { renderRole } from 'Lib/utilFunction';
 interface MemberItemProps {
   item: TSharedspaceMembersItem,
   isOwner: boolean,
-  onUpdateMemberRole: (UserId: number, roleName: TSharedspaceMembersRoles) => Promise<void>,
-  onUpdateOwner: (UserId: number) => Promise<void>,
-  onDeleteMember: (UserId: number) => Promise<void>,
+  onUpdateMemberRole: (UserId: string, roleName: TSharedspaceMembersRoles) => Promise<void>,
+  onUpdateOwner: (UserId: string) => Promise<void>,
+  onDeleteMember: (UserId: string) => Promise<void>,
 };
 
 const MemberItem: FC<MemberItemProps> = ({

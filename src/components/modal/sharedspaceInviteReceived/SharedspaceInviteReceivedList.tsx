@@ -9,8 +9,8 @@ import { TInvitePayload } from 'Src/typings/types';
 interface SharedspaceInviteReceivedListProp {
   invitesData: TInvitePayload,
   nextPage: () => void,
-  acceptInvite: (id: number, url: string) => Promise<void>,
-  declineInvite: (id: number, url: string) => Promise<void>,
+  acceptInvite: (id: string, url: string) => Promise<void>,
+  declineInvite: (id: string, url: string) => Promise<void>,
 };
 
 const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
@@ -23,7 +23,7 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
   const [ isResponded, setIsResponded ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
 
-  const handleAcceptInvite = async (id: number, url: string) => {
+  const handleAcceptInvite = async (id: string, url: string) => {
     setIsLoading(true);
 
     try {
@@ -36,7 +36,7 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
     }
   };
 
-  const handleDeclineInvite = async (id: number, url: string) => {
+  const handleDeclineInvite = async (id: string, url: string) => {
     setIsLoading(true);
 
     try {

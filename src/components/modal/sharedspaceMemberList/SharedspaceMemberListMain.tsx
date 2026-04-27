@@ -17,7 +17,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   const { data: membersData, nextPage } = useSharedspacemembers();
   const { data: spaceData } = useSharedspace();
 
-  const onUpdateMemberRole = async (UserId: number, roleName: TSharedspaceMembersRoles) => {
+  const onUpdateMemberRole = async (UserId: string, roleName: TSharedspaceMembersRoles) => {
     try {
       await updateSharedspaceMembers(url, UserId, roleName);
       await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
@@ -26,7 +26,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
     }
   };
 
-  const onUpdateOwner = async (UserId: number) => {
+  const onUpdateOwner = async (UserId: string) => {
     try {
       await updateSharedspaceOwner(url, UserId);
       await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
@@ -35,7 +35,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
     }
   };
 
-  const onDeleteMember = async (UserId: number) => {
+  const onDeleteMember = async (UserId: string) => {
     try {
       await deleteSharedspaceMembers(url, UserId);
       await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);

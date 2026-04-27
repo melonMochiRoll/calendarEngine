@@ -14,6 +14,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ChatStatus, TChats } from 'Src/typings/types';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 import dayjs from 'dayjs';
+import { uuidv7 } from 'uuidv7';
 
 const ChatContainer: FC = () => {
   const { url } = useParams();
@@ -79,11 +80,11 @@ const ChatContainer: FC = () => {
     setImages([]);
     setPreviews([]);
 
-    const tempId = -Date.now();
+    const tempId = `${-Date.now()}`;
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       const now = dayjs().toISOString();
-      const tempImages = previews.map((url, idx) => {return { id: -idx, path: '', _tempPath: url }});
+      const tempImages = previews.map((url, idx) => {return { id: `${-idx}`, path: '', _tempPath: url }});
 
       const tempChat = {
         id: tempId,
@@ -108,6 +109,11 @@ const ChatContainer: FC = () => {
         hasMoreData: prev?.hasMoreData || false,
       };
     });
+
+    scrollbarRef?.current?.scrollTo(0, 0);
+    setChat('');
+    setImages([]);
+    setPreviews([]);
 
     try {
       if (images.length) {

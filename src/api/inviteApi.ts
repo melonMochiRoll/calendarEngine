@@ -32,7 +32,7 @@ export const sendInvite = async (
 };
 
 export const acceptInvite = async (
-  id: number,
+  id: string,
   url: string,
 ) => {
   try {
@@ -50,7 +50,7 @@ export const acceptInvite = async (
 };
 
 export const declineInvite = async (
-  id: number,
+  id: string,
   url: string,
 ) => {
   try {

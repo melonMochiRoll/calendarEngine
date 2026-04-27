@@ -53,7 +53,7 @@ const Chat: FC<ChatProps> = ({
 
   const onUpdateChat = async (
     url: string | undefined,
-    ChatId: number,
+    ChatId: string,
     oldContent: string,
     newContent: string,
   ) => {
@@ -69,7 +69,7 @@ const Chat: FC<ChatProps> = ({
 
   const onDeleteChat = async (
     url: string | undefined,
-    chatId: number,
+    chatId: string,
   ) => {
     try {
       await deleteSharedspaceChat(url, chatId);
@@ -82,8 +82,8 @@ const Chat: FC<ChatProps> = ({
 
   const deleteImage = async (
     url: string | undefined,
-    ChatId: number,
-    ImageId: number
+    ChatId: string,
+    ImageId: string
   ) => {
     try {
       await deleteSharedspaceChatImage(url, ChatId, ImageId);

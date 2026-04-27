@@ -85,7 +85,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   };
 
   const onSubmit = async (
-    todoId: number,
+    todoId: string,
     newDescription: string,
     date: string,
     start: typeof startTime,

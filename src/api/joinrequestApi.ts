@@ -33,7 +33,7 @@ export const createJoinRequest = async (
 
 export const resolveJoinRequest = async (
   url: string | undefined,
-  id: number,
+  id: string,
   RoleName: string,
 ) => {
   if (!url) {
@@ -52,7 +52,7 @@ export const resolveJoinRequest = async (
 
 export const rejectJoinRequest = async (
   url: string | undefined,
-  id: number,
+  id: string,
 ) => {
   if (!url) {
     throw new Error;

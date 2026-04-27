@@ -58,7 +58,7 @@ export const updateSharedspaceName = async (
 
 export const updateSharedspaceOwner = async (
   url: string | undefined,
-  UserId: number,
+  UserId: string,
 ) => {
   if (!url) {
     throw new Error;
@@ -104,7 +104,7 @@ export const getSharedspaceMembers = async (
 
 export const createSharedspaceMembers = async (
   url: string | undefined,
-  UserId: number,
+  UserId: string,
   RoleName: TSharedspaceMembersRoles,
 ) => {
   if (!url) {
@@ -124,7 +124,7 @@ export const createSharedspaceMembers = async (
 
 export const updateSharedspaceMembers = async (
   url: string | undefined,
-  UserId: number,
+  UserId: string,
   RoleName: TSharedspaceMembersRoles,
 ) => {
   if (!url) {
@@ -162,7 +162,7 @@ export const updateSharedspacePrivate = async (
 
 export const deleteSharedspaceMembers = async (
   url: string | undefined,
-  UserId: number,
+  UserId: string,
 ) => {
   if (!url) {
     throw new Error;
@@ -178,7 +178,7 @@ export const deleteSharedspaceMembers = async (
 
 export const getSharedspaceChats = async (
   url: string | undefined,
-  beforeChatId?: number,
+  beforeChatId?: string,
 ) => {
   if (!url) {
     return {
@@ -227,7 +227,7 @@ export const createSharedspaceChat = async (
 
 export const updateSharedspaceChat = async (
   url: string | undefined,
-  ChatId: number,
+  ChatId: string,
   oldContent: string,
   newContent: string,
 ) => {
@@ -250,7 +250,7 @@ export const updateSharedspaceChat = async (
 
 export const deleteSharedspaceChat = async (
   url: string | undefined,
-  ChatId: number,
+  ChatId: string,
 ) => {
   if (!url || !ChatId) {
     throw new Error;
@@ -266,8 +266,8 @@ export const deleteSharedspaceChat = async (
 
 export const deleteSharedspaceChatImage = async (
   url: string | undefined,
-  ChatId: number,
-  ImageId: number,
+  ChatId: string,
+  ImageId: string,
 ) => {
   if (!url || !ChatId || !ImageId) {
     throw new Error;

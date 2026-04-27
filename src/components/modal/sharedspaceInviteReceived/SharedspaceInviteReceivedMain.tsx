@@ -13,12 +13,12 @@ const SharedspaceInviteReceivedMain: FC<SharedspaceInviteReceivedMainProps> = ({
   const qc = useQueryClient();
   const { data: invitesData, nextPage } = useInvites();
 
-  const handleAcceptInvite = async (id: number, url: string) => {
+  const handleAcceptInvite = async (id: string, url: string) => {
     await acceptInvite(id, url);
     await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY]);
   };
 
-  const handleDeclineInvite = async (id: number, url: string) => {
+  const handleDeclineInvite = async (id: string, url: string) => {
     await declineInvite(id, url);
   };
 

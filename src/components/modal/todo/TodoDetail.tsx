@@ -48,7 +48,7 @@ const TodoDetail: FC<TodoDetailProps> = ({
     onClose,
   } = useMenu();
 
-  const onClickTodoDelete = async (todoId: number, url: string | undefined) => {
+  const onClickTodoDelete = async (todoId: string, url: string | undefined) => {
     try {
       await deleteTodo(todoId, url);
 

@@ -44,7 +44,7 @@ export const createTodo = async (
 };
 
 export const updateTodo = async (
-  id: number,
+  id: string,
   description: string,
   date: string,
   startTime: string,
@@ -70,7 +70,7 @@ export const updateTodo = async (
 };
 
 export const deleteTodo = async (
-  todoId: number,
+  todoId: string,
   url: string | undefined,
 ) => {
   if (!url) {

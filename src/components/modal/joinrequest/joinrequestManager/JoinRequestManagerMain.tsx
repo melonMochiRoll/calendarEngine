@@ -18,7 +18,7 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
 
   const onResolveMenuClick = async (
     url: string | undefined,
-    id: number,
+    id: string,
     roleName: string,
   ) => {
     try {
@@ -35,7 +35,7 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
 
   const onRejectMenuClick = async (
     url: string | undefined,
-    id: number,
+    id: string,
   ) => {
     try {
       await rejectJoinRequest(url, id);

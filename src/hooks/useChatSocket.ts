@@ -77,7 +77,7 @@ export function useChatSocket() {
     });
   };
 
-  const onChatDeleted = (ChatId: number) => {
+  const onChatDeleted = (ChatId: string) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (prev) {
         const idx = prev.chats.findIndex(chat => chat.id === ChatId);
@@ -95,7 +95,7 @@ export function useChatSocket() {
     });
   };
 
-  const onChatImageDeleted = (ChatId: number, ImageId: number) => {
+  const onChatImageDeleted = (ChatId: string, ImageId: string) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (prev) {
         const chatIdx = prev.chats.findIndex(chat => chat.id === ChatId);
