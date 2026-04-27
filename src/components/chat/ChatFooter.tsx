@@ -8,10 +8,8 @@ import { Menu, MenuItem } from '@mui/material';
 import { muiMenuDarkModeSx } from 'Constants/notices';
 
 interface ChatFooterProps {
-  onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
+  onSubmit: () => void,
   chat: string,
-  images: File[],
-  previews: string[],
   onChangeChat: (e: React.ChangeEvent<HTMLInputElement>) => void,
   onChangeImageFiles: (e: React.ChangeEvent<HTMLInputElement>) => void,
 };
@@ -19,8 +17,6 @@ interface ChatFooterProps {
 const ChatFooter: FC<ChatFooterProps> = ({
   onSubmit,
   chat,
-  images,
-  previews,
   onChangeChat,
   onChangeImageFiles,
 }) => {
@@ -33,7 +29,7 @@ const ChatFooter: FC<ChatFooterProps> = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(chat, images, previews);
+    onSubmit();
   };
 
   return (

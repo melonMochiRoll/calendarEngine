@@ -47,10 +47,10 @@ const ChatContainer: FC = () => {
       return;
     }
 
-    const newImages = Array.from(e.target.files);
+    const newImages: File[] = [];
     const newPreviews: string[] = [];
 
-    for (const file of newImages) {
+    for (const file of Array.from(e.target.files)) {
       if (file.size > 5 * 1024 * 1024) {
         toast.error(imageTooLargeMessage, {
           ...defaultToastOption,
@@ -59,6 +59,7 @@ const ChatContainer: FC = () => {
         return;
       }
 
+      newImages.push(file);
       newPreviews.push(URL.createObjectURL(file));
     }
 
@@ -68,26 +69,32 @@ const ChatContainer: FC = () => {
 
   const onSubmit = useCallback(async (chat: string, images: File[], previews: string[]) => {
     const trimmedChat = chat.trim();
-    const imageKeys = [];
 
     if (!trimmedChat && !images.length) {
       setChat('');
       return;
     }
 
-    scrollbarRef?.current?.scrollTo(0, 0);
-    setChat('');
-    setImages([]);
-    setPreviews([]);
+    const tempChatId = uuidv7();
 
-    const tempId = `${-Date.now()}`;
+    const imageIds: string[] = [];
+    const tempImages: Array<{ id: string, path: string, _tempPath: string }> = [];
+    const metaDatas: Array<{ id: string, fileName: string, fileSize: number, contentType: string }> = [];
+
+    for (let i=0; i<images.length; i++) {
+      const id = uuidv7();
+      const image = images[i];
+
+      imageIds.push(id);
+      tempImages.push({ id, path: '', _tempPath: previews[i] });
+      metaDatas.push({ id, fileName: image.name, fileSize: image.size, contentType: image.type });
+    }
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       const now = dayjs().toISOString();
-      const tempImages = previews.map((url, idx) => {return { id: `${-idx}`, path: '', _tempPath: url }});
 
       const tempChat = {
-        id: tempId,
+        id: tempChatId,
         content: trimmedChat,
         SenderId: userData.id,
         createdAt: now,
@@ -97,7 +104,7 @@ const ChatContainer: FC = () => {
           nickname: userData.nickname,
           profileImage: userData.profileImage,
         },
-        Images: images.length ? tempImages : [],
+        Images: tempImages,
         permission: {
           isSender: true,
         },
@@ -117,25 +124,17 @@ const ChatContainer: FC = () => {
 
     try {
       if (images.length) {
-        const metaDatas = images.map(image => {
-          return { fileName: image.name, fileSize: image.size, contentType: image.type };
-        });
-
         const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
 
         const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
         await Promise.all(uploadPromises);
-
-        for (const { key } of presignedUrls) {
-          imageKeys.push(key);
-        }
       }
 
-      const success = await createSharedspaceChat(url, trimmedChat, imageKeys);
+      const success = await createSharedspaceChat(url, tempChatId, trimmedChat, imageIds);
 
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
         const chats = prev?.chats.map(chat => {
-          if (chat.id === tempId) {
+          if (chat.id === tempChatId) {
             success.Images = success.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath }));
             return success;
           }
@@ -150,8 +149,8 @@ const ChatContainer: FC = () => {
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
         const chats = prev?.chats.map(chat => {
-          if (chat.id === tempId) {
-            return { ...chat, _status: ChatStatus.ERROR, _imageFiles: [ ...images ] };
+          if (chat.id === tempChatId) {
+            return { ...chat, _status: ChatStatus.ERROR, _imageFiles: images };
           }
           return chat;
         });
@@ -177,10 +176,8 @@ const ChatContainer: FC = () => {
         {
           userData ?
             <ChatFooter
-              onSubmit={onSubmit}
+              onSubmit={() => onSubmit(chat, images, previews)}
               chat={chat}
-              images={images}
-              previews={previews}
               onChangeChat={onChangeChat}
               onChangeImageFiles={onChangeImageFiles} />
               :

@@ -119,8 +119,9 @@ const Chat: FC<ChatProps> = ({
         };
       }
     });
-    await onSubmit(chat.content, chat._imageFiles || [], chat.Images.map(image => image.path));
+    await onSubmit(chat.content, chat._imageFiles || [], chat.Images.map(image => image._tempPath || ''));
   };
+  console.log(chat);
 
   return (
     <Item hoverMenuId={hoverMenuId}>

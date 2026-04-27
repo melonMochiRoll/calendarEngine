@@ -203,8 +203,9 @@ export const getSharedspaceChats = async (
 
 export const createSharedspaceChat = async (
   url: string | undefined,
+  id: string,
   content: string,
-  imageKeys: string[],
+  imageIds: string[],
 ): Promise<TChatPayload> => {
   if (!url) {
     throw new Error;
@@ -215,8 +216,9 @@ export const createSharedspaceChat = async (
       .post(
         `/api/sharedspaces/${url}/chats`,
         {
+          id,
           content,
-          imageKeys,
+          imageIds,
         }
       );
     return data;
@@ -284,7 +286,7 @@ export const deleteSharedspaceChatImage = async (
 export const generatePresignedPutUrl = async (
   url: string | undefined,
   metaDatas: TImageMetaData[],
-): Promise<Array<{ key: string, presignedUrl: string, contentType: string }>> => {
+): Promise<Array<{ id: string, key: string, presignedUrl: string, contentType: string }>> => {
   try {
     const { data } = await axiosInstance
       .post(
