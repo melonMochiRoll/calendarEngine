@@ -10,12 +10,24 @@ import ImagePreviewer from 'Components/chat/ImagePreviewer';
 import { formatDate } from 'Lib/utilFunction';
 import { TChatPayload, TChats } from 'Typings/types';
 import { throttle } from 'lodash';
-import { useChatSocket } from 'Src/hooks/useChatSocket';
 
 interface ChatListProps {
   chatList: TChats,
   previews: string[],
   scrollbarRef: React.RefObject<HTMLUListElement>,
+  showNewChat: {
+    chat: string,
+    email: string,
+    nickname: string,
+    profileImage: string,
+  } | null,
+  setShowNewChat: React.Dispatch<React.SetStateAction<{
+    chat: string,
+    email: string,
+    nickname: string,
+    profileImage: string,
+  } | null>>,
+  canShowNotify: React.MutableRefObject<boolean>,
   loadMore: () => void,
   onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
   deleteFile: (idx: number) => void,
@@ -25,6 +37,9 @@ const ChatList: FC<ChatListProps> = ({
   chatList,
   previews,
   scrollbarRef,
+  showNewChat,
+  setShowNewChat,
+  canShowNotify,
   loadMore,
   onSubmit,
   deleteFile,
@@ -32,12 +47,6 @@ const ChatList: FC<ChatListProps> = ({
   dayjs.extend(utc);
   dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
-
-  const {
-    showNewChat,
-    setShowNewChat,
-    canShowNotify,
-  } = useChatSocket();
 
   const onScroll = throttle(() => {
     if (scrollbarRef.current) {

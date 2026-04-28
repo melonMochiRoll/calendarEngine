@@ -15,6 +15,7 @@ import { ChatStatus, TChats } from 'Src/typings/types';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 import dayjs from 'dayjs';
 import { uuidv7 } from 'uuidv7';
+import { useChatSocket } from 'Src/hooks/useChatSocket';
 
 const ChatContainer: FC = () => {
   const { url } = useParams();
@@ -27,6 +28,12 @@ const ChatContainer: FC = () => {
   const [ chat, onChangeChat, setChat ] = useInput('');
   const [ images, setImages ] = useState<File[]>([]);
   const [ previews, setPreviews ] = useState<string[]>([]);
+
+  const {
+    showNewChat,
+    setShowNewChat,
+    canShowNotify,
+  } = useChatSocket();
 
   const deleteFile = useCallback((idx: number) => {
     setImages(prev => [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ]);
@@ -170,6 +177,9 @@ const ChatContainer: FC = () => {
           chatList={chatList}
           previews={previews}
           scrollbarRef={scrollbarRef}
+          showNewChat={showNewChat}
+          setShowNewChat={setShowNewChat}
+          canShowNotify={canShowNotify}
           loadMore={loadMore}
           onSubmit={onSubmit}
           deleteFile={deleteFile} />
