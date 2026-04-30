@@ -46,61 +46,61 @@ export function useChatSocket() {
 
   const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'>) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-      if (prev) {
-        const newChats = [ ...prev.chats ];
-        const idx = newChats.findIndex(chat => chat.id === data.id);
+      if (!prev) return;
 
-        if (idx < 0) return;
+      const newChats = [ ...prev.chats ];
+      const idx = newChats.findIndex(chat => chat.id === data.id);
 
-        newChats[idx] = {
-          ...newChats[idx],
-          content: data.content,
-          updatedAt: data.updatedAt,
-        };
-        
-        return {
-          ...prev,
-          chats: newChats,
-        };
-      }
+      if (idx < 0) return;
+
+      newChats[idx] = {
+        ...newChats[idx],
+        content: data.content,
+        updatedAt: data.updatedAt,
+      };
+      
+      return {
+        ...prev,
+        chats: newChats,
+      };
     });
   };
 
   const onChatDeleted = (ChatId: string) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-      if (prev) {
-        const idx = prev.chats.findIndex(chat => chat.id === ChatId);
+      if (!prev) return;
 
-        if (idx < 0) return;
+      const idx = prev.chats.findIndex(chat => chat.id === ChatId);
 
-        const head = prev.chats.slice(0, idx);
-        const tail = prev.chats.slice(idx + 1, prev.chats.length);
+      if (idx < 0) return;
 
-        return {
-          ...prev,
-          chats: [ ...head, ...tail ],
-        };
-      }
+      const head = prev.chats.slice(0, idx);
+      const tail = prev.chats.slice(idx + 1, prev.chats.length);
+
+      return {
+        ...prev,
+        chats: [ ...head, ...tail ],
+      };
     });
   };
 
   const onChatImageDeleted = (ChatId: string, ImageId: string) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-      if (prev) {
-        const chatIdx = prev.chats.findIndex(chat => chat.id === ChatId);
-        const head = prev.chats.slice(0, chatIdx);
-        const tail = prev.chats.slice(chatIdx + 1, prev.chats.length);
+      if (!prev) return;
+      
+      const chatIdx = prev.chats.findIndex(chat => chat.id === ChatId);
+      const head = prev.chats.slice(0, chatIdx);
+      const tail = prev.chats.slice(chatIdx + 1, prev.chats.length);
 
-        const targetChat = prev.chats[chatIdx];
-        const imageIdx = targetChat.Images.findIndex(image => image.id === ImageId);
-        const imagesHead = targetChat.Images.slice(0, imageIdx);
-        const imagesTail = targetChat.Images.slice(imageIdx + 1, targetChat.Images.length);
+      const targetChat = prev.chats[chatIdx];
+      const imageIdx = targetChat.Images.findIndex(image => image.id === ImageId);
+      const imagesHead = targetChat.Images.slice(0, imageIdx);
+      const imagesTail = targetChat.Images.slice(imageIdx + 1, targetChat.Images.length);
 
-        return {
-          ...prev,
-          chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
-        };
-      }
+      return {
+        ...prev,
+        chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
+      };
     });
   };
 
