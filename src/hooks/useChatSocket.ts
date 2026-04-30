@@ -1,15 +1,14 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { GET_SHAREDSPACE_CHATS_KEY, GET_USER_KEY } from "Constants/queryKeys";
+import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { ChatsCommandList, TChatPayload, TChats, TUser } from "Typings/types";
+import { ChatsCommandList, TChatPayload, TChats } from "Typings/types";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
   const socketRef = useRef<Socket>();
-  const userData = qc.getQueryData<TUser>([GET_USER_KEY]);
   const canShowNotify = useRef(false);
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
 
@@ -27,31 +26,21 @@ export function useChatSocket() {
     };
   }, [_url]);
 
-  const onChatCreated = (data: Omit<TChatPayload, 'permission'>) => {
-    const isSender = data.SenderId === userData?.id;
-    
-    if (!isSender) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        const withPermission = Object.assign(data, {
-          permission: {
-            isSender: isSender,
-          }
-        });
+  const onChatCreated = (data: TChatPayload) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      return {
+        chats: [ data, ...prev?.chats || [] ],
+        hasMoreData: prev?.hasMoreData || false,
+      };
+    });
 
-        return {
-          chats: [ withPermission, ...prev?.chats || [] ],
-          hasMoreData: prev?.hasMoreData || false,
-        };
+    if (canShowNotify.current) {
+      setShowNewChat({
+        chat: data.content,
+        email: data.Sender.email,
+        nickname: data.Sender.nickname,
+        profileImage: data.Sender.profileImage,
       });
-
-      if (canShowNotify.current) {
-        setShowNewChat({
-          chat: data.content,
-          email: data.Sender.email,
-          nickname: data.Sender.nickname,
-          profileImage: data.Sender.profileImage,
-        });
-      }
     }
   };
 
