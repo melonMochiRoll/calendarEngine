@@ -64,7 +64,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
               </MenuItem>
               <MenuItem
                 onClick={() => onLogout()}
-                sx={{ gap: '5px' }}>
+                sx={{ gap: '5px', color: 'var(--red)' }}>
                 <LogoutIcon />
                 <span>로그아웃</span>
               </MenuItem>
