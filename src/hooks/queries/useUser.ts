@@ -14,9 +14,6 @@ type FetchStateReturnType = {
   refetch: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>,
   ) => Promise<QueryObserverResult<TUser, unknown>>;
-  isLogin: boolean;
-  isNotLogin: boolean;
-  error: unknown;
 };
 
 function useUser(options: { suspense: true, throwOnError: true }): TypeSafeReturnType;
@@ -53,9 +50,6 @@ function useUser(options = { suspense: false, throwOnError: false }) {
     data,
     refetch,
     isLoading,
-    isLogin: Boolean(!isLoading && data),
-    isNotLogin: Boolean(!isLoading && !data),
-    error,
   };
 }
 
