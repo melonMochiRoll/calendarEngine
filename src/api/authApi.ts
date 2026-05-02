@@ -52,3 +52,12 @@ export const getCsrfToken = async () => {
     throw err;
   }
 };
+
+export const refreshAuthToken = async () => {
+  try {
+    await axiosInstance
+      .post(`/api/auth/refresh`);
+  } catch (err) {
+    throw err;
+  }
+};
