@@ -26,7 +26,7 @@ export function useSearchUsers(query: string): UseSearchUsersReturnType {
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
-    retry: (failureCount, error) => handleRetry([ 401 ], failureCount, error),
+    retry: (failureCount, error) => handleRetry([], failureCount, error),
   });
 
   useEffect(() => {

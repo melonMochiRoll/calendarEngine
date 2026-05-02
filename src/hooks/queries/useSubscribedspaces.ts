@@ -19,7 +19,7 @@ export function useSubscribedspace(sort: string, page: number): UseSubscribedspa
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
-    retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
+    retry: (failureCount, error) => handleRetry([ 400, 403, 404 ], failureCount, error),
   });
 
   if (isLoading) throw new Promise(() => {});

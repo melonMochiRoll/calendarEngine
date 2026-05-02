@@ -26,7 +26,7 @@ export function useSharedspacemembers(): UseSharedspacemembersReturnType {
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
-    retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
+    retry: (failureCount, error) => handleRetry([ 400, 403, 404 ], failureCount, error),
   });
 
   useEffect(() => {
