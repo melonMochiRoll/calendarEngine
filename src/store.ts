@@ -2,7 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import modalReducer from 'Features/modalSlice';
 import calendarTimeReducer from 'Features/calendarTimeSlice';
 import todoTimeReducer from 'Features/todoTimeSlice';
-import globalErrorReducer from 'Features/globalErrorSlice';
 import csrfTokenReducer from 'Features/csrfTokenSlice';
 
 export const reduxStore = configureStore({
@@ -10,7 +9,6 @@ export const reduxStore = configureStore({
     modal: modalReducer,
     calendarTime: calendarTimeReducer,
     todoTime: todoTimeReducer,
-    globalError: globalErrorReducer,
     csrfToken: csrfTokenReducer,
   },
 });
