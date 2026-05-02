@@ -33,7 +33,7 @@ function useUser(options = { suspense: false, throwOnError: false }) {
   } = useQuery<TUser>({
     queryKey: [GET_USER_KEY],
     queryFn: () => getUser(),
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     suspense,
     useErrorBoundary: throwOnError,
     retry: (failureCount, error) => handleRetry([200], failureCount, error),
