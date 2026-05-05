@@ -1,7 +1,7 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useChats } from 'Hooks/queries/useChats';
-import { createSharedspaceChat, generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
+import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
 import { toast } from 'react-toastify';
@@ -30,6 +30,7 @@ const ChatContainer: FC = () => {
   const [ previews, setPreviews ] = useState<string[]>([]);
 
   const {
+    sendChat,
     showNewChat,
     setShowNewChat,
     canShowNotify,
@@ -137,22 +138,7 @@ const ChatContainer: FC = () => {
         await Promise.all(uploadPromises);
       }
 
-      const success = await createSharedspaceChat(url, tempChatId, trimmedChat, imageIds);
-
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-        const chats = prev?.chats.map(chat => {
-          if (chat.id === tempChatId) {
-            success.Images = success.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath }));
-            return success;
-          }
-          return chat;
-        });
-
-        return {
-          chats: chats || [], 
-          hasMoreData: prev?.hasMoreData || false,
-        };
-      });
+      sendChat(url, tempChatId, trimmedChat, imageIds);
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
         const chats = prev?.chats.map(chat => {

@@ -51,20 +51,37 @@ export function useChatSocket() {
   };
 
   const onChatCreated = (data: TChatPayload) => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-      return {
-        chats: [ data, ...prev?.chats || [] ],
-        hasMoreData: prev?.hasMoreData || false,
-      };
-    });
+    if (data.permission.isSender) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        const chats = prev?.chats.map(chat => {
+          if (chat.id === data.id) {
+            data.Images = data.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath }));
+            return data;
+          }
+          return chat;
+        });
 
-    if (canShowNotify.current) {
-      setShowNewChat({
-        chat: data.content,
-        email: data.Sender.email,
-        nickname: data.Sender.nickname,
-        profileImage: data.Sender.profileImage,
+        return {
+          chats: chats || [],
+          hasMoreData: prev?.hasMoreData || false,
+        };
       });
+    } else {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        return {
+          chats: [ data, ...prev?.chats || [] ],
+          hasMoreData: prev?.hasMoreData || false,
+        };
+      });
+
+      if (canShowNotify.current) {
+        setShowNewChat({
+          chat: data.content,
+          email: data.Sender.email,
+          nickname: data.Sender.nickname,
+          profileImage: data.Sender.profileImage,
+        });
+      }
     }
   };
 
