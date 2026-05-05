@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { ChatsCommandList, TChatPayload, TChats } from "Typings/types";
 import { useAppSelector } from "./reduxHooks";
+import { ChatEmitEvent } from "Src/constants/constants";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
@@ -39,6 +40,15 @@ export function useChatSocket() {
       socket?.disconnect();
     };
   }, [_url, token]);
+
+  const sendChat = (
+    url: string | undefined,
+    id: string,
+    content: string,
+    imageIds: string[],
+  ) => {
+    socketRef.current?.emit(ChatEmitEvent.SEND_SHAREDSPACE_CHAT, { url, id, content, imageIds });
+  };
 
   const onChatCreated = (data: TChatPayload) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
@@ -119,6 +129,7 @@ export function useChatSocket() {
   };
 
   return {
+    sendChat,
     showNewChat,
     setShowNewChat,
     canShowNotify,
