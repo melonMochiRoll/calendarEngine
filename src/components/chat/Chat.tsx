@@ -50,6 +50,9 @@ const Chat: FC<ChatProps> = ({
 
   const hoverMenuId = 'hoverMenu';
   const isUpdated = chat.createdAt !== chat.updatedAt;
+  const isPending = chat._status === ChatStatus.PENDING;
+  const isError = chat._status === ChatStatus.ERROR;
+  const isEditable = !isPending && !isError && chat.permission.isSender;
 
   const onUpdateChat = async (
     url: string | undefined,
@@ -135,8 +138,8 @@ const Chat: FC<ChatProps> = ({
           <ProfileName>{chat.Sender.nickname}</ProfileName>
           <Timestamp>{dayjs(chat.createdAt).tz(localTimeZone).format('A hh:mm')}</Timestamp>
           {isUpdated && <UpdatedSpan>수정됨</UpdatedSpan>}
-          {chat._status === ChatStatus.PENDING && <CircularProgress size={15} sx={{ color: 'var(--white)' }}/>}
-          {chat._status === ChatStatus.ERROR &&
+          {isPending && <CircularProgress size={15} sx={{ color: 'var(--white)' }}/>}
+          {isError &&
             <ErrorWrapper>
               <CrossIcon fontSize='small' onClick={deleteErrorChat} />
               :
@@ -172,7 +175,7 @@ const Chat: FC<ChatProps> = ({
           }
         </ContentWrapper>
       </ChatWrapper>
-      {chat.permission.isSender &&
+      {isEditable &&
         <HoverMenu id={hoverMenuId}>
           <IconWrapper onClick={onOpen}>
             <MoreIcon fontSize='large' />
