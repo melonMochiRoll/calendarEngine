@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { ChatsCommandList, TChatPayload, TChats } from "Typings/types";
+import { useAppSelector } from "./reduxHooks";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
@@ -12,8 +13,21 @@ export function useChatSocket() {
   const canShowNotify = useRef(false);
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
 
+  const { token } = useAppSelector(state => state.csrfToken);
+  
   useEffect(() => {
-    socketRef.current = io(`${process.env.REACT_APP_SERVER_ORIGIN}/sharedspace-${_url}`);
+    if (!_url || !token) return;
+
+    socketRef.current = io(
+      `${process.env.REACT_APP_SERVER_ORIGIN}/sharedspace-${_url}`,
+      {
+        withCredentials: true,
+        auth: {
+          'x-csrf-token': token,
+        },
+      },
+    );
+
     const socket = socketRef.current;
 
     socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
@@ -24,7 +38,7 @@ export function useChatSocket() {
     return () => {
       socket?.disconnect();
     };
-  }, [_url]);
+  }, [_url, token]);
 
   const onChatCreated = (data: TChatPayload) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
