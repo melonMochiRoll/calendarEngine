@@ -1,0 +1,4 @@
+
+export const ERROR_TYPE = {
+  TOKEN_EXPIRED: 'TOKEN_EXPIRED',
+};
