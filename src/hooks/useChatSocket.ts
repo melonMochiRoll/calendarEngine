@@ -3,7 +3,7 @@ import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { ChatsCommandList, TChatPayload, TChats } from "Typings/types";
+import { ChatsCommandList, ChatStatus, TChatPayload, TChats } from "Typings/types";
 import { useAppSelector } from "./reduxHooks";
 import { ChatEmitEvent } from "Src/constants/constants";
 
@@ -35,6 +35,7 @@ export function useChatSocket() {
     socket?.on(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
     socket?.on(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
     socket?.on(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_ERROR}`, onChatError)
 
     return () => {
       socket?.disconnect();
@@ -143,6 +144,27 @@ export function useChatSocket() {
         chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
       };
     });
+  };
+
+  const onChatError = (data: { action: string, ChatId: string }) => {
+    const { action, ChatId } = data;
+
+    if (action === `publicChats:${ChatsCommandList.CHAT_CREATED}`) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        const chats = prev?.chats.map(chat => {
+          if (chat.id === ChatId) {
+            return { ...chat, _status: ChatStatus.ERROR };
+          }
+          return chat;
+        });
+
+        return {
+          chats: chats || [], 
+          hasMoreData: prev?.hasMoreData || false,
+        };
+      });
+      return;
+    }
   };
 
   return {
