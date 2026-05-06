@@ -4,11 +4,15 @@ import SendIcon from '@mui/icons-material/Send';
 import AddCircleIcon from '@mui/icons-material/AddCircleRounded';
 import AddPhotoIcon from '@mui/icons-material/AddPhotoAlternate';
 import useMenu from 'Hooks/utils/useMenu';
-import { Menu, MenuItem } from '@mui/material';
+import { CircularProgress, Menu, MenuItem } from '@mui/material';
 import { muiMenuDarkModeSx } from 'Constants/notices';
+import { SocketStatus } from 'Src/constants/constants';
+import NetworkIcon from '@mui/icons-material/RssFeedRounded';
+import NetworkCheckIcon from '@mui/icons-material/NetworkCheckRounded';
 
 interface ChatFooterProps {
   onSubmit: () => void,
+  socketStatus: string,
   chat: string,
   onChangeChat: (e: React.ChangeEvent<HTMLInputElement>) => void,
   onChangeImageFiles: (e: React.ChangeEvent<HTMLInputElement>) => void,
@@ -16,6 +20,7 @@ interface ChatFooterProps {
 
 const ChatFooter: FC<ChatFooterProps> = ({
   onSubmit,
+  socketStatus,
   chat,
   onChangeChat,
   onChangeImageFiles,
@@ -30,6 +35,37 @@ const ChatFooter: FC<ChatFooterProps> = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit();
+  };
+
+  const displayStatus = (socketStatus: string) => {
+    if (socketStatus === SocketStatus.CONNECTED) {
+      return (
+        <>
+          <NetworkIcon sx={{ color: 'var(--naver-green)' }} />
+          <IndicatorText color={'var(--naver-green)'}>{socketStatus}</IndicatorText>
+        </>
+      );
+    }
+
+    if (socketStatus === SocketStatus.RECONNECTING) {
+      return (
+        <>
+          <CircularProgress sx={{ color: 'var(--orange)' }} size={20} />
+          <IndicatorText color={'var(--orange)'}>{socketStatus}</IndicatorText>
+        </>
+      );
+    }
+
+    if (socketStatus === SocketStatus.DISCONNECTED) {
+      return (
+        <>
+          <NetworkCheckIcon sx={{ color: 'var(--red)' }} />
+          <IndicatorText color={'var(--red)'}>{socketStatus}</IndicatorText>
+        </>
+      );
+    }
+
+    return <></>;
   };
 
   return (
@@ -69,6 +105,7 @@ const ChatFooter: FC<ChatFooterProps> = ({
           accept='image/*'
           multiple />
       </Form>
+      <SocketIndicator>{displayStatus(socketStatus)}</SocketIndicator>
     </Footer>
   );
 };
@@ -131,4 +168,17 @@ const InputImageFile = styled.input`
   padding: 0;
   overflow: hidden;
   border: 0;
+`;
+
+const SocketIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  gap: 7px;
+`;
+
+const IndicatorText = styled.span<{ color?: string }>`
+  font-size: 18px;
+  font-weight: 600;
+  color: ${({color}) => color ? color : 'var(--white)'};
 `;

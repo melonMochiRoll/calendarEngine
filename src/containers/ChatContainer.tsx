@@ -162,6 +162,7 @@ const ChatContainer: FC = () => {
           userData ?
             <ChatFooter
               onSubmit={() => onSubmit(chat, images, previews)}
+              socketStatus={socketStatus}
               chat={chat}
               onChangeChat={onChangeChat}
               onChangeImageFiles={onChangeImageFiles} />
