@@ -168,6 +168,7 @@ export function useChatSocket() {
   };
 
   return {
+    socketRef,
     sendChat,
     showNewChat,
     setShowNewChat,
