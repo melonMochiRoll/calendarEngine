@@ -117,6 +117,7 @@ const ChatContainer: FC = () => {
           isSender: true,
         },
         _status: ChatStatus.PENDING,
+        _imageFiles: images,
       };
 
       return {
@@ -130,30 +131,14 @@ const ChatContainer: FC = () => {
     setImages([]);
     setPreviews([]);
 
-    try {
-      if (images.length) {
-        const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
+    if (images.length) {
+      const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
 
-        const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
-        await Promise.all(uploadPromises);
-      }
-
-      sendChat(url, tempChatId, trimmedChat, imageIds);
-    } catch (err) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-        const chats = prev?.chats.map(chat => {
-          if (chat.id === tempChatId) {
-            return { ...chat, _status: ChatStatus.ERROR, _imageFiles: images };
-          }
-          return chat;
-        });
-
-        return {
-          chats: chats || [], 
-          hasMoreData: prev?.hasMoreData || false,
-        };
-      });
+      const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
+      await Promise.all(uploadPromises);
     }
+
+    sendChat(url, tempChatId, trimmedChat, imageIds);
   }, []);
 
   return (
