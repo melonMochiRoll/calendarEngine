@@ -16,6 +16,7 @@ import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 import dayjs from 'dayjs';
 import { uuidv7 } from 'uuidv7';
 import { useChatSocket } from 'Src/hooks/useChatSocket';
+import { SocketStatus } from 'Src/constants/constants';
 
 const ChatContainer: FC = () => {
   const { url } = useParams();
@@ -30,13 +31,12 @@ const ChatContainer: FC = () => {
   const [ previews, setPreviews ] = useState<string[]>([]);
 
   const {
-    socketRef,
+    socketStatus,
     sendChat,
     showNewChat,
     setShowNewChat,
     canShowNotify,
   } = useChatSocket();
-  const isConnected = socketRef.current?.connected;
 
   const deleteFile = useCallback((idx: number) => {
     setImages(prev => [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ]);
@@ -78,7 +78,7 @@ const ChatContainer: FC = () => {
   };
 
   const onSubmit = useCallback(async (chat: string, images: File[], previews: string[]) => {
-    if (!isConnected) return; 
+    if (socketStatus !== SocketStatus.CONNECTED) return; 
 
     const trimmedChat = chat.trim();
 

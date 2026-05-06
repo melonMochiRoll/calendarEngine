@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { ChatsCommandList, ChatStatus, TChatPayload, TChats } from "Typings/types";
 import { useAppSelector } from "./reduxHooks";
-import { ChatEmitEvent } from "Src/constants/constants";
+import { ChatEmitEvent, SocketStatus } from "Src/constants/constants";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
@@ -13,6 +13,7 @@ export function useChatSocket() {
   const socketRef = useRef<Socket>();
   const canShowNotify = useRef(false);
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
+  const [ socketStatus, setSocketStatus ] = useState(SocketStatus.CONNECTING);
 
   const { token } = useAppSelector(state => state.csrfToken);
   
@@ -31,11 +32,16 @@ export function useChatSocket() {
 
     const socket = socketRef.current;
 
+    socket?.on('connect', () => setSocketStatus(SocketStatus.CONNECTED));
+    socket?.on('disconnect', () => setSocketStatus(SocketStatus.DISCONNECTED));
+    socket?.io.on('reconnect_attempt', () => setSocketStatus(SocketStatus.RECONNECTING));
+    socket?.io.on('reconnect', () => setSocketStatus(SocketStatus.CONNECTED));
+
     socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
     socket?.on(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
     socket?.on(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
     socket?.on(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_ERROR}`, onChatError)
+    socket?.on(`publicChats:${ChatsCommandList.CHAT_ERROR}`, onChatError);
 
     return () => {
       socket?.disconnect();
@@ -168,7 +174,7 @@ export function useChatSocket() {
   };
 
   return {
-    socketRef,
+    socketStatus,
     sendChat,
     showNewChat,
     setShowNewChat,
