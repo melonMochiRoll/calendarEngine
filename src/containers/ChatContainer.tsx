@@ -30,11 +30,13 @@ const ChatContainer: FC = () => {
   const [ previews, setPreviews ] = useState<string[]>([]);
 
   const {
+    socketRef,
     sendChat,
     showNewChat,
     setShowNewChat,
     canShowNotify,
   } = useChatSocket();
+  const isConnected = socketRef.current?.connected;
 
   const deleteFile = useCallback((idx: number) => {
     setImages(prev => [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ]);
@@ -76,6 +78,8 @@ const ChatContainer: FC = () => {
   };
 
   const onSubmit = useCallback(async (chat: string, images: File[], previews: string[]) => {
+    if (!isConnected) return; 
+
     const trimmedChat = chat.trim();
 
     if (!trimmedChat && !images.length) {
