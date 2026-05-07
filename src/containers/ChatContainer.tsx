@@ -77,12 +77,12 @@ const ChatContainer: FC = () => {
     setPreviews(prev => [ ...prev, ...newPreviews ]);
   };
 
-  const onSubmit = useCallback(async (chat: string, images: File[], previews: string[]) => {
+  const onSubmit = useCallback(async (content: string, images: File[], previews: string[]) => {
     if (socketStatus !== SocketStatus.CONNECTED) return;
 
-    const trimmedChat = chat.trim();
+    content = content.trim();
 
-    if (!trimmedChat && !images.length) {
+    if (!content && !images.length) {
       setChat('');
       return;
     }
@@ -107,7 +107,7 @@ const ChatContainer: FC = () => {
 
       const tempChat = {
         id: tempChatId,
-        content: trimmedChat,
+        content,
         SenderId: userData.id,
         createdAt: now,
         updatedAt: now,
@@ -142,7 +142,7 @@ const ChatContainer: FC = () => {
       await Promise.all(uploadPromises);
     }
 
-    sendChat(url, tempChatId, trimmedChat, imageIds);
+    sendChat(url, tempChatId, content, imageIds);
   }, [socketStatus]);
 
   return (
