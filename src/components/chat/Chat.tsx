@@ -99,28 +99,28 @@ const Chat: FC<ChatProps> = ({
 
   const deleteErrorChat = () => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-      if (prev) {
-        const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
-        prev.chats[idx].Images.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
+      if (!prev) return;
+      
+      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
+      prev.chats[idx].Images.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
 
-        return {
-          ...prev,
-          chats: rest || [], 
-        };
-      }
+      return {
+        ...prev,
+        chats: rest || [], 
+      };
     });
   };
 
   const reSubmit = async () => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-      if (prev) {
-        const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
+      if (!prev) return;
 
-        return {
-          ...prev,
-          chats: rest || [], 
-        };
-      }
+      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
+
+      return {
+        ...prev,
+        chats: rest || [], 
+      };
     });
     await onSubmit(chat.content, chat._imageFiles || [], chat.Images.map(image => image._tempPath || ''));
   };
