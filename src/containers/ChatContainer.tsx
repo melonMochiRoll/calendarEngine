@@ -78,7 +78,7 @@ const ChatContainer: FC = () => {
   };
 
   const onSubmit = useCallback(async (chat: string, images: File[], previews: string[]) => {
-    if (socketStatus !== SocketStatus.CONNECTED) return; 
+    if (socketStatus !== SocketStatus.CONNECTED) return;
 
     const trimmedChat = chat.trim();
 
@@ -143,7 +143,7 @@ const ChatContainer: FC = () => {
     }
 
     sendChat(url, tempChatId, trimmedChat, imageIds);
-  }, []);
+  }, [socketStatus]);
 
   return (
     <ChatBlock>
