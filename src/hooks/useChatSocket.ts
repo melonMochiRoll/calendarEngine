@@ -48,7 +48,7 @@ export function useChatSocket() {
     };
   }, [_url, token]);
 
-  const sendChat = (
+  const sendSharedspaceChat = (
     url: string | undefined,
     id: string,
     content: string,
@@ -185,7 +185,7 @@ export function useChatSocket() {
 
   return {
     socketStatus,
-    sendChat,
+    sendSharedspaceChat,
     updateSharedspaceChat,
     showNewChat,
     setShowNewChat,

@@ -32,7 +32,7 @@ const ChatContainer: FC = () => {
 
   const {
     socketStatus,
-    sendChat,
+    sendSharedspaceChat,
     showNewChat,
     setShowNewChat,
     canShowNotify,
@@ -142,7 +142,7 @@ const ChatContainer: FC = () => {
       await Promise.all(uploadPromises);
     }
 
-    sendChat(url, tempChatId, content, imageIds);
+    sendSharedspaceChat(url, tempChatId, content, imageIds);
   }, [socketStatus]);
 
   return (
