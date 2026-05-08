@@ -6,6 +6,8 @@ import { io, Socket } from "socket.io-client";
 import { ChatsCommandList, ChatStatus, TChatPayload, TChats } from "Typings/types";
 import { useAppSelector } from "./reduxHooks";
 import { ChatEmitEvent, SocketStatus } from "Src/constants/constants";
+import { toast } from "react-toastify";
+import { defaultToastOption, imageTooLargeMessage, waitingMessage } from "Src/constants/notices";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
@@ -181,6 +183,29 @@ export function useChatSocket() {
       });
       return;
     }
+
+    if (action === `publicChats:${ChatsCommandList.CHAT_UPDATED}`) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
+          if (chat.id === ChatId) {
+            const { _status, ...rest } = chat;
+            return rest;
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+
+      toast.error(waitingMessage, defaultToastOption);
+      return;
+    }
+
   };
 
   return {
