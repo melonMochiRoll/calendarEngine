@@ -33,6 +33,7 @@ const ChatContainer: FC = () => {
   const {
     socketStatus,
     sendSharedspaceChat,
+    updateSharedspaceChat,
     showNewChat,
     setShowNewChat,
     canShowNotify,
@@ -155,6 +156,7 @@ const ChatContainer: FC = () => {
           showNewChat={showNewChat}
           setShowNewChat={setShowNewChat}
           canShowNotify={canShowNotify}
+          updateSharedspaceChat={updateSharedspaceChat}
           loadMore={loadMore}
           onSubmit={onSubmit}
           deleteFile={deleteFile} />

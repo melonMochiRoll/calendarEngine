@@ -33,6 +33,7 @@ interface ChatListProps {
     profileImage: string,
   } | null>>,
   canShowNotify: React.MutableRefObject<boolean>,
+  updateSharedspaceChat: (url: string, ChatId: string, content: string) => void,
   loadMore: () => void,
   onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
   deleteFile: (idx: number) => void,
@@ -45,6 +46,7 @@ const ChatList: FC<ChatListProps> = ({
   showNewChat,
   setShowNewChat,
   canShowNotify,
+  updateSharedspaceChat,
   loadMore,
   onSubmit,
   deleteFile,
@@ -76,7 +78,7 @@ const ChatList: FC<ChatListProps> = ({
     }
   }, 300);
 
-  const onUpdateChat = async (
+  const onUpdateChat = (
     url: string | undefined,
     ChatId: string,
     oldContent: string,
@@ -92,13 +94,7 @@ const ChatList: FC<ChatListProps> = ({
       return;
     }
 
-    try {
-      // await updateSharedspaceChat(url, ChatId, newContent);
-    } catch (err) {
-      toast.error(waitingMessage, {
-        ...defaultToastOption,
-      });
-    }
+    updateSharedspaceChat(url, ChatId, newContent);
   };
 
   const onDeleteChat = async (
