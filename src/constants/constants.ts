@@ -5,6 +5,7 @@ export const ERROR_TYPE = {
 
 export const ChatEmitEvent = {
   SEND_SHAREDSPACE_CHAT: 'send_sharedspace_chat',
+  UPDATE_SHAREDSPACE_CHAT: 'update_sharedspace_chat',
 } as const;
 
 export const SocketStatus = {
