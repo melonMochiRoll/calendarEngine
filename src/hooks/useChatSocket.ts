@@ -57,6 +57,14 @@ export function useChatSocket() {
     socketRef.current?.emit(ChatEmitEvent.SEND_SHAREDSPACE_CHAT, { url, id, content, imageIds });
   };
 
+  const updateSharedspaceChat = (
+    url: string,
+    ChatId: string,
+    content: string,
+  ) => {
+    socketRef.current?.emit(ChatEmitEvent.UPDATE_SHAREDSPACE_CHAT, { url, ChatId, content });
+  };
+
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
@@ -178,6 +186,7 @@ export function useChatSocket() {
   return {
     socketStatus,
     sendChat,
+    updateSharedspaceChat,
     showNewChat,
     setShowNewChat,
     canShowNotify,
