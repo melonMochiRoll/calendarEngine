@@ -92,24 +92,26 @@ export function useChatSocket() {
     }
   };
 
-  const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'>) => {
+  const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt' | 'permission'>) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (!prev) return;
 
-      const newChats = [ ...prev.chats ];
-      const idx = newChats.findIndex(chat => chat.id === data.id);
+      const chats = prev.chats.map((chat) => {
+        if (chat.id === data.id) {
+          const { _status, ...rest } = chat;
 
-      if (idx < 0) return;
+          return {
+            ...rest,
+            content: data.content,
+            updatedAt: data.updatedAt,
+          };
+        }
+        return chat;
+      });
 
-      newChats[idx] = {
-        ...newChats[idx],
-        content: data.content,
-        updatedAt: data.updatedAt,
-      };
-      
       return {
-        ...prev,
-        chats: newChats,
+        chats: chats || [],
+        hasMoreData: prev.hasMoreData,
       };
     });
   };
