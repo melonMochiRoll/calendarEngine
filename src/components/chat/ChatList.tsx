@@ -10,6 +10,11 @@ import ImagePreviewer from 'Components/chat/ImagePreviewer';
 import { formatDate } from 'Lib/utilFunction';
 import { TChatPayload, TChats } from 'Typings/types';
 import { throttle } from 'lodash';
+import { useQueryClient } from '@tanstack/react-query';
+import { deleteSharedspaceChat, deleteSharedspaceChatImage } from 'Api/sharedspacesApi';
+import { toast } from 'react-toastify';
+import { defaultToastOption, waitingMessage } from 'Src/constants/notices';
+import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 
 interface ChatListProps {
   chatList: TChats,
@@ -47,6 +52,7 @@ const ChatList: FC<ChatListProps> = ({
   dayjs.extend(utc);
   dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
+  const qc = useQueryClient();
 
   const onScroll = throttle(() => {
     if (scrollbarRef.current) {
@@ -69,6 +75,86 @@ const ChatList: FC<ChatListProps> = ({
       }
     }
   }, 300);
+
+  const onUpdateChat = async (
+    url: string | undefined,
+    ChatId: string,
+    oldContent: string,
+    newContent: string,
+  ) => {
+    newContent = newContent.trim();
+
+    if (
+      oldContent === newContent ||
+      !url ||
+      !newContent
+    ) {
+      return;
+    }
+
+    try {
+      // await updateSharedspaceChat(url, ChatId, newContent);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
+      });
+    }
+  };
+
+  const onDeleteChat = async (
+    url: string | undefined,
+    ChatId: string,
+  ) => {
+    try {
+      await deleteSharedspaceChat(url, ChatId);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
+      });
+    }
+  };
+
+  const deleteImage = async (
+    url: string | undefined,
+    ChatId: string,
+    ImageId: string
+  ) => {
+    try {
+      await deleteSharedspaceChatImage(url, ChatId, ImageId);
+    } catch (err) {
+      toast.error(waitingMessage, {
+        ...defaultToastOption,
+      });
+    }
+  };
+
+  const deleteErrorChat = (url: string | undefined, idx: number) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+      if (!prev) return;
+
+      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
+      prev.chats[idx].Images.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
+
+      return {
+        ...prev,
+        chats: rest || [], 
+      };
+    });
+  };
+
+  const reSubmit = (url: string | undefined, chat: TChatPayload, idx: number) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+      if (!prev) return;
+
+      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
+
+      return {
+        ...prev,
+        chats: rest || [], 
+      };
+    });
+    onSubmit(chat.content, chat._imageFiles || [], chat.Images.map(image => image._tempPath || ''));
+  };
 
   return (
     <List
@@ -95,7 +181,11 @@ const ChatList: FC<ChatListProps> = ({
                   key={chat.id}
                   idx={idx}
                   chat={chat}
-                  onSubmit={onSubmit} />
+                  onUpdateChat={onUpdateChat}
+                  onDeleteChat={onDeleteChat}
+                  deleteImage={deleteImage}
+                  deleteErrorChat={deleteErrorChat}
+                  reSubmit={reSubmit} />
                 <DateSeparator date={formatDate(dayjs(chat.createdAt).tz(localTimeZone).format())} />
               </Fragment>
             );
@@ -105,7 +195,11 @@ const ChatList: FC<ChatListProps> = ({
             key={chat.id}
             idx={idx}
             chat={chat}
-            onSubmit={onSubmit} />;
+            onUpdateChat={onUpdateChat}
+            onDeleteChat={onDeleteChat}
+            deleteImage={deleteImage}
+            deleteErrorChat={deleteErrorChat}
+            reSubmit={reSubmit} />;
         })
         :
         <FirstChatNotice>첫 메시지를 전송해보세요</FirstChatNotice>}

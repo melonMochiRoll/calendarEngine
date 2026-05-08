@@ -1,40 +1,43 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
-import { ChatStatus, TChatPayload, TChats } from 'Typings/types';
+import { ChatStatus, TChatPayload } from 'Typings/types';
 import ProfileImage from 'Components/ProfileImage';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import useMenu from 'Hooks/utils/useMenu';
-import { defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Constants/notices';
+import { muiMenuDarkModeSx } from 'Constants/notices';
 import { CircularProgress, Menu, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import { useParams } from 'react-router-dom';
-import { deleteSharedspaceChat, deleteSharedspaceChatImage, updateSharedspaceChat } from 'Api/sharedspacesApi';
 import EditIcon from '@mui/icons-material/Edit';
 import useInput from 'Hooks/utils/useInput';
 import EditContent from './EditContent';
 import ChatImage from './ChatImage';
-import { toast } from 'react-toastify';
 import RetryIcon from '@mui/icons-material/Replay';
 import CrossIcon from '@mui/icons-material/Clear';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 
 interface ChatProps {
   idx: number,
   chat: TChatPayload,
-  onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
+  onUpdateChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
+  onDeleteChat: (url: string | undefined, ChatId: string) => void,
+  deleteImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
+  deleteErrorChat: (url: string | undefined, idx: number) => void,
+  reSubmit: (url: string | undefined, chat: TChatPayload, idx: number) => void,
 };
 
 const Chat: FC<ChatProps> = ({
   idx,
   chat,
-  onSubmit,
+  onUpdateChat,
+  onDeleteChat,
+  deleteImage,
+  deleteErrorChat,
+  reSubmit,
 }) => {
   const { url } = useParams();
-  const qc = useQueryClient();
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ newContent, onChangeNewContent ] = useInput(chat.content);
   dayjs.extend(utc);
@@ -54,87 +57,6 @@ const Chat: FC<ChatProps> = ({
   const isError = chat._status === ChatStatus.ERROR;
   const isEditable = !isPending && !isError && chat.permission.isSender;
 
-  const onUpdateChat = async (
-    url: string | undefined,
-    ChatId: string,
-    oldContent: string,
-    newContent: string,
-  ) => {
-    newContent = newContent.trim();
-
-    if (
-      oldContent === newContent ||
-      !url ||
-      !newContent
-    ) {
-      return;
-    }
-
-    try {
-      await updateSharedspaceChat(url, ChatId, newContent);
-      setIsEditMode(false);
-    } catch (err) {
-      toast.error(waitingMessage, {
-        ...defaultToastOption,
-      });
-    }
-  };
-
-  const onDeleteChat = async (
-    url: string | undefined,
-    chatId: string,
-  ) => {
-    try {
-      await deleteSharedspaceChat(url, chatId);
-    } catch (err) {
-      toast.error(waitingMessage, {
-        ...defaultToastOption,
-      });
-    }
-  };
-
-  const deleteImage = async (
-    url: string | undefined,
-    ChatId: string,
-    ImageId: string
-  ) => {
-    try {
-      await deleteSharedspaceChatImage(url, ChatId, ImageId);
-    } catch (err) {
-      toast.error(waitingMessage, {
-        ...defaultToastOption,
-      });
-    }
-  };
-
-  const deleteErrorChat = () => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-      if (!prev) return;
-
-      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
-      prev.chats[idx].Images.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
-
-      return {
-        ...prev,
-        chats: rest || [], 
-      };
-    });
-  };
-
-  const reSubmit = async () => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-      if (!prev) return;
-
-      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
-
-      return {
-        ...prev,
-        chats: rest || [], 
-      };
-    });
-    await onSubmit(chat.content, chat._imageFiles || [], chat.Images.map(image => image._tempPath || ''));
-  };
-
   return (
     <Item hoverMenuId={hoverMenuId}>
       <ProfileWrapper>
@@ -151,9 +73,9 @@ const Chat: FC<ChatProps> = ({
           {isPending && <CircularProgress size={15} sx={{ color: 'var(--white)' }}/>}
           {isError &&
             <ErrorWrapper>
-              <CrossIcon fontSize='small' onClick={deleteErrorChat} />
+              <CrossIcon fontSize='small' onClick={() => deleteErrorChat(url, idx)} />
               :
-              <RetryIcon fontSize="small" onClick={reSubmit} />
+              <RetryIcon fontSize="small" onClick={() => reSubmit(url, chat, idx)} />
             </ErrorWrapper>
           }
         </InfoWrapper>
@@ -166,6 +88,7 @@ const Chat: FC<ChatProps> = ({
               onSubmit={e => {
                 e.preventDefault();
                 onUpdateChat(url, chat.id, chat.content, newContent);
+                setIsEditMode(false);
               }} /> :
             <Content>{chat.content}</Content>
           }
