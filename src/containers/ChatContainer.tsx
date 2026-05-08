@@ -155,6 +155,7 @@ const ChatContainer: FC = () => {
           scrollbarRef={scrollbarRef}
           showNewChat={showNewChat}
           setShowNewChat={setShowNewChat}
+          socketStatus={socketStatus}
           canShowNotify={canShowNotify}
           updateSharedspaceChat={updateSharedspaceChat}
           loadMore={loadMore}
