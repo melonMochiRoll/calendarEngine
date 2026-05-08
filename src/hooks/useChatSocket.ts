@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { ChatsCommandList, ChatStatus, TChatPayload, TChats } from "Typings/types";
@@ -57,13 +57,13 @@ export function useChatSocket() {
     socketRef.current?.emit(ChatEmitEvent.SEND_SHAREDSPACE_CHAT, { url, id, content, imageIds });
   };
 
-  const updateSharedspaceChat = (
+  const updateSharedspaceChat = useCallback((
     url: string,
     ChatId: string,
     content: string,
   ) => {
     socketRef.current?.emit(ChatEmitEvent.UPDATE_SHAREDSPACE_CHAT, { url, ChatId, content });
-  };
+  }, []);
 
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
