@@ -70,7 +70,9 @@ export function useChatSocket() {
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        const chats = prev?.chats.map(chat => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
           if (chat.id === data.id) {
             data.Images = data.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath }));
             return data;
@@ -79,15 +81,17 @@ export function useChatSocket() {
         });
 
         return {
-          chats: chats || [],
-          hasMoreData: prev?.hasMoreData || false,
+          chats,
+          hasMoreData: prev.hasMoreData,
         };
       });
     } else {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
         return {
-          chats: [ data, ...prev?.chats || [] ],
-          hasMoreData: prev?.hasMoreData || false,
+          chats: [ data, ...prev.chats ],
+          hasMoreData: prev.hasMoreData,
         };
       });
 
@@ -120,7 +124,7 @@ export function useChatSocket() {
       });
 
       return {
-        chats: chats || [],
+        chats,
         hasMoreData: prev.hasMoreData,
       };
     });
@@ -138,8 +142,8 @@ export function useChatSocket() {
       const tail = prev.chats.slice(idx + 1, prev.chats.length);
 
       return {
-        ...prev,
         chats: [ ...head, ...tail ],
+        hasMoreData: prev.hasMoreData,
       };
     });
   };
@@ -158,8 +162,8 @@ export function useChatSocket() {
       const imagesTail = targetChat.Images.slice(imageIdx + 1, targetChat.Images.length);
 
       return {
-        ...prev,
         chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
+        hasMoreData: prev.hasMoreData,
       };
     });
   };
@@ -169,6 +173,8 @@ export function useChatSocket() {
 
     if (action === `publicChats:${ChatsCommandList.CHAT_CREATED}`) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
         const chats = prev?.chats.map(chat => {
           if (chat.id === ChatId) {
             return { ...chat, _status: ChatStatus.ERROR };
@@ -177,8 +183,8 @@ export function useChatSocket() {
         });
 
         return {
-          chats: chats || [], 
-          hasMoreData: prev?.hasMoreData || false,
+          chats,
+          hasMoreData: prev.hasMoreData,
         };
       });
       return;
