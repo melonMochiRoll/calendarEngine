@@ -230,24 +230,13 @@ export const createSharedspaceChat = async (
 export const updateSharedspaceChat = async (
   url: string | undefined,
   ChatId: string,
-  oldContent: string,
-  newContent: string,
+  content: string,
 ) => {
-  if (oldContent === newContent || !url || !newContent) {
-    throw new Error;
-  }
-
-  try {
-    const { data } = await axiosInstance
-      .patch(`/api/sharedspaces/${url}/chats`, {
-        ChatId,
-        content: newContent,
-      });
-
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .patch(`/api/sharedspaces/${url}/chats`, {
+      ChatId,
+      content,
+    });
 };
 
 export const deleteSharedspaceChat = async (

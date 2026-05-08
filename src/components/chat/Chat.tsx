@@ -60,8 +60,18 @@ const Chat: FC<ChatProps> = ({
     oldContent: string,
     newContent: string,
   ) => {
+    newContent = newContent.trim();
+
+    if (
+      oldContent === newContent ||
+      !url ||
+      !newContent
+    ) {
+      return;
+    }
+
     try {
-      await updateSharedspaceChat(url, ChatId, oldContent, newContent.trim());
+      await updateSharedspaceChat(url, ChatId, newContent);
       setIsEditMode(false);
     } catch (err) {
       toast.error(waitingMessage, {
@@ -100,7 +110,7 @@ const Chat: FC<ChatProps> = ({
   const deleteErrorChat = () => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
-      
+
       const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
       prev.chats[idx].Images.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
 
