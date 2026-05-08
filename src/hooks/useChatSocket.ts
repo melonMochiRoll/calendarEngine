@@ -61,10 +61,10 @@ export function useChatSocket() {
 
   const updateSharedspaceChat = useCallback((
     url: string,
-    ChatId: string,
+    id: string,
     content: string,
   ) => {
-    socketRef.current?.emit(ChatEmitEvent.UPDATE_SHAREDSPACE_CHAT, { url, ChatId, content });
+    socketRef.current?.emit(ChatEmitEvent.UPDATE_SHAREDSPACE_CHAT, { url, id, content });
   }, []);
 
   const onChatCreated = (data: TChatPayload) => {
