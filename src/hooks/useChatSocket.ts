@@ -4,11 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { ChatsCommandList, ChatStatus, TChatPayload, TChats } from "Typings/types";
-import { useAppDispatch, useAppSelector } from "./reduxHooks";
+import { useAppSelector } from "./reduxHooks";
 import { ChatEmitEvent, SocketStatus } from "Src/constants/constants";
 import { toast } from "react-toastify";
 import { defaultToastOption, waitingMessage } from "Src/constants/notices";
-import { setChatSocketStatus } from "Src/features/chatSocketStatusSlice";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
@@ -16,8 +15,7 @@ export function useChatSocket() {
   const socketRef = useRef<Socket>();
   const canShowNotify = useRef(false);
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
-  const dispatch = useAppDispatch();
-  const { status: socketStatus } = useAppSelector(state => state.chatSocketStatus);
+  const [ socketStatus, setSocketStatus ] = useState(SocketStatus.CONNECTING);
   const { token } = useAppSelector(state => state.csrfToken);
   
   useEffect(() => {
@@ -35,10 +33,10 @@ export function useChatSocket() {
 
     const socket = socketRef.current;
 
-    socket?.on('connect', () => dispatch(setChatSocketStatus(SocketStatus.CONNECTED)));
-    socket?.on('disconnect', () => dispatch(setChatSocketStatus(SocketStatus.DISCONNECTED)));
-    socket?.io.on('reconnect_attempt', () => dispatch(setChatSocketStatus(SocketStatus.RECONNECTING)));
-    socket?.io.on('reconnect', () => dispatch(setChatSocketStatus(SocketStatus.CONNECTED)));
+    socket?.on('connect', () => setSocketStatus(SocketStatus.CONNECTED));
+    socket?.on('disconnect', () => setSocketStatus(SocketStatus.DISCONNECTED));
+    socket?.io.on('reconnect_attempt', () => setSocketStatus(SocketStatus.RECONNECTING));
+    socket?.io.on('reconnect', () => setSocketStatus(SocketStatus.CONNECTED));
 
     socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
     socket?.on(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
@@ -302,6 +300,7 @@ export function useChatSocket() {
   };
 
   return {
+    socketStatus,
     sendSharedspaceChat,
     updateSharedspaceChat,
     deleteSharedspaceChat,
