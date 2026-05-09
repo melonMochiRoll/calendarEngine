@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import { defaultToastOption, waitingMessage } from 'Src/constants/notices';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 import { SocketStatus } from 'Src/constants/constants';
+import { useAppSelector } from 'Src/hooks/reduxHooks';
 
 interface ChatListProps {
   chatList: TChats,
@@ -33,7 +34,6 @@ interface ChatListProps {
     nickname: string,
     profileImage: string,
   } | null>>,
-  socketStatus: string,
   canShowNotify: React.MutableRefObject<boolean>,
   updateSharedspaceChat: (url: string, ChatId: string, content: string) => void,
   loadMore: () => void,
@@ -47,7 +47,6 @@ const ChatList: FC<ChatListProps> = ({
   scrollbarRef,
   showNewChat,
   setShowNewChat,
-  socketStatus,
   canShowNotify,
   updateSharedspaceChat,
   loadMore,
@@ -58,6 +57,7 @@ const ChatList: FC<ChatListProps> = ({
   dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
   const qc = useQueryClient();
+  const { status: socketStatus } = useAppSelector(state => state.chatSocketStatus);
 
   const onScroll = throttle(() => {
     if (scrollbarRef.current) {

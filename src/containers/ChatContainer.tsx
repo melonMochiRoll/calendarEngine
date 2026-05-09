@@ -17,6 +17,7 @@ import dayjs from 'dayjs';
 import { uuidv7 } from 'uuidv7';
 import { useChatSocket } from 'Src/hooks/useChatSocket';
 import { SocketStatus } from 'Src/constants/constants';
+import { useAppSelector } from 'Src/hooks/reduxHooks';
 
 const ChatContainer: FC = () => {
   const { url } = useParams();
@@ -29,9 +30,9 @@ const ChatContainer: FC = () => {
   const [ chat, onChangeChat, setChat ] = useInput('');
   const [ images, setImages ] = useState<File[]>([]);
   const [ previews, setPreviews ] = useState<string[]>([]);
+  const { status: socketStatus } = useAppSelector(state => state.chatSocketStatus);
 
   const {
-    socketStatus,
     sendSharedspaceChat,
     updateSharedspaceChat,
     showNewChat,
@@ -155,7 +156,6 @@ const ChatContainer: FC = () => {
           scrollbarRef={scrollbarRef}
           showNewChat={showNewChat}
           setShowNewChat={setShowNewChat}
-          socketStatus={socketStatus}
           canShowNotify={canShowNotify}
           updateSharedspaceChat={updateSharedspaceChat}
           loadMore={loadMore}
