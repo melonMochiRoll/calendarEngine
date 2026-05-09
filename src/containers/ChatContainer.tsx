@@ -35,6 +35,7 @@ const ChatContainer: FC = () => {
   const {
     sendSharedspaceChat,
     updateSharedspaceChat,
+    deleteSharedspaceChat,
     showNewChat,
     setShowNewChat,
     canShowNotify,
@@ -158,6 +159,7 @@ const ChatContainer: FC = () => {
           setShowNewChat={setShowNewChat}
           canShowNotify={canShowNotify}
           updateSharedspaceChat={updateSharedspaceChat}
+          deleteSharedspaceChat={deleteSharedspaceChat}
           loadMore={loadMore}
           onSubmit={onSubmit}
           deleteFile={deleteFile} />

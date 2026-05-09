@@ -67,6 +67,32 @@ export function useChatSocket() {
     socketRef.current?.emit(ChatEmitEvent.UPDATE_SHAREDSPACE_CHAT, { url, id, content });
   }, []);
 
+  const deleteSharedspaceChat = useCallback((
+    url: string,
+    id: string,
+  ) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      if (!prev) return;
+
+      const chats = prev.chats.map((chat) => {
+        if (chat.id === id) {
+          return {
+            ...chat,
+            _status: ChatStatus.PENDING,
+          };
+        }
+        return chat;
+      });
+
+      return {
+        chats,
+        hasMoreData: prev.hasMoreData,
+      };
+    });
+
+    socketRef.current?.emit(ChatEmitEvent.DELETE_SHAREDSPACE_CHAT, { url, id });
+  }, []);
+
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
@@ -130,11 +156,11 @@ export function useChatSocket() {
     });
   };
 
-  const onChatDeleted = (ChatId: string) => {
+  const onChatDeleted = (data: Pick<TChatPayload, 'id'>) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (!prev) return;
 
-      const idx = prev.chats.findIndex(chat => chat.id === ChatId);
+      const idx = prev.chats.findIndex(chat => chat.id === data.id);
 
       if (idx < 0) return;
 
@@ -212,11 +238,33 @@ export function useChatSocket() {
       return;
     }
 
+    if (action === `publicChats:${ChatsCommandList.CHAT_DELETED}`) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
+          if (chat.id === ChatId) {
+            const { _status, ...rest } = chat;
+            return rest;
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+
+      toast.error(waitingMessage, defaultToastOption);
+      return;
+    }
   };
 
   return {
     sendSharedspaceChat,
     updateSharedspaceChat,
+    deleteSharedspaceChat,
     showNewChat,
     setShowNewChat,
     canShowNotify,

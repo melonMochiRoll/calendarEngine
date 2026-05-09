@@ -11,7 +11,7 @@ import { formatDate } from 'Lib/utilFunction';
 import { TChatPayload, TChats } from 'Typings/types';
 import { throttle } from 'lodash';
 import { useQueryClient } from '@tanstack/react-query';
-import { deleteSharedspaceChat, deleteSharedspaceChatImage } from 'Api/sharedspacesApi';
+import { deleteSharedspaceChatImage } from 'Api/sharedspacesApi';
 import { toast } from 'react-toastify';
 import { defaultToastOption, waitingMessage } from 'Src/constants/notices';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
@@ -36,6 +36,7 @@ interface ChatListProps {
   } | null>>,
   canShowNotify: React.MutableRefObject<boolean>,
   updateSharedspaceChat: (url: string, ChatId: string, content: string) => void,
+  deleteSharedspaceChat: (url: string, ChatId: string) => void,
   loadMore: () => void,
   onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
   deleteFile: (idx: number) => void,
@@ -49,6 +50,7 @@ const ChatList: FC<ChatListProps> = ({
   setShowNewChat,
   canShowNotify,
   updateSharedspaceChat,
+  deleteSharedspaceChat,
   loadMore,
   onSubmit,
   deleteFile,
@@ -106,13 +108,14 @@ const ChatList: FC<ChatListProps> = ({
     url: string | undefined,
     ChatId: string,
   ) => {
-    try {
-      await deleteSharedspaceChat(url, ChatId);
-    } catch (err) {
-      toast.error(waitingMessage, {
-        ...defaultToastOption,
-      });
-    }
+    if (
+      socketStatus !== SocketStatus.CONNECTED ||
+      !url
+    ) {
+      return;
+    };
+    
+    deleteSharedspaceChat(url, ChatId);
   };
 
   const deleteImage = async (
