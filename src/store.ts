@@ -3,6 +3,7 @@ import modalReducer from 'Features/modalSlice';
 import calendarTimeReducer from 'Features/calendarTimeSlice';
 import todoTimeReducer from 'Features/todoTimeSlice';
 import csrfTokenReducer from 'Features/csrfTokenSlice';
+import chatSocketStatusReducer from 'Features/chatSocketStatusSlice';
 
 export const reduxStore = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const reduxStore = configureStore({
     calendarTime: calendarTimeReducer,
     todoTime: todoTimeReducer,
     csrfToken: csrfTokenReducer,
+    chatSocketStatus: chatSocketStatusReducer,
   },
 });
 
