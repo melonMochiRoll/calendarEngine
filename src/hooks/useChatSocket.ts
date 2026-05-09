@@ -17,6 +17,7 @@ export function useChatSocket() {
   const canShowNotify = useRef(false);
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const dispatch = useAppDispatch();
+  const { status: socketStatus } = useAppSelector(state => state.chatSocketStatus);
   const { token } = useAppSelector(state => state.csrfToken);
   
   useEffect(() => {
@@ -68,9 +69,16 @@ export function useChatSocket() {
   }, []);
 
   const deleteSharedspaceChat = useCallback((
-    url: string,
+    url: string | undefined,
     id: string,
   ) => {
+    if (
+      socketStatus !== SocketStatus.CONNECTED ||
+      !url
+    ) {
+      return;
+    };
+
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (!prev) return;
 

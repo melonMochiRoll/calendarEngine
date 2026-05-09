@@ -36,7 +36,7 @@ interface ChatListProps {
   } | null>>,
   canShowNotify: React.MutableRefObject<boolean>,
   updateSharedspaceChat: (url: string, ChatId: string, content: string) => void,
-  deleteSharedspaceChat: (url: string, ChatId: string) => void,
+  deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
   loadMore: () => void,
   onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
   deleteFile: (idx: number) => void,
@@ -102,20 +102,6 @@ const ChatList: FC<ChatListProps> = ({
     }
 
     updateSharedspaceChat(url, ChatId, newContent);
-  };
-
-  const onDeleteChat = async (
-    url: string | undefined,
-    ChatId: string,
-  ) => {
-    if (
-      socketStatus !== SocketStatus.CONNECTED ||
-      !url
-    ) {
-      return;
-    };
-    
-    deleteSharedspaceChat(url, ChatId);
   };
 
   const deleteImage = async (
@@ -186,7 +172,7 @@ const ChatList: FC<ChatListProps> = ({
                   idx={idx}
                   chat={chat}
                   onUpdateChat={onUpdateChat}
-                  onDeleteChat={onDeleteChat}
+                  deleteSharedspaceChat={deleteSharedspaceChat}
                   deleteImage={deleteImage}
                   deleteErrorChat={deleteErrorChat}
                   reSubmit={reSubmit} />
@@ -200,7 +186,7 @@ const ChatList: FC<ChatListProps> = ({
             idx={idx}
             chat={chat}
             onUpdateChat={onUpdateChat}
-            onDeleteChat={onDeleteChat}
+            deleteSharedspaceChat={deleteSharedspaceChat}
             deleteImage={deleteImage}
             deleteErrorChat={deleteErrorChat}
             reSubmit={reSubmit} />;

@@ -22,7 +22,7 @@ interface ChatProps {
   idx: number,
   chat: TChatPayload,
   onUpdateChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
-  onDeleteChat: (url: string | undefined, ChatId: string) => void,
+  deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
   deleteImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
   deleteErrorChat: (url: string | undefined, idx: number) => void,
   reSubmit: (url: string | undefined, chat: TChatPayload, idx: number) => void,
@@ -32,7 +32,7 @@ const Chat: FC<ChatProps> = ({
   idx,
   chat,
   onUpdateChat,
-  onDeleteChat,
+  deleteSharedspaceChat,
   deleteImage,
   deleteErrorChat,
   reSubmit,
@@ -130,7 +130,7 @@ const Chat: FC<ChatProps> = ({
             <span>메시지 수정</span>
           </MenuItem>
           <MenuItem
-            onClick={() => onDeleteChat(url, chat.id)}
+            onClick={() => deleteSharedspaceChat(url, chat.id)}
             sx={{ gap: '5px', color: 'var(--red)' }}>
             <DeleteIcon />
             <span>메시지 삭제</span>
