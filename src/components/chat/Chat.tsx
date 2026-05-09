@@ -21,7 +21,7 @@ import CrossIcon from '@mui/icons-material/Clear';
 interface ChatProps {
   idx: number,
   chat: TChatPayload,
-  onUpdateChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
+  updateSharedspaceChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
   deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
   deleteImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
   deleteErrorChat: (url: string | undefined, idx: number) => void,
@@ -31,7 +31,7 @@ interface ChatProps {
 const Chat: FC<ChatProps> = ({
   idx,
   chat,
-  onUpdateChat,
+  updateSharedspaceChat,
   deleteSharedspaceChat,
   deleteImage,
   deleteErrorChat,
@@ -87,7 +87,7 @@ const Chat: FC<ChatProps> = ({
               onChangeContent={onChangeNewContent}
               onSubmit={e => {
                 e.preventDefault();
-                onUpdateChat(url, chat.id, chat.content, newContent);
+                updateSharedspaceChat(url, chat.id, chat.content, newContent);
                 setIsEditMode(false);
               }} /> :
             <Content>{chat.content}</Content>

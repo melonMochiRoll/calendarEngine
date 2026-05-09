@@ -35,7 +35,7 @@ interface ChatListProps {
     profileImage: string,
   } | null>>,
   canShowNotify: React.MutableRefObject<boolean>,
-  updateSharedspaceChat: (url: string, ChatId: string, content: string) => void,
+  updateSharedspaceChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
   deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
   loadMore: () => void,
   onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
@@ -59,7 +59,6 @@ const ChatList: FC<ChatListProps> = ({
   dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
   const qc = useQueryClient();
-  const { status: socketStatus } = useAppSelector(state => state.chatSocketStatus);
 
   const onScroll = throttle(() => {
     if (scrollbarRef.current) {
@@ -82,27 +81,6 @@ const ChatList: FC<ChatListProps> = ({
       }
     }
   }, 300);
-
-  const onUpdateChat = (
-    url: string | undefined,
-    ChatId: string,
-    oldContent: string,
-    newContent: string,
-  ) => {
-    if (socketStatus !== SocketStatus.CONNECTED) return;
-    
-    newContent = newContent.trim();
-
-    if (
-      oldContent === newContent ||
-      !url ||
-      !newContent
-    ) {
-      return;
-    }
-
-    updateSharedspaceChat(url, ChatId, newContent);
-  };
 
   const deleteImage = async (
     url: string | undefined,
@@ -171,7 +149,7 @@ const ChatList: FC<ChatListProps> = ({
                   key={chat.id}
                   idx={idx}
                   chat={chat}
-                  onUpdateChat={onUpdateChat}
+                  updateSharedspaceChat={updateSharedspaceChat}
                   deleteSharedspaceChat={deleteSharedspaceChat}
                   deleteImage={deleteImage}
                   deleteErrorChat={deleteErrorChat}
@@ -185,7 +163,7 @@ const ChatList: FC<ChatListProps> = ({
             key={chat.id}
             idx={idx}
             chat={chat}
-            onUpdateChat={onUpdateChat}
+            updateSharedspaceChat={updateSharedspaceChat}
             deleteSharedspaceChat={deleteSharedspaceChat}
             deleteImage={deleteImage}
             deleteErrorChat={deleteErrorChat}

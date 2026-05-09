@@ -61,12 +61,44 @@ export function useChatSocket() {
   };
 
   const updateSharedspaceChat = useCallback((
-    url: string,
+    url: string | undefined,
     id: string,
-    content: string,
+    oldContent: string,
+    newContent: string,
   ) => {
-    socketRef.current?.emit(ChatEmitEvent.UPDATE_SHAREDSPACE_CHAT, { url, id, content });
-  }, []);
+    if (socketStatus !== SocketStatus.CONNECTED) return;
+    
+    newContent = newContent.trim();
+
+    if (
+      oldContent === newContent ||
+      !url ||
+      !newContent
+    ) {
+      return;
+    }
+
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      if (!prev) return;
+
+      const chats = prev.chats.map((chat) => {
+        if (chat.id === id) {
+          return {
+            ...chat,
+            _status: ChatStatus.PENDING,
+          };
+        }
+        return chat;
+      });
+
+      return {
+        chats,
+        hasMoreData: prev.hasMoreData,
+      };
+    });
+
+    socketRef.current?.emit(ChatEmitEvent.UPDATE_SHAREDSPACE_CHAT, { url, id, content: newContent });
+  }, [socketStatus]);
 
   const deleteSharedspaceChat = useCallback((
     url: string | undefined,
@@ -99,7 +131,7 @@ export function useChatSocket() {
     });
 
     socketRef.current?.emit(ChatEmitEvent.DELETE_SHAREDSPACE_CHAT, { url, id });
-  }, []);
+  }, [socketStatus]);
 
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
