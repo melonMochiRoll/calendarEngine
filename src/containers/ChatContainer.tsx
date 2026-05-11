@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useChats } from 'Hooks/queries/useChats';
-import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import { useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
 import { toast } from 'react-toastify';
@@ -10,17 +9,9 @@ import ChatFooter from 'Components/chat/ChatFooter';
 import ChatList from 'Components/chat/ChatList';
 import ChatDisableFooter from 'Src/components/chat/ChatDisableFooter';
 import useUser from 'Src/hooks/queries/useUser';
-import { useQueryClient } from '@tanstack/react-query';
-import { ChatStatus, TChats } from 'Src/typings/types';
-import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
-import dayjs from 'dayjs';
-import { uuidv7 } from 'uuidv7';
 import { useChatSocket } from 'Src/hooks/useChatSocket';
-import { SocketStatus } from 'Src/constants/constants';
 
 const ChatContainer: FC = () => {
-  const { url } = useParams();
-  const qc = useQueryClient();
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
 
   const { data: chatList, loadMore } = useChats();
@@ -79,73 +70,19 @@ const ChatContainer: FC = () => {
     setPreviews(prev => [ ...prev, ...newPreviews ]);
   };
 
-  const onSubmit = useCallback(async (content: string, images: File[], previews: string[]) => {
-    if (socketStatus !== SocketStatus.CONNECTED) return;
+  const onSubmit = useCallback((content: string, images: File[], previews: string[]) => {
+    const result = sendSharedspaceChat(content, images, previews);
 
-    content = content.trim();
-
-    if (!content && !images.length) {
-      setChat('');
+    if (!result) {
+      toast.error(waitingMessage, defaultToastOption);
       return;
     }
-
-    const tempChatId = uuidv7();
-
-    const imageIds: string[] = [];
-    const tempImages: Array<{ id: string, path: string, _tempPath: string }> = [];
-    const metaDatas: Array<{ id: string, fileName: string, fileSize: number, contentType: string }> = [];
-
-    for (let i=0; i<images.length; i++) {
-      const id = uuidv7();
-      const image = images[i];
-
-      imageIds.push(id);
-      tempImages.push({ id, path: '', _tempPath: previews[i] });
-      metaDatas.push({ id, fileName: image.name, fileSize: image.size, contentType: image.type });
-    }
-
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-      const now = dayjs().toISOString();
-
-      const tempChat = {
-        id: tempChatId,
-        content,
-        SenderId: userData.id,
-        createdAt: now,
-        updatedAt: now,
-        Sender: {
-          email: userData.email,
-          nickname: userData.nickname,
-          profileImage: userData.profileImage,
-        },
-        Images: tempImages,
-        permission: {
-          isSender: true,
-        },
-        _status: ChatStatus.PENDING,
-        _imageFiles: images,
-      };
-
-      return {
-        chats: [ tempChat, ...prev?.chats || [] ],
-        hasMoreData: prev?.hasMoreData || false,
-      };
-    });
 
     scrollbarRef?.current?.scrollTo(0, 0);
     setChat('');
     setImages([]);
     setPreviews([]);
-
-    if (images.length) {
-      const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
-
-      const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
-      await Promise.all(uploadPromises);
-    }
-
-    sendSharedspaceChat(url, tempChatId, content, imageIds);
-  }, [socketStatus]);
+  }, [sendSharedspaceChat]);
 
   return (
     <ChatBlock>

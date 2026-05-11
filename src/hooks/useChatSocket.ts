@@ -8,12 +8,17 @@ import { useAppSelector } from "./reduxHooks";
 import { ChatEmitEvent, SocketStatus } from "Src/constants/constants";
 import { toast } from "react-toastify";
 import { defaultToastOption, waitingMessage } from "Src/constants/notices";
+import dayjs from 'dayjs';
+import { uuidv7 } from 'uuidv7';
+import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
+import useUser from "./queries/useUser";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
   const socketRef = useRef<Socket>();
   const canShowNotify = useRef(false);
+  const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const [ socketStatus, setSocketStatus ] = useState(SocketStatus.CONNECTING);
   const { token } = useAppSelector(state => state.csrfToken);
@@ -49,13 +54,72 @@ export function useChatSocket() {
     };
   }, [_url, token]);
 
-  const sendSharedspaceChat = (
-    url: string | undefined,
-    id: string,
+  const sendSharedspaceChat = async (
     content: string,
-    imageIds: string[],
+    images: File[],
+    previews: string[]
   ) => {
-    socketRef.current?.emit(ChatEmitEvent.SEND_SHAREDSPACE_CHAT, { url, id, content, imageIds });
+    if (socketStatus !== SocketStatus.CONNECTED) return false;
+
+    content = content.trim();
+
+    if (!content && !images.length) {
+      return false;
+    }
+
+    const tempChatId = uuidv7();
+
+    const imageIds: string[] = [];
+    const tempImages: Array<{ id: string, path: string, _tempPath: string }> = [];
+    const metaDatas: Array<{ id: string, fileName: string, fileSize: number, contentType: string }> = [];
+
+    for (let i=0; i<images.length; i++) {
+      const id = uuidv7();
+      const image = images[i];
+
+      imageIds.push(id);
+      tempImages.push({ id, path: '', _tempPath: previews[i] });
+      metaDatas.push({ id, fileName: image.name, fileSize: image.size, contentType: image.type });
+    }
+
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      const now = dayjs().toISOString();
+
+      const tempChat = {
+        id: tempChatId,
+        content,
+        SenderId: userData.id,
+        createdAt: now,
+        updatedAt: now,
+        Sender: {
+          email: userData.email,
+          nickname: userData.nickname,
+          profileImage: userData.profileImage,
+        },
+        Images: tempImages,
+        permission: {
+          isSender: true,
+        },
+        _status: ChatStatus.PENDING,
+        _imageFiles: images,
+      };
+
+      return {
+        chats: [ tempChat, ...prev?.chats || [] ],
+        hasMoreData: prev?.hasMoreData || false,
+      };
+    });
+
+    if (images.length) {
+      const presignedUrls = await generatePresignedPutUrl(_url, metaDatas);
+
+      const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
+      await Promise.all(uploadPromises);
+    }
+
+
+    socketRef.current?.emit(ChatEmitEvent.SEND_SHAREDSPACE_CHAT, { _url, id: tempChatId, content, imageIds });
+    return true;
   };
 
   const updateSharedspaceChat = useCallback((

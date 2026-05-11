@@ -15,8 +15,6 @@ import { deleteSharedspaceChatImage } from 'Api/sharedspacesApi';
 import { toast } from 'react-toastify';
 import { defaultToastOption, waitingMessage } from 'Src/constants/notices';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
-import { SocketStatus } from 'Src/constants/constants';
-import { useAppSelector } from 'Src/hooks/reduxHooks';
 
 interface ChatListProps {
   chatList: TChats,
@@ -38,7 +36,7 @@ interface ChatListProps {
   updateSharedspaceChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
   deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
   loadMore: () => void,
-  onSubmit: (chat: string, images: File[], previews: string[]) => Promise<void>,
+  onSubmit: (chat: string, images: File[], previews: string[]) => void,
   deleteFile: (idx: number) => void,
 };
 
