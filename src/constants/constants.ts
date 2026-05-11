@@ -7,6 +7,7 @@ export const ChatEmitEvent = {
   SEND_SHAREDSPACE_CHAT: 'send_sharedspace_chat',
   UPDATE_SHAREDSPACE_CHAT: 'update_sharedspace_chat',
   DELETE_SHAREDSPACE_CHAT: 'delete_sharedspace_chat',
+  DELETE_SHAREDSPACE_CHAT_IMAGE: 'delete_sharedspace_chat_image',
 } as const;
 
 export const SocketStatus = {
