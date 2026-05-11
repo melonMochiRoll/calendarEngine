@@ -11,9 +11,6 @@ import { formatDate } from 'Lib/utilFunction';
 import { TChatPayload, TChats } from 'Typings/types';
 import { throttle } from 'lodash';
 import { useQueryClient } from '@tanstack/react-query';
-import { deleteSharedspaceChatImage } from 'Api/sharedspacesApi';
-import { toast } from 'react-toastify';
-import { defaultToastOption, waitingMessage } from 'Src/constants/notices';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 
 interface ChatListProps {
@@ -35,6 +32,7 @@ interface ChatListProps {
   canShowNotify: React.MutableRefObject<boolean>,
   updateSharedspaceChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
   deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
+  deleteSharedspaceChatImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
   loadMore: () => void,
   onSubmit: (chat: string, images: File[], previews: string[]) => void,
   deleteFile: (idx: number) => void,
@@ -49,6 +47,7 @@ const ChatList: FC<ChatListProps> = ({
   canShowNotify,
   updateSharedspaceChat,
   deleteSharedspaceChat,
+  deleteSharedspaceChatImage,
   loadMore,
   onSubmit,
   deleteFile,
@@ -79,20 +78,6 @@ const ChatList: FC<ChatListProps> = ({
       }
     }
   }, 300);
-
-  const deleteImage = async (
-    url: string | undefined,
-    ChatId: string,
-    ImageId: string
-  ) => {
-    try {
-      await deleteSharedspaceChatImage(url, ChatId, ImageId);
-    } catch (err) {
-      toast.error(waitingMessage, {
-        ...defaultToastOption,
-      });
-    }
-  };
 
   const deleteErrorChat = (url: string | undefined, idx: number) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
@@ -149,7 +134,7 @@ const ChatList: FC<ChatListProps> = ({
                   chat={chat}
                   updateSharedspaceChat={updateSharedspaceChat}
                   deleteSharedspaceChat={deleteSharedspaceChat}
-                  deleteImage={deleteImage}
+                  deleteSharedspaceChatImage={deleteSharedspaceChatImage}
                   deleteErrorChat={deleteErrorChat}
                   reSubmit={reSubmit} />
                 <DateSeparator date={formatDate(dayjs(chat.createdAt).tz(localTimeZone).format())} />
@@ -163,7 +148,7 @@ const ChatList: FC<ChatListProps> = ({
             chat={chat}
             updateSharedspaceChat={updateSharedspaceChat}
             deleteSharedspaceChat={deleteSharedspaceChat}
-            deleteImage={deleteImage}
+            deleteSharedspaceChatImage={deleteSharedspaceChatImage}
             deleteErrorChat={deleteErrorChat}
             reSubmit={reSubmit} />;
         })

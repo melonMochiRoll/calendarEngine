@@ -195,6 +195,35 @@ export function useChatSocket() {
     socketRef.current?.emit(ChatEmitEvent.DELETE_SHAREDSPACE_CHAT, { url, id });
   }, [socketStatus]);
 
+  const deleteSharedspaceChatImage = useCallback((
+    url: string | undefined,
+    ChatId: string,
+    ImageId: string,
+  ) => {
+    if (socketStatus !== SocketStatus.CONNECTED || !url) return;
+
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      if (!prev) return;
+
+      const chats = prev.chats.map((chat) => {
+        if (chat.id === ChatId) {
+          return {
+            ...chat,
+            _status: ChatStatus.PENDING,
+          };
+        }
+        return chat;
+      });
+
+      return {
+        chats,
+        hasMoreData: prev.hasMoreData,
+      };
+    });
+
+    socketRef.current?.emit(ChatEmitEvent.DELETE_SHAREDSPACE_CHAT_IMAGE, { url, ChatId, ImageId });
+  }, [socketStatus]);
+
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
@@ -276,7 +305,9 @@ export function useChatSocket() {
     });
   };
 
-  const onChatImageDeleted = (ChatId: string, ImageId: string) => {
+  const onChatImageDeleted = (data: { ChatId: string, ImageId: string }) => {
+    const { ChatId, ImageId } = data;
+
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (!prev) return;
       
@@ -361,6 +392,28 @@ export function useChatSocket() {
       toast.error(waitingMessage, defaultToastOption);
       return;
     }
+
+    if (action === `publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
+          if (chat.id === ChatId) {
+            const { _status, ...rest } = chat;
+            return rest;
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+
+      toast.error(waitingMessage, defaultToastOption);
+      return;
+    }
   };
 
   return {
@@ -368,6 +421,7 @@ export function useChatSocket() {
     sendSharedspaceChat,
     updateSharedspaceChat,
     deleteSharedspaceChat,
+    deleteSharedspaceChatImage,
     showNewChat,
     setShowNewChat,
     canShowNotify,

@@ -23,7 +23,7 @@ interface ChatProps {
   chat: TChatPayload,
   updateSharedspaceChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
   deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
-  deleteImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
+  deleteSharedspaceChatImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
   deleteErrorChat: (url: string | undefined, idx: number) => void,
   reSubmit: (url: string | undefined, chat: TChatPayload, idx: number) => void,
 };
@@ -33,7 +33,7 @@ const Chat: FC<ChatProps> = ({
   chat,
   updateSharedspaceChat,
   deleteSharedspaceChat,
-  deleteImage,
+  deleteSharedspaceChatImage,
   deleteErrorChat,
   reSubmit,
 }) => {
@@ -101,7 +101,7 @@ const Chat: FC<ChatProps> = ({
                       key={image.id}
                       image={image}
                       isSender={chat.permission.isSender}
-                      deleteImage={() => deleteImage(url, chat.id, image.id)} />
+                      deleteImage={() => deleteSharedspaceChatImage(url, chat.id, image.id)} />
                   })
                 }
               </Images>
