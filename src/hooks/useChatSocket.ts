@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { ChatStatus, TChatPayload, TChats } from "Typings/types";
 import { useAppSelector } from "./reduxHooks";
-import { ChatEmitEvent, ChatsCommandList, SocketStatus } from "Src/constants/constants";
+import { ChatToClient, ChatToServer, SocketStatus } from "Src/constants/constants";
 import { toast } from "react-toastify";
 import { defaultToastOption, waitingMessage } from "Src/constants/notices";
 import dayjs from 'dayjs';
@@ -43,11 +43,11 @@ export function useChatSocket() {
     socket?.io.on('reconnect_attempt', () => setSocketStatus(SocketStatus.RECONNECTING));
     socket?.io.on('reconnect', () => setSocketStatus(SocketStatus.CONNECTED));
 
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_CREATED}`, onChatCreated);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_UPDATED}`, onChatUpdated);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_DELETED}`, onChatDeleted);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`, onChatImageDeleted);
-    socket?.on(`publicChats:${ChatsCommandList.CHAT_ERROR}`, onChatError);
+    socket?.on(ChatToClient.CHAT_CREATED, onChatCreated);
+    socket?.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
+    socket?.on(ChatToClient.CHAT_DELETED, onChatDeleted);
+    socket?.on(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
+    socket?.on(ChatToClient.CHAT_ERROR, onChatError);
 
     return () => {
       socket?.disconnect();
@@ -118,7 +118,7 @@ export function useChatSocket() {
     }
 
 
-    socketRef.current?.emit(ChatEmitEvent.SEND_SHAREDSPACE_CHAT, { _url, id: tempChatId, content, imageIds });
+    socketRef.current?.emit(ChatToServer.SEND_CHAT, { _url, id: tempChatId, content, imageIds });
     return true;
   };
 
@@ -159,7 +159,7 @@ export function useChatSocket() {
       };
     });
 
-    socketRef.current?.emit(ChatEmitEvent.UPDATE_SHAREDSPACE_CHAT, { url, id, content: newContent });
+    socketRef.current?.emit(ChatToServer.UPDATE_CHAT, { url, id, content: newContent });
   }, [socketStatus]);
 
   const deleteSharedspaceChat = useCallback((
@@ -192,7 +192,7 @@ export function useChatSocket() {
       };
     });
 
-    socketRef.current?.emit(ChatEmitEvent.DELETE_SHAREDSPACE_CHAT, { url, id });
+    socketRef.current?.emit(ChatToServer.DELETE_CHAT, { url, id });
   }, [socketStatus]);
 
   const deleteSharedspaceChatImage = useCallback((
@@ -221,7 +221,7 @@ export function useChatSocket() {
       };
     });
 
-    socketRef.current?.emit(ChatEmitEvent.DELETE_SHAREDSPACE_CHAT_IMAGE, { url, ChatId, ImageId });
+    socketRef.current?.emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
   }, [socketStatus]);
 
   const onChatCreated = (data: TChatPayload) => {
@@ -330,7 +330,7 @@ export function useChatSocket() {
   const onChatError = (data: { action: string, ChatId: string }) => {
     const { action, ChatId } = data;
 
-    if (action === `publicChats:${ChatsCommandList.CHAT_CREATED}`) {
+    if (action === ChatToClient.CHAT_CREATED) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
 
@@ -350,9 +350,9 @@ export function useChatSocket() {
     }
 
     if (
-      action === `publicChats:${ChatsCommandList.CHAT_UPDATED}` ||
-      action === `publicChats:${ChatsCommandList.CHAT_DELETED}` ||
-      action === `publicChats:${ChatsCommandList.CHAT_IMAGE_DELETED}`
+      action === ChatToClient.CHAT_UPDATED ||
+      action === ChatToClient.CHAT_DELETED ||
+      action === ChatToClient.CHAT_IMAGE_DELETED
     ) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
