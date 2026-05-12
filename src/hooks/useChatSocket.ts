@@ -141,7 +141,7 @@ export function useChatSocket() {
       return;
     }
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -174,7 +174,7 @@ export function useChatSocket() {
       return;
     };
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -203,7 +203,7 @@ export function useChatSocket() {
   ) => {
     if (socketStatus !== SocketStatus.CONNECTED || !url) return;
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
