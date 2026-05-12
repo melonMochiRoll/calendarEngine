@@ -12,6 +12,7 @@ import useUser from 'Src/hooks/queries/useUser';
 import { useChatSocket } from 'Src/hooks/useChatSocket';
 
 const ChatContainer: FC = () => {
+  const { url } = useParams();
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
 
   const { data: chatList, loadMore } = useChats();
@@ -71,8 +72,8 @@ const ChatContainer: FC = () => {
     setPreviews(prev => [ ...prev, ...newPreviews ]);
   };
 
-  const onSubmit = useCallback((content: string, images: File[], previews: string[]) => {
-    const result = sendSharedspaceChat(content, images, previews);
+  const onSubmit = useCallback((url: string | undefined, content: string, images: File[], previews: string[]) => {
+    const result = sendSharedspaceChat(url, content, images, previews);
 
     if (!result) {
       toast.error(waitingMessage, defaultToastOption);
@@ -104,7 +105,7 @@ const ChatContainer: FC = () => {
         {
           userData ?
             <ChatFooter
-              onSubmit={() => onSubmit(chat, images, previews)}
+              onSubmit={() => onSubmit(url, chat, images, previews)}
               socketStatus={socketStatus}
               chat={chat}
               onChangeChat={onChangeChat}

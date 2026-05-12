@@ -55,6 +55,7 @@ export function useChatSocket() {
   }, [_url, token]);
 
   const sendSharedspaceChat = async (
+    url: string | undefined,
     content: string,
     images: File[],
     previews: string[]
@@ -82,7 +83,7 @@ export function useChatSocket() {
       metaDatas.push({ id, fileName: image.name, fileSize: image.size, contentType: image.type });
     }
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       const now = dayjs().toISOString();
 
       const tempChat = {
@@ -111,14 +112,14 @@ export function useChatSocket() {
     });
 
     if (images.length) {
-      const presignedUrls = await generatePresignedPutUrl(_url, metaDatas);
+      const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
 
       const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
       await Promise.all(uploadPromises);
     }
 
 
-    socketRef.current?.emit(ChatToServer.SEND_CHAT, { _url, id: tempChatId, content, imageIds });
+    socketRef.current?.emit(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
     return true;
   };
 

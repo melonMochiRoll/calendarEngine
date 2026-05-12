@@ -34,7 +34,7 @@ interface ChatListProps {
   deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
   deleteSharedspaceChatImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
   loadMore: () => void,
-  onSubmit: (chat: string, images: File[], previews: string[]) => void,
+  onSubmit: (url: string | undefined, chat: string, images: File[], previews: string[]) => void,
   deleteFile: (idx: number) => void,
 };
 
@@ -104,7 +104,7 @@ const ChatList: FC<ChatListProps> = ({
         chats: rest || [], 
       };
     });
-    onSubmit(chat.content, chat._imageFiles || [], chat.Images.map(image => image._tempPath || ''));
+    onSubmit(url, chat.content, chat._imageFiles || [], chat.Images.map(image => image._tempPath || ''));
   };
 
   return (
