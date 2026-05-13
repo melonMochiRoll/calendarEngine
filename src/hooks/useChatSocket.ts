@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { ChatStatus, TChatPayload, TChats } from "Typings/types";
 import { useAppSelector } from "./reduxHooks";
-import { ChatToClient, ChatToServer, SocketStatus } from "Src/constants/constants";
+import { ChatAckStatus, ChatToClient, ChatToServer, SocketStatus } from "Src/constants/constants";
 import { toast } from "react-toastify";
 import { defaultToastOption, waitingMessage } from "Src/constants/notices";
 import dayjs from 'dayjs';
@@ -60,12 +60,12 @@ export function useChatSocket() {
     images: File[],
     previews: string[]
   ) => {
-    if (socketStatus !== SocketStatus.CONNECTED) return false;
+    if (socketStatus !== SocketStatus.CONNECTED) return;
 
     content = content.trim();
 
     if (!content && !images.length) {
-      return false;
+      return;
     }
 
     const tempChatId = uuidv7();
@@ -118,9 +118,50 @@ export function useChatSocket() {
       await Promise.all(uploadPromises);
     }
 
+    try {
+      const response: { status: string, data: TChatPayload | null } = await socketRef.current
+        ?.timeout(4000)
+        .emitWithAck(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
 
-    socketRef.current?.emit(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
-    return true;
+      if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
+        throw new Error();
+      }
+
+      const { data } = response;
+
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
+          if (chat.id === data.id) {
+            data.Images = data.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath }));
+            return data;
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+    } catch (err) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev?.chats.map(chat => {
+          if (chat.id === tempChatId) {
+            return { ...chat, _status: ChatStatus.ERROR };
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+    }
   };
 
   const updateSharedspaceChat = useCallback((
@@ -226,41 +267,22 @@ export function useChatSocket() {
   }, [socketStatus]);
 
   const onChatCreated = (data: TChatPayload) => {
-    if (data.permission.isSender) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      if (!prev) return;
 
-        const chats = prev.chats.map(chat => {
-          if (chat.id === data.id) {
-            data.Images = data.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath }));
-            return data;
-          }
-          return chat;
-        });
+      return {
+        chats: [ data, ...prev.chats ],
+        hasMoreData: prev.hasMoreData,
+      };
+    });
 
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
+    if (canShowNotify.current) {
+      setShowNewChat({
+        chat: data.content,
+        email: data.Sender.email,
+        nickname: data.Sender.nickname,
+        profileImage: data.Sender.profileImage,
       });
-    } else {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        return {
-          chats: [ data, ...prev.chats ],
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-
-      if (canShowNotify.current) {
-        setShowNewChat({
-          chat: data.content,
-          email: data.Sender.email,
-          nickname: data.Sender.nickname,
-          profileImage: data.Sender.profileImage,
-        });
-      }
     }
   };
 
@@ -330,25 +352,6 @@ export function useChatSocket() {
 
   const onChatError = (data: { action: string, ChatId: string }) => {
     const { action, ChatId } = data;
-
-    if (action === ChatToClient.CHAT_CREATED) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const chats = prev?.chats.map(chat => {
-          if (chat.id === ChatId) {
-            return { ...chat, _status: ChatStatus.ERROR };
-          }
-          return chat;
-        });
-
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-      return;
-    }
 
     if (
       action === ChatToClient.CHAT_UPDATED ||
