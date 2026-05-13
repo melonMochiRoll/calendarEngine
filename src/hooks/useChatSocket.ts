@@ -191,6 +191,7 @@ export function useChatSocket() {
         if (chat.id === id) {
           return {
             ...chat,
+            content: newContent,
             _status: ChatStatus.PENDING,
           };
         }
