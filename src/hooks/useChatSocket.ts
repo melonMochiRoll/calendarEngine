@@ -47,7 +47,6 @@ export function useChatSocket() {
     socket?.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
     socket?.on(ChatToClient.CHAT_DELETED, onChatDeleted);
     socket?.on(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
-    socket?.on(ChatToClient.CHAT_ERROR, onChatError);
 
     return () => {
       socket?.disconnect();
@@ -333,7 +332,7 @@ export function useChatSocket() {
     }
   }, [socketStatus]);
 
-  const deleteSharedspaceChatImage = useCallback((
+  const deleteSharedspaceChatImage = useCallback(async (
     url: string | undefined,
     ChatId: string,
     ImageId: string,
@@ -359,7 +358,79 @@ export function useChatSocket() {
       };
     });
 
-    socketRef.current?.emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
+    try {
+      const response: {
+        status: string,
+        data: { action: typeof ChatToClient.CHAT_DELETED, id: string } |
+          { action: typeof ChatToClient.CHAT_IMAGE_DELETED, ChatId: string, ImageId: string } | null
+      } = await socketRef.current
+        ?.timeout(4000)
+        .emitWithAck(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
+
+      if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
+        throw new Error();
+      }
+
+      const { data } = response;
+
+      if (data.action === ChatToClient.CHAT_DELETED) {
+        qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+          if (!prev) return;
+
+          const idx = prev.chats.findIndex(chat => chat.id === data.id);
+
+          if (idx < 0) return;
+
+          const head = prev.chats.slice(0, idx);
+          const tail = prev.chats.slice(idx + 1, prev.chats.length);
+
+          return {
+            chats: [ ...head, ...tail ],
+            hasMoreData: prev.hasMoreData,
+          };
+        });
+      }
+
+      if (data.action === ChatToClient.CHAT_IMAGE_DELETED) {
+        qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+          if (!prev) return;
+          
+          const chatIdx = prev.chats.findIndex(chat => chat.id === data.ChatId);
+          const head = prev.chats.slice(0, chatIdx);
+          const tail = prev.chats.slice(chatIdx + 1, prev.chats.length);
+
+          const targetChat = prev.chats[chatIdx];
+          const imageIdx = targetChat.Images.findIndex(image => image.id === data.ImageId);
+          const imagesHead = targetChat.Images.slice(0, imageIdx);
+          const imagesTail = targetChat.Images.slice(imageIdx + 1, targetChat.Images.length);
+
+          return {
+            chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
+            hasMoreData: prev.hasMoreData,
+          };
+        });
+      }
+
+      throw new Error();
+    } catch (err) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
+          if (chat.id === ChatId) {
+            const { _status, ...rest } = chat;
+            return rest;
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+      toast.error(waitingMessage, defaultToastOption);
+    }
   }, [socketStatus]);
 
   const onChatCreated = (data: TChatPayload) => {
@@ -444,32 +515,6 @@ export function useChatSocket() {
         hasMoreData: prev.hasMoreData,
       };
     });
-  };
-
-  const onChatError = (data: { action: string, ChatId: string }) => {
-    const { action, ChatId } = data;
-
-    if (action === ChatToClient.CHAT_IMAGE_DELETED) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const chats = prev.chats.map(chat => {
-          if (chat.id === ChatId) {
-            const { _status, ...rest } = chat;
-            return rest;
-          }
-          return chat;
-        });
-
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-
-      toast.error(waitingMessage, defaultToastOption);
-      return;
-    }
   };
 
   return {
