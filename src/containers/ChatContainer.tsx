@@ -73,12 +73,7 @@ const ChatContainer: FC = () => {
   };
 
   const onSubmit = useCallback((url: string | undefined, content: string, images: File[], previews: string[]) => {
-    const result = sendSharedspaceChat(url, content, images, previews);
-
-    if (!result) {
-      toast.error(waitingMessage, defaultToastOption);
-      return;
-    }
+    sendSharedspaceChat(url, content, images, previews);
 
     scrollbarRef?.current?.scrollTo(0, 0);
     setChat('');
