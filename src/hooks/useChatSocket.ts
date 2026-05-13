@@ -164,7 +164,7 @@ export function useChatSocket() {
     }
   };
 
-  const updateSharedspaceChat = useCallback((
+  const updateSharedspaceChat = useCallback(async (
     url: string | undefined,
     id: string,
     oldContent: string,
@@ -201,7 +201,57 @@ export function useChatSocket() {
       };
     });
 
-    socketRef.current?.emit(ChatToServer.UPDATE_CHAT, { url, id, content: newContent });
+    try {
+      const response: { status: string, data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'> | null } = await socketRef.current
+        ?.timeout(4000)
+        .emitWithAck(ChatToServer.UPDATE_CHAT, { url, id, content: newContent });
+
+      if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
+        throw new Error();
+      }
+
+      const { data } = response;
+
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map((chat) => {
+          if (chat.id === data.id) {
+            const { _status, ...rest } = chat;
+
+            return {
+              ...rest,
+              content: data.content,
+              updatedAt: data.updatedAt,
+            };
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+    } catch (err) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
+          if (chat.id === id) {
+            const { _status, ...rest } = chat;
+            return rest;
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+      toast.error(waitingMessage, defaultToastOption);
+    }
   }, [socketStatus]);
 
   const deleteSharedspaceChat = useCallback((
@@ -354,7 +404,6 @@ export function useChatSocket() {
     const { action, ChatId } = data;
 
     if (
-      action === ChatToClient.CHAT_UPDATED ||
       action === ChatToClient.CHAT_DELETED ||
       action === ChatToClient.CHAT_IMAGE_DELETED
     ) {
