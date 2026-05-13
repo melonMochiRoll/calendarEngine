@@ -18,6 +18,11 @@ export const ChatToClient = {
   CHAT_ERROR: 'chat_error',
 } as const;
 
+export const ChatAckStatus = {
+  SUCCESS: 'success',
+  ERROR: 'error',
+} as const;
+
 export const SocketStatus = {
   CONNECTED: '연결됨',
   DISCONNECTED: '연결 끊어짐',
