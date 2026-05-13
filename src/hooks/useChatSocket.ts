@@ -219,12 +219,11 @@ export function useChatSocket() {
 
         const chats = prev.chats.map((chat) => {
           if (chat.id === data.id) {
-            const { _status, ...rest } = chat;
-
             return {
-              ...rest,
+              ...chat,
               content: data.content,
               updatedAt: data.updatedAt,
+              _status: ChatStatus.SUCCESS,
             };
           }
           return chat;
