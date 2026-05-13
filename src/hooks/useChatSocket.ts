@@ -134,8 +134,10 @@ export function useChatSocket() {
 
         const chats = prev.chats.map(chat => {
           if (chat.id === data.id) {
-            data.Images = data.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath }));
-            return data;
+            return {
+              ...data,
+              Images: data.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath })),
+            };
           }
           return chat;
         });
