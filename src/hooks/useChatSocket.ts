@@ -256,7 +256,7 @@ export function useChatSocket() {
     }
   }, [socketStatus]);
 
-  const deleteSharedspaceChat = useCallback((
+  const deleteSharedspaceChat = useCallback(async (
     url: string | undefined,
     id: string,
   ) => {
@@ -286,7 +286,51 @@ export function useChatSocket() {
       };
     });
 
-    socketRef.current?.emit(ChatToServer.DELETE_CHAT, { url, id });
+    try {
+      const response: { status: string, data: Pick<TChatPayload, 'id'> | null } = await socketRef.current
+        ?.timeout(4000)
+        .emitWithAck(ChatToServer.DELETE_CHAT, { url, id });
+
+      if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
+        throw new Error();
+      }
+
+      const { data } = response;
+
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const idx = prev.chats.findIndex(chat => chat.id === data.id);
+
+        if (idx < 0) return;
+
+        const head = prev.chats.slice(0, idx);
+        const tail = prev.chats.slice(idx + 1, prev.chats.length);
+
+        return {
+          chats: [ ...head, ...tail ],
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+    } catch (err) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
+          if (chat.id === id) {
+            const { _status, ...rest } = chat;
+            return rest;
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+      toast.error(waitingMessage, defaultToastOption);
+    }
   }, [socketStatus]);
 
   const deleteSharedspaceChatImage = useCallback((
@@ -405,10 +449,7 @@ export function useChatSocket() {
   const onChatError = (data: { action: string, ChatId: string }) => {
     const { action, ChatId } = data;
 
-    if (
-      action === ChatToClient.CHAT_DELETED ||
-      action === ChatToClient.CHAT_IMAGE_DELETED
-    ) {
+    if (action === ChatToClient.CHAT_IMAGE_DELETED) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
 
