@@ -2,9 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { io, Socket } from "socket.io-client";
 import { ChatStatus, TChatPayload, TChats } from "Typings/types";
-import { useAppSelector } from "./reduxHooks";
 import { ChatAckStatus, ChatToClient, ChatToServer, SocketStatus } from "Src/constants/constants";
 import { toast } from "react-toastify";
 import { defaultToastOption, waitingMessage } from "Src/constants/notices";
@@ -12,29 +10,19 @@ import dayjs from 'dayjs';
 import { uuidv7 } from 'uuidv7';
 import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import useUser from "./queries/useUser";
+import { useSocket } from "./useSocket";
 
 export function useChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
-  const socketRef = useRef<Socket>();
+  const { socketRef } = useSocket();
   const canShowNotify = useRef(false);
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const [ socketStatus, setSocketStatus ] = useState(SocketStatus.CONNECTING);
-  const { token } = useAppSelector(state => state.csrfToken);
   
   useEffect(() => {
-    if (!_url || !token) return;
-
-    socketRef.current = io(
-      `${process.env.REACT_APP_SERVER_ORIGIN}`,
-      {
-        withCredentials: true,
-        auth: {
-          'x-csrf-token': token,
-        },
-      },
-    );
+    if (!_url) return;
 
     const socket = socketRef.current;
 
@@ -54,7 +42,7 @@ export function useChatSocket() {
       socket?.emit(ChatToServer.LEAVE_SHAREDSPACE_ROOM, _url);
       socket?.disconnect();
     };
-  }, [_url, token]);
+  }, [_url]);
 
   const sendSharedspaceChat = async (
     url: string | undefined,
