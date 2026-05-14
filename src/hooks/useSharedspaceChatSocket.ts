@@ -12,7 +12,7 @@ import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedsp
 import useUser from "./queries/useUser";
 import { useSocket } from "./useSocket";
 
-export function useChatSocket() {
+export function useSharedspaceChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
   const { socketRef } = useSocket();
