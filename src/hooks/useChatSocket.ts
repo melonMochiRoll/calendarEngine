@@ -43,10 +43,10 @@ export function useChatSocket() {
     socket?.io.on('reconnect_attempt', () => setSocketStatus(SocketStatus.RECONNECTING));
     socket?.io.on('reconnect', () => setSocketStatus(SocketStatus.CONNECTED));
 
-    socket?.on(ChatToClient.CHAT_CREATED, onChatCreated);
-    socket?.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
-    socket?.on(ChatToClient.CHAT_DELETED, onChatDeleted);
-    socket?.on(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
+    socket?.on(ChatToClient.SHAREDSPACE_CHAT_CREATED, onChatCreated);
+    socket?.on(ChatToClient.SHAREDSPACE_CHAT_UPDATED, onChatUpdated);
+    socket?.on(ChatToClient.SHAREDSPACE_CHAT_DELETED, onChatDeleted);
+    socket?.on(ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED, onChatImageDeleted);
 
     socket?.emit(ChatToServer.JOIN_SHAREDSPACE_ROOM, _url);
 
@@ -123,7 +123,7 @@ export function useChatSocket() {
     try {
       const response: { status: string, data: TChatPayload | null } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
+        .emitWithAck(ChatToServer.SEND_SHAREDSPACE_CHAT, { url, id: tempChatId, content, imageIds });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -209,7 +209,7 @@ export function useChatSocket() {
     try {
       const response: { status: string, data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'> | null } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.UPDATE_CHAT, { url, id, content: newContent });
+        .emitWithAck(ChatToServer.UPDATE_SHAREDSPACE_CHAT, { url, id, content: newContent });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -291,7 +291,7 @@ export function useChatSocket() {
     try {
       const response: { status: string, data: Pick<TChatPayload, 'id'> | null } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.DELETE_CHAT, { url, id });
+        .emitWithAck(ChatToServer.DELETE_SHAREDSPACE_CHAT, { url, id });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -364,11 +364,11 @@ export function useChatSocket() {
     try {
       const response: {
         status: string,
-        data: { action: typeof ChatToClient.CHAT_DELETED, id: string } |
-          { action: typeof ChatToClient.CHAT_IMAGE_DELETED, ChatId: string, ImageId: string } | null
+        data: { action: typeof ChatToClient.SHAREDSPACE_CHAT_DELETED, id: string } |
+          { action: typeof ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED, ChatId: string, ImageId: string } | null
       } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
+        .emitWithAck(ChatToServer.DELETE_SHAREDSPACE_CHAT_IMAGE, { url, ChatId, ImageId });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -376,7 +376,7 @@ export function useChatSocket() {
 
       const { data } = response;
 
-      if (data.action === ChatToClient.CHAT_DELETED) {
+      if (data.action === ChatToClient.SHAREDSPACE_CHAT_DELETED) {
         qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
           if (!prev) return;
 
@@ -394,7 +394,7 @@ export function useChatSocket() {
         });
       }
 
-      if (data.action === ChatToClient.CHAT_IMAGE_DELETED) {
+      if (data.action === ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED) {
         qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
           if (!prev) return;
           
