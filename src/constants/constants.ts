@@ -4,6 +4,8 @@ export const ERROR_TYPE = {
 };
 
 export const ChatToServer = {
+  JOIN_SHAREDSPACE_ROOM: 'join_sharedspace_room',
+  LEAVE_SHAREDSPACE_ROOM: 'leave_sharedspace_room',
   SEND_CHAT: 'send_chat',
   UPDATE_CHAT: 'update_chat',
   DELETE_CHAT: 'delete_chat',
