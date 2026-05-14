@@ -27,7 +27,7 @@ export function useChatSocket() {
     if (!_url || !token) return;
 
     socketRef.current = io(
-      `${process.env.REACT_APP_SERVER_ORIGIN}/sharedspace-${_url}`,
+      `${process.env.REACT_APP_SERVER_ORIGIN}`,
       {
         withCredentials: true,
         auth: {
@@ -48,7 +48,10 @@ export function useChatSocket() {
     socket?.on(ChatToClient.CHAT_DELETED, onChatDeleted);
     socket?.on(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
 
+    socket?.emit(ChatToServer.JOIN_SHAREDSPACE_ROOM, _url);
+
     return () => {
+      socket?.emit(ChatToServer.LEAVE_SHAREDSPACE_ROOM, _url);
       socket?.disconnect();
     };
   }, [_url, token]);
