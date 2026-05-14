@@ -36,10 +36,10 @@ export function useSharedspaceChatSocket() {
     socket?.on(ChatToClient.SHAREDSPACE_CHAT_DELETED, onChatDeleted);
     socket?.on(ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED, onChatImageDeleted);
 
-    socket?.emit(ChatToServer.JOIN_SHAREDSPACE_ROOM, _url);
+    socket?.emit(ChatToServer.SHAREDSPACE_JOIN_ROOM, _url);
 
     return () => {
-      socket?.emit(ChatToServer.LEAVE_SHAREDSPACE_ROOM, _url);
+      socket?.emit(ChatToServer.SHAREDSPACE_LEAVE_ROOM, _url);
       socket?.disconnect();
     };
   }, [_url]);
@@ -111,7 +111,7 @@ export function useSharedspaceChatSocket() {
     try {
       const response: { status: string, data: TChatPayload | null } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.SEND_SHAREDSPACE_CHAT, { url, id: tempChatId, content, imageIds });
+        .emitWithAck(ChatToServer.SHAREDSPACE_SEND_CHAT, { url, id: tempChatId, content, imageIds });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -197,7 +197,7 @@ export function useSharedspaceChatSocket() {
     try {
       const response: { status: string, data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'> | null } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.UPDATE_SHAREDSPACE_CHAT, { url, id, content: newContent });
+        .emitWithAck(ChatToServer.SHAREDSPACE_UPDATE_CHAT, { url, id, content: newContent });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -279,7 +279,7 @@ export function useSharedspaceChatSocket() {
     try {
       const response: { status: string, data: Pick<TChatPayload, 'id'> | null } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.DELETE_SHAREDSPACE_CHAT, { url, id });
+        .emitWithAck(ChatToServer.SHAREDSPACE_DELETE_CHAT, { url, id });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -356,7 +356,7 @@ export function useSharedspaceChatSocket() {
           { action: typeof ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED, ChatId: string, ImageId: string } | null
       } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.DELETE_SHAREDSPACE_CHAT_IMAGE, { url, ChatId, ImageId });
+        .emitWithAck(ChatToServer.SHAREDSPACE_DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
