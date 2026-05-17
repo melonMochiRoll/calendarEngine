@@ -102,17 +102,6 @@ export type TSearchTodosPayload = {
   hasMoreData: boolean,
 };
 
-export type TSharedspaceMembers = {
-  SharedspaceId: string,
-  UserId: string,
-  RoleId: string,
-  createdAt: string,
-  updatedAt: string,
-  Role: {
-    name: string,
-  }
-};
-
 export type TSharedspace = {
   id: string,
   name: string,
