@@ -40,7 +40,16 @@ export function useSharedspaceChatSocket() {
 
     return () => {
       socket?.emit(ChatToServer.SHAREDSPACE_LEAVE_ROOM, _url);
-      socket?.disconnect();
+
+      socket?.off('connect', () => setSocketStatus(SocketStatus.CONNECTED));
+      socket?.off('disconnect', () => setSocketStatus(SocketStatus.DISCONNECTED));
+      socket?.io.off('reconnect_attempt', () => setSocketStatus(SocketStatus.RECONNECTING));
+      socket?.io.off('reconnect', () => setSocketStatus(SocketStatus.CONNECTED));
+      
+      socket?.off(ChatToClient.SHAREDSPACE_CHAT_CREATED, onChatCreated);
+      socket?.off(ChatToClient.SHAREDSPACE_CHAT_UPDATED, onChatUpdated);
+      socket?.off(ChatToClient.SHAREDSPACE_CHAT_DELETED, onChatDeleted);
+      socket?.off(ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED, onChatImageDeleted);
     };
   }, [_url]);
 
