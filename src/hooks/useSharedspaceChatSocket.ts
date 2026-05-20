@@ -96,7 +96,7 @@ export function useSharedspaceChatSocket() {
           nickname: userData.nickname,
           profileImage: userData.profileImage,
         },
-        Images: tempImages,
+        ChatImages: tempImages,
         permission: {
           isSender: true,
         },
@@ -135,7 +135,7 @@ export function useSharedspaceChatSocket() {
           if (chat.id === data.id) {
             return {
               ...data,
-              Images: data.Images.map((image, idx) => Object.assign(image, { _tempPath: chat.Images[idx]._tempPath })),
+              ChatImages: data.ChatImages.map((image, idx) => Object.assign(image, { _tempPath: chat.ChatImages[idx]._tempPath })),
             };
           }
           return chat;
@@ -400,9 +400,9 @@ export function useSharedspaceChatSocket() {
           const tail = prev.chats.slice(chatIdx + 1, prev.chats.length);
 
           const targetChat = prev.chats[chatIdx];
-          const imageIdx = targetChat.Images.findIndex(image => image.id === data.ImageId);
-          const imagesHead = targetChat.Images.slice(0, imageIdx);
-          const imagesTail = targetChat.Images.slice(imageIdx + 1, targetChat.Images.length);
+          const imageIdx = targetChat.ChatImages.findIndex(image => image.id === data.ImageId);
+          const imagesHead = targetChat.ChatImages.slice(0, imageIdx);
+          const imagesTail = targetChat.ChatImages.slice(imageIdx + 1, targetChat.ChatImages.length);
 
           return {
             chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
@@ -506,9 +506,9 @@ export function useSharedspaceChatSocket() {
       const tail = prev.chats.slice(chatIdx + 1, prev.chats.length);
 
       const targetChat = prev.chats[chatIdx];
-      const imageIdx = targetChat.Images.findIndex(image => image.id === ImageId);
-      const imagesHead = targetChat.Images.slice(0, imageIdx);
-      const imagesTail = targetChat.Images.slice(imageIdx + 1, targetChat.Images.length);
+      const imageIdx = targetChat.ChatImages.findIndex(image => image.id === ImageId);
+      const imagesHead = targetChat.ChatImages.slice(0, imageIdx);
+      const imagesTail = targetChat.ChatImages.slice(imageIdx + 1, targetChat.ChatImages.length);
 
       return {
         chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],

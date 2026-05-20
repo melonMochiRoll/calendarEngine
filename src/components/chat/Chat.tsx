@@ -93,10 +93,10 @@ const Chat: FC<ChatProps> = ({
             <Content>{chat.content}</Content>
           }
           {
-            chat.Images &&
+            chat.ChatImages &&
               <Images>
                 {
-                  chat.Images.map((image) => {
+                  chat.ChatImages.map((image) => {
                     return <ChatImage
                       key={image.id}
                       image={image}

@@ -84,7 +84,7 @@ const ChatList: FC<ChatListProps> = ({
       if (!prev) return;
 
       const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
-      prev.chats[idx].Images.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
+      prev.chats[idx].ChatImages.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
 
       return {
         ...prev,
@@ -104,7 +104,7 @@ const ChatList: FC<ChatListProps> = ({
         chats: rest || [], 
       };
     });
-    onSubmit(url, chat.content, chat._imageFiles || [], chat.Images.map(image => image._tempPath || ''));
+    onSubmit(url, chat.content, chat._imageFiles || [], chat.ChatImages.map(image => image._tempPath || ''));
   };
 
   return (
