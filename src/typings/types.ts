@@ -181,10 +181,10 @@ export type TChat = {
   id: string;
   content: string;
   SenderId: string | null;
-  SharedspaceId: string;
+  SpaceId: string;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string | null;
+  removedAt: string | null;
 };
 
 export type TChatPayload = Pick<TChat,
