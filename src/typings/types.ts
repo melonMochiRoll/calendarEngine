@@ -70,6 +70,7 @@ export type TUser = {
   email: string,
   nickname: string,
   provider: string,
+  status: string,
   ProfileImage: string,
 };
 
