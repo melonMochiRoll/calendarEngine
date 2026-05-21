@@ -2,15 +2,15 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import gravatar from 'gravatar';
 
-interface ProfileImageProps {
-  profileImage?: string,
+interface ProfileAvatarProps {
+  ProfileImage?: string,
   email?: string,
   size?: 'large' | 'small',
   onClick?: (e?: any) => void,
 };
 
-const ProfileImage: FC<ProfileImageProps> = ({
-  profileImage,
+const ProfileAvatar: FC<ProfileAvatarProps> = ({
+  ProfileImage,
   email = 'unknown@gmail.com',
   size,
   onClick,
@@ -33,11 +33,11 @@ const ProfileImage: FC<ProfileImageProps> = ({
       onClick={onClick}
       size={renderSize(size)}
       alt={`${email}`}
-      src={profileImage ? profileImage : gravatar.url(email, { s: '25px', d: 'retro' })} />
+      src={ProfileImage ? ProfileImage : gravatar.url(email, { s: '25px', d: 'retro' })} />
   );
 };
 
-export default ProfileImage;
+export default ProfileAvatar;
 
 const Img = styled.img<{ size?: string }>`
   width: ${({ size }) => size};

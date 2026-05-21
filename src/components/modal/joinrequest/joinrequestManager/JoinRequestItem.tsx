@@ -6,7 +6,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { ModalName, RoleDictionary, SharedspaceMembersRoles, TJoinRequest } from 'Typings/types';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch } from 'Hooks/reduxHooks';
-import ProfileImage from 'Components/ProfileImage';
+import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { openModal } from 'Features/modalSlice';
 
 const resolveMenuOption = [
@@ -57,8 +57,8 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
   return (
     <Item onClick={() => openJoinRequestDetail(request)}>
       <Left>
-        <ProfileImage
-          profileImage={Requestor.profileImage}
+        <ProfileAvatar
+          ProfileImage={Requestor.profileImage}
           email={Requestor.email} />
       </Left>
       <Center>

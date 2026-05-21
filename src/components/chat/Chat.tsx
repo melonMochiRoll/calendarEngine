@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { ChatStatus, TChatPayload } from 'Typings/types';
-import ProfileImage from 'Components/ProfileImage';
+import ProfileAvatar from 'Src/components/ProfileAvatar';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -60,8 +60,8 @@ const Chat: FC<ChatProps> = ({
   return (
     <Item hoverMenuId={hoverMenuId}>
       <ProfileWrapper>
-        <ProfileImage
-          profileImage={chat.Sender.profileImage}
+        <ProfileAvatar
+          ProfileImage={chat.Sender.profileImage}
           email={chat.Sender.email}
           size={'large'} />
       </ProfileWrapper>

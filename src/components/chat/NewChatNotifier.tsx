@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownwardRounded';
-import ProfileImage from 'Components/ProfileImage';
+import ProfileAvatar from 'Src/components/ProfileAvatar';
 
 interface NewChatNotifierProps {
   newChat: {
@@ -21,10 +21,10 @@ const NewChatNotifier: FC<NewChatNotifierProps> = ({
 
   return (
     <Block onClick={onClick}>
-      <ProfileImage
+      <ProfileAvatar
         size='small'
         email={email} 
-        profileImage={profileImage} />
+        ProfileImage={profileImage} />
       <Nickname>{nickname}</Nickname>
       {chat.length > 15 ?
         <Content>{`${chat?.slice(0, 15)}...`}</Content> :

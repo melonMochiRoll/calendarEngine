@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import TextButton from 'Components/common/TextButton';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_USER_KEY } from 'Constants/queryKeys';
-import ProfileImage from 'Components/ProfileImage';
+import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { PATHS } from 'Constants/paths';
 import useUser from 'Src/hooks/queries/useUser';
 import { Menu, MenuItem } from '@mui/material';
@@ -43,9 +43,9 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
       {
         userData ?
           <>
-            <ProfileImage
+            <ProfileAvatar
               onClick={onOpen}
-              profileImage={userData.profileImage}
+              ProfileImage={userData.profileImage}
               email={userData.email} />
             <Email>{userData.nickname}</Email>
             <Menu

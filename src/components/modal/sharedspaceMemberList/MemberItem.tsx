@@ -4,7 +4,7 @@ import useMenu from 'Hooks/utils/useMenu';
 import { CircularProgress, Divider, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { RoleDictionary, SharedspaceMembersRoles, TSharedspaceMembersItem, TSharedspaceMembersRoles } from 'Typings/types';
-import ProfileImage from 'Components/ProfileImage';
+import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { renderRole } from 'Lib/utilFunction';
 
 interface MemberItemProps {
@@ -82,8 +82,8 @@ const MemberItem: FC<MemberItemProps> = ({
   return (
     <Item>
       <ProfileWrapper>
-        <ProfileImage
-          profileImage={profileImage}
+        <ProfileAvatar
+          ProfileImage={profileImage}
           email={email} />
       </ProfileWrapper>
       <InfoWrapper>

@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { TSubscribedspace } from 'Typings/types';
 import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage } from 'Constants/notices';
-import ProfileImage from '../ProfileImage';
+import ProfileAvatar from '../ProfileAvatar';
 
 interface TSubscribedspacesItemProps {
   space: TSubscribedspace,
@@ -57,8 +57,8 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
       <ItemPrivate>{privateBool ? <LockIcon /> : <UnlockIcon />}</ItemPrivate>
       <ItemTitle>{name}</ItemTitle>
       <ItemOwner>
-        <ProfileImage
-          profileImage={Owner.profileImage}
+        <ProfileAvatar
+          ProfileImage={Owner.profileImage}
           email={Owner.email} />
         {Owner.nickname}
       </ItemOwner>

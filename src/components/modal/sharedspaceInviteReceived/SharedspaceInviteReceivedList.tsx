@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import CheckIcon from '@mui/icons-material/CheckRounded';
 import ClearIcon from '@mui/icons-material/ClearRounded';
 import { CircularProgress } from '@mui/material';
-import ProfileImage from 'Src/components/ProfileImage';
+import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { TInvitePayload } from 'Src/typings/types';
 
 interface SharedspaceInviteReceivedListProp {
@@ -58,8 +58,8 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
               <Left>
                 <Title>{invite.SharedspaceName}</Title>
                 <OwnerInfo>
-                  <ProfileImage
-                    profileImage={invite.Owner.profileImage}
+                  <ProfileAvatar
+                    ProfileImage={invite.Owner.profileImage}
                     email={invite.Owner.email} />
                   <OwnerText>
                     <OwnerNickname>{invite.Owner.nickname}</OwnerNickname>

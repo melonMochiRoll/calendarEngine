@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
-import ProfileImage from 'Src/components/ProfileImage';
+import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { TSearchUsersItem } from 'Src/typings/types';
 import { useParams } from 'react-router-dom';
 import { sendInvite } from 'Src/api/inviteApi';
@@ -37,8 +37,8 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
   return (
     <Item>
       <ProfileWrapper>
-        <ProfileImage
-          profileImage={profileImage}
+        <ProfileAvatar
+          ProfileImage={profileImage}
           email={email} />
       </ProfileWrapper>
       <InfoWrapper>
