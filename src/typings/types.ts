@@ -180,7 +180,7 @@ export type TJoinRequest = {
 export type TChat = {
   id: string;
   content: string;
-  SenderId: string | null;
+  SenderId: string;
   SpaceId: string;
   createdAt: string;
   updatedAt: string;
