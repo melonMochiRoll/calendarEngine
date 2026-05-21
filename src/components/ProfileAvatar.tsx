@@ -11,7 +11,7 @@ interface ProfileAvatarProps {
 
 const ProfileAvatar: FC<ProfileAvatarProps> = ({
   ProfileImage,
-  email = 'unknown@gmail.com',
+  email = 'M2NI2n4k49US@gmail.com',
   size,
   onClick,
 }) => {
