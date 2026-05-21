@@ -70,7 +70,7 @@ export type TUser = {
   email: string,
   nickname: string,
   provider: string,
-  profileImage: string,
+  ProfileImage: string,
 };
 
 export type TTodoPayload = {
@@ -122,7 +122,7 @@ export type TSharedspaceMetaData = TSharedspace & {
 };
 
 export type TSubscribedspace = Pick<TSharedspace, 'name' | 'url' | 'private'> & {
-  Owner: Pick<TUser, 'email' | 'nickname' | 'profileImage'>,
+  Owner: Pick<TUser, 'email' | 'nickname' | 'ProfileImage'>,
   permission: {
     isOwner: boolean,
   }
@@ -143,7 +143,7 @@ export type TSharedspaceMembersItem = {
   UserId: string,
   email: string,
   nickname: string,
-  profileImage: string,
+  ProfileImage: string,
   RoleName: string,
   createdAt: string,
 };
@@ -157,7 +157,7 @@ export type TSearchUsersItem = {
   id: string,
   email: string,
   nickname: string,
-  profileImage: string,
+  ProfileImage: string,
   permission: {
     isParticipant: boolean,
   },
@@ -173,7 +173,7 @@ export type TJoinRequest = {
   RequestorId: number,
   createdAt: string,
   message: string,
-  Requestor: Pick<TUser, 'email' | 'nickname' | 'profileImage'>,
+  Requestor: Pick<TUser, 'email' | 'nickname' | 'ProfileImage'>,
 };
 
 export type TChat = {
@@ -192,7 +192,7 @@ export type TChatPayload = Pick<TChat,
   'SenderId' |
   'createdAt' |
   'updatedAt'> & {
-    Sender: Pick<TUser, 'email' | 'nickname' | 'profileImage'>,
+    Sender: Pick<TUser, 'email' | 'nickname' | 'ProfileImage'>,
     ChatImages: Array<Pick<TImages, 'id' | 'path'> & { _tempPath?: string }>,
     permission: {
       isSender: boolean,
@@ -232,7 +232,7 @@ export type TInvite = {
   createdAt: string,
   SharedspaceName: string,
   url: string,
-  Owner: Pick<TUser, 'email' | 'nickname' | 'profileImage'>,
+  Owner: Pick<TUser, 'email' | 'nickname' | 'ProfileImage'>,
 };
 
 export type TInvitePayload = {

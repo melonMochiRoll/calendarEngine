@@ -59,7 +59,7 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
                 <Title>{invite.SharedspaceName}</Title>
                 <OwnerInfo>
                   <ProfileAvatar
-                    ProfileImage={invite.Owner.profileImage}
+                    ProfileImage={invite.Owner.ProfileImage}
                     email={invite.Owner.email} />
                   <OwnerText>
                     <OwnerNickname>{invite.Owner.nickname}</OwnerNickname>

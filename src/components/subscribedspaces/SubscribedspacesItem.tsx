@@ -58,7 +58,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
       <ItemTitle>{name}</ItemTitle>
       <ItemOwner>
         <ProfileAvatar
-          ProfileImage={Owner.profileImage}
+          ProfileImage={Owner.ProfileImage}
           email={Owner.email} />
         {Owner.nickname}
       </ItemOwner>

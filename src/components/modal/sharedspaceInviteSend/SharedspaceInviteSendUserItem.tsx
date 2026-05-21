@@ -18,7 +18,7 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
   const { url } = useParams();
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isSent, setIsSent ] = useState('');
-  const { email, nickname, profileImage, permission } = user;
+  const { email, nickname, ProfileImage, permission } = user;
   const label = isSent || '이미 속한 유저';
 
   const handleSendInvite = async () => {
@@ -38,7 +38,7 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
     <Item>
       <ProfileWrapper>
         <ProfileAvatar
-          ProfileImage={profileImage}
+          ProfileImage={ProfileImage}
           email={email} />
       </ProfileWrapper>
       <InfoWrapper>

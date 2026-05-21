@@ -94,7 +94,7 @@ export function useSharedspaceChatSocket() {
         Sender: {
           email: userData.email,
           nickname: userData.nickname,
-          profileImage: userData.profileImage,
+          ProfileImage: userData.ProfileImage,
         },
         ChatImages: tempImages,
         permission: {
@@ -448,7 +448,7 @@ export function useSharedspaceChatSocket() {
         chat: data.content,
         email: data.Sender.email,
         nickname: data.Sender.nickname,
-        profileImage: data.Sender.profileImage,
+        profileImage: data.Sender.ProfileImage,
       });
     }
   };

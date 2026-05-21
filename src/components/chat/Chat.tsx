@@ -61,7 +61,7 @@ const Chat: FC<ChatProps> = ({
     <Item hoverMenuId={hoverMenuId}>
       <ProfileWrapper>
         <ProfileAvatar
-          ProfileImage={chat.Sender.profileImage}
+          ProfileImage={chat.Sender.ProfileImage}
           email={chat.Sender.email}
           size={'large'} />
       </ProfileWrapper>

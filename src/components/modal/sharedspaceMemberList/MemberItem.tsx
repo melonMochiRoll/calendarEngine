@@ -24,7 +24,7 @@ const MemberItem: FC<MemberItemProps> = ({
 }) => {
   const [ isResponded, setIsResponded ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
-  const { UserId, email, nickname, profileImage, RoleName } = item;
+  const { UserId, email, nickname, ProfileImage, RoleName } = item;
   const label = isResponded || renderRole(RoleName);
 
   const {
@@ -83,7 +83,7 @@ const MemberItem: FC<MemberItemProps> = ({
     <Item>
       <ProfileWrapper>
         <ProfileAvatar
-          ProfileImage={profileImage}
+          ProfileImage={ProfileImage}
           email={email} />
       </ProfileWrapper>
       <InfoWrapper>

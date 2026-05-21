@@ -58,7 +58,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
     <Item onClick={() => openJoinRequestDetail(request)}>
       <Left>
         <ProfileAvatar
-          ProfileImage={Requestor.profileImage}
+          ProfileImage={Requestor.ProfileImage}
           email={Requestor.email} />
       </Left>
       <Center>

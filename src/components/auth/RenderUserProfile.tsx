@@ -45,7 +45,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
           <>
             <ProfileAvatar
               onClick={onOpen}
-              ProfileImage={userData.profileImage}
+              ProfileImage={userData.ProfileImage}
               email={userData.email} />
             <Email>{userData.nickname}</Email>
             <Menu
