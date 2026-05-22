@@ -57,7 +57,7 @@ const ChatContainer: FC = () => {
 
     for (const file of Array.from(e.target.files)) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error(imageTooLargeMessage, {
+        toast.error(imageTooLargeMessage(5), {
           ...defaultToastOption,
           toastId: waitingMessage,
         });

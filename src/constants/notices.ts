@@ -20,7 +20,7 @@ export const successJoin = '회원가입이 완료되었습니다.';
 
 export const conflictAccountMessage = '이미 가입된 이메일입니다.';
 
-export const imageTooLargeMessage = '이미지 최대 용량은 5MB입니다.';
+export const imageTooLargeMessage = (size: number) => `이미지 최대 용량은 ${size}MB입니다.`;
 
 export const tooManyImagesMessage = '이미지는 최대 6개까지 첨부할 수 있습니다.';
 
