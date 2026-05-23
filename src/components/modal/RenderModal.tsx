@@ -17,6 +17,7 @@ export const modals = {
   [ModalName.IMAGE_VIEWER]: React.lazy(() => import('Components/modal/imageViewer/ImageViewer')),
   [ModalName.SHAREDSPACE_INVITE_SEND]: React.lazy(() => import('Components/modal/sharedspaceInviteSend/SharedspaceInviteSendModal')),
   [ModalName.SHAREDSPACE_INVITE_RECEIVED]: React.lazy(() => import('Components/modal/sharedspaceInviteReceived/SharedspaceInviteReceivedModal')),
+  [ModalName.PROFILEIMAGE_UPDATER]: React.lazy(() => import('Src/components/modal/profileImageUpdater/ProfileImageUpdaterModal')),
 };
 
 const RenderModal: FC = () => {

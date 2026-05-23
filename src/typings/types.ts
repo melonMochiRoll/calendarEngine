@@ -2,6 +2,7 @@ import { ImageViewerProps } from "Components/modal/imageViewer/ImageViewer";
 import { JoinRequestDetailProps } from "Components/modal/joinrequest/joinrequestManager/JoinRequestDetail";
 import { TodoDetailProps } from "Components/modal/todo/TodoDetail";
 import { TodoUpdateProps } from "Components/modal/todo/TodoUpdate";
+import { ProfileImageUpdaterModalProps } from "Src/components/modal/profileImageUpdater/ProfileImageUpdaterModal";
 
 export type InputTypeAttribute = 'button' | 'checkbox' | 'color' | 'date' | 'datetime-local' | 'email' | 'file' | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | 'range' | 'reset' | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week';
 
@@ -27,6 +28,7 @@ export const ModalName = {
   IMAGE_VIEWER: 'IMAGE_VIEWER',
   SHAREDSPACE_INVITE_RECEIVED: 'SHAREDSPACE_INVITE_RECEIVED',
   SHAREDSPACE_INVITE_SEND: 'SHAREDSPACE_INVITE_SEND',
+  PROFILEIMAGE_UPDATER: 'PROFILEIMAGE_UPDATER',
 } as const;
 
 export type TModalName = typeof ModalName[keyof typeof ModalName];
@@ -43,7 +45,9 @@ export type ModalPayload =
   | { name: typeof ModalName.JOINREQUEST_DETAIL, props: JoinRequestDetailProps }
   | { name: typeof ModalName.IMAGE_VIEWER, props: ImageViewerProps }
   | { name: typeof ModalName.SHAREDSPACE_INVITE_RECEIVED, props?: {} }
-  | { name: typeof ModalName.SHAREDSPACE_INVITE_SEND, props?: {} };
+  | { name: typeof ModalName.SHAREDSPACE_INVITE_SEND, props?: {} }
+  | { name: typeof ModalName.PROFILEIMAGE_UPDATER, props: ProfileImageUpdaterModalProps }
+;
 
 export const RoleDictionary = {
   OWNER: '소유자',

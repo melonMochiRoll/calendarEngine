@@ -16,6 +16,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { openModal } from 'Src/features/modalSlice';
 import { ModalName } from 'Src/typings/types';
+import ImageIcon from '@mui/icons-material/Image';
 
 interface RenderUserProfileProps {};
 
@@ -37,6 +38,19 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
     qc.removeQueries([GET_USER_KEY]);
     navigate(PATHS.LOGIN);
   };
+
+  const openImageUpdater = () => {
+    dispatch(
+      openModal({
+        name: ModalName.PROFILEIMAGE_UPDATER,
+        props: {
+          nickname: userData.nickname,
+          ProfileImage: userData.ProfileImage,
+          email: userData.email
+        },
+      })
+    )
+  };
   
   return (
     <Block>
@@ -56,6 +70,12 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
               sx={muiMenuDarkModeSx}>
+              <MenuItem
+                onClick={openImageUpdater}
+                sx={{ gap: '5px' }}>
+                <ImageIcon />
+                <span>프로필 사진 수정</span>
+              </MenuItem>
               <MenuItem
                 onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACE_INVITE_RECEIVED }))}
                 sx={{ gap: '5px' }}>
