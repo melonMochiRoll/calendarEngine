@@ -82,3 +82,13 @@ export const generateProfileImagePresignedPutUrl = async (
     );
   return data;
 };
+
+export const updateProfileImage = async (ImageId: string) => {
+  await axiosInstance
+    .post(
+      `/api/users/profileimages`,
+      {
+        ImageId,
+      },
+    );
+};
