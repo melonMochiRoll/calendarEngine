@@ -63,3 +63,22 @@ export const searchUsers = async (
     throw err;
   }
 };
+
+export const generateProfileImagePresignedPutUrl = async (
+  id: string,
+  fileName: string,
+  fileSize: number,
+  contentType: string,
+) => {
+  const { data } = await axiosInstance
+    .post(
+      `/api/users/profileimages/presigned-url`,
+      {
+        id,
+        fileName,
+        fileSize,
+        contentType,
+      },
+    );
+  return data;
+};
