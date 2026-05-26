@@ -110,14 +110,14 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    if (images.length) {
-      const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
-
-      const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
-      await Promise.all(uploadPromises);
-    }
-
     try {
+      if (images.length) {
+        const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
+
+        const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
+        await Promise.all(uploadPromises);
+      }
+
       const response: { status: string, data: TChatPayload | null } = await socketRef.current
         ?.timeout(4000)
         .emitWithAck(ChatToServer.SHAREDSPACE_SEND_CHAT, { url, id: tempChatId, content, imageIds });
