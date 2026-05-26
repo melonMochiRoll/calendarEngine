@@ -28,6 +28,8 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
   } = useMenu();
 
   const handleUpdateSharedspacePrivate = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, Private: boolean) => {
+    if (!url) return;
+
     e.stopPropagation();
     onClose();
 
