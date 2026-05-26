@@ -6,10 +6,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_USER_KEY } from 'Constants/queryKeys';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
-import { waitingMessage } from 'Constants/notices';
+import { defaultToastOption, waitingMessage } from 'Constants/notices';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { setCsrfToken } from 'Src/features/csrfTokenSlice';
 import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 interface LoginContainerProps {};
 
@@ -23,13 +24,21 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
   });
 
   const onGoogleLogin = async () => {
-    const url = await loginOAuth2Google();
-    window.open(url, '_self');
+    try {
+      const url = await loginOAuth2Google();
+      window.open(url, '_self');
+    } catch (err) {
+      toast.error(waitingMessage, defaultToastOption);
+    }
   };
 
   const onNaverLogin = async () => {
-    const url = await loginOAuth2Naver();
-    window.open(url, '_self');
+    try {
+      const url = await loginOAuth2Naver();
+      window.open(url, '_self');
+    } catch (err) {
+      toast.error(waitingMessage, defaultToastOption);
+    }
   };
 
   const onSubmit = async (email: string, password: string) => {

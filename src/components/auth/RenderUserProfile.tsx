@@ -11,12 +11,13 @@ import useUser from 'Src/hooks/queries/useUser';
 import { Menu, MenuItem } from '@mui/material';
 import useMenu from 'Src/hooks/utils/useMenu';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { muiMenuDarkModeSx } from 'Src/constants/notices';
+import { defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Src/constants/notices';
 import MailIcon from '@mui/icons-material/Mail';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { openModal } from 'Src/features/modalSlice';
 import { ModalName } from 'Src/typings/types';
 import ImageIcon from '@mui/icons-material/Image';
+import { toast } from 'react-toastify';
 
 interface RenderUserProfileProps {};
 
@@ -34,9 +35,13 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
   } = useMenu();
 
   const onLogout = async () => {
-    await logout();
-    qc.removeQueries([GET_USER_KEY]);
-    navigate(PATHS.LOGIN);
+    try {
+      await logout();
+      qc.removeQueries([GET_USER_KEY]);
+      navigate(PATHS.LOGIN);
+    } catch (err) {
+      toast.error(waitingMessage, defaultToastOption);
+    }
   };
 
   const openImageUpdater = () => {
