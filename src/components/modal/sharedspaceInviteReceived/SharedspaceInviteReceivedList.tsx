@@ -5,8 +5,6 @@ import ClearIcon from '@mui/icons-material/ClearRounded';
 import { CircularProgress } from '@mui/material';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { TInvitePayload } from 'Src/typings/types';
-import { toast } from 'react-toastify';
-import { defaultToastOption, waitingMessage } from 'Src/constants/notices';
 import { acceptInvite, declineInvite } from 'Src/api/inviteApi';
 import { GET_SUBSCRIBED_SPACES_KEY } from 'Src/constants/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';
@@ -34,7 +32,6 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
       await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY]);
     } catch (err) {
       setIsResponded('요청 실패');
-      toast.error(waitingMessage, defaultToastOption);
     } finally {
       setIsLoading(false);
     }
@@ -48,7 +45,6 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
       setIsResponded('거절 완료');
     } catch (err) {
       setIsResponded('요청 실패');
-      toast.error(waitingMessage, defaultToastOption);
     } finally {
       setIsLoading(false);
     }
