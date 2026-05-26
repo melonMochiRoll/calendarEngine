@@ -46,9 +46,7 @@ const ChatContainer: FC = () => {
     if (!e.target.files) return;
 
     if (images.length + e.target.files.length > 6) {
-      toast.info(tooManyImagesMessage, {
-        ...defaultToastOption,
-      });
+      toast.info(tooManyImagesMessage, defaultToastOption);
       return;
     }
 
@@ -57,10 +55,7 @@ const ChatContainer: FC = () => {
 
     for (const file of Array.from(e.target.files)) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error(imageTooLargeMessage(5), {
-          ...defaultToastOption,
-          toastId: waitingMessage,
-        });
+        toast.error(imageTooLargeMessage(5), defaultToastOption);
         return;
       }
 
