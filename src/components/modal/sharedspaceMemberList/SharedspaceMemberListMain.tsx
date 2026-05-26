@@ -1,10 +1,5 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
-import { useParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_MEMBERS_KEY } from 'Constants/queryKeys';
-import { TSharedspaceMembersRoles } from 'Typings/types';
 import MemberItem from './MemberItem';
 import { useSharedspacemembers } from 'Src/hooks/queries/useSharedspacemembers';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
@@ -12,37 +7,8 @@ import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 interface SharedspaceMemberListMainProps {};
 
 const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
-  const { url } = useParams();
-  const qc = useQueryClient();
   const { data: membersData, nextPage } = useSharedspacemembers();
   const { data: spaceData } = useSharedspace();
-
-  const onUpdateMemberRole = async (UserId: string, roleName: TSharedspaceMembersRoles) => {
-    try {
-      await updateSharedspaceMembers(url, UserId, roleName);
-      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
-    } catch (err) {
-      throw err;
-    }
-  };
-
-  const onUpdateOwner = async (UserId: string) => {
-    try {
-      await updateSharedspaceOwner(url, UserId);
-      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
-    } catch (err) {
-      throw err;
-    }
-  };
-
-  const onDeleteMember = async (UserId: string) => {
-    try {
-      await deleteSharedspaceMembers(url, UserId);
-      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
-    } catch (err) {
-      throw err;
-    }
-  };
   
   return (
     <Main>
@@ -52,10 +18,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
             <MemberItem
               key={member.UserId}
               item={member}
-              isOwner={spaceData.permission.isOwner}
-              onUpdateMemberRole={onUpdateMemberRole}
-              onUpdateOwner={onUpdateOwner}
-              onDeleteMember={onDeleteMember} />
+              isOwner={spaceData.permission.isOwner} />
           );
         })}
         {membersData.hasMoreData &&

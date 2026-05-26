@@ -4,24 +4,24 @@ import useMenu from 'Hooks/utils/useMenu';
 import { CircularProgress, Divider, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { RoleDictionary, SharedspaceMembersRoles, TSharedspaceMembersItem, TSharedspaceMembersRoles } from 'Typings/types';
+import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { renderRole } from 'Lib/utilFunction';
+import { useQueryClient } from '@tanstack/react-query';
+import { GET_SHAREDSPACE_MEMBERS_KEY } from 'Src/constants/queryKeys';
+import { useParams } from 'react-router-dom';
 
 interface MemberItemProps {
   item: TSharedspaceMembersItem,
   isOwner: boolean,
-  onUpdateMemberRole: (UserId: string, roleName: TSharedspaceMembersRoles) => Promise<void>,
-  onUpdateOwner: (UserId: string) => Promise<void>,
-  onDeleteMember: (UserId: string) => Promise<void>,
 };
 
 const MemberItem: FC<MemberItemProps> = ({
   item,
   isOwner,
-  onUpdateMemberRole,
-  onUpdateOwner,
-  onDeleteMember,
 }) => {
+  const { url } = useParams();
+  const qc = useQueryClient();
   const [ isResponded, setIsResponded ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
   const { UserId, email, nickname, ProfileImage, RoleName } = item;
@@ -35,12 +35,15 @@ const MemberItem: FC<MemberItemProps> = ({
   } = useMenu();
 
   const handleUpdateMemberRole = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, role: TSharedspaceMembersRoles) => {
+    if (!url) return;
+    
     e.stopPropagation();
     setIsLoading(true);
     onClose();
 
     try {
-      await onUpdateMemberRole(UserId, role);
+      await updateSharedspaceMembers(url, UserId, role);
+      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
       setIsResponded('요청 완료');
     } catch (err) {
       setIsResponded('요청 실패');
@@ -50,12 +53,15 @@ const MemberItem: FC<MemberItemProps> = ({
   };
 
   const handleUpdateOwner = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    if (!url) return;
+
     e.stopPropagation();
     setIsLoading(true);
     onClose();
     
     try {
-      await onUpdateOwner(UserId);
+      await updateSharedspaceOwner(url, UserId);
+      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
       setIsResponded('요청 완료');
     } catch (err) {
       setIsResponded('요청 실패');
@@ -65,12 +71,15 @@ const MemberItem: FC<MemberItemProps> = ({
   };
 
   const handleDeleteMember = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    if (!url) return;
+
     e.stopPropagation();
     setIsLoading(true);
     onClose();
 
     try {
-      await onDeleteMember(UserId);
+      await deleteSharedspaceMembers(url, UserId);
+      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
       setIsResponded('요청 완료');
     } catch (err) {
       setIsResponded('요청 실패');
