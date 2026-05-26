@@ -275,7 +275,7 @@ export const deleteSharedspaceChatImage = async (
 export const generatePresignedPutUrl = async (
   url: string | undefined,
   metaDatas: TImageMetaData[],
-): Promise<Array<{ id: string, key: string, presignedUrl: string, contentType: string }>> => {
+): Promise<Array<{ id: string, presignedUrl: string, contentType: string }>> => {
   try {
     const { data } = await axiosInstance
       .post(
