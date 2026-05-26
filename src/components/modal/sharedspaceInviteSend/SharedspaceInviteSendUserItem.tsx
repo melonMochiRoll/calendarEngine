@@ -22,6 +22,7 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
   const label = isSent || '이미 속한 유저';
 
   const handleSendInvite = async () => {
+    if (!url) return;
     setIsLoading(true);
 
     try {
