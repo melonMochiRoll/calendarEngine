@@ -1,63 +1,39 @@
 import { axiosInstance } from "./axiosInstance";
 
 export const login = async (email: string, password: string) => {
-  try {
-    const { data } = await axiosInstance
-      .post('/api/auth/login/jwt', { email, password });
+  const { data } = await axiosInstance
+    .post('/api/auth/login/jwt', { email, password });
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const logout = async () => {
-  try {
-    await axiosInstance
-      .post('api/auth/logout');
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .post('api/auth/logout');
 };
 
 export const loginOAuth2Google = async () => {
-  try {
-    const { data: url } = await axiosInstance
-      .get(`/api/auth/login/oauth2/google`);
+  const { data: url } = await axiosInstance
+    .get(`/api/auth/login/oauth2/google`);
 
-    return url;
-  } catch (err) {
-    throw err;
-  }
+  return url;
 };
 
 export const loginOAuth2Naver = async () => {
-  try {
-    const { data: url } = await axiosInstance
-      .get(`/api/auth/login/oauth2/naver`);
+  const { data: url } = await axiosInstance
+    .get(`/api/auth/login/oauth2/naver`);
 
-    return url;
-  } catch (err) {
-    throw err;
-  }
+  return url;
 };
 
 export const getCsrfToken = async () => {
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/auth/csrf-token`);
+  const { data } = await axiosInstance
+    .get(`/api/auth/csrf-token`);
 
-    return data.csrfToken;
-  } catch (err) {
-    throw err;
-  }
+  return data.csrfToken;
 };
 
 export const refreshAuthToken = async () => {
-  try {
-    await axiosInstance
-      .post(`/api/auth/refresh`);
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .post(`/api/auth/refresh`);
 };

@@ -7,28 +7,20 @@ export const getJoinRequest = async (
     return;
   }
 
-  try {
-    const { data } = await axiosInstance
-      .get(`api/sharedspaces/${url}/joinrequest`);
+  const { data } = await axiosInstance
+    .get(`api/sharedspaces/${url}/joinrequest`);
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const createJoinRequest = async (
   url: string,
   message: string,
 ) => {
-  try {
-    await axiosInstance
-      .post(`api/sharedspaces/${url}/joinrequest`, {
-        message,
-      });
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .post(`api/sharedspaces/${url}/joinrequest`, {
+      message,
+    });
 };
 
 export const resolveJoinRequest = async (
@@ -37,17 +29,13 @@ export const resolveJoinRequest = async (
   RoleName: string,
 ) => {
   if (!url) {
-    throw new Error;
+    return;
   }
 
-  try {
-    await axiosInstance
-      .post(`api/sharedspaces/${url}/joinrequest/${id}/resolve`, {
-        RoleName,
-      });
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .post(`api/sharedspaces/${url}/joinrequest/${id}/resolve`, {
+      RoleName,
+    });
 };
 
 export const rejectJoinRequest = async (
@@ -55,13 +43,9 @@ export const rejectJoinRequest = async (
   id: string,
 ) => {
   if (!url) {
-    throw new Error;
+    return;
   }
 
-  try {
-    await axiosInstance
-      .post(`api/sharedspaces/${url}/joinrequest/${id}`);
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .post(`api/sharedspaces/${url}/joinrequest/${id}`);
 };

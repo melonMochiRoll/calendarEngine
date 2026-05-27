@@ -1,86 +1,58 @@
 import { TChatPayload, TImageMetaData, TSharedspaceMembersRoles } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
-import axios, { Axios } from "axios";
+import axios from "axios";
 
 export const getSharedspace = async (url: string | undefined) => {
   if (!url) {
     return;
   }
 
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/view`);
+  const { data } = await axiosInstance
+    .get(`/api/sharedspaces/${url}/view`);
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const getSubscribedspaces = async (
   sort: string,
   page = 1,
 ) => {
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/sharedspaces/subscribed?sort=${sort}&page=${page}`);
+  const { data } = await axiosInstance
+    .get(`/api/sharedspaces/subscribed?sort=${sort}&page=${page}`);
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
-export const createSharedspace = async () => {
-  try {
-    const { data } = await axiosInstance
-      .post<string>(`api/sharedspaces`);
+export const createSharedspace = async (): Promise<string> => {
+  const { data } = await axiosInstance
+    .post(`api/sharedspaces`);
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const updateSharedspaceName = async (
   name: string,
   url: string,
 ) => {
-  try {
-    await axiosInstance
-      .patch(`api/sharedspaces/${url}/name`, {
-        name,
-      });
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .patch(`api/sharedspaces/${url}/name`, {
+      name,
+    });
 };
 
 export const updateSharedspaceOwner = async (
-  url: string | undefined,
+  url: string,
   UserId: string,
 ) => {
-  if (!url) {
-    throw new Error;
-  }
-  
-  try {
-    await axiosInstance
-      .patch(`api/sharedspaces/${url}/owner`, {
-        newOwnerId: UserId,
-      });
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .patch(`api/sharedspaces/${url}/owner`, {
+      newOwnerId: UserId,
+    });
 };
 
 export const deleteSharedspace = async (url: string) => {
-  try {
-    await axiosInstance
-      .delete(`/api/sharedspaces/${url}`);
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .delete(`/api/sharedspaces/${url}`);
 };
 
 export const getSharedspaceMembers = async (
@@ -88,92 +60,44 @@ export const getSharedspaceMembers = async (
   page: number,
 ) => {
   if (!url) {
-    throw new Error;
+    return;
   }
   
-  try {
-    const { data } = await axiosInstance.get(
-      `/api/sharedspaces/${url}/members?page=${page}`
-    );
+  const { data } = await axiosInstance.get(
+    `/api/sharedspaces/${url}/members?page=${page}`
+  );
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const createSharedspaceMembers = async (
-  url: string | undefined,
-  UserId: string,
-  RoleName: TSharedspaceMembersRoles,
-) => {
-  if (!url) {
-    throw new Error;
-  }
-
-  try {
-    await axiosInstance
-      .post(`/api/sharedspaces/${url}/members`, {
-        UserId,
-        RoleName,
-      });
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const updateSharedspaceMembers = async (
-  url: string | undefined,
+  url: string,
   UserId: string,
   RoleName: TSharedspaceMembersRoles,
 ) => {
-  if (!url) {
-    throw new Error;
-  }
-
-  try {
-    await axiosInstance
-      .patch(`/api/sharedspaces/${url}/members`, {
-        UserId,
-        RoleName,
-      })
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .patch(`/api/sharedspaces/${url}/members`, {
+      UserId,
+      RoleName,
+    });
 };
 
 export const updateSharedspacePrivate = async (
   url: string | undefined,
   Private: boolean,
 ) => {
-  if (!url) {
-    throw new Error;
-  }
-
-  try {
-    await axiosInstance
-      .patch(`/api/sharedspaces/${url}/private`, {
-        private: Private,
-      });
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .patch(`/api/sharedspaces/${url}/private`, {
+      private: Private,
+    });
 };
 
 export const deleteSharedspaceMembers = async (
-  url: string | undefined,
+  url: string,
   UserId: string,
 ) => {
-  if (!url) {
-    throw new Error;
-  }
-
-  try {
-    await axiosInstance
-      .delete(`/api/sharedspaces/${url}/members/${UserId}`);
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .delete(`/api/sharedspaces/${url}/members/${UserId}`);
 };
 
 export const getSharedspaceChats = async (
@@ -181,114 +105,32 @@ export const getSharedspaceChats = async (
   beforeChatId?: string,
 ) => {
   if (!url) {
-    return {
-      chats: [],
-      hasMoreData: false,
-    };
+    return;
   }
 
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/chats`, {
-        params: {
-          before: beforeChatId,
-        },
-      });
-
-    return data;
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const createSharedspaceChat = async (
-  url: string | undefined,
-  id: string,
-  content: string,
-  imageIds: string[],
-): Promise<TChatPayload> => {
-  if (!url) {
-    throw new Error;
-  }
-
-  try {
-    const { data } = await axiosInstance
-      .post(
-        `/api/sharedspaces/${url}/chats`,
-        {
-          id,
-          content,
-          imageIds,
-        }
-      );
-    return data;
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const updateSharedspaceChat = async (
-  url: string | undefined,
-  ChatId: string,
-  content: string,
-) => {
-  await axiosInstance
-    .patch(`/api/sharedspaces/${url}/chats`, {
-      ChatId,
-      content,
+  const { data } = await axiosInstance
+    .get(`/api/sharedspaces/${url}/chats`, {
+      params: {
+        before: beforeChatId,
+      },
     });
-};
 
-export const deleteSharedspaceChat = async (
-  url: string | undefined,
-  ChatId: string,
-) => {
-  if (!url || !ChatId) {
-    throw new Error;
-  }
-
-  try {
-    await axiosInstance
-      .delete(`/api/sharedspaces/${url}/chats/${ChatId}`);
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const deleteSharedspaceChatImage = async (
-  url: string | undefined,
-  ChatId: string,
-  ImageId: string,
-) => {
-  if (!url || !ChatId || !ImageId) {
-    throw new Error;
-  }
-
-  try {
-    await axiosInstance
-      .delete(`/api/sharedspaces/${url}/chats/${ChatId}/images/${ImageId}`);
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const generatePresignedPutUrl = async (
   url: string | undefined,
   metaDatas: TImageMetaData[],
 ): Promise<Array<{ id: string, presignedUrl: string, contentType: string }>> => {
-  try {
-    const { data } = await axiosInstance
-      .post(
-        `/api/sharedspaces/${url}/chats/images/presigned-url`,
-        {
-          metaDatas,
-        },
-      );
+  const { data } = await axiosInstance
+    .post(
+      `/api/sharedspaces/${url}/chats/images/presigned-url`,
+      {
+        metaDatas,
+      },
+    );
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const uploadImageToPresignedUrl = async (
@@ -296,19 +138,15 @@ export const uploadImageToPresignedUrl = async (
   file: File,
   contentType: string,
 ) => {
-  try {
-    await axios
-      .put(
-        url,
-        file,
-        {
-          headers: {
-            'Cache-Control': 'public, max-age=31536000, immutable',
-            'Content-Type': contentType,
-          },
-        }
-      );
-  } catch (err) {
-    throw err;
-  }
+  await axios
+    .put(
+      url,
+      file,
+      {
+        headers: {
+          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Content-Type': contentType,
+        },
+      }
+    );
 };

@@ -1,48 +1,32 @@
 import { axiosInstance } from "./axiosInstance";
 
 export const getUser = async () => {
-  try {
-    const { data } = await axiosInstance
-      .get('/api/users');
-    
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  const { data } = await axiosInstance
+    .get('/api/users');
+  
+  return data;
 };
 
 export const isUser = async (email: string) => {
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/users/email?e=${email}`);
+  const { data } = await axiosInstance
+    .get(`/api/users/email?e=${email}`);
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const existsByNickname = async (nickname: string) => {
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/users/nickname?n=${nickname}`);
+  const { data } = await axiosInstance
+    .get(`/api/users/nickname?n=${nickname}`);
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const createUser = async (email: string, nickname: string, password: string) => {
-  try {
-    await axiosInstance
-      .post(
-        '/api/users',
-        { email, nickname, password },
-      );
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .post(
+      '/api/users',
+      { email, nickname, password },
+    );
 };
 
 export const searchUsers = async (
@@ -50,18 +34,18 @@ export const searchUsers = async (
   query: string,
   page: number,
 ) => {
-  if (!url || !query) {
+  if (!query) {
     return [];
   }
-  
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/users/search?query=${query}&page=${page}`);
 
-    return data;
-  } catch (err) {
-    throw err;
+  if (!url) {
+    return;
   }
+  
+  const { data } = await axiosInstance
+    .get(`/api/sharedspaces/${url}/users/search?query=${query}&page=${page}`);
+
+  return data;
 };
 
 export const generateProfileImagePresignedPutUrl = async (

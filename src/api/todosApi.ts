@@ -9,14 +9,10 @@ export const getTodosByMonth = async (
     return;
   }
 
-  try {
-    const { data } = await axiosInstance
-      .get(`/api/sharedspaces/${url}/todos?date=${year}-${month}`);
+  const { data } = await axiosInstance
+    .get(`/api/sharedspaces/${url}/todos?date=${year}-${month}`);
 
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return data;
 };
 
 export const createTodo = async (
@@ -27,20 +23,16 @@ export const createTodo = async (
   url: string | undefined,
 ) => {
   if (!url) {
-    throw new Error;
+    return;
   }
 
-  try {
-    await axiosInstance
-      .post(`/api/sharedspaces/${url}/todos`, {
-        description,
-        date,
-        startTime,
-        endTime,
-      });
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .post(`/api/sharedspaces/${url}/todos`, {
+      description,
+      date,
+      startTime,
+      endTime,
+    });
 };
 
 export const updateTodo = async (
@@ -52,21 +44,17 @@ export const updateTodo = async (
   url: string | undefined,
 ) => {
   if (!url) {
-    throw new Error;
+    return;
   }
 
-  try {
-    await axiosInstance
-      .put(`/api/sharedspaces/${url}/todos`, {
-        id,
-        description,
-        date,
-        startTime,
-        endTime,
-      });
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .put(`/api/sharedspaces/${url}/todos`, {
+      id,
+      description,
+      date,
+      startTime,
+      endTime,
+    });
 };
 
 export const deleteTodo = async (
@@ -74,15 +62,11 @@ export const deleteTodo = async (
   url: string | undefined,
 ) => {
   if (!url) {
-    throw new Error;
+    return;
   }
 
-  try {
-    await axiosInstance
-      .delete(`/api/sharedspaces/${url}/todos/${todoId}`);
-  } catch (err) {
-    throw err;
-  }
+  await axiosInstance
+    .delete(`/api/sharedspaces/${url}/todos/${todoId}`);
 };
 
 export const searchTodos = async (
@@ -98,13 +82,9 @@ export const searchTodos = async (
     return;
   }
   
-  try {
-    const { data } = await axiosInstance.get(
-      `/api/sharedspaces/${url}/todos/search?query=${query}&page=${page}`
-    );
-    
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  const { data } = await axiosInstance.get(
+    `/api/sharedspaces/${url}/todos/search?query=${query}&page=${page}`
+  );
+  
+  return data;
 };
