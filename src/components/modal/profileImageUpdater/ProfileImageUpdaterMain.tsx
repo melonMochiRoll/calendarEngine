@@ -4,12 +4,14 @@ import gravatar from 'gravatar';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
-import { defaultToastOption, imageTooLargeMessage, waitingMessage } from 'Src/constants/notices';
+import { defaultToastOption, imageTooLargeMessage, successMessage, waitingMessage } from 'Src/constants/notices';
 import { generateProfileImagePresignedPutUrl, updateProfileImage } from 'Src/api/usersApi';
 import { uuidv7 } from 'uuidv7';
 import { uploadImageToPresignedUrl } from 'Src/api/sharedspacesApi';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_USER_KEY } from 'Src/constants/queryKeys';
+import { useAppDispatch } from 'Src/hooks/reduxHooks';
+import { closeModal } from 'Src/features/modalSlice';
 
 interface ProfileImageUpdaterMain {
   nickname: string,
@@ -23,6 +25,7 @@ const ProfileImageUpdaterMain: FC<ProfileImageUpdaterMain> = ({
   email,
 }) => {
   const qc = useQueryClient();
+  const dispatch = useAppDispatch();
   const [ image, setImage ] = useState<File>();
   const [ preview, setPreview ] = useState<string>('');
   const src = ProfileImage ? ProfileImage : gravatar.url(email, { s: '25px', d: 'retro' });
@@ -66,6 +69,9 @@ const ProfileImageUpdaterMain: FC<ProfileImageUpdaterMain> = ({
       await uploadImageToPresignedUrl(presignedUrl, image, contentType);
       await updateProfileImage(tempImageId);
       await qc.refetchQueries([GET_USER_KEY]);
+      
+      toast.success(successMessage, defaultToastOption);
+      dispatch(closeModal());
     } catch (err) {
       toast.error(waitingMessage, defaultToastOption);
     }
