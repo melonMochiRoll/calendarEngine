@@ -124,7 +124,7 @@ export const generatePresignedPutUrl = async (
 ): Promise<Array<{ id: string, presignedUrl: string, contentType: string }>> => {
   const { data } = await axiosInstance
     .post(
-      `/api/sharedspaces/${url}/chats/images/presigned-url`,
+      `/api/space/${url}/chats/images/presigned-url`,
       {
         metaDatas,
       },
