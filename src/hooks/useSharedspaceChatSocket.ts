@@ -10,19 +10,32 @@ import dayjs from 'dayjs';
 import { uuidv7 } from 'uuidv7';
 import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import useUser from "./queries/useUser";
-import { useSocket } from "./useSocket";
+import { useAppSelector } from "./reduxHooks";
+import { io, Socket } from "socket.io-client";
 
 export function useSharedspaceChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
-  const { socketRef } = useSocket();
+  const { token } = useAppSelector(state => state.csrfToken);
+
+  const socketRef = useRef<Socket>();
   const canShowNotify = useRef(false);
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const [ socketStatus, setSocketStatus ] = useState(SocketStatus.CONNECTING);
   
   useEffect(() => {
-    if (!_url) return;
+    if (!_url || !token) return;
+
+    socketRef.current = io(
+      `${process.env.REACT_APP_SERVER_ORIGIN}/sharedspace`,
+      {
+        withCredentials: true,
+        auth: {
+          'x-csrf-token': token,
+        },
+      },
+    );
 
     const socket = socketRef.current;
 
@@ -51,7 +64,7 @@ export function useSharedspaceChatSocket() {
       socket?.off(ChatToClient.SHAREDSPACE_CHAT_DELETED, onChatDeleted);
       socket?.off(ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED, onChatImageDeleted);
     };
-  }, [_url]);
+  }, [_url, token]);
 
   const sendSharedspaceChat = async (
     url: string | undefined,
