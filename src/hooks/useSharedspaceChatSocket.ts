@@ -10,61 +10,39 @@ import dayjs from 'dayjs';
 import { uuidv7 } from 'uuidv7';
 import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import useUser from "./queries/useUser";
+import { useSocket } from "./useSocket";
 import { useAppSelector } from "./reduxHooks";
-import { io, Socket } from "socket.io-client";
 
 export function useSharedspaceChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
-  const { token } = useAppSelector(state => state.csrfToken);
-
-  const socketRef = useRef<Socket>();
+  const { socketRef } = useSocket();
   const canShowNotify = useRef(false);
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
-  const [ socketStatus, setSocketStatus ] = useState(SocketStatus.CONNECTING);
+  const { socketStatus } = useAppSelector(state => state.socketStatus);
   
   useEffect(() => {
-    if (!_url || !token) return;
-
-    socketRef.current = io(
-      `${process.env.REACT_APP_SERVER_ORIGIN}/sharedspace`,
-      {
-        withCredentials: true,
-        auth: {
-          'x-csrf-token': token,
-        },
-      },
-    );
+    if (!_url) return;
 
     const socket = socketRef.current;
 
-    socket?.on('connect', () => setSocketStatus(SocketStatus.CONNECTED));
-    socket?.on('disconnect', () => setSocketStatus(SocketStatus.DISCONNECTED));
-    socket?.io.on('reconnect_attempt', () => setSocketStatus(SocketStatus.RECONNECTING));
-    socket?.io.on('reconnect', () => setSocketStatus(SocketStatus.CONNECTED));
+    socket?.on(ChatToClient.CHAT_CREATED, onChatCreated);
+    socket?.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
+    socket?.on(ChatToClient.CHAT_DELETED, onChatDeleted);
+    socket?.on(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
 
-    socket?.on(ChatToClient.SHAREDSPACE_CHAT_CREATED, onChatCreated);
-    socket?.on(ChatToClient.SHAREDSPACE_CHAT_UPDATED, onChatUpdated);
-    socket?.on(ChatToClient.SHAREDSPACE_CHAT_DELETED, onChatDeleted);
-    socket?.on(ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED, onChatImageDeleted);
-
-    socket?.emit(ChatToServer.SHAREDSPACE_JOIN_ROOM, _url);
+    socket?.emit(ChatToServer.JOIN_ROOM, _url);
 
     return () => {
-      socket?.emit(ChatToServer.SHAREDSPACE_LEAVE_ROOM, _url);
-
-      socket?.off('connect', () => setSocketStatus(SocketStatus.CONNECTED));
-      socket?.off('disconnect', () => setSocketStatus(SocketStatus.DISCONNECTED));
-      socket?.io.off('reconnect_attempt', () => setSocketStatus(SocketStatus.RECONNECTING));
-      socket?.io.off('reconnect', () => setSocketStatus(SocketStatus.CONNECTED));
+      socket?.emit(ChatToServer.LEAVE_ROOM, _url);
       
-      socket?.off(ChatToClient.SHAREDSPACE_CHAT_CREATED, onChatCreated);
-      socket?.off(ChatToClient.SHAREDSPACE_CHAT_UPDATED, onChatUpdated);
-      socket?.off(ChatToClient.SHAREDSPACE_CHAT_DELETED, onChatDeleted);
-      socket?.off(ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED, onChatImageDeleted);
+      socket?.off(ChatToClient.CHAT_CREATED, onChatCreated);
+      socket?.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
+      socket?.off(ChatToClient.CHAT_DELETED, onChatDeleted);
+      socket?.off(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
     };
-  }, [_url, token]);
+  }, [_url]);
 
   const sendSharedspaceChat = async (
     url: string | undefined,
@@ -133,7 +111,7 @@ export function useSharedspaceChatSocket() {
 
       const response: { status: string, data: TChatPayload | null } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.SHAREDSPACE_SEND_CHAT, { url, id: tempChatId, content, imageIds });
+        .emitWithAck(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -219,7 +197,7 @@ export function useSharedspaceChatSocket() {
     try {
       const response: { status: string, data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'> | null } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.SHAREDSPACE_UPDATE_CHAT, { url, id, content: newContent });
+        .emitWithAck(ChatToServer.UPDATE_CHAT, { url, id, content: newContent });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -301,7 +279,7 @@ export function useSharedspaceChatSocket() {
     try {
       const response: { status: string, data: Pick<TChatPayload, 'id'> | null } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.SHAREDSPACE_DELETE_CHAT, { url, id });
+        .emitWithAck(ChatToServer.DELETE_CHAT, { url, id });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -374,11 +352,11 @@ export function useSharedspaceChatSocket() {
     try {
       const response: {
         status: string,
-        data: { action: typeof ChatToClient.SHAREDSPACE_CHAT_DELETED, id: string } |
-          { action: typeof ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED, ChatId: string, ImageId: string } | null
+        data: { action: typeof ChatToClient.CHAT_DELETED, id: string } |
+          { action: typeof ChatToClient.CHAT_IMAGE_DELETED, ChatId: string, ImageId: string } | null
       } = await socketRef.current
         ?.timeout(4000)
-        .emitWithAck(ChatToServer.SHAREDSPACE_DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
+        .emitWithAck(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
 
       if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
         throw new Error();
@@ -386,7 +364,7 @@ export function useSharedspaceChatSocket() {
 
       const { data } = response;
 
-      if (data.action === ChatToClient.SHAREDSPACE_CHAT_DELETED) {
+      if (data.action === ChatToClient.CHAT_DELETED) {
         qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
           if (!prev) return;
 
@@ -404,7 +382,7 @@ export function useSharedspaceChatSocket() {
         });
       }
 
-      if (data.action === ChatToClient.SHAREDSPACE_CHAT_IMAGE_DELETED) {
+      if (data.action === ChatToClient.CHAT_IMAGE_DELETED) {
         qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
           if (!prev) return;
           
