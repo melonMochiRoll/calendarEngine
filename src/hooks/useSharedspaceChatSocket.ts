@@ -21,10 +21,19 @@ export function useSharedspaceChatSocket() {
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const { socketStatus } = useAppSelector(state => state.socketStatus);
-  
+
   useEffect(() => {
     if (!_url) return;
+    const socket = socketRef.current;
 
+    socket?.emit(ChatToServer.JOIN_ROOM, _url);
+    
+    return () => {
+      socket?.emit(ChatToServer.LEAVE_ROOM, _url);
+    };
+  }, [_url]);
+  
+  useEffect(() => {
     const socket = socketRef.current;
 
     socket?.on(ChatToClient.CHAT_CREATED, onChatCreated);
@@ -32,17 +41,13 @@ export function useSharedspaceChatSocket() {
     socket?.on(ChatToClient.CHAT_DELETED, onChatDeleted);
     socket?.on(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
 
-    socket?.emit(ChatToServer.JOIN_ROOM, _url);
-
     return () => {
-      socket?.emit(ChatToServer.LEAVE_ROOM, _url);
-      
       socket?.off(ChatToClient.CHAT_CREATED, onChatCreated);
       socket?.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
       socket?.off(ChatToClient.CHAT_DELETED, onChatDeleted);
       socket?.off(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
     };
-  }, [_url]);
+  }, []);
 
   const sendSharedspaceChat = async (
     url: string | undefined,
