@@ -12,15 +12,17 @@ export function useSocket() {
   useEffect(() => {
     if (!token) return;
 
-    socketRef.current = io(
-      `${process.env.REACT_APP_SERVER_ORIGIN}`,
-      {
-        withCredentials: true,
-        auth: {
-          'x-csrf-token': token,
+    if (!socketRef.current) {
+      socketRef.current = io(
+        `${process.env.REACT_APP_SERVER_ORIGIN}`,
+        {
+          withCredentials: true,
+          auth: {
+            'x-csrf-token': token,
+          },
         },
-      },
-    );
+      );
+    }
 
     const socket = socketRef.current;
 
