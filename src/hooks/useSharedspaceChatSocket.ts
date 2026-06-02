@@ -3,7 +3,7 @@ import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ChatStatus, TChatPayload, TChats } from "Typings/types";
-import { ChatAckStatus, ChatToClient, ChatToServer, SocketStatus } from "Src/constants/constants";
+import { ChatAckStatus, ChatToClient, ChatToServer } from "Src/constants/constants";
 import { toast } from "react-toastify";
 import { defaultToastOption, waitingMessage } from "Src/constants/notices";
 import dayjs from 'dayjs';
@@ -16,38 +16,29 @@ import { useAppSelector } from "./reduxHooks";
 export function useSharedspaceChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
-  const { socketRef } = useSocket();
+  const { socket } = useSocket();
   const canShowNotify = useRef(false);
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const { socketStatus } = useAppSelector(state => state.socketStatus);
 
   useEffect(() => {
-    if (!_url) return;
-    const socket = socketRef.current;
+    if (!_url || !socket) return;
 
-    socket?.emit(ChatToServer.JOIN_ROOM, _url);
+    socket.emit(ChatToServer.JOIN_ROOM, _url);
+    socket.on(ChatToClient.CHAT_CREATED, onChatCreated);
+    socket.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
+    socket.on(ChatToClient.CHAT_DELETED, onChatDeleted);
+    socket.on(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
     
     return () => {
-      socket?.emit(ChatToServer.LEAVE_ROOM, _url);
+      socket.emit(ChatToServer.LEAVE_ROOM, _url);
+      socket.off(ChatToClient.CHAT_CREATED, onChatCreated);
+      socket.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
+      socket.off(ChatToClient.CHAT_DELETED, onChatDeleted);
+      socket.off(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
     };
-  }, [_url]);
-  
-  useEffect(() => {
-    const socket = socketRef.current;
-
-    socket?.on(ChatToClient.CHAT_CREATED, onChatCreated);
-    socket?.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
-    socket?.on(ChatToClient.CHAT_DELETED, onChatDeleted);
-    socket?.on(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
-
-    return () => {
-      socket?.off(ChatToClient.CHAT_CREATED, onChatCreated);
-      socket?.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
-      socket?.off(ChatToClient.CHAT_DELETED, onChatDeleted);
-      socket?.off(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
-    };
-  }, []);
+  }, [_url, socket]);
 
   const sendSharedspaceChat = async (
     url: string | undefined,
@@ -55,7 +46,7 @@ export function useSharedspaceChatSocket() {
     images: File[],
     previews: string[]
   ) => {
-    if (socketStatus !== SocketStatus.CONNECTED) return;
+    if (!socket) return;
 
     content = content.trim();
 
@@ -114,7 +105,7 @@ export function useSharedspaceChatSocket() {
         await Promise.all(uploadPromises);
       }
 
-      socketRef.current?.emit(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
+      socket.emit(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -140,7 +131,7 @@ export function useSharedspaceChatSocket() {
     oldContent: string,
     newContent: string,
   ) => {
-    if (socketStatus !== SocketStatus.CONNECTED) return;
+    if (!socket) return;
     
     newContent = newContent.trim();
 
@@ -173,7 +164,7 @@ export function useSharedspaceChatSocket() {
     });
 
     try {
-      const response: { status: string, data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'> | null } = await socketRef.current
+      const response: { status: string, data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'> | null } = await socket
         ?.timeout(4000)
         .emitWithAck(ChatToServer.UPDATE_CHAT, { url, id, content: newContent });
 
@@ -222,14 +213,14 @@ export function useSharedspaceChatSocket() {
       });
       toast.error(waitingMessage, defaultToastOption);
     }
-  }, [socketStatus]);
+  }, [socket]);
 
   const deleteSharedspaceChat = useCallback(async (
     url: string | undefined,
     id: string,
   ) => {
     if (
-      socketStatus !== SocketStatus.CONNECTED ||
+      !socket ||
       !url
     ) {
       return;
@@ -255,7 +246,7 @@ export function useSharedspaceChatSocket() {
     });
 
     try {
-      const response: { status: string, data: Pick<TChatPayload, 'id'> | null } = await socketRef.current
+      const response: { status: string, data: Pick<TChatPayload, 'id'> | null } = await socket
         ?.timeout(4000)
         .emitWithAck(ChatToServer.DELETE_CHAT, { url, id });
 
@@ -299,14 +290,14 @@ export function useSharedspaceChatSocket() {
       });
       toast.error(waitingMessage, defaultToastOption);
     }
-  }, [socketStatus]);
+  }, [socket]);
 
   const deleteSharedspaceChatImage = useCallback(async (
     url: string | undefined,
     ChatId: string,
     ImageId: string,
   ) => {
-    if (socketStatus !== SocketStatus.CONNECTED || !url) return;
+    if (!socket || !url) return;
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
@@ -332,7 +323,7 @@ export function useSharedspaceChatSocket() {
         status: string,
         data: { action: typeof ChatToClient.CHAT_DELETED, id: string } |
           { action: typeof ChatToClient.CHAT_IMAGE_DELETED, ChatId: string, ImageId: string } | null
-      } = await socketRef.current
+      } = await socket
         ?.timeout(4000)
         .emitWithAck(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
 
@@ -400,9 +391,10 @@ export function useSharedspaceChatSocket() {
       });
       toast.error(waitingMessage, defaultToastOption);
     }
-  }, [socketStatus]);
+  }, [socket]);
 
   const onChatCreated = (data: TChatPayload) => {
+    console.log(data);
     if (data.permission.isSender) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
