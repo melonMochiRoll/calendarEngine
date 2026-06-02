@@ -114,34 +114,7 @@ export function useSharedspaceChatSocket() {
         await Promise.all(uploadPromises);
       }
 
-      const response: { status: string, data: TChatPayload | null } = await socketRef.current
-        ?.timeout(4000)
-        .emitWithAck(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
-
-      if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
-        throw new Error();
-      }
-
-      const { data } = response;
-
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const chats = prev.chats.map(chat => {
-          if (chat.id === data.id) {
-            return {
-              ...data,
-              ChatImages: data.ChatImages.map((image, idx) => Object.assign(image, { _tempPath: chat.ChatImages[idx]._tempPath })),
-            };
-          }
-          return chat;
-        });
-
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
+      socketRef.current?.emit(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -430,14 +403,35 @@ export function useSharedspaceChatSocket() {
   }, [socketStatus]);
 
   const onChatCreated = (data: TChatPayload) => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-      if (!prev) return;
+    if (data.permission.isSender) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
 
-      return {
-        chats: [ data, ...prev.chats ],
-        hasMoreData: prev.hasMoreData,
-      };
-    });
+        const chats = prev.chats.map(chat => {
+          if (chat.id === data.id) {
+            return {
+              ...data,
+              ChatImages: data.ChatImages.map((image, idx) => Object.assign(image, { _tempPath: chat.ChatImages[idx]._tempPath })),
+            };
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+    } else {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        return {
+          chats: [ data, ...prev.chats ],
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+    }
 
     if (canShowNotify.current) {
       setShowNewChat({
