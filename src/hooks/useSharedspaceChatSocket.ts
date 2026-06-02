@@ -3,7 +3,7 @@ import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ChatStatus, TChatPayload, TChats } from "Typings/types";
-import { ChatAckStatus, ChatToClient, ChatToServer } from "Src/constants/constants";
+import { ChatToClient, ChatToServer } from "Src/constants/constants";
 import { toast } from "react-toastify";
 import { defaultToastOption, waitingMessage } from "Src/constants/notices";
 import dayjs from 'dayjs';
@@ -30,6 +30,7 @@ export function useSharedspaceChatSocket() {
     socket.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
     socket.on(ChatToClient.CHAT_DELETED, onChatDeleted);
     socket.on(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
+    socket.on(ChatToClient.CHAT_ERROR, onChatError);
     
     return () => {
       socket.emit(ChatToServer.LEAVE_ROOM, _url);
@@ -37,6 +38,7 @@ export function useSharedspaceChatSocket() {
       socket.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
       socket.off(ChatToClient.CHAT_DELETED, onChatDeleted);
       socket.off(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
+      socket.off(ChatToClient.CHAT_ERROR, onChatError);
     };
   }, [_url, socket]);
 
@@ -104,8 +106,6 @@ export function useSharedspaceChatSocket() {
         const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
         await Promise.all(uploadPromises);
       }
-
-      socket.emit(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -123,6 +123,8 @@ export function useSharedspaceChatSocket() {
         };
       });
     }
+
+    socket.emit(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
   };
 
   const updateSharedspaceChat = useCallback(async (
@@ -151,6 +153,7 @@ export function useSharedspaceChatSocket() {
           return {
             ...chat,
             content: newContent,
+            _oldContent: oldContent,
             _status: ChatStatus.PENDING,
           };
         }
@@ -163,68 +166,14 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    try {
-      const response: { status: string, data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt'> | null } = await socket
-        ?.timeout(4000)
-        .emitWithAck(ChatToServer.UPDATE_CHAT, { url, id, content: newContent });
-
-      if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
-        throw new Error();
-      }
-
-      const { data } = response;
-
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const chats = prev.chats.map((chat) => {
-          if (chat.id === data.id) {
-            return {
-              ...chat,
-              content: data.content,
-              updatedAt: data.updatedAt,
-              _status: ChatStatus.SUCCESS,
-            };
-          }
-          return chat;
-        });
-
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-    } catch (err) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const chats = prev.chats.map(chat => {
-          if (chat.id === id) {
-            const { _status, ...rest } = chat;
-            return rest;
-          }
-          return chat;
-        });
-
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-      toast.error(waitingMessage, defaultToastOption);
-    }
+    socket.emit(ChatToServer.UPDATE_CHAT, { url, id, content: newContent });
   }, [socket]);
 
   const deleteSharedspaceChat = useCallback(async (
     url: string | undefined,
     id: string,
   ) => {
-    if (
-      !socket ||
-      !url
-    ) {
-      return;
-    };
+    if (!socket || !url) return;
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
@@ -245,51 +194,7 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    try {
-      const response: { status: string, data: Pick<TChatPayload, 'id'> | null } = await socket
-        ?.timeout(4000)
-        .emitWithAck(ChatToServer.DELETE_CHAT, { url, id });
-
-      if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
-        throw new Error();
-      }
-
-      const { data } = response;
-
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const idx = prev.chats.findIndex(chat => chat.id === data.id);
-
-        if (idx < 0) return;
-
-        const head = prev.chats.slice(0, idx);
-        const tail = prev.chats.slice(idx + 1, prev.chats.length);
-
-        return {
-          chats: [ ...head, ...tail ],
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-    } catch (err) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const chats = prev.chats.map(chat => {
-          if (chat.id === id) {
-            const { _status, ...rest } = chat;
-            return rest;
-          }
-          return chat;
-        });
-
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-      toast.error(waitingMessage, defaultToastOption);
-    }
+    socket.emit(ChatToServer.DELETE_CHAT, { url, id });
   }, [socket]);
 
   const deleteSharedspaceChatImage = useCallback(async (
@@ -318,83 +223,10 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    try {
-      const response: {
-        status: string,
-        data: { action: typeof ChatToClient.CHAT_DELETED, id: string } |
-          { action: typeof ChatToClient.CHAT_IMAGE_DELETED, ChatId: string, ImageId: string } | null
-      } = await socket
-        ?.timeout(4000)
-        .emitWithAck(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
-
-      if (response.status !== ChatAckStatus.SUCCESS || !response.data) {
-        throw new Error();
-      }
-
-      const { data } = response;
-
-      if (data.action === ChatToClient.CHAT_DELETED) {
-        qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-          if (!prev) return;
-
-          const idx = prev.chats.findIndex(chat => chat.id === data.id);
-
-          if (idx < 0) return;
-
-          const head = prev.chats.slice(0, idx);
-          const tail = prev.chats.slice(idx + 1, prev.chats.length);
-
-          return {
-            chats: [ ...head, ...tail ],
-            hasMoreData: prev.hasMoreData,
-          };
-        });
-      }
-
-      if (data.action === ChatToClient.CHAT_IMAGE_DELETED) {
-        qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-          if (!prev) return;
-          
-          const chatIdx = prev.chats.findIndex(chat => chat.id === data.ChatId);
-          const head = prev.chats.slice(0, chatIdx);
-          const tail = prev.chats.slice(chatIdx + 1, prev.chats.length);
-
-          const targetChat = prev.chats[chatIdx];
-          const imageIdx = targetChat.ChatImages.findIndex(image => image.id === data.ImageId);
-          const imagesHead = targetChat.ChatImages.slice(0, imageIdx);
-          const imagesTail = targetChat.ChatImages.slice(imageIdx + 1, targetChat.ChatImages.length);
-
-          return {
-            chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
-            hasMoreData: prev.hasMoreData,
-          };
-        });
-      }
-
-      throw new Error();
-    } catch (err) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const chats = prev.chats.map(chat => {
-          if (chat.id === ChatId) {
-            const { _status, ...rest } = chat;
-            return rest;
-          }
-          return chat;
-        });
-
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-      toast.error(waitingMessage, defaultToastOption);
-    }
+    socket.emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
   }, [socket]);
 
   const onChatCreated = (data: TChatPayload) => {
-    console.log(data);
     if (data.permission.isSender) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -497,6 +329,77 @@ export function useSharedspaceChatSocket() {
         hasMoreData: prev.hasMoreData,
       };
     });
+  };
+
+  const onChatError = (data: { event: string, ChatId: string }) => {
+    const { event, ChatId } = data;
+
+    if (event === ChatToClient.CHAT_CREATED) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev?.chats.map(chat => {
+          if (chat.id === ChatId) {
+            return { ...chat, _status: ChatStatus.ERROR };
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+      return;
+    }
+
+    if (event === ChatToClient.CHAT_UPDATED) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
+          if (chat.id === ChatId) {
+            const { _status, ...rest } = chat;
+            return {
+              ...rest,
+              content: chat?._oldContent || chat.content,
+            };
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+      toast.error(waitingMessage, defaultToastOption);
+      return;
+    }
+
+    if (
+      event === ChatToClient.CHAT_DELETED,
+      event === ChatToClient.CHAT_IMAGE_DELETED
+    ) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev.chats.map(chat => {
+          if (chat.id === ChatId) {
+            const { _status, ...rest } = chat;
+            return rest;
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
+      toast.error(waitingMessage, defaultToastOption);
+      return;
+    }
   };
 
   return {
