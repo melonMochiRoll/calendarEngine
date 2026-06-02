@@ -204,6 +204,7 @@ export type TChatPayload = Pick<TChat,
       isSender: boolean,
     },
   } & {
+    _oldContent?: string,
     _status?: TChatStatus,
     _imageFiles?: File[],
   };
