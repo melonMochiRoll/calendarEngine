@@ -334,7 +334,7 @@ export function useSharedspaceChatSocket() {
   const onChatError = (data: { event: string, ChatId: string }) => {
     const { event, ChatId } = data;
 
-    if (event === ChatToClient.CHAT_CREATED) {
+    if (event === ChatToServer.SEND_CHAT) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
 
@@ -353,7 +353,7 @@ export function useSharedspaceChatSocket() {
       return;
     }
 
-    if (event === ChatToClient.CHAT_UPDATED) {
+    if (event === ChatToServer.UPDATE_CHAT) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
 
@@ -378,8 +378,8 @@ export function useSharedspaceChatSocket() {
     }
 
     if (
-      event === ChatToClient.CHAT_DELETED,
-      event === ChatToClient.CHAT_IMAGE_DELETED
+      event === ChatToServer.DELETE_CHAT,
+      event === ChatToServer.DELETE_CHAT_IMAGE
     ) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
