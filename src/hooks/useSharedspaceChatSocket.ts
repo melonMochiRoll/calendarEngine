@@ -124,7 +124,7 @@ export function useSharedspaceChatSocket() {
       });
     }
 
-    socket.emit(ChatToServer.SEND_CHAT, { url, id: tempChatId, content, imageIds });
+    socket.emit(ChatToServer.SEND_CHAT, { url, ChatId: tempChatId, content, imageIds });
   };
 
   const updateSharedspaceChat = useCallback(async (
@@ -166,7 +166,7 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    socket.emit(ChatToServer.UPDATE_CHAT, { url, id, content: newContent });
+    socket.emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent });
   }, [socket]);
 
   const deleteSharedspaceChat = useCallback(async (
@@ -194,7 +194,7 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    socket.emit(ChatToServer.DELETE_CHAT, { url, id });
+    socket.emit(ChatToServer.DELETE_CHAT, { url, ChatId: id });
   }, [socket]);
 
   const deleteSharedspaceChatImage = useCallback(async (
