@@ -1,4 +1,6 @@
 
+export const AUTHORIZATION_HEADER_NAME = 'authorization';
+
 export const CSRF_TOKEN_HEADER_NAME = 'x-csrf-token';
 
 export const ERROR_TYPE = {
