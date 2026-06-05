@@ -1,4 +1,6 @@
 
+export const CSRF_TOKEN_HEADER_NAME = 'x-csrf-token';
+
 export const ERROR_TYPE = {
   TOKEN_EXPIRED: 'TOKEN_EXPIRED',
 };
