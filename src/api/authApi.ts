@@ -34,6 +34,8 @@ export const getCsrfToken = async () => {
 };
 
 export const refreshAuthToken = async () => {
-  await axiosInstance
+  const { data } = await axiosInstance
     .post(`/api/auth/refresh`);
+    
+  return data;
 };
