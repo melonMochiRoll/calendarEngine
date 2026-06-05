@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { reduxStore } from "Src/store";
 import { refreshAuthToken } from "./authApi";
-import { ERROR_TYPE } from "Src/constants/constants";
+import { CSRF_TOKEN_HEADER_NAME, ERROR_TYPE } from "Src/constants/constants";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_ORIGIN,
@@ -13,7 +13,7 @@ axiosInstance.interceptors.request.use((config) => {
   const token = reduxStore.getState().csrfToken.token;
 
   if (token) {
-    config.headers['x-csrf-token'] = token;
+    config.headers[CSRF_TOKEN_HEADER_NAME] = token;
   }
 
   return config;
@@ -28,7 +28,9 @@ axiosInstance.interceptors.response.use(
 
     try {
       if (err instanceof AxiosError && err?.response?.data?.metaData?.type === ERROR_TYPE.TOKEN_EXPIRED) {
-        await refreshAuthToken();
+        const { accessToken } = await refreshAuthToken();
+
+        // TODO: accessToken 전역 저장소에 적재하기
 
         return axiosInstance(config);
       }
