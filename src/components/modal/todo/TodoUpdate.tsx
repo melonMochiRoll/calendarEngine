@@ -1,10 +1,6 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import { clearModal, closeModal } from 'Features/modalSlice';
@@ -27,10 +23,6 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   todo,
   url,
 }) => {
-  dayjs.extend(utc);
-  dayjs.extend(timezone);
-  dayjs.extend(customParseFormat);
-  dayjs.extend(isSameOrAfter);
   const timeZone = dayjs.tz.guess();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();

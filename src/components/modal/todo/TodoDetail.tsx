@@ -16,8 +16,6 @@ import { toast } from 'react-toastify';
 import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
 import { formatDateTime } from 'Lib/utilFunction';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import { ModalName, TTodoPayload } from 'Typings/types';
 import { GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
@@ -29,9 +27,6 @@ export interface TodoDetailProps {
 const TodoDetail: FC<TodoDetailProps> = ({
   todo,
 }) => {
-  dayjs.extend(utc);
-  dayjs.extend(timezone);
-
   const { url } = useParams();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();

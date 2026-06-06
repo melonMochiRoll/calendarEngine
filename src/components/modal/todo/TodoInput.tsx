@@ -2,10 +2,6 @@ import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { TODO_MAX_SIZE } from 'Constants/calendar';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import { closeModal } from 'Features/modalSlice';
@@ -21,11 +17,6 @@ import { toast } from 'react-toastify';
 interface TodoInputProps {};
 
 const TodoInput: FC<TodoInputProps> = ({}) => {
-  dayjs.extend(utc);
-  dayjs.extend(timezone);
-  dayjs.extend(customParseFormat);
-  dayjs.extend(isSameOrAfter);
-
   const timeZone = dayjs.tz.guess();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();

@@ -1,8 +1,6 @@
 import React, { FC, Fragment, memo } from 'react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import Chat from 'Components/chat/Chat';
 import DateSeparator from 'Components/chat/DateSeparator';
 import NewChatNotifier from 'Components/chat/NewChatNotifier';
@@ -52,8 +50,6 @@ const ChatList: FC<ChatListProps> = ({
   onSubmit,
   deleteFile,
 }) => {
-  dayjs.extend(utc);
-  dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
   const qc = useQueryClient();
 

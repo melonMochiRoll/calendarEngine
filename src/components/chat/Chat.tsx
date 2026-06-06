@@ -3,8 +3,6 @@ import styled from '@emotion/styled';
 import { ChatStatus, TChatPayload } from 'Typings/types';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import useMenu from 'Hooks/utils/useMenu';
 import { muiMenuDarkModeSx } from 'Constants/notices';
@@ -40,8 +38,6 @@ const Chat: FC<ChatProps> = ({
   const { url } = useParams();
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ newContent, onChangeNewContent ] = useInput(chat.content);
-  dayjs.extend(utc);
-  dayjs.extend(timezone);
   const localTimeZone = dayjs.tz.guess();
 
   const {
