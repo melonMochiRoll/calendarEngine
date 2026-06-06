@@ -1,7 +1,8 @@
 import axios, { AxiosError } from "axios";
 import { reduxStore } from "Src/store";
 import { refreshAuthToken } from "./authApi";
-import { CSRF_TOKEN_HEADER_NAME, ERROR_TYPE } from "Src/constants/constants";
+import { AUTHORIZATION_HEADER_NAME, CSRF_TOKEN_HEADER_NAME, ERROR_TYPE } from "Src/constants/constants";
+import { setAccessToken } from "Src/features/accessTokenSlice";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_ORIGIN,
@@ -10,10 +11,15 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = reduxStore.getState().csrfToken.token;
+  const accessToken = reduxStore.getState().accessToken.token;
+  const csrfToken = reduxStore.getState().csrfToken.token;
 
-  if (token) {
-    config.headers[CSRF_TOKEN_HEADER_NAME] = token;
+  if (accessToken) {
+    config.headers[AUTHORIZATION_HEADER_NAME] = `Bearer ${accessToken}`;
+  }
+
+  if (csrfToken) {
+    config.headers[CSRF_TOKEN_HEADER_NAME] = csrfToken;
   }
 
   return config;
@@ -30,7 +36,8 @@ axiosInstance.interceptors.response.use(
       if (err instanceof AxiosError && err?.response?.data?.metaData?.type === ERROR_TYPE.TOKEN_EXPIRED) {
         const { accessToken } = await refreshAuthToken();
 
-        // TODO: accessToken 전역 저장소에 적재하기
+        config.headers[AUTHORIZATION_HEADER_NAME] = `Bearer ${accessToken}`
+        reduxStore.dispatch(setAccessToken({ token: accessToken }));
 
         return axiosInstance(config);
       }

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -6,9 +6,29 @@ import RenderModal from 'Components/modal/RenderModal';
 import { useCsrfToken } from 'Src/hooks/queries/useCsrfToken';
 import { ErrorBoundary } from 'react-error-boundary';
 import GlobalErrorFallback from 'Src/components/async/GlobalErrorFallback';
+import { refreshAuthToken } from 'Src/api/authApi';
+import { useAppDispatch } from 'Src/hooks/reduxHooks';
+import { setAccessToken } from 'Src/features/accessTokenSlice';
+import SkeletonSharedspacePage from 'Src/components/SkeletonSharedspacePage';
 
 const Layout: FC = () => {
+  const dispatch = useAppDispatch();
+  const [ accessTokenReady, setAccessTokenReady ] = useState(false);
   useCsrfToken();
+
+  useEffect(() => {
+    const initToken = async () => {
+      try {
+        const { accessToken } = await refreshAuthToken();
+        dispatch(setAccessToken({ token: accessToken }));
+      } finally {
+        setAccessTokenReady(true);
+      }
+    };
+    initToken();
+  }, []);
+
+  if (!accessTokenReady) return <SkeletonSharedspacePage />
 
   return (
     <ErrorBoundary fallbackRender={(props) => <GlobalErrorFallback errorProps={props} />}>

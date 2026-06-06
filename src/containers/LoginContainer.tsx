@@ -11,6 +11,7 @@ import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { setCsrfToken } from 'Src/features/csrfTokenSlice';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
+import { setAccessToken } from 'Src/features/accessTokenSlice';
 
 interface LoginContainerProps {};
 
@@ -60,7 +61,9 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
     }
 
     try {
-      const userData = await login(email, password);
+      const { accessToken, userData } = await login(email, password);
+
+      dispatch(setAccessToken({ token: accessToken }));
       qc.setQueryData([GET_USER_KEY], userData);
 
       const token = await getCsrfToken();
