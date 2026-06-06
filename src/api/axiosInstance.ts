@@ -27,16 +27,19 @@ axiosInstance.interceptors.request.use(async (config) => {
 
     if (isExpired) {
       try {
-        const { accessToken }: any = await axios
+        const { data }: { data: { accessToken: string }} = await axios
           .post(
             `${process.env.REACT_APP_SERVER_ORIGIN}/api/auth/refresh`,
+            {},
             {
               headers: { "Content-Type" : "application/json" },
               withCredentials: true,
             }
           );
-        reduxStore.dispatch(setAccessToken({ token: accessToken }));
-      } catch {
+        
+        config.headers[AUTHORIZATION_HEADER_NAME] = `Bearer ${data.accessToken}`;
+        reduxStore.dispatch(setAccessToken({ token: data.accessToken }));
+      } finally {
         return config;
       }
     }
