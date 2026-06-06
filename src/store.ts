@@ -4,6 +4,7 @@ import calendarTimeReducer from 'Features/calendarTimeSlice';
 import todoTimeReducer from 'Features/todoTimeSlice';
 import csrfTokenReducer from 'Features/csrfTokenSlice';
 import socketStatusReducer from 'Features/socketStatusSlice';
+import accessTokenReducer from 'Features/accessTokenSlice';
 
 export const reduxStore = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const reduxStore = configureStore({
     todoTime: todoTimeReducer,
     csrfToken: csrfTokenReducer,
     socketStatus: socketStatusReducer,
+    accessToken: accessTokenReducer,
   },
 });
 
