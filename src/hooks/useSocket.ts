@@ -1,23 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
 import { setStatus } from "Src/features/socketStatusSlice";
-import { SocketStatus } from "Src/constants/constants";
+import { AUTHORIZATION_HEADER_NAME, CSRF_TOKEN_HEADER_NAME, SocketStatus } from "Src/constants/constants";
 
 export function useSocket() {
   const dispatch = useAppDispatch();
   const [ socket, setSocket ] = useState<Socket | null>(null);
-  const { token } = useAppSelector(state => state.csrfToken);
+  const { token: accessToken } = useAppSelector(state => state.accessToken);
+  const { token: csrfToken } = useAppSelector(state => state.csrfToken);
 
   useEffect(() => {
-    if (!token) return;
+    if (!csrfToken) return;
 
     const newSocket = io(
       `${process.env.REACT_APP_SERVER_ORIGIN}`,
       {
         withCredentials: true,
         auth: {
-          'x-csrf-token': token,
+          [AUTHORIZATION_HEADER_NAME]: `Bearer ${accessToken}`,
+          [CSRF_TOKEN_HEADER_NAME]: csrfToken,
         },
       },
     );
@@ -40,7 +42,7 @@ export function useSocket() {
       newSocket.disconnect();
       setSocket(null);
     };
-  }, [token]);
+  }, [csrfToken, accessToken]);
 
   return { socket } as const;
 }
