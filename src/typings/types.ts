@@ -248,3 +248,8 @@ export type TInvitePayload = {
 };
 
 export type TSocketStatus = typeof SocketStatus[keyof typeof SocketStatus];
+
+export type TAccessTokenPayload = {
+  UserId: string,
+  exp: number,
+};
