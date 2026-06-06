@@ -7,6 +7,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux'
 import { reduxStore } from './store';
 import SkeletonSharedspacePage from 'Components/SkeletonSharedspacePage';
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(customParseFormat);
 
 const rootNode = document.getElementById('root') as HTMLElement;
 const queryClient = new QueryClient();
