@@ -19,8 +19,8 @@ const Layout: FC = () => {
   useEffect(() => {
     const initToken = async () => {
       try {
-        const { accessToken } = await refreshAuthToken();
-        dispatch(setAccessToken({ token: accessToken }));
+        const { newAccessToken } = await refreshAuthToken();
+        dispatch(setAccessToken({ token: newAccessToken }));
       } finally {
         setAccessTokenReady(true);
       }

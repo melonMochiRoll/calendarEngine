@@ -1,3 +1,4 @@
+import axios from "axios";
 import { axiosInstance } from "./axiosInstance";
 
 export const login = async (email: string, password: string) => {
@@ -34,8 +35,15 @@ export const getCsrfToken = async () => {
 };
 
 export const refreshAuthToken = async () => {
-  const { data } = await axiosInstance
-    .post(`/api/auth/refresh`);
+  const { data }: { data: { accessToken: string }} = await axios
+    .post(
+      `${process.env.REACT_APP_SERVER_ORIGIN}/api/auth/refresh`,
+      {},
+      {
+        headers: { "Content-Type" : "application/json" },
+        withCredentials: true,
+      },
+    );
     
-  return data;
+  return { newAccessToken: data.accessToken };
 };

@@ -27,18 +27,10 @@ axiosInstance.interceptors.request.use(async (config) => {
 
     if (isExpired) {
       try {
-        const { data }: { data: { accessToken: string }} = await axios
-          .post(
-            `${process.env.REACT_APP_SERVER_ORIGIN}/api/auth/refresh`,
-            {},
-            {
-              headers: { "Content-Type" : "application/json" },
-              withCredentials: true,
-            }
-          );
+        const { newAccessToken } = await refreshAuthToken();
         
-        config.headers[AUTHORIZATION_HEADER_NAME] = `Bearer ${data.accessToken}`;
-        reduxStore.dispatch(setAccessToken({ token: data.accessToken }));
+        config.headers[AUTHORIZATION_HEADER_NAME] = `Bearer ${newAccessToken}`;
+        reduxStore.dispatch(setAccessToken({ token: newAccessToken }));
       } finally {
         return config;
       }
@@ -59,10 +51,10 @@ axiosInstance.interceptors.response.use(
 
     try {
       if (err instanceof AxiosError && err?.response?.data?.metaData?.type === ERROR_TYPE.TOKEN_EXPIRED) {
-        const { accessToken } = await refreshAuthToken();
+        const { newAccessToken } = await refreshAuthToken();
 
-        config.headers[AUTHORIZATION_HEADER_NAME] = `Bearer ${accessToken}`
-        reduxStore.dispatch(setAccessToken({ token: accessToken }));
+        config.headers[AUTHORIZATION_HEADER_NAME] = `Bearer ${newAccessToken}`
+        reduxStore.dispatch(setAccessToken({ token: newAccessToken }));
 
         return axiosInstance(config);
       }
