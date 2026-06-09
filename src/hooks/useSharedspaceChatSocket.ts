@@ -16,16 +16,25 @@ import { useAppSelector } from "./reduxHooks";
 export function useSharedspaceChatSocket() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
-  const { socket } = useSocket();
+  const {
+    socketRef,
+    refreshToken,
+    isTokenExpired,
+    eventQueue,
+  } = useSocket();
   const canShowNotify = useRef(false);
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const { socketStatus } = useAppSelector(state => state.socketStatus);
+  const isSocketReady = useRef(false);
 
   useEffect(() => {
-    if (!_url || !socket) return;
+    if (!_url || !socketRef.current) return;
+
+    const socket = socketRef.current;
 
     socket.emit(ChatToServer.JOIN_ROOM, _url);
+    socket.on(ChatToClient.READY, () => isSocketReady.current = true);
     socket.on(ChatToClient.CHAT_CREATED, onChatCreated);
     socket.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
     socket.on(ChatToClient.CHAT_DELETED, onChatDeleted);
@@ -40,7 +49,7 @@ export function useSharedspaceChatSocket() {
       socket.off(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
       socket.off(ChatToClient.CHAT_ERROR, onChatError);
     };
-  }, [_url, socket]);
+  }, [_url]);
 
   const sendSharedspaceChat = async (
     url: string | undefined,
@@ -48,7 +57,7 @@ export function useSharedspaceChatSocket() {
     images: File[],
     previews: string[]
   ) => {
-    if (!socket) return;
+    if (!socketRef.current || !url) return;
 
     content = content.trim();
 
@@ -106,6 +115,17 @@ export function useSharedspaceChatSocket() {
         const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
         await Promise.all(uploadPromises);
       }
+
+      if (isTokenExpired()) {
+        await refreshToken();
+        socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+      }
+
+      if (isSocketReady.current) {
+        socketRef.current.emit(ChatToServer.SEND_CHAT, { url, ChatId: tempChatId, content, imageIds });
+      } else {
+        eventQueue.current.push({ event: ChatToServer.SEND_CHAT, data: { url, ChatId: tempChatId, content, imageIds } });
+      }
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -123,8 +143,6 @@ export function useSharedspaceChatSocket() {
         };
       });
     }
-
-    socket.emit(ChatToServer.SEND_CHAT, { url, ChatId: tempChatId, content, imageIds });
   };
 
   const updateSharedspaceChat = useCallback(async (
@@ -133,8 +151,8 @@ export function useSharedspaceChatSocket() {
     oldContent: string,
     newContent: string,
   ) => {
-    if (!socket) return;
-    
+    if (!socketRef.current) return;
+
     newContent = newContent.trim();
 
     if (
@@ -166,14 +184,23 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    socket.emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent });
-  }, [socket]);
+    if (isTokenExpired()) {
+      await refreshToken();
+      socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+    }
+
+    if (isSocketReady.current) {
+      socketRef.current.emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent });
+    } else {
+      eventQueue.current.push({ event: ChatToServer.UPDATE_CHAT, data: { url, ChatId: id, content: newContent } });
+    }
+  }, []);
 
   const deleteSharedspaceChat = useCallback(async (
     url: string | undefined,
     id: string,
   ) => {
-    if (!socket || !url) return;
+    if (!socketRef.current || !url) return;
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
@@ -194,15 +221,25 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    socket.emit(ChatToServer.DELETE_CHAT, { url, ChatId: id });
-  }, [socket]);
+    if (isTokenExpired()) {
+      await refreshToken();
+      socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+    }
+
+    if (isSocketReady.current) {
+      socketRef.current.emit(ChatToServer.DELETE_CHAT, { url, ChatId: id });
+    } else {
+      eventQueue.current.push({ event: ChatToServer.DELETE_CHAT, data: { url, ChatId: id } });
+    }
+  }, []);
 
   const deleteSharedspaceChatImage = useCallback(async (
     url: string | undefined,
     ChatId: string,
     ImageId: string,
   ) => {
-    if (!socket || !url) return;
+    if (!socketRef.current || !url) return;
+    const socket = socketRef.current;
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
@@ -223,8 +260,17 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    socket.emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
-  }, [socket]);
+    if (isTokenExpired()) {
+      await refreshToken();
+      socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+    }
+
+    if (isSocketReady.current) {
+      socket.emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
+    } else {
+      eventQueue.current.push({ event: ChatToServer.DELETE_CHAT_IMAGE, data: { url, ChatId, ImageId } });
+    }
+  }, []);
 
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
