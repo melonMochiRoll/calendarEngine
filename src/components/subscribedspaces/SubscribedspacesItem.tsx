@@ -32,10 +32,8 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
   } = useMenu();
 
   const onClickDelete = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, url: string) => {
-    e.stopPropagation();
-    
     await onDeleteSharedspace(url);
-    onClose();
+    onClose(e);
     toast.success(successMessage, {
       ...defaultToastOption,
     });

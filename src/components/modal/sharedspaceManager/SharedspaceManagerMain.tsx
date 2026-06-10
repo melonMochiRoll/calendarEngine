@@ -29,9 +29,7 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
 
   const handleUpdateSharedspacePrivate = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, Private: boolean) => {
     if (!url) return;
-
-    e.stopPropagation();
-    onClose();
+    onClose(e);
 
     try {
       await updateSharedspacePrivate(url, Private);

@@ -38,9 +38,8 @@ const MemberItem: FC<MemberItemProps> = ({
   const handleUpdateMemberRole = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, role: TSharedspaceMembersRoles) => {
     if (!url) return;
     
-    e.stopPropagation();
     setIsLoading(true);
-    onClose();
+    onClose(e);
 
     try {
       await updateSharedspaceMembers(url, UserId, role);
@@ -58,7 +57,7 @@ const MemberItem: FC<MemberItemProps> = ({
 
     e.stopPropagation();
     setIsLoading(true);
-    onClose();
+    onClose(e);
     
     try {
       await updateSharedspaceOwner(url, UserId);
@@ -76,7 +75,7 @@ const MemberItem: FC<MemberItemProps> = ({
 
     e.stopPropagation();
     setIsLoading(true);
-    onClose();
+    onClose(e);
 
     try {
       await deleteSharedspaceMembers(url, UserId);

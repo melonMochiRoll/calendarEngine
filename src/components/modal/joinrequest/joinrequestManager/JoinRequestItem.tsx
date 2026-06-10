@@ -43,11 +43,6 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
     onClose,
   } = useMenu();
 
-  const onOpenWithEvent = (e: any) => {
-    e.stopPropagation();
-    onOpen(e);
-  };
-
   const openJoinRequestDetail = (request: TJoinRequest) => {
     dispatch(openModal({
       name: ModalName.JOINREQUEST_DETAIL,
@@ -66,7 +61,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
         <Nickname>{Requestor.nickname}</Nickname>
         <Email>{Requestor.email}</Email>
       </Center>
-      <Right onClick={onOpenWithEvent}>
+      <Right onClick={onOpen}>
         <CurrentOption>메뉴</CurrentOption>
         <ArrowDropDownIcon fontSize='large' />
       </Right>
@@ -86,9 +81,8 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
                 <MenuItem
                   key={option.text}
                   onClick={(e) => {
-                    e.stopPropagation();
                     onResolveMenuClick(url, id, option.roleName);
-                    onClose();
+                    onClose(e);
                   }}>
                   <span>{option.text}</span>
                 </MenuItem>
@@ -98,9 +92,8 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
           <Divider />
             <MenuItem
               onClick={(e) => {
-                e.stopPropagation();
                 onRejectMenuClick(url, id);
-                onClose();
+                onClose(e);
               }}>
               <span>거절</span>
             </MenuItem>

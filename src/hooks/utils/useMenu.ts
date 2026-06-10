@@ -8,11 +8,8 @@ const useMenu = () => {
     setAnchorEl(e.currentTarget);
   };
 
-  const onClose = (e?: any) => {
-    if (e) {
-      e.stopPropagation();
-    }
-    
+  const onClose = (e: any) => {
+    e.stopPropagation();
     setAnchorEl(null);
   };
 
