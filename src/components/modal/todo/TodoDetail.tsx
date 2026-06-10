@@ -74,22 +74,25 @@ const TodoDetail: FC<TodoDetailProps> = ({
               fontSize='large'
               sx={{ color: 'var(--white)', cursor: 'pointer' }} />
           }
-          <Menu
-            aria-labelledby='demo-positioned-button'
-            anchorEl={anchorEl}
-            open={open}
-            onClick={onClose}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
-              <MenuItem
-                onClick={() => openTodoUpdate(todo, url)}>
-                <span>수정</span>
-              </MenuItem>
-              <MenuItem
-                onClick={() => onClickTodoDelete(todo.id, url)}>
-                <span>삭제</span>
-              </MenuItem>
+          {
+            anchorEl &&
+            <Menu
+              aria-labelledby='demo-positioned-button'
+              anchorEl={anchorEl}
+              open={open}
+              onClick={onClose}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <MenuItem
+                  onClick={() => openTodoUpdate(todo, url)}>
+                  <span>수정</span>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => onClickTodoDelete(todo.id, url)}>
+                  <span>삭제</span>
+                </MenuItem>
             </Menu>
+          }
         </MenuWrapper>
         <TitleWrapper>
           <ModalTitle>Todo 내용</ModalTitle>

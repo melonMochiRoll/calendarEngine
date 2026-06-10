@@ -59,22 +59,25 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
             {renderPrivateText(spaceData.private)}
             <ArrowDropDownIcon fontSize='large' />
           </PrivateSwitch>
-          <Menu
-            aria-labelledby='demo-positioned-button'
-            anchorEl={anchorEl}
-            open={open}
-            onClick={onClose}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-            sx={{ marginTop: '10px' }}>
-            {
-              <MenuItem
-                onClick={(e) => handleUpdateSharedspacePrivate(e, !spaceData.private)}
-                sx={{ fontSize: '20px', fontWeight: '500' }}>
-                <span>{renderPrivateText(!spaceData.private)}</span>
-              </MenuItem>
-            }
-          </Menu>
+          {
+            anchorEl &&
+            <Menu
+              aria-labelledby='demo-positioned-button'
+              anchorEl={anchorEl}
+              open={open}
+              onClick={onClose}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+              sx={{ marginTop: '10px' }}>
+              {
+                <MenuItem
+                  onClick={(e) => handleUpdateSharedspacePrivate(e, !spaceData.private)}
+                  sx={{ fontSize: '20px', fontWeight: '500' }}>
+                  <span>{renderPrivateText(!spaceData.private)}</span>
+                </MenuItem>
+              }
+            </Menu>
+          }
           <Span>가 접근하도록 합니다.</Span>
         </Bottom>
       </PrivateDiv>

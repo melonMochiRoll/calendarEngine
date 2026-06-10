@@ -83,21 +83,24 @@ const ChatFooter: FC<ChatFooterProps> = ({
         <IconButton type='submit'>
           <SendIcon fontSize='large' />
         </IconButton>
-        <Menu
-          aria-labelledby='demo-positioned-button'
-          anchorEl={anchorEl}
-          open={open}
-          onClick={onClose}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          sx={muiMenuDarkModeSx}>
-          <Label htmlFor='image-upload'>
-            <MenuItem sx={{ gap: '5px' }}>
-              <AddPhotoIcon />
-              <span>이미지 업로드</span>
-            </MenuItem>
-          </Label>
-        </Menu>
+        {
+          anchorEl &&
+          <Menu
+            aria-labelledby='demo-positioned-button'
+            anchorEl={anchorEl}
+            open={open}
+            onClick={onClose}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            sx={muiMenuDarkModeSx}>
+            <Label htmlFor='image-upload'>
+              <MenuItem sx={{ gap: '5px' }}>
+                <AddPhotoIcon />
+                <span>이미지 업로드</span>
+              </MenuItem>
+            </Label>
+          </Menu>
+        }
         <InputImageFile
           onChange={onChangeImageFiles}
           id='image-upload'

@@ -111,27 +111,30 @@ const Chat: FC<ChatProps> = ({
           </IconWrapper>
         </HoverMenu>
       }
-      <Menu
-        aria-labelledby='demo-positioned-button'
-        anchorEl={anchorEl}
-        open={open}
-        onClick={onClose}
-        anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'center', horizontal: 'right' }}
-        sx={muiMenuDarkModeSx}>
-          <MenuItem
-            onClick={() => setIsEditMode(true)}
-            sx={{ gap: '5px', color: 'var(--gray-3)' }}>
-            <EditIcon />
-            <span>메시지 수정</span>
-          </MenuItem>
-          <MenuItem
-            onClick={() => deleteSharedspaceChat(url, chat.id)}
-            sx={{ gap: '5px', color: 'var(--red)' }}>
-            <DeleteIcon />
-            <span>메시지 삭제</span>
-          </MenuItem>
-      </Menu>
+      {
+        anchorEl &&
+        <Menu
+          aria-labelledby='demo-positioned-button'
+          anchorEl={anchorEl}
+          open={open}
+          onClick={onClose}
+          anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'center', horizontal: 'right' }}
+          sx={muiMenuDarkModeSx}>
+            <MenuItem
+              onClick={() => setIsEditMode(true)}
+              sx={{ gap: '5px', color: 'var(--gray-3)' }}>
+              <EditIcon />
+              <span>메시지 수정</span>
+            </MenuItem>
+            <MenuItem
+              onClick={() => deleteSharedspaceChat(url, chat.id)}
+              sx={{ gap: '5px', color: 'var(--red)' }}>
+              <DeleteIcon />
+              <span>메시지 삭제</span>
+            </MenuItem>
+        </Menu>
+      }
     </Item>
   );
 };

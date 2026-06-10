@@ -67,33 +67,36 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
               ProfileImage={userData.ProfileImage}
               email={userData.email} />
             <Email>{userData.nickname}</Email>
-            <Menu
-              aria-labelledby='demo-positioned-button'
-              anchorEl={anchorEl}
-              open={open}
-              onClick={onClose}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              sx={muiMenuDarkModeSx}>
-              <MenuItem
-                onClick={openImageUpdater}
-                sx={{ gap: '5px' }}>
-                <ImageIcon />
-                <span>프로필 사진 수정</span>
-              </MenuItem>
-              <MenuItem
-                onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACE_INVITE_RECEIVED }))}
-                sx={{ gap: '5px' }}>
-                <MailIcon />
-                <span>받은 초대</span>
-              </MenuItem>
-              <MenuItem
-                onClick={() => onLogout()}
-                sx={{ gap: '5px', color: 'var(--red)' }}>
-                <LogoutIcon />
-                <span>로그아웃</span>
-              </MenuItem>
-            </Menu>
+            {
+              anchorEl &&
+              <Menu
+                aria-labelledby='demo-positioned-button'
+                anchorEl={anchorEl}
+                open={open}
+                onClick={onClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                sx={muiMenuDarkModeSx}>
+                <MenuItem
+                  onClick={openImageUpdater}
+                  sx={{ gap: '5px' }}>
+                  <ImageIcon />
+                  <span>프로필 사진 수정</span>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACE_INVITE_RECEIVED }))}
+                  sx={{ gap: '5px' }}>
+                  <MailIcon />
+                  <span>받은 초대</span>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => onLogout()}
+                  sx={{ gap: '5px', color: 'var(--red)' }}>
+                  <LogoutIcon />
+                  <span>로그아웃</span>
+                </MenuItem>
+              </Menu>
+            }
           </>
           :
           <>

@@ -59,21 +59,24 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
         </ItemMoreMenu> :
         <ItemMoreMenu />
       }
-      <Menu
-        aria-labelledby='demo-positioned-button'
-        anchorEl={anchorEl}
-        open={open}
-        onClick={onClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-        sx={{ marginTop: '10px' }}>
-          <MenuItem
-            onClick={(e) => onClickDelete(e, url)}
-            sx={{ gap: '5px' }}>
-            <DeleteIcon />
-            <span>삭제</span>
-          </MenuItem>
-      </Menu>
+      {
+        anchorEl &&
+        <Menu
+          aria-labelledby='demo-positioned-button'
+          anchorEl={anchorEl}
+          open={open}
+          onClick={onClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+          sx={{ marginTop: '10px' }}>
+            <MenuItem
+              onClick={(e) => onClickDelete(e, url)}
+              sx={{ gap: '5px' }}>
+              <DeleteIcon />
+              <span>삭제</span>
+            </MenuItem>
+        </Menu>
+      }
     </Item>
   );
 };

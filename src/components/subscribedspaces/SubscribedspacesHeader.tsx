@@ -48,26 +48,29 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
             {subscribedspacesSortsMap[sort]}
             <ArrowDropDownIcon fontSize='large' />
           </ItemOwner>
-          <Menu
-            aria-labelledby='demo-positioned-button'
-            anchorEl={anchorEl}
-            open={open}
-            onClick={onClose}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-            sx={{ marginTop: '10px' }}>
-            {
-              Object.entries(subscribedspacesSortsMap).map((option) => {
-                return (
-                  <MenuItem
-                    key={option[0]}
-                    onClick={() => sortSpaces(option[0])}>
-                    <span>{option[1]}</span>
-                  </MenuItem>
-                );
-              })
-            }
-          </Menu>
+          {
+            anchorEl &&
+            <Menu
+              aria-labelledby='demo-positioned-button'
+              anchorEl={anchorEl}
+              open={open}
+              onClick={onClose}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+              sx={{ marginTop: '10px' }}>
+              {
+                Object.entries(subscribedspacesSortsMap).map((option) => {
+                  return (
+                    <MenuItem
+                      key={option[0]}
+                      onClick={() => sortSpaces(option[0])}>
+                      <span>{option[1]}</span>
+                    </MenuItem>
+                  );
+                })
+              }
+            </Menu>
+          }
           <ItemMoreMenu />
         </ItemHead>
       </ListHeader>

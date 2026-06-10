@@ -116,27 +116,30 @@ const MemberItem: FC<MemberItemProps> = ({
               <CurrentOption>{label}</CurrentOption>
             </DisableButton>
       }
-      <Menu
-        aria-labelledby='demo-positioned-button'
-        anchorEl={anchorEl}
-        open={open}
-        onClick={onClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
-          <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.MEMBER)}>
-            <span>{RoleDictionary.MEMBER}</span>
+      {
+        anchorEl &&
+        <Menu
+          aria-labelledby='demo-positioned-button'
+          anchorEl={anchorEl}
+          open={open}
+          onClick={onClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
+            <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.MEMBER)}>
+              <span>{RoleDictionary.MEMBER}</span>
+            </MenuItem>
+            <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.VIEWER)}>
+              <span>{RoleDictionary.VIEWER}</span>
+            </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleUpdateOwner}>
+            <span>{`${RoleDictionary.OWNER} 변경`}</span>
           </MenuItem>
-          <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.VIEWER)}>
-            <span>{RoleDictionary.VIEWER}</span>
+          <MenuItem onClick={handleDeleteMember}>
+            <span>권한 삭제</span>
           </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleUpdateOwner}>
-          <span>{`${RoleDictionary.OWNER} 변경`}</span>
-        </MenuItem>
-        <MenuItem onClick={handleDeleteMember}>
-          <span>권한 삭제</span>
-        </MenuItem>
-      </Menu>
+        </Menu>
+      }
     </Item>
   );
 };

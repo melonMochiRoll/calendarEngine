@@ -69,38 +69,41 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
         <CurrentOption>메뉴</CurrentOption>
         <ArrowDropDownIcon fontSize='large' />
       </Right>
-      <Menu
-        aria-labelledby='demo-positioned-button'
-        anchorEl={anchorEl}
-        open={open}
-        onClick={onClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        {
-          resolveMenuOption.map((option: typeof resolveMenuOption[0]) => {
-            return (
-              <MenuItem
-                key={option.text}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onResolveMenuClick(url, id, option.roleName);
-                  onClose();
-                }}>
-                <span>{option.text}</span>
-              </MenuItem>
-            );
-          })
-        }
-        <Divider />
-          <MenuItem
-            onClick={(e) => {
-              e.stopPropagation();
-              onRejectMenuClick(url, id);
-              onClose();
-            }}>
-            <span>거절</span>
-          </MenuItem>
-      </Menu>
+      {
+        anchorEl &&
+        <Menu
+          aria-labelledby='demo-positioned-button'
+          anchorEl={anchorEl}
+          open={open}
+          onClick={onClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
+          {
+            resolveMenuOption.map((option: typeof resolveMenuOption[0]) => {
+              return (
+                <MenuItem
+                  key={option.text}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onResolveMenuClick(url, id, option.roleName);
+                    onClose();
+                  }}>
+                  <span>{option.text}</span>
+                </MenuItem>
+              );
+            })
+          }
+          <Divider />
+            <MenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                onRejectMenuClick(url, id);
+                onClose();
+              }}>
+              <span>거절</span>
+            </MenuItem>
+        </Menu>
+      }
     </Item>
   );
 };
