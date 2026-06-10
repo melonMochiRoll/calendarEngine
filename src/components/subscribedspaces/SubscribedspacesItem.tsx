@@ -31,16 +31,6 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
     onClose,
   } = useMenu();
 
-  const onClickMoreMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.stopPropagation();
-    onOpen(e);
-  };
-
-  const onCloseMoreMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.stopPropagation();
-    onClose();
-  };
-
   const onClickDelete = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, url: string) => {
     e.stopPropagation();
     
@@ -64,7 +54,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
       </ItemOwner>
       {
         permission.isOwner ?
-        <ItemMoreMenu onClick={onClickMoreMenu}>
+        <ItemMoreMenu onClick={onOpen}>
           <MoreVertIcon fontSize='large' />
         </ItemMoreMenu> :
         <ItemMoreMenu />
@@ -73,7 +63,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
         aria-labelledby='demo-positioned-button'
         anchorEl={anchorEl}
         open={open}
-        onClick={onCloseMoreMenu}
+        onClick={onClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
         sx={{ marginTop: '10px' }}>
