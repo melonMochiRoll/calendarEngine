@@ -1,8 +1,7 @@
-import { useDeferredValue, useState } from "react";
+import { useState } from "react";
 
 const useMenu = () => {
   const [ anchorEl, setAnchorEl ] = useState<null | HTMLElement>(null);
-  const deferredInput = useDeferredValue(anchorEl);
 
   const onOpen = (e: any) => {
     e.stopPropagation();
@@ -18,7 +17,7 @@ const useMenu = () => {
   };
 
   return {
-    anchorEl: deferredInput,
+    anchorEl,
     open: !!anchorEl,
     onOpen,
     onClose,
