@@ -5,6 +5,7 @@ const useMenu = () => {
   const deferredInput = useDeferredValue(anchorEl);
 
   const onOpen = (e: any) => {
+    e.stopPropagation();
     setAnchorEl(e.currentTarget);
   };
 
