@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { openModal } from 'Features/modalSlice';
+import { muiMenuDarkModeSx } from 'Src/constants/notices';
 
 const resolveMenuOption = [
   {
@@ -77,7 +78,8 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
           open={open}
           onClick={onClose}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
+          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+          sx={muiMenuDarkModeSx}>
           {
             resolveMenuOption.map((option: typeof resolveMenuOption[0]) => {
               return (

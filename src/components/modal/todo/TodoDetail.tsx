@@ -13,7 +13,7 @@ import { deleteTodo } from 'Api/todosApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage, waitingMessage } from 'Constants/notices';
+import { defaultToastOption, muiMenuDarkModeSx, successMessage, waitingMessage } from 'Constants/notices';
 import { formatDateTime } from 'Lib/utilFunction';
 import dayjs from 'dayjs';
 import { ModalName, TTodoPayload } from 'Typings/types';
@@ -82,7 +82,8 @@ const TodoDetail: FC<TodoDetailProps> = ({
               open={open}
               onClick={onClose}
               anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
+              transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+              sx={muiMenuDarkModeSx}>
                 <MenuItem
                   onClick={() => openTodoUpdate(todo, url)}>
                   <span>수정</span>

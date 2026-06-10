@@ -9,7 +9,7 @@ import useMenu from 'Hooks/utils/useMenu';
 import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { TSubscribedspace } from 'Typings/types';
 import { toast } from 'react-toastify';
-import { defaultToastOption, successMessage } from 'Constants/notices';
+import { defaultToastOption, muiMenuDarkModeSx, successMessage } from 'Constants/notices';
 import ProfileAvatar from '../ProfileAvatar';
 
 interface TSubscribedspacesItemProps {
@@ -68,7 +68,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
           onClick={onClose}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-          sx={{ marginTop: '10px' }}>
+          sx={{ ...muiMenuDarkModeSx, marginTop: '10px' }}>
             <MenuItem
               onClick={(e) => onClickDelete(e, url)}
               sx={{ gap: '5px' }}>

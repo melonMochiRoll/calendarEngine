@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import HelpIcon from '@mui/icons-material/HelpRounded';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Menu, MenuItem, Tooltip } from '@mui/material';
-import { privateTooltip } from 'Constants/notices';
+import { muiMenuDarkModeSx, privateTooltip } from 'Constants/notices';
 import { subscribedspacesSortsMap } from 'Src/typings/types';
 
 interface SubscribedSpacesHeaderProps {
@@ -57,7 +57,7 @@ const SubscribedSpacesHeader: FC<SubscribedSpacesHeaderProps> = ({
               onClick={onClose}
               anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
               transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-              sx={{ marginTop: '10px' }}>
+              sx={{ ...muiMenuDarkModeSx, marginTop: '10px' }}>
               {
                 Object.entries(subscribedspacesSortsMap).map((option) => {
                   return (

@@ -10,6 +10,7 @@ import { renderRole } from 'Lib/utilFunction';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_MEMBERS_KEY } from 'Src/constants/queryKeys';
 import { useParams } from 'react-router-dom';
+import { muiMenuDarkModeSx } from 'Src/constants/notices';
 
 interface MemberItemProps {
   item: TSharedspaceMembersItem,
@@ -124,7 +125,8 @@ const MemberItem: FC<MemberItemProps> = ({
           open={open}
           onClick={onClose}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'center' }}>
+          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+          sx={muiMenuDarkModeSx}>
             <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.MEMBER)}>
               <span>{RoleDictionary.MEMBER}</span>
             </MenuItem>

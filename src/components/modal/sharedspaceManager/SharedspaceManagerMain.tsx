@@ -5,7 +5,7 @@ import { updateSharedspacePrivate } from 'Api/sharedspacesApi';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { GET_SHAREDSPACE_KEY } from 'Constants/queryKeys';
-import { waitingMessage } from 'Constants/notices';
+import { muiMenuDarkModeSx, waitingMessage } from 'Constants/notices';
 import ShieldIcon from '@mui/icons-material/VerifiedUser';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import useMenu from 'Hooks/utils/useMenu';
@@ -68,7 +68,7 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
               onClick={onClose}
               anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
               transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-              sx={{ marginTop: '10px' }}>
+              sx={{ ...muiMenuDarkModeSx, marginTop: '10px' }}>
               {
                 <MenuItem
                   onClick={(e) => handleUpdateSharedspacePrivate(e, !spaceData.private)}
