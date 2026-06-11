@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useRef } from 'react';
 import styled from '@emotion/styled';
 import SendIcon from '@mui/icons-material/Send';
 import AddCircleIcon from '@mui/icons-material/AddCircleRounded';
@@ -31,6 +31,7 @@ const ChatFooter: FC<ChatFooterProps> = ({
     onOpen,
     onClose,
   } = useMenu();
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -93,15 +94,16 @@ const ChatFooter: FC<ChatFooterProps> = ({
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             sx={muiMenuDarkModeSx}>
-            <Label htmlFor='image-upload'>
-              <MenuItem sx={{ gap: '5px' }}>
-                <AddPhotoIcon />
-                <span>이미지 업로드</span>
-              </MenuItem>
-            </Label>
+            <MenuItem
+              onClick={() => inputFileRef.current && inputFileRef.current.click()}
+              sx={{ gap: '5px' }}>
+              <AddPhotoIcon />
+              <span>이미지 업로드</span>
+            </MenuItem>
           </Menu>
         }
         <InputImageFile
+          ref={inputFileRef}
           onChange={onChangeImageFiles}
           id='image-upload'
           type='file'
