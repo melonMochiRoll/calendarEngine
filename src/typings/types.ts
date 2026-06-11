@@ -207,6 +207,7 @@ export type TChatPayload = Pick<TChat,
     _oldContent?: string,
     _status?: TChatStatus,
     _imageFiles?: File[],
+    _retryAction?: () => void,
   };
 
 export const ChatStatus = {
