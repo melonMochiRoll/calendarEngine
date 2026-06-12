@@ -3,7 +3,7 @@ import { JoinRequestDetailProps } from "Components/modal/joinrequest/joinrequest
 import { TodoDetailProps } from "Components/modal/todo/TodoDetail";
 import { TodoUpdateProps } from "Components/modal/todo/TodoUpdate";
 import { ProfileImageUpdaterModalProps } from "Src/components/modal/profileImageUpdater/ProfileImageUpdaterModal";
-import { ChatToServer, SocketStatus } from "Src/constants/constants";
+import { ChatToServer, ERROR_TYPE, SocketStatus } from "Src/constants/constants";
 
 export type InputTypeAttribute = 'button' | 'checkbox' | 'color' | 'date' | 'datetime-local' | 'email' | 'file' | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | 'range' | 'reset' | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week';
 
@@ -257,3 +257,5 @@ export type TAccessTokenPayload = {
 };
 
 export type TChatToServer = typeof ChatToServer[keyof typeof ChatToServer];
+
+export type TErrorType = typeof ERROR_TYPE[keyof typeof ERROR_TYPE];
