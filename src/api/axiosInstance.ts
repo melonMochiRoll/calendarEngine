@@ -50,7 +50,7 @@ axiosInstance.interceptors.response.use(
     const { config } = err;
 
     try {
-      if (err instanceof AxiosError && err?.response?.data?.metaData?.type === ERROR_TYPE.TOKEN_EXPIRED) {
+      if (err instanceof AxiosError && err?.response?.data?.metaData?.type === ERROR_TYPE.AUTH_TOKEN_EXPIRED) {
         const { newAccessToken } = await refreshAuthToken();
 
         config.headers[AUTHORIZATION_HEADER_NAME] = `Bearer ${newAccessToken}`
