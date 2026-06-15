@@ -1,19 +1,22 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
+import { GET_SHAREDSPACE_CHATS_KEY, GET_USER_KEY } from "Constants/queryKeys";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { ChatStatus, TChatPayload, TChats } from "Typings/types";
-import { ChatToClient, ChatToServer } from "Src/constants/constants";
-import { toast } from "react-toastify";
-import { defaultToastOption, waitingMessage } from "Src/constants/notices";
+import { useNavigate, useParams } from "react-router-dom";
+import { ChatStatus, TChatPayload, TChats, TErrorType } from "Typings/types";
+import { ChatToClient, ChatToServer, ERROR_TYPE } from "Src/constants/constants";
 import dayjs from 'dayjs';
 import { uuidv7 } from 'uuidv7';
 import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import useUser from "./queries/useUser";
 import { useSocket } from "./useSocket";
 import { useAppSelector } from "./reduxHooks";
+import { PATHS } from "Src/constants/paths";
+import { logout } from "Src/api/authApi";
+import { toast } from "react-toastify";
+import { defaultToastOption, needLogin, waitingMessage } from "Src/constants/notices";
 
 export function useSharedspaceChatSocket() {
+  const navigate = useNavigate();
   const { url: _url } = useParams();
   const qc = useQueryClient();
   const {
@@ -27,6 +30,7 @@ export function useSharedspaceChatSocket() {
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const { socketStatus } = useAppSelector(state => state.socketStatus);
   const isSocketReady = useRef(false);
+  const failureCount = useRef(0);
 
   useEffect(() => {
     if (!_url || !socketRef.current) return;
@@ -42,6 +46,7 @@ export function useSharedspaceChatSocket() {
     socket.on(ChatToClient.CHAT_ERROR, onChatError);
     
     return () => {
+      failureCount.current = 0;
       socket.emit(ChatToServer.LEAVE_ROOM, _url);
       socket.off(ChatToClient.CHAT_CREATED, onChatCreated);
       socket.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
@@ -100,6 +105,14 @@ export function useSharedspaceChatSocket() {
         },
         _status: ChatStatus.PENDING,
         _imageFiles: images,
+        _retryAction: () => {
+          deleteErrorChat(url, tempChatId);
+          sendSharedspaceChat(url, content, images, previews);
+        },
+        _clearAction: () => {
+          deleteErrorChat(url, tempChatId);
+          tempImages.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
+        },
       };
 
       return {
@@ -173,6 +186,12 @@ export function useSharedspaceChatSocket() {
             content: newContent,
             _oldContent: oldContent,
             _status: ChatStatus.PENDING,
+            _retryAction: () => {
+              updateSharedspaceChat(url, id, oldContent, newContent);
+            },
+            _clearAction: () => {
+              resetErrorChat(url, id);
+            },
           };
         }
         return chat;
@@ -184,15 +203,33 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    if (isTokenExpired()) {
-      await refreshToken();
-      socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
-    }
+    try {
+      if (isTokenExpired()) {
+        await refreshToken();
+        socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+      }
 
-    if (isSocketReady.current) {
-      socketRef.current.emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent });
-    } else {
-      eventQueue.current.push({ event: ChatToServer.UPDATE_CHAT, data: { url, ChatId: id, content: newContent } });
+      if (isSocketReady.current) {
+        socketRef.current.emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent });
+      } else {
+        eventQueue.current.push({ event: ChatToServer.UPDATE_CHAT, data: { url, ChatId: id, content: newContent } });
+      }
+    } catch (err) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev?.chats.map(chat => {
+          if (chat.id === id) {
+            return { ...chat, _status: ChatStatus.ERROR };
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
     }
   }, []);
 
@@ -210,6 +247,12 @@ export function useSharedspaceChatSocket() {
           return {
             ...chat,
             _status: ChatStatus.PENDING,
+            _retryAction: () => {
+              deleteSharedspaceChat(url, id);
+            },
+            _clearAction: () => {
+              resetErrorChat(url, id);
+            },
           };
         }
         return chat;
@@ -221,15 +264,33 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    if (isTokenExpired()) {
-      await refreshToken();
-      socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
-    }
+    try {
+      if (isTokenExpired()) {
+        await refreshToken();
+        socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+      }
 
-    if (isSocketReady.current) {
-      socketRef.current.emit(ChatToServer.DELETE_CHAT, { url, ChatId: id });
-    } else {
-      eventQueue.current.push({ event: ChatToServer.DELETE_CHAT, data: { url, ChatId: id } });
+      if (isSocketReady.current) {
+        socketRef.current.emit(ChatToServer.DELETE_CHAT, { url, ChatId: id });
+      } else {
+        eventQueue.current.push({ event: ChatToServer.DELETE_CHAT, data: { url, ChatId: id } });
+      }
+    } catch (err) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev?.chats.map(chat => {
+          if (chat.id === id) {
+            return { ...chat, _status: ChatStatus.ERROR };
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
     }
   }, []);
 
@@ -239,7 +300,6 @@ export function useSharedspaceChatSocket() {
     ImageId: string,
   ) => {
     if (!socketRef.current || !url) return;
-    const socket = socketRef.current;
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
@@ -249,6 +309,12 @@ export function useSharedspaceChatSocket() {
           return {
             ...chat,
             _status: ChatStatus.PENDING,
+            _retryAction: () => {
+              deleteSharedspaceChatImage(url, ChatId, ImageId);
+            },
+            _clearAction: () => {
+              resetErrorChat(url, ChatId);
+            },
           };
         }
         return chat;
@@ -260,15 +326,33 @@ export function useSharedspaceChatSocket() {
       };
     });
 
-    if (isTokenExpired()) {
-      await refreshToken();
-      socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
-    }
+    try {
+      if (isTokenExpired()) {
+        await refreshToken();
+        socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+      }
 
-    if (isSocketReady.current) {
-      socket.emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
-    } else {
-      eventQueue.current.push({ event: ChatToServer.DELETE_CHAT_IMAGE, data: { url, ChatId, ImageId } });
+      if (isSocketReady.current) {
+        socketRef.current.emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
+      } else {
+        eventQueue.current.push({ event: ChatToServer.DELETE_CHAT_IMAGE, data: { url, ChatId, ImageId } });
+      }
+    } catch (err) {
+      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        if (!prev) return;
+
+        const chats = prev?.chats.map(chat => {
+          if (chat.id === ChatId) {
+            return { ...chat, _status: ChatStatus.ERROR };
+          }
+          return chat;
+        });
+
+        return {
+          chats,
+          hasMoreData: prev.hasMoreData,
+        };
+      });
     }
   }, []);
 
@@ -313,13 +397,13 @@ export function useSharedspaceChatSocket() {
     }
   };
 
-  const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt' | 'permission'>) => {
+  const onChatUpdated = (data: Pick<TChatPayload, | 'content' | 'updatedAt' | 'permission'> & { ChatId: string }) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
-        if (chat.id === data.id) {
-          const { _status, ...rest } = chat;
+        if (chat.id === data.ChatId) {
+          const { _status, _retryAction, _clearAction, ...rest } = chat;
 
           return {
             ...rest,
@@ -377,75 +461,105 @@ export function useSharedspaceChatSocket() {
     });
   };
 
-  const onChatError = (data: { event: string, ChatId: string }) => {
-    const { event, ChatId } = data;
+  const onChatError = async (data: { type: TErrorType, ChatId: string }) => {
+    const { type, ChatId } = data;
 
-    if (event === ChatToServer.SEND_CHAT) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const chats = prev?.chats.map(chat => {
-          if (chat.id === ChatId) {
-            return { ...chat, _status: ChatStatus.ERROR };
-          }
-          return chat;
-        });
-
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-      return;
+    if (type === ERROR_TYPE.UNAUTHORIZED_ERROR) {
+      await logout();
+      qc.removeQueries([GET_USER_KEY]);
+      toast.error(needLogin, defaultToastOption);
+      return navigate(PATHS.LOGIN, { replace: true });
     }
 
-    if (event === ChatToServer.UPDATE_CHAT) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
-
-        const chats = prev.chats.map(chat => {
-          if (chat.id === ChatId) {
-            const { _status, ...rest } = chat;
-            return {
-              ...rest,
-              content: chat?._oldContent || chat.content,
-            };
-          }
-          return chat;
-        });
-
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-      toast.error(waitingMessage, defaultToastOption);
-      return;
+    if (type === ERROR_TYPE.AUTH_TOKEN_EXPIRED) {
+      try {
+        await refreshToken();
+      } catch (err) {
+        return navigate(PATHS.LOGIN, { replace: true });
+      }
     }
 
-    if (
-      event === ChatToServer.DELETE_CHAT,
-      event === ChatToServer.DELETE_CHAT_IMAGE
-    ) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
-        if (!prev) return;
+    if (type === ERROR_TYPE.BAD_REQUEST_ERROR) {
+      failureCount.current += 1;
 
-        const chats = prev.chats.map(chat => {
-          if (chat.id === ChatId) {
-            const { _status, ...rest } = chat;
-            return rest;
-          }
-          return chat;
-        });
+      const data = qc.getQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url]);
+      
+      if (data) {
+        const chatIdx = data.chats.findIndex(chat => chat.id === ChatId);
 
-        return {
-          chats,
-          hasMoreData: prev.hasMoreData,
-        };
-      });
-      toast.error(waitingMessage, defaultToastOption);
-      return;
+        if (chatIdx >= 0 && data.chats[chatIdx]._clearAction) {
+          toast.error(waitingMessage, defaultToastOption);
+        }
+      }
     }
+
+    if (type === ERROR_TYPE.INTERNAL_SERVER_ERROR) {
+      failureCount.current += 1;
+    }
+
+    if (failureCount.current > 3) {
+      failureCount.current = 0;
+      return navigate(PATHS.INTERNAL);
+    }
+
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      if (!prev) return;
+
+      const chats = prev?.chats.map(chat => {
+        if (chat.id === ChatId) {
+          return {
+            ...chat,
+            _status: ChatStatus.ERROR,
+            content: chat?._oldContent || chat.content,
+          };
+        }
+        return chat;
+      });
+
+      return {
+        chats,
+        hasMoreData: prev.hasMoreData,
+      };
+    });
+  };
+
+  const deleteErrorChat = (url: string | undefined, ChatId: string) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+      if (!prev) return;
+
+      const idx = prev.chats.findIndex(chat => chat.id === ChatId);
+
+      if (idx < 0) return;
+
+      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
+
+      return {
+        ...prev,
+        chats: rest || [], 
+      };
+    });
+  };
+
+  const resetErrorChat = (url: string | undefined, ChatId: string) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+      if (!prev) return;
+
+      const chats = prev.chats.map(chat => {
+        if (chat.id === ChatId) {
+          const { _status, ...rest } = chat;
+          return {
+            ...rest,
+            content: chat?._oldContent || chat.content,
+          };
+        }
+        return chat;
+      });
+
+      return {
+        chats,
+        hasMoreData: prev.hasMoreData,
+      };
+    });
   };
 
   return {

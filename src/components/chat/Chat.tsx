@@ -5,7 +5,7 @@ import ProfileAvatar from 'Src/components/ProfileAvatar';
 import dayjs from 'dayjs';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import useMenu from 'Hooks/utils/useMenu';
-import { muiMenuDarkModeSx } from 'Constants/notices';
+import { defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Constants/notices';
 import { CircularProgress, Menu, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import { useParams } from 'react-router-dom';
@@ -15,6 +15,7 @@ import EditContent from './EditContent';
 import ChatImage from './ChatImage';
 import RetryIcon from '@mui/icons-material/Replay';
 import CrossIcon from '@mui/icons-material/Clear';
+import { toast } from 'react-toastify';
 
 interface ChatProps {
   idx: number,
@@ -69,9 +70,13 @@ const Chat: FC<ChatProps> = ({
           {isPending && <CircularProgress size={15} sx={{ color: 'var(--white)' }}/>}
           {isError &&
             <ErrorWrapper>
-              <CrossIcon fontSize='small' onClick={() => deleteErrorChat(url, idx)} />
+              <CrossIcon fontSize='small' onClick={() => {
+                chat?._clearAction ? chat._clearAction() : toast.error(waitingMessage, defaultToastOption);
+              }} />
               :
-              <RetryIcon fontSize="small" onClick={() => reSubmit(url, chat, idx)} />
+              <RetryIcon fontSize="small" onClick={() => {
+                chat?._retryAction ? chat._retryAction() : toast.error(waitingMessage, defaultToastOption);
+              }} />
             </ErrorWrapper>
           }
         </InfoWrapper>
