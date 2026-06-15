@@ -18,6 +18,7 @@ import { openModal } from 'Src/features/modalSlice';
 import { ModalName } from 'Src/typings/types';
 import ImageIcon from '@mui/icons-material/Image';
 import { toast } from 'react-toastify';
+import { clearAccessToken } from 'Src/features/accessTokenSlice';
 
 interface RenderUserProfileProps {};
 
@@ -37,6 +38,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
   const onLogout = async () => {
     try {
       await logout();
+      dispatch(clearAccessToken());
       qc.removeQueries([GET_USER_KEY]);
       navigate(PATHS.LOGIN);
     } catch (err) {
