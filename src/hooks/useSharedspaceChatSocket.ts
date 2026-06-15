@@ -444,18 +444,25 @@ export function useSharedspaceChatSocket() {
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (!prev) return;
-      
-      const chatIdx = prev.chats.findIndex(chat => chat.id === ChatId);
-      const head = prev.chats.slice(0, chatIdx);
-      const tail = prev.chats.slice(chatIdx + 1, prev.chats.length);
 
-      const targetChat = prev.chats[chatIdx];
-      const imageIdx = targetChat.ChatImages.findIndex(image => image.id === ImageId);
-      const imagesHead = targetChat.ChatImages.slice(0, imageIdx);
-      const imagesTail = targetChat.ChatImages.slice(imageIdx + 1, targetChat.ChatImages.length);
+      const chats = prev.chats.map(chat => {
+        if (chat.id === ChatId) {
+          const { _status, _retryAction, _clearAction, ...rest } = chat;
+
+          const imageIdx = chat.ChatImages.findIndex(image => image.id === ImageId);
+          const imagesHead = chat.ChatImages.slice(0, imageIdx);
+          const imagesTail = chat.ChatImages.slice(imageIdx + 1, chat.ChatImages.length);
+
+          return {
+            ...rest,
+            ChatImages: [ ...imagesHead, ...imagesTail ],
+          };
+        }
+        return chat;
+      });
 
       return {
-        chats: [ ...head, { ...targetChat, Images: [ ...imagesHead, ...imagesTail ],  }, ...tail ],
+        chats,
         hasMoreData: prev.hasMoreData,
       };
     });
