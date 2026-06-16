@@ -1,29 +1,21 @@
-import React, { FC, Suspense } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import RenderUserProfile from 'Components/auth/RenderUserProfile';
-import SatelliteIcon from '@mui/icons-material/SatelliteAlt';
-import { useNavigate } from 'react-router-dom';
 import { ModalName } from 'Typings/types';
 import { useAppDispatch } from 'Hooks/reduxHooks';
 import { openModal } from 'Features/modalSlice';
-import { PATHS } from 'Constants/paths';
 import TextButton from 'Src/components/common/TextButton';
 import RenderSpaceTitle from 'Src/components/layouts/RenderSpaceTitle';
 
 interface SharedspaceHeaderProps {};
 
 const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   
   return (
     <Header>
       <SpaceInfoWrapper>
         <FlexBox>
-          <SatelliteIcon
-            onClick={() => navigate(PATHS.SHAREDSPACE)}
-            fontSize='large'
-            sx={SatelliteIconInlineStyle} />
           <RenderSpaceTitle />
         </FlexBox>
         <TextButton
@@ -62,9 +54,3 @@ const FlexBox = styled.div`
   align-items: center;
   gap: 10px;
 `;
-
-const SatelliteIconInlineStyle = {
-  color: 'var(--blue)',
-  cursor: 'pointer',
-  marginRight: '10px',
-};
