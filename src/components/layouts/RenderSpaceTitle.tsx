@@ -25,6 +25,7 @@ const RenderSpaceTitle: FC = () => {
       toast.error(waitingMessage, {
         ...defaultToastOption,
       });
+      throw err;
     }
   };
 
