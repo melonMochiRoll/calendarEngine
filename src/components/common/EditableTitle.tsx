@@ -20,11 +20,21 @@ const EditableTitle: FC<EditableTitleProps> = ({
     setValue(initValue);
   }, [initValue]);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onBlur = () => {
+    setValue(initValue);
+    setEditMode(false);
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    submitEvent(value);
-    setEditMode(false);
+    try {
+      await submitEvent(value);
+    } catch (err) {
+      setValue(initValue);
+    } finally {
+      setEditMode(false);
+    }
   };
   
   return (
@@ -33,9 +43,11 @@ const EditableTitle: FC<EditableTitleProps> = ({
       editMode ?
         <form onSubmit={onSubmit}>
           <Input
+            autoFocus
             type='text'
             value={value}
-            onChange={onChangeValue} />
+            onChange={onChangeValue}
+            onBlur={onBlur} />
         </form> :
         <div
           onClick={onDoubleClick}>
