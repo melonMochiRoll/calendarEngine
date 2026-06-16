@@ -9,7 +9,7 @@ import GlobalErrorFallback from 'Src/components/async/GlobalErrorFallback';
 import { refreshAuthToken } from 'Src/api/authApi';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { setAccessToken } from 'Src/features/accessTokenSlice';
-import SkeletonSharedspacePage from 'Src/components/SkeletonSharedspacePage';
+import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
 
 const Layout: FC = () => {
   const dispatch = useAppDispatch();
@@ -28,7 +28,7 @@ const Layout: FC = () => {
     initToken();
   }, []);
 
-  if (!accessTokenReady) return <SkeletonSharedspacePage />
+  if (!accessTokenReady) return <LoadingPage />;
 
   return (
     <ErrorBoundary fallbackRender={(props) => <GlobalErrorFallback errorProps={props} />}>

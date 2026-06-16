@@ -6,12 +6,12 @@ import MainRouter from 'Routes/MainRouter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux'
 import { reduxStore } from './store';
-import SkeletonSharedspacePage from 'Components/SkeletonSharedspacePage';
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import LoadingPage from './components/async/skeleton/LoadingPage';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -25,7 +25,7 @@ createRoot(rootNode).render(
   <React.StrictMode>
     <Provider store={reduxStore}>
     <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<SkeletonSharedspacePage />}>
+      <Suspense fallback={<LoadingPage />}>
         <RouterProvider router={MainRouter} />
       </Suspense>
     </QueryClientProvider>
