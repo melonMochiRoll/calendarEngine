@@ -19,36 +19,28 @@ const DynamicMenus: FC = () => {
       {
         permission.isOwner &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACEMANAGER }))}>
-          <Icon>
-            <PublicIcon />
-          </Icon>
+          <PublicIcon />
           <span>채널 관리</span>
         </IconButton>
       }
       {
         permission.isOwner &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.JOINREQUEST_MANAGER }))}>
-          <Icon>
-            <MailIcon />
-          </Icon>
+          <MailIcon />
           <span>권한 요청 관리</span>
         </IconButton>
       }
       {
         permission.isMember &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACE_INVITE_SEND }))}>
-          <Icon>
-            <GroupAddIcon />
-          </Icon>
+          <GroupAddIcon />
           <span>유저 초대</span>
         </IconButton>
       }
       {
         !permission.isMember &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.JOINREQUEST_SENDER }))}>
-          <Icon>
-            <MailReadIcon />
-          </Icon>
+          <MailReadIcon />
           <span>권한 요청</span>
         </IconButton>
       }
@@ -58,31 +50,28 @@ const DynamicMenus: FC = () => {
 
 export default DynamicMenus;
 
-const IconButton = styled.div`
+const IconButton = styled.div<{ active?: string }>`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  color: var(--white);
-  cursor: pointer;
-
-  span {
-    font-size: 14px;
-    padding-top: 5px;
-    text-align: center;
-  }
-`;
-
-const Icon = styled.div<{ active?: boolean }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 35px;
   height: 35px;
+  padding: 5px 10px;
+  color: ${({ active }) => active ? 'var(--white)' : 'var(--gray-5)'};
   border-radius: 8px;
+  cursor: pointer;
   ${({ active }) => active ? 'background-color: rgba(255, 255, 255, 0.1);' : ''}
 
+  svg {
+    margin-right: 10px;
+  }
+
+  span {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+  }
+
   &:hover {
+    color: var(--white);
     background-color: rgba(255, 255, 255, 0.2);
   }
 `;
