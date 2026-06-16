@@ -35,7 +35,8 @@ export default Drawer;
 const Block = styled.div<{ isShow: boolean }>`
   display: flex;
   flex-direction: column;
-  width: ${({isShow}) => isShow ? '30%' : '50px'};
+  flex-shrink: 0;
+  width: ${({isShow}) => isShow ? '450px' : '50px'};
   height: 100%;
   padding-top: 10px;
   padding-left: 10px;

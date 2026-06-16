@@ -44,6 +44,5 @@ const PageWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   height: 95%;
 `;

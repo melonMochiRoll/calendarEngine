@@ -20,11 +20,12 @@ export default Sidebar;
 const Nav = styled.nav`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 75px;
+  flex-shrink: 0;
+  width: 250px;
   height: 100vh;
   padding: 30px 10px;
+  border-right: 2px solid var(--black);
   background-color: var(--dark-gray);
-  gap: 30px;
+  gap: 20px;
   z-index: 1;
 `;

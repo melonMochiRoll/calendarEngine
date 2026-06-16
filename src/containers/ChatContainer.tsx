@@ -113,14 +113,16 @@ export default ChatContainer;
 const ChatBlock = styled.div`
   display: flex;
   justify-content: center;
-  width: 70%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 20px;
 `;
 
 const ChatWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 1000px;
+  width: 100%;
   height: 100%;
   background-color: var(--dark-gray);
 `;
