@@ -12,12 +12,12 @@ interface SharedspacesLayoutProps {};
 const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
   return (
     <Block>
-      <Sidebar />
       <PageWrapper>
         <Suspense fallback={<SkeletonHeader />}>
           <SharedspaceHeader />
         </Suspense>
         <ContentWrapper>
+          <Sidebar />
           <Outlet />
           <Drawer>
             <TodoContainer />
