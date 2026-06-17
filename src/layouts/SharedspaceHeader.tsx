@@ -14,6 +14,8 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
   
   return (
     <Header>
+      <DirectMessageWrapper>
+      </DirectMessageWrapper>
       <SpaceInfoWrapper>
         <FlexBox>
           <RenderSpaceTitle />
@@ -36,17 +38,25 @@ const Header = styled.header`
   justify-content: space-between;
   align-items: center;
   height: 50px;
-  padding: 10px 5%;
+  padding: 30px 0;
   border-bottom: 1px solid var(--light-gray);
   background-color: var(--black);
   z-index: 1;
 `;
 
+const DirectMessageWrapper = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  width: 250px;
+`;
+
 const SpaceInfoWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-grow: 1;
+  flex-shrink: 1;
   align-items: center;
-  width: 70%;
+  padding: 0 25px;
 `;
 
 const FlexBox = styled.div`
