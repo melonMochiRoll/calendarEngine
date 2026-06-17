@@ -47,6 +47,7 @@ export function useSharedspaceChatSocket() {
     
     return () => {
       failureCount.current = 0;
+      eventQueue.current = [];
       socket.emit(ChatToServer.LEAVE_ROOM, _url);
       socket.off(ChatToClient.CHAT_CREATED, onChatCreated);
       socket.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
