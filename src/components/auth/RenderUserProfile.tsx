@@ -124,7 +124,9 @@ const Block = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  width: 30%;
+  flex-shrink: 0;
+  width: 450px;
+  padding: 0 50px;
   gap: 15px;
 `;
 
