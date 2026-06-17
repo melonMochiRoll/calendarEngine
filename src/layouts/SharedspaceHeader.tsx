@@ -17,9 +17,7 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
       <DirectMessageWrapper>
       </DirectMessageWrapper>
       <SpaceInfoWrapper>
-        <FlexBox>
-          <RenderSpaceTitle />
-        </FlexBox>
+        <RenderSpaceTitle />
         <TextButton
           type='button'
           onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACEMEMBERLIST }))}>
@@ -57,10 +55,4 @@ const SpaceInfoWrapper = styled.div`
   flex-shrink: 1;
   align-items: center;
   padding: 0 25px;
-`;
-
-const FlexBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
 `;
