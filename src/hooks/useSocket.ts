@@ -47,6 +47,7 @@ export function useSocket() {
 
     return () => {
       socket.disconnect();
+      eventQueue.current = [];
     };
   }, [csrfToken]);
 
