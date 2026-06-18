@@ -39,7 +39,11 @@ export function useSocket() {
     });
     socket.on('disconnect', () => dispatch(setStatus(SocketStatus.DISCONNECTED)));
     socket.io.on('reconnect_attempt', () => dispatch(setStatus(SocketStatus.RECONNECTING)));
-    socket.io.on('reconnect', () => dispatch(setStatus(SocketStatus.CONNECTED)));
+    socket.io.on('reconnect', () => {
+      dispatch(setStatus(SocketStatus.CONNECTED));
+      eventQueue.current.forEach(({ event, data }) => socket.emit(event, data));
+      eventQueue.current = [];
+    });
 
     return () => {
       socket.disconnect();
