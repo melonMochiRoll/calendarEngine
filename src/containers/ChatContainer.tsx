@@ -23,7 +23,6 @@ const ChatContainer: FC = () => {
   const [ previews, setPreviews ] = useState<string[]>([]);
 
   const {
-    socketStatus,
     sendSharedspaceChat,
     updateSharedspaceChat,
     deleteSharedspaceChat,
@@ -95,7 +94,6 @@ const ChatContainer: FC = () => {
           userData ?
             <ChatFooter
               onSubmit={() => onSubmit(url, chat, images, previews)}
-              socketStatus={socketStatus}
               chat={chat}
               onChangeChat={onChangeChat}
               onChangeImageFiles={onChangeImageFiles} />

@@ -9,7 +9,6 @@ import { uuidv7 } from 'uuidv7';
 import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import useUser from "./queries/useUser";
 import { useSocket } from "./useSocket";
-import { useAppSelector } from "./reduxHooks";
 import { PATHS } from "Src/constants/paths";
 import { logout } from "Src/api/authApi";
 import { toast } from "react-toastify";
@@ -28,7 +27,6 @@ export function useSharedspaceChatSocket() {
   const canShowNotify = useRef(false);
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
-  const { socketStatus } = useAppSelector(state => state.socketStatus);
 
   useEffect(() => {
     if (!_url || !socketRef.current) return;
@@ -586,7 +584,7 @@ export function useSharedspaceChatSocket() {
   };
 
   return {
-    socketStatus,
+    // socketStatus,
     sendSharedspaceChat,
     updateSharedspaceChat,
     deleteSharedspaceChat,

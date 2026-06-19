@@ -9,10 +9,10 @@ import { muiMenuDarkModeSx } from 'Constants/notices';
 import { SocketStatus } from 'Src/constants/constants';
 import NetworkIcon from '@mui/icons-material/RssFeedRounded';
 import NetworkCheckIcon from '@mui/icons-material/NetworkCheckRounded';
+import { useAppSelector } from 'Src/hooks/reduxHooks';
 
 interface ChatFooterProps {
   onSubmit: () => void,
-  socketStatus: string,
   chat: string,
   onChangeChat: (e: React.ChangeEvent<HTMLInputElement>) => void,
   onChangeImageFiles: (e: React.ChangeEvent<HTMLInputElement>) => void,
@@ -20,11 +20,12 @@ interface ChatFooterProps {
 
 const ChatFooter: FC<ChatFooterProps> = ({
   onSubmit,
-  socketStatus,
   chat,
   onChangeChat,
   onChangeImageFiles,
 }) => {
+  const { socketStatus } = useAppSelector(state => state.socketStatus);
+
   const {
     anchorEl,
     open,
