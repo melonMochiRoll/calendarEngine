@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { GET_SHAREDSPACE_CHATS_KEY, GET_USER_KEY } from "Constants/queryKeys";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChatStatus, TChatPayload, TChats, TErrorType } from "Typings/types";
+import { ChatStatus, TChatPayload, TChats, TChatToServer, TErrorType } from "Typings/types";
 import { ChatToClient, ChatToServer, ERROR_TYPE } from "Src/constants/constants";
 import dayjs from 'dayjs';
 import { uuidv7 } from 'uuidv7';
@@ -21,10 +21,9 @@ export function useSharedspaceChatSocket() {
   const qc = useQueryClient();
   const {
     socketRef,
-    emit,
     refreshToken,
     isTokenExpired,
-    eventQueue,
+    pendingMessages,
   } = useSocket();
   const canShowNotify = useRef(false);
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
@@ -46,7 +45,6 @@ export function useSharedspaceChatSocket() {
     
     return () => {
       failureCount.current = 0;
-      eventQueue.current = [];
       socket.emit(ChatToServer.LEAVE_ROOM, _url);
       socket.off(ChatToClient.CHAT_CREATED, onChatCreated);
       socket.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
@@ -55,6 +53,61 @@ export function useSharedspaceChatSocket() {
       socket.off(ChatToClient.CHAT_ERROR, onChatError);
     };
   }, [_url]);
+
+  const emit = async (
+    event: TChatToServer,
+    data: any,
+    ChatId: string,
+    retryCount = 0,
+  ) => {
+    const socket = socketRef.current;
+
+    if (!socket) return;
+  
+    const default_Delay = 3000;
+
+    const timer = setTimeout(() => {
+      const pending = pendingMessages.current.get(ChatId);
+      if (!pending) return;
+
+      if (pending.retryCount > 3) {
+        qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+          if (!prev) return;
+
+          const chats = prev?.chats.map(chat => {
+            if (chat.id === ChatId) {
+              return { ...chat, _status: ChatStatus.ERROR };
+            }
+            return chat;
+          });
+
+          return {
+            chats,
+            hasMoreData: prev.hasMoreData,
+          };
+        });
+        pendingMessages.current.delete(ChatId);
+        return;
+      }
+
+      pendingMessages.current.delete(ChatId);
+
+      const delay = 1000 * Math.pow(2, pending.retryCount);
+
+      setTimeout(() => {
+        emit(event, data, ChatId, pending.retryCount + 1);
+      }, delay);
+    }, default_Delay);
+
+    pendingMessages.current.set(ChatId, {
+      event,
+      data,
+      timer,
+      retryCount,
+    });
+
+    socket.emit(event, data);
+  };
 
   const sendSharedspaceChat = async (
     url: string | undefined,
@@ -131,7 +184,7 @@ export function useSharedspaceChatSocket() {
         await refreshToken();
       }
 
-      emit(ChatToServer.SEND_CHAT, { ChatId: tempChatId, url, content, imageIds });
+      emit(ChatToServer.SEND_CHAT, { ChatId: tempChatId, url, content, imageIds }, tempChatId);
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -199,7 +252,7 @@ export function useSharedspaceChatSocket() {
         await refreshToken();
       }
 
-      emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent });
+      emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent }, id);
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -255,7 +308,7 @@ export function useSharedspaceChatSocket() {
         await refreshToken();
       }
 
-      emit(ChatToServer.DELETE_CHAT, { url, ChatId: id });
+      emit(ChatToServer.DELETE_CHAT, { url, ChatId: id }, id);
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -312,7 +365,7 @@ export function useSharedspaceChatSocket() {
         await refreshToken();
       }
 
-      emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
+      emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId }, ChatId);
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -373,12 +426,12 @@ export function useSharedspaceChatSocket() {
     }
   };
 
-  const onChatUpdated = (data: Pick<TChatPayload, | 'content' | 'updatedAt' | 'permission'> & { ChatId: string }) => {
+  const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt' | 'permission'>) => {
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
-        if (chat.id === data.ChatId) {
+        if (chat.id === data.id) {
           const { _status, _retryAction, _clearAction, ...rest } = chat;
 
           return {

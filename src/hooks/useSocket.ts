@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
 import { setStatus } from "Src/features/socketStatusSlice";
-import { AUTHORIZATION_HEADER_NAME, ChatToClient, ChatToServer, CSRF_TOKEN_HEADER_NAME, SocketStatus } from "Src/constants/constants";
-import { TAccessTokenPayload, TChatToServer } from "Src/typings/types";
+import { AUTHORIZATION_HEADER_NAME, ChatToServer, CSRF_TOKEN_HEADER_NAME, SocketStatus } from "Src/constants/constants";
+import { TAccessTokenPayload } from "Src/typings/types";
 import { jwtDecode } from "jwt-decode";
 import dayjs from "dayjs";
 import { refreshAuthToken } from "Src/api/authApi";
@@ -14,8 +14,7 @@ export function useSocket() {
   const socketRef = useRef<Socket>();
   const { token: accessToken } = useAppSelector(state => state.accessToken);
   const { token: csrfToken } = useAppSelector(state => state.csrfToken);
-  const isSocketReady = useRef(false);
-  const eventQueue = useRef<{ event: TChatToServer, data: any }[]>([]);
+  const pendingMessages = useRef<Map<string, { event: string, data: any, timer: NodeJS.Timeout, retryCount: number }>>(new Map());
 
   useEffect(() => {
     if (!csrfToken) return;
@@ -35,21 +34,28 @@ export function useSocket() {
 
     socket.on('connect', () => {
       dispatch(setStatus(SocketStatus.CONNECTED));
-      eventQueue.current.forEach(({ event, data }) => socket.emit(event, data));
-      eventQueue.current = [];
     });
     socket.on('disconnect', () => dispatch(setStatus(SocketStatus.DISCONNECTED)));
     socket.io.on('reconnect_attempt', () => dispatch(setStatus(SocketStatus.RECONNECTING)));
     socket.io.on('reconnect', () => {
       dispatch(setStatus(SocketStatus.CONNECTED));
-      eventQueue.current.forEach(({ event, data }) => socket.emit(event, data));
-      eventQueue.current = [];
     });
-    socket.on(ChatToClient.READY, () => isSocketReady.current = true);
+    socket.onAny((event, data) => {
+      const targetId = data?.id || data?.ChatId;
+      const pending = pendingMessages?.current.get(targetId);
+
+      if (!pending) return;
+
+      clearTimeout(pending.timer);
+      pendingMessages.current.delete(targetId);
+    });
 
     return () => {
       socket.disconnect();
-      eventQueue.current = [];
+      pendingMessages.current.forEach(pending => {
+        clearTimeout(pending.timer);
+      });
+      pendingMessages.current.clear();
     };
   }, [csrfToken]);
 
@@ -87,25 +93,10 @@ export function useSocket() {
     }
   };
 
-  const emit = async (
-    event: TChatToServer,
-    data: any,
-  ) => {
-    if (!socketRef.current) return;
-
-    if (isSocketReady.current) {
-      socketRef.current.emit(event, data);
-    } else {
-      eventQueue.current.push({ event, data });
-    }
-  };
-
   return {
     socketRef,
-    emit,
     refreshToken,
     isTokenExpired,
-    isSocketReady,
-    eventQueue,
+    pendingMessages,
   } as const;
 }
