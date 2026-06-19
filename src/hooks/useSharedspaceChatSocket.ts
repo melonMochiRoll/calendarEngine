@@ -29,7 +29,6 @@ export function useSharedspaceChatSocket() {
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const { socketStatus } = useAppSelector(state => state.socketStatus);
-  const failureCount = useRef(0);
 
   useEffect(() => {
     if (!_url || !socketRef.current) return;
@@ -44,7 +43,6 @@ export function useSharedspaceChatSocket() {
     socket.on(ChatToClient.CHAT_ERROR, onChatError);
     
     return () => {
-      failureCount.current = 0;
       socket.emit(ChatToServer.LEAVE_ROOM, _url);
       socket.off(ChatToClient.CHAT_CREATED, onChatCreated);
       socket.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
@@ -516,8 +514,6 @@ export function useSharedspaceChatSocket() {
     }
 
     if (type === ERROR_TYPE.BAD_REQUEST_ERROR) {
-      failureCount.current += 1;
-
       const data = qc.getQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url]);
       
       if (data) {
@@ -527,15 +523,6 @@ export function useSharedspaceChatSocket() {
           toast.error(waitingMessage, defaultToastOption);
         }
       }
-    }
-
-    if (type === ERROR_TYPE.INTERNAL_SERVER_ERROR) {
-      failureCount.current += 1;
-    }
-
-    if (failureCount.current > 3) {
-      failureCount.current = 0;
-      return navigate(PATHS.INTERNAL);
     }
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
