@@ -64,7 +64,7 @@ export function useSocket() {
     return isExpired;
   };
 
-  const refreshToken = async () => {
+  const refreshToken = async (url?: string) => {
     if (!socketRef.current) return;
 
     const socket = socketRef.current;
@@ -79,6 +79,9 @@ export function useSocket() {
       );
 
       socket.disconnect().connect();
+      if (url) {
+        socket.emit(ChatToServer.JOIN_ROOM, url);
+      }
     } catch (err) {
       throw err;
     }

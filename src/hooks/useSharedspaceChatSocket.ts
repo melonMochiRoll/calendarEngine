@@ -129,7 +129,6 @@ export function useSharedspaceChatSocket() {
 
       if (isTokenExpired()) {
         await refreshToken();
-        emit(ChatToServer.JOIN_ROOM, url);
       }
 
       emit(ChatToServer.SEND_CHAT, { ChatId: tempChatId, url, content, imageIds });
@@ -198,7 +197,6 @@ export function useSharedspaceChatSocket() {
     try {
       if (isTokenExpired()) {
         await refreshToken();
-        emit(ChatToServer.JOIN_ROOM, url);
       }
 
       emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent });
@@ -255,7 +253,6 @@ export function useSharedspaceChatSocket() {
     try {
       if (isTokenExpired()) {
         await refreshToken();
-        emit(ChatToServer.JOIN_ROOM, url);
       }
 
       emit(ChatToServer.DELETE_CHAT, { url, ChatId: id });
@@ -313,7 +310,6 @@ export function useSharedspaceChatSocket() {
     try {
       if (isTokenExpired()) {
         await refreshToken();
-        emit(ChatToServer.JOIN_ROOM, url);
       }
 
       emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
