@@ -21,6 +21,7 @@ export function useSharedspaceChatSocket() {
   const qc = useQueryClient();
   const {
     socketRef,
+    emit,
     refreshToken,
     isTokenExpired,
     eventQueue,
@@ -29,7 +30,6 @@ export function useSharedspaceChatSocket() {
   const { data: userData } = useUser({ suspense: true, throwOnError: true });
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
   const { socketStatus } = useAppSelector(state => state.socketStatus);
-  const isSocketReady = useRef(false);
   const failureCount = useRef(0);
 
   useEffect(() => {
@@ -38,7 +38,6 @@ export function useSharedspaceChatSocket() {
     const socket = socketRef.current;
 
     socket.emit(ChatToServer.JOIN_ROOM, _url);
-    socket.on(ChatToClient.READY, () => isSocketReady.current = true);
     socket.on(ChatToClient.CHAT_CREATED, onChatCreated);
     socket.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
     socket.on(ChatToClient.CHAT_DELETED, onChatDeleted);
@@ -63,11 +62,9 @@ export function useSharedspaceChatSocket() {
     images: File[],
     previews: string[]
   ) => {
-    if (!socketRef.current || !url) return;
-
     content = content.trim();
 
-    if (!content && !images.length) {
+    if (!url || (!content && !images.length)) {
       return;
     }
 
@@ -132,14 +129,10 @@ export function useSharedspaceChatSocket() {
 
       if (isTokenExpired()) {
         await refreshToken();
-        socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+        emit(ChatToServer.JOIN_ROOM, url);
       }
 
-      if (isSocketReady.current) {
-        socketRef.current.emit(ChatToServer.SEND_CHAT, { url, ChatId: tempChatId, content, imageIds });
-      } else {
-        eventQueue.current.push({ event: ChatToServer.SEND_CHAT, data: { url, ChatId: tempChatId, content, imageIds } });
-      }
+      emit(ChatToServer.SEND_CHAT, { ChatId: tempChatId, url, content, imageIds });
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -165,8 +158,6 @@ export function useSharedspaceChatSocket() {
     oldContent: string,
     newContent: string,
   ) => {
-    if (!socketRef.current) return;
-
     newContent = newContent.trim();
 
     if (
@@ -207,14 +198,10 @@ export function useSharedspaceChatSocket() {
     try {
       if (isTokenExpired()) {
         await refreshToken();
-        socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+        emit(ChatToServer.JOIN_ROOM, url);
       }
 
-      if (isSocketReady.current) {
-        socketRef.current.emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent });
-      } else {
-        eventQueue.current.push({ event: ChatToServer.UPDATE_CHAT, data: { url, ChatId: id, content: newContent } });
-      }
+      emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent });
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -238,7 +225,7 @@ export function useSharedspaceChatSocket() {
     url: string | undefined,
     id: string,
   ) => {
-    if (!socketRef.current || !url) return;
+    if (!url) return;
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
@@ -268,14 +255,10 @@ export function useSharedspaceChatSocket() {
     try {
       if (isTokenExpired()) {
         await refreshToken();
-        socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+        emit(ChatToServer.JOIN_ROOM, url);
       }
 
-      if (isSocketReady.current) {
-        socketRef.current.emit(ChatToServer.DELETE_CHAT, { url, ChatId: id });
-      } else {
-        eventQueue.current.push({ event: ChatToServer.DELETE_CHAT, data: { url, ChatId: id } });
-      }
+      emit(ChatToServer.DELETE_CHAT, { url, ChatId: id });
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
@@ -300,7 +283,7 @@ export function useSharedspaceChatSocket() {
     ChatId: string,
     ImageId: string,
   ) => {
-    if (!socketRef.current || !url) return;
+    if (!url) return;
 
     qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
       if (!prev) return;
@@ -330,14 +313,10 @@ export function useSharedspaceChatSocket() {
     try {
       if (isTokenExpired()) {
         await refreshToken();
-        socketRef.current.emit(ChatToServer.JOIN_ROOM, url);
+        emit(ChatToServer.JOIN_ROOM, url);
       }
 
-      if (isSocketReady.current) {
-        socketRef.current.emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
-      } else {
-        eventQueue.current.push({ event: ChatToServer.DELETE_CHAT_IMAGE, data: { url, ChatId, ImageId } });
-      }
+      emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId });
     } catch (err) {
       qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
         if (!prev) return;
