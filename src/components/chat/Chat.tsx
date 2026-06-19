@@ -18,23 +18,17 @@ import CrossIcon from '@mui/icons-material/Clear';
 import { toast } from 'react-toastify';
 
 interface ChatProps {
-  idx: number,
   chat: TChatPayload,
   updateSharedspaceChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
   deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
   deleteSharedspaceChatImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
-  deleteErrorChat: (url: string | undefined, idx: number) => void,
-  reSubmit: (url: string | undefined, chat: TChatPayload, idx: number) => void,
 };
 
 const Chat: FC<ChatProps> = ({
-  idx,
   chat,
   updateSharedspaceChat,
   deleteSharedspaceChat,
   deleteSharedspaceChatImage,
-  deleteErrorChat,
-  reSubmit,
 }) => {
   const { url } = useParams();
   const [ isEditMode, setIsEditMode ] = useState(false);

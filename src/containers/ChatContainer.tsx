@@ -90,7 +90,6 @@ const ChatContainer: FC = () => {
           deleteSharedspaceChat={deleteSharedspaceChat}
           deleteSharedspaceChatImage={deleteSharedspaceChatImage}
           loadMore={loadMore}
-          onSubmit={onSubmit}
           deleteFile={deleteFile} />
         {
           userData ?

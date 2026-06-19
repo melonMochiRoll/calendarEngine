@@ -32,7 +32,6 @@ interface ChatListProps {
   deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
   deleteSharedspaceChatImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
   loadMore: () => void,
-  onSubmit: (url: string | undefined, chat: string, images: File[], previews: string[]) => void,
   deleteFile: (idx: number) => void,
 };
 
@@ -47,7 +46,6 @@ const ChatList: FC<ChatListProps> = ({
   deleteSharedspaceChat,
   deleteSharedspaceChatImage,
   loadMore,
-  onSubmit,
   deleteFile,
 }) => {
   const localTimeZone = dayjs.tz.guess();
@@ -75,34 +73,6 @@ const ChatList: FC<ChatListProps> = ({
     }
   }, 300);
 
-  const deleteErrorChat = (url: string | undefined, idx: number) => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-      if (!prev) return;
-
-      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
-      prev.chats[idx].ChatImages.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
-
-      return {
-        ...prev,
-        chats: rest || [], 
-      };
-    });
-  };
-
-  const reSubmit = (url: string | undefined, chat: TChatPayload, idx: number) => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
-      if (!prev) return;
-
-      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
-
-      return {
-        ...prev,
-        chats: rest || [], 
-      };
-    });
-    onSubmit(url, chat.content, chat._imageFiles || [], chat.ChatImages.map(image => image._tempPath || ''));
-  };
-
   return (
     <List
       ref={scrollbarRef}
@@ -126,13 +96,10 @@ const ChatList: FC<ChatListProps> = ({
               <Fragment key={chat.id}>
                 <Chat
                   key={chat.id}
-                  idx={idx}
                   chat={chat}
                   updateSharedspaceChat={updateSharedspaceChat}
                   deleteSharedspaceChat={deleteSharedspaceChat}
-                  deleteSharedspaceChatImage={deleteSharedspaceChatImage}
-                  deleteErrorChat={deleteErrorChat}
-                  reSubmit={reSubmit} />
+                  deleteSharedspaceChatImage={deleteSharedspaceChatImage} />
                 <DateSeparator date={formatDate(dayjs(chat.createdAt).tz(localTimeZone).format())} />
               </Fragment>
             );
@@ -140,13 +107,10 @@ const ChatList: FC<ChatListProps> = ({
 
           return <Chat
             key={chat.id}
-            idx={idx}
             chat={chat}
             updateSharedspaceChat={updateSharedspaceChat}
             deleteSharedspaceChat={deleteSharedspaceChat}
-            deleteSharedspaceChatImage={deleteSharedspaceChatImage}
-            deleteErrorChat={deleteErrorChat}
-            reSubmit={reSubmit} />;
+            deleteSharedspaceChatImage={deleteSharedspaceChatImage} />;
         })
         :
         <FirstChatNotice>첫 메시지를 전송해보세요</FirstChatNotice>}
