@@ -584,7 +584,6 @@ export function useSharedspaceChatSocket() {
   };
 
   return {
-    // socketStatus,
     sendSharedspaceChat,
     updateSharedspaceChat,
     deleteSharedspaceChat,
