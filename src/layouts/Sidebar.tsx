@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import StaticMenus from 'Src/components/layouts/StaticMenus';
 import DynamicMenus from 'Src/components/layouts/DynamicMenus';
 import SkeletonMenus from 'Src/components/async/skeleton/SkeletonMenus';
-import ArrowIcon from '@mui/icons-material/ArrowBackIos';
+import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
 
@@ -13,8 +13,8 @@ const Sidebar: FC = () => {
   return (
     <Nav>
       <IconButton onClick={() => navigate(PATHS.SHAREDSPACE)}>
-        <ArrowIcon />
-        <span>뒤로</span>
+        <HomeIcon />
+        <span>홈으로</span>
       </IconButton>
       <StaticMenus />
       <Suspense fallback={<SkeletonMenus length={3} />}>
