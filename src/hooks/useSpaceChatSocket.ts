@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { GET_SHAREDSPACE_CHATS_KEY, GET_USER_KEY } from "Constants/queryKeys";
+import { GET_USER_KEY } from "Constants/queryKeys";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ChatStatus, TChatPayload, TChats, TChatToServer, TErrorType } from "Typings/types";
@@ -14,7 +14,7 @@ import { logout } from "Src/api/authApi";
 import { toast } from "react-toastify";
 import { defaultToastOption, needLogin, waitingMessage } from "Src/constants/notices";
 
-export function useSharedspaceChatSocket() {
+export function useSpaceChatSocket(queryKey: string) {
   const navigate = useNavigate();
   const { url: _url } = useParams();
   const qc = useQueryClient();
@@ -67,7 +67,7 @@ export function useSharedspaceChatSocket() {
       if (!pending) return;
 
       if (pending.retryCount > 3) {
-        qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+        qc.setQueryData<TChats>([queryKey, _url], (prev) => {
           if (!prev) return;
 
           const chats = prev?.chats.map(chat => {
@@ -132,7 +132,7 @@ export function useSharedspaceChatSocket() {
       metaDatas.push({ id, fileName: image.name, fileSize: image.size, contentType: image.type });
     }
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, url], (prev) => {
       const now = dayjs().toISOString();
 
       const tempChat = {
@@ -182,7 +182,7 @@ export function useSharedspaceChatSocket() {
 
       emit(ChatToServer.SEND_CHAT, { ChatId: tempChatId, url, content, imageIds }, tempChatId);
     } catch (err) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _url], (prev) => {
         if (!prev) return;
 
         const chats = prev?.chats.map(chat => {
@@ -216,7 +216,7 @@ export function useSharedspaceChatSocket() {
       return;
     }
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -250,7 +250,7 @@ export function useSharedspaceChatSocket() {
 
       emit(ChatToServer.UPDATE_CHAT, { url, ChatId: id, content: newContent }, id);
     } catch (err) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _url], (prev) => {
         if (!prev) return;
 
         const chats = prev?.chats.map(chat => {
@@ -274,7 +274,7 @@ export function useSharedspaceChatSocket() {
   ) => {
     if (!url) return;
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -306,7 +306,7 @@ export function useSharedspaceChatSocket() {
 
       emit(ChatToServer.DELETE_CHAT, { url, ChatId: id }, id);
     } catch (err) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _url], (prev) => {
         if (!prev) return;
 
         const chats = prev?.chats.map(chat => {
@@ -331,7 +331,7 @@ export function useSharedspaceChatSocket() {
   ) => {
     if (!url) return;
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -363,7 +363,7 @@ export function useSharedspaceChatSocket() {
 
       emit(ChatToServer.DELETE_CHAT_IMAGE, { url, ChatId, ImageId }, ChatId);
     } catch (err) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _url], (prev) => {
         if (!prev) return;
 
         const chats = prev?.chats.map(chat => {
@@ -383,7 +383,7 @@ export function useSharedspaceChatSocket() {
 
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _url], (prev) => {
         if (!prev) return;
 
         const chats = prev.chats.map(chat => {
@@ -402,7 +402,7 @@ export function useSharedspaceChatSocket() {
         };
       });
     } else {
-      qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _url], (prev) => {
         if (!prev) return;
 
         return {
@@ -423,7 +423,7 @@ export function useSharedspaceChatSocket() {
   };
 
   const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt' | 'permission'>) => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, _url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -447,7 +447,7 @@ export function useSharedspaceChatSocket() {
   };
 
   const onChatDeleted = (data: Pick<TChatPayload, 'id'>) => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, _url], (prev) => {
       if (!prev) return;
 
       const idx = prev.chats.findIndex(chat => chat.id === data.id);
@@ -467,7 +467,7 @@ export function useSharedspaceChatSocket() {
   const onChatImageDeleted = (data: { ChatId: string, ImageId: string }) => {
     const { ChatId, ImageId } = data;
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, _url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map(chat => {
@@ -512,7 +512,7 @@ export function useSharedspaceChatSocket() {
     }
 
     if (type === ERROR_TYPE.BAD_REQUEST_ERROR) {
-      const data = qc.getQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url]);
+      const data = qc.getQueryData<TChats>([queryKey, _url]);
       
       if (data) {
         const chatIdx = data.chats.findIndex(chat => chat.id === ChatId);
@@ -523,7 +523,7 @@ export function useSharedspaceChatSocket() {
       }
     }
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, _url], (prev) => {
       if (!prev) return;
 
       const chats = prev?.chats.map(chat => {
@@ -545,7 +545,7 @@ export function useSharedspaceChatSocket() {
   };
 
   const deleteErrorChat = (url: string | undefined, ChatId: string) => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, url], (prev) => {
       if (!prev) return;
 
       const idx = prev.chats.findIndex(chat => chat.id === ChatId);
@@ -562,7 +562,7 @@ export function useSharedspaceChatSocket() {
   };
 
   const resetErrorChat = (url: string | undefined, ChatId: string) => {
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, url], (prev) => {
+    qc.setQueryData<TChats>([queryKey, url], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map(chat => {
