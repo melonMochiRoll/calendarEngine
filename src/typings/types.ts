@@ -159,6 +159,12 @@ export type TSharedspaceMembersList = {
   hasMoreData: boolean,
 };
 
+export type TChatspaceMembersList = {
+  items: TSharedspaceMembersItem[],
+  memberCount: number,
+  hasMoreData: boolean,
+};
+
 export type TSearchUsersItem = {
   id: string,
   email: string,
