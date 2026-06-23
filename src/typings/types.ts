@@ -145,7 +145,7 @@ export const subscribedspacesSortsMap: { [key: string]: string } = {
   unowned: '소유하지 않은 스페이스',
 } as const;
 
-export type TSharedspaceMembersItem = {
+export type TSpaceMembersItem = {
   UserId: string,
   email: string,
   nickname: string,
@@ -155,12 +155,12 @@ export type TSharedspaceMembersItem = {
 };
 
 export type TSharedspaceMembersList = {
-  items: TSharedspaceMembersItem[],
+  items: TSpaceMembersItem[],
   hasMoreData: boolean,
 };
 
 export type TChatspaceMembersList = {
-  items: TSharedspaceMembersItem[],
+  items: TSpaceMembersItem[],
   memberCount: number,
   hasMoreData: boolean,
 };
