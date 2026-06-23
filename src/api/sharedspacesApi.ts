@@ -100,24 +100,6 @@ export const deleteSharedspaceMembers = async (
     .delete(`/api/sharedspaces/${url}/members/${UserId}`);
 };
 
-export const getSharedspaceChats = async (
-  url: string | undefined,
-  beforeChatId?: string,
-) => {
-  if (!url) {
-    return;
-  }
-
-  const { data } = await axiosInstance
-    .get(`/api/sharedspaces/${url}/chats`, {
-      params: {
-        before: beforeChatId,
-      },
-    });
-
-  return data;
-};
-
 export const uploadImageToPresignedUrl = async (
   url: string,
   file: File,

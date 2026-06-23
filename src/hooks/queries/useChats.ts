@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getSharedspaceChats } from "Api/sharedspacesApi";
+import { getSharedspaceChats } from "Src/api/chatsApi";
 import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
 import { debounce } from "lodash";

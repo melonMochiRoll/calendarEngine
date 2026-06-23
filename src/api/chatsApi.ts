@@ -1,6 +1,24 @@
 import { TImageMetaData } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
+export const getSharedspaceChats = async (
+  url: string | undefined,
+  beforeChatId?: string,
+) => {
+  if (!url) {
+    return;
+  }
+
+  const { data } = await axiosInstance
+    .get(`/api/sharedspaces/${url}/chats`, {
+      params: {
+        before: beforeChatId,
+      },
+    });
+
+  return data;
+};
+
 export const getChatspaceChats = async (
   url: string | undefined,
   beforeChatId?: string,
