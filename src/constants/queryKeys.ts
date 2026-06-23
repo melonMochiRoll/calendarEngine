@@ -9,6 +9,7 @@ export const GET_SHAREDSPACE_MEMBERS_KEY = 'getSharedspaceMembers';
 export const GET_INVITES_KEY = 'getInvites';
 
 export const GET_CHATSPACE_CHATS_KEY = 'getChatspaceChats';
+export const GET_CHATSPACE_MEMBERS_KEY = 'getChatspaceMembers';
 
 export const SEARCH_TODOS_KEY = 'searchTodos';
 export const SEARCH_USERS_KEY = 'searchUsers';
