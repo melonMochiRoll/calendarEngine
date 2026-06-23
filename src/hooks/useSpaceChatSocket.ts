@@ -6,13 +6,14 @@ import { ChatStatus, TChatPayload, TChats, TChatToServer, TErrorType } from "Typ
 import { ChatToClient, ChatToServer, ERROR_TYPE } from "Src/constants/constants";
 import dayjs from 'dayjs';
 import { uuidv7 } from 'uuidv7';
-import { generatePresignedPutUrl, uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
+import { uploadImageToPresignedUrl } from 'Api/sharedspacesApi';
 import useUser from "./queries/useUser";
 import { useSocket } from "./useSocket";
 import { PATHS } from "Src/constants/paths";
 import { logout } from "Src/api/authApi";
 import { toast } from "react-toastify";
 import { defaultToastOption, needLogin, waitingMessage } from "Src/constants/notices";
+import { generatePresignedPutUrl } from "Src/api/chatsApi";
 
 export function useSpaceChatSocket(queryKey: string) {
   const navigate = useNavigate();

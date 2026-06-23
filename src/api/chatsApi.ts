@@ -1,3 +1,4 @@
+import { TImageMetaData } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getChatspaceChats = async (
@@ -14,6 +15,21 @@ export const getChatspaceChats = async (
         before: beforeChatId,
       },
     });
+
+  return data;
+};
+
+export const generatePresignedPutUrl = async (
+  url: string | undefined,
+  metaDatas: TImageMetaData[],
+): Promise<Array<{ id: string, presignedUrl: string, contentType: string }>> => {
+  const { data } = await axiosInstance
+    .post(
+      `/api/space/${url}/chats/images/presigned-url`,
+      {
+        metaDatas,
+      },
+    );
 
   return data;
 };

@@ -1,4 +1,4 @@
-import { TChatPayload, TImageMetaData, TSharedspaceMembersRoles } from "Typings/types";
+import { TSharedspaceMembersRoles } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
 import axios from "axios";
 
@@ -114,21 +114,6 @@ export const getSharedspaceChats = async (
         before: beforeChatId,
       },
     });
-
-  return data;
-};
-
-export const generatePresignedPutUrl = async (
-  url: string | undefined,
-  metaDatas: TImageMetaData[],
-): Promise<Array<{ id: string, presignedUrl: string, contentType: string }>> => {
-  const { data } = await axiosInstance
-    .post(
-      `/api/space/${url}/chats/images/presigned-url`,
-      {
-        metaDatas,
-      },
-    );
 
   return data;
 };
