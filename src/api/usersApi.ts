@@ -53,7 +53,7 @@ export const generateProfileImagePresignedPutUrl = async (
   fileName: string,
   fileSize: number,
   contentType: string,
-) => {
+): Promise<{ key: string, presignedUrl: string, contentType: string }> => {
   const { data } = await axiosInstance
     .post(
       `/api/users/profileimages/presigned-url`,
@@ -67,12 +67,16 @@ export const generateProfileImagePresignedPutUrl = async (
   return data;
 };
 
-export const updateProfileImage = async (ImageId: string) => {
+export const updateProfileImage = async (
+  ImageId: string,
+  key: string,
+) => {
   await axiosInstance
     .post(
       `/api/users/profileimages`,
       {
         ImageId,
+        key,
       },
     );
 };

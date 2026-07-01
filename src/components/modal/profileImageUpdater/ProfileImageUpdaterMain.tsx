@@ -59,7 +59,7 @@ const ProfileImageUpdaterMain: FC<ProfileImageUpdaterMain> = ({
     const tempImageId = uuidv7();
 
     try {
-      const { presignedUrl, contentType } = await generateProfileImagePresignedPutUrl(
+      const { key, presignedUrl, contentType } = await generateProfileImagePresignedPutUrl(
         tempImageId,
         image.name,
         image.size,
@@ -67,7 +67,7 @@ const ProfileImageUpdaterMain: FC<ProfileImageUpdaterMain> = ({
       );
 
       await uploadImageToPresignedUrl(presignedUrl, image, contentType);
-      await updateProfileImage(tempImageId);
+      await updateProfileImage(tempImageId, key);
       await qc.refetchQueries([GET_USER_KEY]);
       
       toast.success(successMessage, defaultToastOption);
