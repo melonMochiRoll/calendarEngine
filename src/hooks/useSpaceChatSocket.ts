@@ -170,18 +170,30 @@ export function useSpaceChatSocket(queryKey: string) {
     });
 
     try {
-      if (images.length) {
-        const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
-
-        const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
-        await Promise.all(uploadPromises);
-      }
+      const payload = {
+        ChatId: tempChatId,
+        url,
+        content,
+        imageIds,
+        imageKeys: [] as string[],
+      };
 
       if (isTokenExpired()) {
         await refreshToken();
       }
 
-      emit(ChatToServer.SEND_CHAT, { ChatId: tempChatId, url, content, imageIds }, tempChatId);
+      if (images.length) {
+        const presignedUrls = await generatePresignedPutUrl(url, metaDatas);
+
+        const imageKeys = presignedUrls.map(item => item.key);
+
+        const uploadPromises = presignedUrls.map((item, i) => uploadImageToPresignedUrl(item.presignedUrl, images[i], item.contentType));
+        await Promise.all(uploadPromises);
+
+        payload.imageKeys = imageKeys;
+      }
+
+      emit(ChatToServer.SEND_CHAT, payload, tempChatId);
     } catch (err) {
       qc.setQueryData<TChats>([queryKey, _url], (prev) => {
         if (!prev) return;

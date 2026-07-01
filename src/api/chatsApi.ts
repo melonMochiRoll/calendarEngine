@@ -40,7 +40,7 @@ export const getChatspaceChats = async (
 export const generatePresignedPutUrl = async (
   url: string | undefined,
   metaDatas: TImageMetaData[],
-): Promise<Array<{ id: string, presignedUrl: string, contentType: string }>> => {
+): Promise<Array<{ key: string, presignedUrl: string, contentType: string }>> => {
   const { data } = await axiosInstance
     .post(
       `/api/space/${url}/chats/images/presigned-url`,
