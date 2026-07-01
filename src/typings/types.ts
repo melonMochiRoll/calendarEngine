@@ -104,7 +104,7 @@ export type TSearchTodosItem = {
 };
 
 export type TSearchTodosPayload = {
-  items: TSearchTodosItem[],
+  todos: TSearchTodosItem[],
   hasMoreData: boolean,
 };
 

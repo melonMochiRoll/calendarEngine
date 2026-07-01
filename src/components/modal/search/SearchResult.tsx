@@ -10,16 +10,16 @@ import { TSearchTodosPayload } from 'Src/typings/types';
 interface SearchResultProps {
   query: string,
   todosData: TSearchTodosPayload,
-  nextPage: () => void,
+  loadMore: () => void,
 }; 
 
 const SearchResult: FC<SearchResultProps> = ({
   query,
   todosData,
-  nextPage,
+  loadMore,
 }) => {
   const dispatch = useAppDispatch();
-  const { items, hasMoreData } = todosData;
+  const { todos, hasMoreData } = todosData;
 
   const onClickTodo = (date: string) => {
     dispatch(setCalendarTime(date));
@@ -29,10 +29,10 @@ const SearchResult: FC<SearchResultProps> = ({
 
   return (
     <>
-      {items.length ?
+      {todos.length ?
         <TodoList>
           {
-            items.map((todo) => {
+            todos.map((todo) => {
               return (
                 <TodoItem
                   key={todo.id}
@@ -43,8 +43,9 @@ const SearchResult: FC<SearchResultProps> = ({
               );
             })
           }
-          {hasMoreData &&
-            <LoadMore onClick={nextPage}>
+          {
+            hasMoreData &&
+            <LoadMore onClick={loadMore}>
               Load More
             </LoadMore>
           }

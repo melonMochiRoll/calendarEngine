@@ -1,3 +1,4 @@
+import { TSearchTodosPayload } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getTodosByMonth = async (
@@ -72,18 +73,19 @@ export const deleteTodo = async (
 export const searchTodos = async (
   url: string | undefined,
   query: string,
-  page: number,
-) => {
-  if (!query) {
-    return [];
-  }
-
-  if (!url) {
-    return;
+  beforeTodoId?: string,
+): Promise<TSearchTodosPayload> => {
+  if (!query || !url) {
+    return { todos: [], hasMoreData: false };
   }
   
   const { data } = await axiosInstance.get(
-    `/api/sharedspaces/${url}/todos/search?query=${query}&page=${page}`
+    `/api/sharedspaces/${url}/todos/search`, {
+      params: {
+        query,
+        before: beforeTodoId,
+      },
+    }
   );
   
   return data;

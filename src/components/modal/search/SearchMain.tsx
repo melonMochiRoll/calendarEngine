@@ -9,7 +9,7 @@ interface SearchMainProps {
 };
 
 const SearchMain: FC<SearchMainProps> = ({ query }) => {
-  const { data: todosData, nextPage } = useSearchTodos(query);
+  const { data: todosData, loadMore } = useSearchTodos(query);
   
   return (
     <Main>
@@ -18,7 +18,7 @@ const SearchMain: FC<SearchMainProps> = ({ query }) => {
         <SearchResult
           query={query}
           todosData={todosData}
-          nextPage={nextPage} />
+          loadMore={loadMore} />
         :
         <SearchIcon sx={{ color: 'var(--light-gray)', fontSize: '250px' }} />
     }
