@@ -10,7 +10,7 @@ interface SharedspaceInviteMainProps {
 };
 
 const SharedspaceInviteMain: FC<SharedspaceInviteMainProps> = ({ query }) => {
-  const { data: searchUsersData, nextPage: searchUsersNextPage } = useSearchUsers(query);
+  const { data: searchUsersData, loadMore } = useSearchUsers(query);
   const { data: spaceData } = useSharedspace();
 
   return (
@@ -21,7 +21,7 @@ const SharedspaceInviteMain: FC<SharedspaceInviteMainProps> = ({ query }) => {
           query={query}
           isOwner={spaceData.permission.isOwner}
           searchUsersData={searchUsersData}
-          nextPage={searchUsersNextPage} />
+          loadMore={loadMore} />
         :
         <SearchIcon sx={{ color: 'var(--light-gray)', fontSize: '250px' }} />
     }

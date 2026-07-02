@@ -2,20 +2,20 @@ import React, { FC, memo } from 'react';
 import styled from '@emotion/styled';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import SharedspaceInviteUserItem from './SharedspaceInviteSendUserItem';
-import { TSearchUsersList, TSharedspaceMetaData } from 'Src/typings/types';
+import { TSearchUsersList } from 'Src/typings/types';
 
 interface SharedspaceInviteUserListProps {
   query: string,
   isOwner: boolean,
   searchUsersData: TSearchUsersList,
-  nextPage: () => void,
+  loadMore: () => void,
 }
 
 const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
   query,
   isOwner,
   searchUsersData,
-  nextPage,
+  loadMore,
 }) => {
   const { items, hasMoreData } = searchUsersData;
 
@@ -34,7 +34,7 @@ const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
             })
           }
           {hasMoreData &&
-            <LoadMore onClick={nextPage}>
+            <LoadMore onClick={loadMore}>
               Load More
             </LoadMore>
           }

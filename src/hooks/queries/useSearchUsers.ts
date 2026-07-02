@@ -3,18 +3,12 @@ import { TSearchUsersList } from "Typings/types";
 import { searchUsers } from "Api/usersApi";
 import { SEARCH_USERS_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
-export type UseSearchUsersReturnType = {
-  data: TSearchUsersList,
-  nextPage: () => void,
-};
-
-export function useSearchUsers(query: string): UseSearchUsersReturnType {
+export function useSearchUsers(query: string) {
   const { url: _url } = useParams();
   const qc = useQueryClient();
-  const [ page, setPage ] = useState(1);
   
   const {
     data,
@@ -22,37 +16,32 @@ export function useSearchUsers(query: string): UseSearchUsersReturnType {
     error,
   } = useQuery<TSearchUsersList>({
     queryKey: [SEARCH_USERS_KEY, _url, query],
-    queryFn: () => searchUsers(_url, query, page),
+    queryFn: () => searchUsers(_url, query),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([], failureCount, error),
   });
 
-  useEffect(() => {
-    setPage(1);
-  }, [query]);
-
-  useEffect(() => {
-    if (page > 1) {
-      searchUsers(_url, query, page)
-        .then((res: TSearchUsersList) => {
-          qc.setQueryData<TSearchUsersList>([SEARCH_USERS_KEY, _url, query], (prev) => {
-            return {
-              items: [ ...prev?.items || [], ...res.items ],
-              hasMoreData: res.hasMoreData,
-            };
-          });
-        });
-    }
-  }, [page]);
-
   if (isLoading) throw new Promise(() => {});
   if (error) throw error;
   if (data === null || data === undefined) throw new Error();
 
+  const loadMore = useCallback(async () => {
+    const moreUsers = await searchUsers(_url, query, data.items[data.items.length-1].id);
+
+    qc.setQueryData<TSearchUsersList>([SEARCH_USERS_KEY, _url, query], (prev) => {
+      if (!prev) return;
+
+      return {
+        items: [ ...prev.items, ...moreUsers.items ],
+        hasMoreData: moreUsers.hasMoreData,
+      };
+    });
+  }, [query]);
+
   return {
     data,
-    nextPage: useCallback(() => setPage(prev => prev + 1), []),
-  };
+    loadMore,
+  } as const;
 }

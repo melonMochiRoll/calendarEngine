@@ -1,3 +1,4 @@
+import { TSearchUsersList } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getUser = async () => {
@@ -32,18 +33,19 @@ export const createUser = async (email: string, nickname: string, password: stri
 export const searchUsers = async (
   url: string | undefined,
   query: string,
-  page: number,
-) => {
-  if (!query) {
-    return [];
-  }
-
-  if (!url) {
-    return;
+  beforeUserId?: string,
+): Promise<TSearchUsersList> => {
+  if (!url || !query) {
+    return { items: [], hasMoreData: false }
   }
   
   const { data } = await axiosInstance
-    .get(`/api/sharedspaces/${url}/users/search?query=${query}&page=${page}`);
+    .get(`/api/sharedspaces/${url}/users/search`, {
+      params: {
+        query,
+        before: beforeUserId,
+      },
+    });
 
   return data;
 };
