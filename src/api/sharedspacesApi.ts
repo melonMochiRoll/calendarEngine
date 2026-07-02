@@ -1,4 +1,4 @@
-import { TSharedspaceMembersRoles } from "Typings/types";
+import { TSharedspaceMembersRoles, TSubscribedspaces } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
 import axios from "axios";
 
@@ -16,7 +16,7 @@ export const getSharedspace = async (url: string | undefined) => {
 export const getSubscribedspaces = async (
   sort: string,
   page = 1,
-) => {
+): Promise<TSubscribedspaces> => {
   const { data } = await axiosInstance
     .get(`/api/sharedspaces/subscribed?sort=${sort}&page=${page}`);
 
