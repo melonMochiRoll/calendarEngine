@@ -137,6 +137,7 @@ export type TSubscribedspace = Pick<TSharedspace, 'name' | 'url' | 'private'> & 
 export type TSubscribedspaces = {
   spaces: TSubscribedspace[],
   totalCount: number,
+  hasNextPageGroup: boolean,
 };
 
 export const subscribedspacesSortsMap: { [key: string]: string } = {
