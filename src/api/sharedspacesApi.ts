@@ -60,7 +60,7 @@ export const getSharedspaceMembers = async (
   beforeUserId?: string,
 ): Promise<TSharedspaceMembersList> => {
   if (!url) {
-    return { items: [], hasMoreData: false };
+    return { members: [], hasMoreData: false };
   }
   
   const { data } = await axiosInstance.get(

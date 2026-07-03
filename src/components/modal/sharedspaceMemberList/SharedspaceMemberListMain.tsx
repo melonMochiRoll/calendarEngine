@@ -13,7 +13,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   return (
     <Main>
       <List>
-        {membersData.items.map((member) => {
+        {membersData.members.map((member) => {
           return (
             <MemberItem
               key={member.UserId}

@@ -27,14 +27,14 @@ export function useSharedspacemembers() {
   if (data === null || data === undefined) throw new Error();
 
   const loadMore = async () => {
-    const moreUsers = await getSharedspaceMembers(_url, data.items[data.items.length-1].id);
+    const moreMembers = await getSharedspaceMembers(_url, data.members[data.members.length-1].id);
 
     qc.setQueryData<TSharedspaceMembersList>([GET_SHAREDSPACE_MEMBERS_KEY, _url], (prev) => {
       if (!prev) return;
 
       return {
-        items: [ ...prev.items, ...moreUsers.items ],
-        hasMoreData: moreUsers.hasMoreData,
+        members: [ ...prev.members, ...moreMembers.members ],
+        hasMoreData: moreMembers.hasMoreData,
       };
     });
   };

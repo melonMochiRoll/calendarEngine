@@ -157,7 +157,7 @@ export type TSpaceMembersItem = {
 };
 
 export type TSharedspaceMembersList = {
-  items: TSpaceMembersItem[],
+  members: TSpaceMembersItem[],
   hasMoreData: boolean,
 };
 
