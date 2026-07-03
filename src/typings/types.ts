@@ -161,7 +161,7 @@ export type TSharedspaceMembersResponse = {
   hasMoreData: boolean,
 };
 
-export type TChatspaceMembersList = {
+export type TChatspaceMembersResponse = {
   members: TSpaceMembers[],
   memberCount: number,
   hasMoreData: boolean,

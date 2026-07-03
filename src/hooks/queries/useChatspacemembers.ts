@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { getChatspaceMembers } from "Src/api/chatspacesApi";
 import { GET_CHATSPACE_MEMBERS_KEY } from "Src/constants/queryKeys";
 import { handleRetry } from "Src/lib/utilFunction";
-import { TChatspaceMembersList } from "Src/typings/types";
+import { TChatspaceMembersResponse } from "Src/typings/types";
 
 export function useChatspacemembers() {
   const { url: _url } = useParams();
@@ -15,7 +15,7 @@ export function useChatspacemembers() {
     data,
     isLoading,
     error,
-  } = useQuery<TChatspaceMembersList>({
+  } = useQuery<TChatspaceMembersResponse>({
     queryKey: [GET_CHATSPACE_MEMBERS_KEY, _url],
     queryFn: () => getChatspaceMembers(_url, page),
     refetchOnWindowFocus: false,
@@ -27,8 +27,8 @@ export function useChatspacemembers() {
   useEffect(() => {
     if (page > 1) {
       getChatspaceMembers(_url, page)
-        .then((res: TChatspaceMembersList) => {
-          qc.setQueryData<TChatspaceMembersList>([GET_CHATSPACE_MEMBERS_KEY, _url], (prev) => {
+        .then((res: TChatspaceMembersResponse) => {
+          qc.setQueryData<TChatspaceMembersResponse>([GET_CHATSPACE_MEMBERS_KEY, _url], (prev) => {
             if (!prev) return;
 
             return {
