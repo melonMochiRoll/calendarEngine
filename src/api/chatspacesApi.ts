@@ -1,15 +1,20 @@
+import { TChatspaceMembersResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getChatspaceMembers = async (
   url: string | undefined,
-  page: number,
-) => {
+  beforeUserId?: string,
+): Promise<TChatspaceMembersResponse> => {
   if (!url) {
-    return;
+    return { members: [], memberCount: 0, hasMoreData: false };
   }
   
   const { data } = await axiosInstance.get(
-    `/api/chatspaces/${url}/members?page=${page}`
+    `/api/chatspaces/${url}/members`, {
+      params: {
+        before: beforeUserId,
+      },
+    }
   );
 
   return data;

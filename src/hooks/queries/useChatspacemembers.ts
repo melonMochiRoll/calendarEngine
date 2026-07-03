@@ -1,5 +1,4 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getChatspaceMembers } from "Src/api/chatspacesApi";
 import { GET_CHATSPACE_MEMBERS_KEY } from "Src/constants/queryKeys";
@@ -9,7 +8,6 @@ import { TChatspaceMembersResponse } from "Src/typings/types";
 export function useChatspacemembers() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
-  const [ page, setPage ] = useState(1);
 
   const {
     data,
@@ -17,36 +15,33 @@ export function useChatspacemembers() {
     error,
   } = useQuery<TChatspaceMembersResponse>({
     queryKey: [GET_CHATSPACE_MEMBERS_KEY, _url],
-    queryFn: () => getChatspaceMembers(_url, page),
+    queryFn: () => getChatspaceMembers(_url),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([ 400, 403, 404 ], failureCount, error),
   });
 
-  useEffect(() => {
-    if (page > 1) {
-      getChatspaceMembers(_url, page)
-        .then((res: TChatspaceMembersResponse) => {
-          qc.setQueryData<TChatspaceMembersResponse>([GET_CHATSPACE_MEMBERS_KEY, _url], (prev) => {
-            if (!prev) return;
-
-            return {
-              members: [ ...prev.members, ...res.members ],
-              memberCount: res.memberCount,
-              hasMoreData: res.hasMoreData,
-            };
-          });
-        });
-    }
-  }, [page]);
-
   if (isLoading) throw new Promise(() => {});
   if (error) throw error;
   if (data === null || data === undefined) throw new Error();
+
+  const loadMore = async () => {
+    const moreMembers = await getChatspaceMembers(_url, data.members[data.members.length-1].id);
+
+    qc.setQueryData<TChatspaceMembersResponse>([GET_CHATSPACE_MEMBERS_KEY, _url], (prev) => {
+      if (!prev) return;
+
+      return {
+        members: [ ...prev.members, ...moreMembers.members ],
+        hasMoreData: moreMembers.hasMoreData,
+        memberCount: prev.memberCount,
+      };
+    });
+  };
   
   return {
     data,
-    nextPage: () => setPage(prev => prev + 1),
+    loadMore,
   } as const;
 }
