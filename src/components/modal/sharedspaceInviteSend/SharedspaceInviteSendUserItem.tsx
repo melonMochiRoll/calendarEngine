@@ -1,13 +1,13 @@
 import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
-import { TSearchUsersItem } from 'Src/typings/types';
+import { TSearchUser } from 'Src/typings/types';
 import { useParams } from 'react-router-dom';
 import { sendInvite } from 'Src/api/inviteApi';
 import { CircularProgress } from '@mui/material';
 
 interface SharedspaceInviteUserItemProps {
-  user: TSearchUsersItem,
+  user: TSearchUser,
   isOwner: boolean,
 };
 

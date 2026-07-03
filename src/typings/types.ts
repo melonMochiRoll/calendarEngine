@@ -167,7 +167,7 @@ export type TChatspaceMembersList = {
   hasMoreData: boolean,
 };
 
-export type TSearchUsersItem = {
+export type TSearchUser = {
   id: string,
   email: string,
   nickname: string,
@@ -178,7 +178,7 @@ export type TSearchUsersItem = {
 };
 
 export type TSearchUsersResponse = {
-  users: TSearchUsersItem[],
+  users: TSearchUser[],
   hasMoreData: boolean,
 };
 
