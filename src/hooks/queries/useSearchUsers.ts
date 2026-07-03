@@ -38,7 +38,7 @@ export function useSearchUsers(query: string) {
         hasMoreData: moreUsers.hasMoreData,
       };
     });
-  }, [query]);
+  }, [data, query]);
 
   return {
     data,

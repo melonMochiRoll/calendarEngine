@@ -38,7 +38,7 @@ export function useSearchTodos(query: string) {
         hasMoreData: moreTodos.hasMoreData,
       };
     });
-  }, [query]);
+  }, [data, query]);
 
   return {
     data,
