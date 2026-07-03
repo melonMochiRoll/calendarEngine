@@ -147,6 +147,7 @@ export const subscribedspacesSortsMap: { [key: string]: string } = {
 } as const;
 
 export type TSpaceMembersItem = {
+  id: string,
   UserId: string,
   email: string,
   nickname: string,
