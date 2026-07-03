@@ -136,7 +136,7 @@ export type TSubscribedspace = Pick<TSharedspace, 'name' | 'url' | 'private'> & 
 
 export type TSubscribedspaces = {
   spaces: TSubscribedspace[],
-  totalCount: number,
+  currentPageGroupCount: number,
   hasNextPageGroup: boolean,
 };
 

@@ -66,7 +66,8 @@ const SubscribedSpacesContainer: FC = () => {
           <SubscribedSpacesNull />}
         <SubscribedSpacesPagination
           currentPage={currentPage}
-          totalCount={subscribedspaceData.totalCount}
+          currentPageGroupCount={subscribedspaceData.currentPageGroupCount}
+          hasNextPageGroup={subscribedspaceData.hasNextPageGroup}
           goToPage={goToPage} />
       </Main>
     </Background>

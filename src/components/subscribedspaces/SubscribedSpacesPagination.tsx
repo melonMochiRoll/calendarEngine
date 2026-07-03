@@ -1,63 +1,49 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import ArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 interface SubscribedSpacesPaginationProps {
   currentPage: number,
-  totalCount: number,
+  currentPageGroupCount: number,
+  hasNextPageGroup: boolean,
   goToPage: (page: number) => void,
 };
 
 const SubscribedSpacesPagination: FC<SubscribedSpacesPaginationProps> = ({
   currentPage,
-  totalCount,
+  currentPageGroupCount,
+  hasNextPageGroup,
   goToPage,
 }) => {
-  const [ pages, setPages ] = useState([[0]]);
-  const currentPagesIdx = Math.floor((currentPage-1) / 10);
-
-  const getPages = (totalCount: number) => {
-    const totalPage = Math.ceil(totalCount/7);
-    const totalGroup = Math.ceil(totalPage / 10);
-
-    return Array.from({ length: totalGroup }, (_, idx) => {
-      const isLastGroup = totalGroup-1 === idx;
-      return Array.from({ length: !isLastGroup ? 10 : totalPage % 10 || 10 }, (_, i) => (idx * 10) + i+1)
-    });
-  };
-
-  useEffect(() => {
-    setPages(getPages(totalCount));
-  }, [totalCount]);
+  const pages = Array.from({ length: Math.ceil(currentPageGroupCount / 7) }, (_, idx) => idx + 1);
+  const currentPageGroup = Math.floor((currentPage - 1) / 10);
 
   return (
     <Nav>
       {
-        currentPagesIdx > 0 &&
+        currentPageGroup > 0 &&
         <PageButton
-          onClick={() => goToPage(currentPagesIdx * 10 - 9)}>
+          onClick={() => goToPage(currentPageGroup * 10 - 9)}>
           <ArrowLeftIcon fontSize='small' />
         </PageButton>
       }
       {
-        pages[currentPagesIdx]?.map((page, idx) => {
-          const active = (currentPage - 1) % 10  === idx;
-
+        pages.map((page) => {
           return (
             <PageButton
               key={page}
               onClick={() => goToPage(page)}
-              disabled={active}>
+              disabled={currentPage === page}>
               {page}
             </PageButton>
           );
         })
       }
       {
-        currentPagesIdx < pages.length-1 &&
+        hasNextPageGroup &&
         <PageButton
-          onClick={() => goToPage(currentPagesIdx * 10 + 11)}>
+          onClick={() => goToPage((currentPageGroup + 1) * 10 + 1)}>
           <ArrowRightIcon fontSize='small' />
         </PageButton>
       }
