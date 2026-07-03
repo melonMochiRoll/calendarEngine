@@ -7,7 +7,7 @@ import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 interface SharedspaceMemberListMainProps {};
 
 const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
-  const { data: membersData, nextPage } = useSharedspacemembers();
+  const { data: membersData, loadMore } = useSharedspacemembers();
   const { data: spaceData } = useSharedspace();
   
   return (
@@ -22,7 +22,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
           );
         })}
         {membersData.hasMoreData &&
-          <LoadMore onClick={nextPage}>
+          <LoadMore onClick={loadMore}>
             Load More
           </LoadMore>
         }

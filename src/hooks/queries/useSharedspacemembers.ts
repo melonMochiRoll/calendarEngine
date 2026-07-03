@@ -1,20 +1,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getSharedspaceMembers } from "Src/api/sharedspacesApi";
 import { GET_SHAREDSPACE_MEMBERS_KEY } from "Src/constants/queryKeys";
 import { handleRetry } from "Src/lib/utilFunction";
 import { TSharedspaceMembersList } from "Src/typings/types";
 
-export type UseSharedspacemembersReturnType = {
-  data: TSharedspaceMembersList,
-  nextPage: () => void,
-};
-
-export function useSharedspacemembers(): UseSharedspacemembersReturnType {
+export function useSharedspacemembers() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
-  const [ page, setPage ] = useState(1);
 
   const {
     data,
@@ -22,33 +15,32 @@ export function useSharedspacemembers(): UseSharedspacemembersReturnType {
     error,
   } = useQuery<TSharedspaceMembersList>({
     queryKey: [GET_SHAREDSPACE_MEMBERS_KEY, _url],
-    queryFn: () => getSharedspaceMembers(_url, page),
+    queryFn: () => getSharedspaceMembers(_url),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([ 400, 403, 404 ], failureCount, error),
   });
 
-  useEffect(() => {
-    if (page > 1) {
-      getSharedspaceMembers(_url, page)
-        .then((res: TSharedspaceMembersList) => {
-          qc.setQueryData<TSharedspaceMembersList>([GET_SHAREDSPACE_MEMBERS_KEY, _url], (prev) => {
-            return {
-              items: [ ...prev?.items || [], ...res.items ],
-              hasMoreData: res.hasMoreData,
-            };
-          });
-        });
-    }
-  }, [page]);
-
   if (isLoading) throw new Promise(() => {});
   if (error) throw error;
   if (data === null || data === undefined) throw new Error();
+
+  const loadMore = async () => {
+    const moreUsers = await getSharedspaceMembers(_url, data.items[data.items.length-1].id);
+
+    qc.setQueryData<TSharedspaceMembersList>([GET_SHAREDSPACE_MEMBERS_KEY, _url], (prev) => {
+      if (!prev) return;
+
+      return {
+        items: [ ...prev.items, ...moreUsers.items ],
+        hasMoreData: moreUsers.hasMoreData,
+      };
+    });
+  };
   
   return {
     data,
-    nextPage: () => setPage(prev => prev + 1),
-  };
+    loadMore,
+  } as const;
 }
