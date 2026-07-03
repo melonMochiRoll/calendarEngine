@@ -156,7 +156,7 @@ export type TSpaceMembersItem = {
   createdAt: string,
 };
 
-export type TSharedspaceMembersList = {
+export type TSharedspaceMembersResponse = {
   members: TSpaceMembersItem[],
   hasMoreData: boolean,
 };

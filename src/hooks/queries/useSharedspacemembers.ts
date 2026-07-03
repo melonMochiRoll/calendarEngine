@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getSharedspaceMembers } from "Src/api/sharedspacesApi";
 import { GET_SHAREDSPACE_MEMBERS_KEY } from "Src/constants/queryKeys";
 import { handleRetry } from "Src/lib/utilFunction";
-import { TSharedspaceMembersList } from "Src/typings/types";
+import { TSharedspaceMembersResponse } from "Src/typings/types";
 
 export function useSharedspacemembers() {
   const { url: _url } = useParams();
@@ -13,7 +13,7 @@ export function useSharedspacemembers() {
     data,
     isLoading,
     error,
-  } = useQuery<TSharedspaceMembersList>({
+  } = useQuery<TSharedspaceMembersResponse>({
     queryKey: [GET_SHAREDSPACE_MEMBERS_KEY, _url],
     queryFn: () => getSharedspaceMembers(_url),
     refetchOnWindowFocus: false,
@@ -29,7 +29,7 @@ export function useSharedspacemembers() {
   const loadMore = async () => {
     const moreMembers = await getSharedspaceMembers(_url, data.members[data.members.length-1].id);
 
-    qc.setQueryData<TSharedspaceMembersList>([GET_SHAREDSPACE_MEMBERS_KEY, _url], (prev) => {
+    qc.setQueryData<TSharedspaceMembersResponse>([GET_SHAREDSPACE_MEMBERS_KEY, _url], (prev) => {
       if (!prev) return;
 
       return {

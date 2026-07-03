@@ -1,4 +1,4 @@
-import { TSharedspaceMembersList, TSharedspaceMembersRoles, TSubscribedspaces } from "Typings/types";
+import { TSharedspaceMembersResponse, TSharedspaceMembersRoles, TSubscribedspaces } from "Typings/types";
 import { axiosInstance } from "./axiosInstance";
 import axios from "axios";
 
@@ -58,7 +58,7 @@ export const deleteSharedspace = async (url: string) => {
 export const getSharedspaceMembers = async (
   url: string | undefined,
   beforeUserId?: string,
-): Promise<TSharedspaceMembersList> => {
+): Promise<TSharedspaceMembersResponse> => {
   if (!url) {
     return { members: [], hasMoreData: false };
   }
