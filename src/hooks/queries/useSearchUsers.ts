@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { TSearchUsersList } from "Typings/types";
+import { TSearchUsersResponse } from "Typings/types";
 import { searchUsers } from "Api/usersApi";
 import { SEARCH_USERS_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
@@ -14,7 +14,7 @@ export function useSearchUsers(query: string) {
     data,
     isLoading,
     error,
-  } = useQuery<TSearchUsersList>({
+  } = useQuery<TSearchUsersResponse>({
     queryKey: [SEARCH_USERS_KEY, _url, query],
     queryFn: () => searchUsers(_url, query),
     refetchOnWindowFocus: false,
@@ -28,13 +28,13 @@ export function useSearchUsers(query: string) {
   if (data === null || data === undefined) throw new Error();
 
   const loadMore = useCallback(async () => {
-    const moreUsers = await searchUsers(_url, query, data.items[data.items.length-1].id);
+    const moreUsers = await searchUsers(_url, query, data.users[data.users.length-1].id);
 
-    qc.setQueryData<TSearchUsersList>([SEARCH_USERS_KEY, _url, query], (prev) => {
+    qc.setQueryData<TSearchUsersResponse>([SEARCH_USERS_KEY, _url, query], (prev) => {
       if (!prev) return;
 
       return {
-        items: [ ...prev.items, ...moreUsers.items ],
+        users: [ ...prev.users, ...moreUsers.users ],
         hasMoreData: moreUsers.hasMoreData,
       };
     });

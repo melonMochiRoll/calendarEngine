@@ -1,4 +1,4 @@
-import { TSearchUsersList } from "Src/typings/types";
+import { TSearchUsersResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getUser = async () => {
@@ -34,9 +34,9 @@ export const searchUsers = async (
   url: string | undefined,
   query: string,
   beforeUserId?: string,
-): Promise<TSearchUsersList> => {
+): Promise<TSearchUsersResponse> => {
   if (!url || !query) {
-    return { items: [], hasMoreData: false }
+    return { users: [], hasMoreData: false }
   }
   
   const { data } = await axiosInstance

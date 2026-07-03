@@ -177,8 +177,8 @@ export type TSearchUsersItem = {
   },
 };
 
-export type TSearchUsersList = {
-  items: TSearchUsersItem[],
+export type TSearchUsersResponse = {
+  users: TSearchUsersItem[],
   hasMoreData: boolean,
 };
 

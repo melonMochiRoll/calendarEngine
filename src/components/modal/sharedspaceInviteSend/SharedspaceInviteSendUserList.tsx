@@ -2,12 +2,12 @@ import React, { FC, memo } from 'react';
 import styled from '@emotion/styled';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import SharedspaceInviteUserItem from './SharedspaceInviteSendUserItem';
-import { TSearchUsersList } from 'Src/typings/types';
+import { TSearchUsersResponse } from 'Src/typings/types';
 
 interface SharedspaceInviteUserListProps {
   query: string,
   isOwner: boolean,
-  searchUsersData: TSearchUsersList,
+  searchUsersData: TSearchUsersResponse,
   loadMore: () => void,
 }
 
@@ -17,14 +17,14 @@ const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
   searchUsersData,
   loadMore,
 }) => {
-  const { items, hasMoreData } = searchUsersData;
+  const { users, hasMoreData } = searchUsersData;
 
   return (
     <>
-      {items.length ?
+      {users.length ?
         <UserList>
           {
-            items.map((user) => {
+            users.map((user) => {
               return (
                 <SharedspaceInviteUserItem
                   key={user.email}
