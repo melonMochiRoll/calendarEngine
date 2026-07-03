@@ -162,7 +162,7 @@ export type TSharedspaceMembersResponse = {
 };
 
 export type TChatspaceMembersList = {
-  items: TSpaceMembers[],
+  members: TSpaceMembers[],
   memberCount: number,
   hasMoreData: boolean,
 };

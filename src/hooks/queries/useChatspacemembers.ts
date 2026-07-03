@@ -32,7 +32,7 @@ export function useChatspacemembers() {
             if (!prev) return;
 
             return {
-              items: [ ...prev.items, ...res.items ],
+              members: [ ...prev.members, ...res.members ],
               memberCount: res.memberCount,
               hasMoreData: res.hasMoreData,
             };
