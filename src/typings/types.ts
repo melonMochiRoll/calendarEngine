@@ -134,7 +134,7 @@ export type TSubscribedspace = Pick<TSharedspace, 'name' | 'url' | 'private'> & 
   }
 };
 
-export type TSubscribedspaces = {
+export type TSubscribedspacesResponse = {
   spaces: TSubscribedspace[],
   currentPageGroupCount: number,
   hasNextPageGroup: boolean,
