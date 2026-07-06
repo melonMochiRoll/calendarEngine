@@ -1,14 +1,20 @@
+import { TJoinRequestsResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getJoinRequest = async (
   url: string | undefined,
-) => {
+  beforeJoinRequestId?: string,
+): Promise<TJoinRequestsResponse> => {
   if (!url) {
-    return;
+    return { joinRequests: [], hasMoreData: false };
   }
 
   const { data } = await axiosInstance
-    .get(`api/sharedspaces/${url}/joinrequest`);
+    .get(`api/sharedspaces/${url}/joinrequest`, {
+      params: {
+        before: beforeJoinRequestId,
+      },
+    });
 
   return data;
 };
