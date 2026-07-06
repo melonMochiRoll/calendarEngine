@@ -189,6 +189,11 @@ export type TJoinRequest = {
   Requestor: Pick<TUser, 'email' | 'nickname' | 'ProfileImage'>,
 };
 
+export type TJoinRequestsResponse = {
+  joinRequests: TJoinRequest[],
+  hasMoreData: boolean,
+};
+
 export type TChat = {
   id: string;
   content: string;
