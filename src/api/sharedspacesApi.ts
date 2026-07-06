@@ -18,7 +18,12 @@ export const getSubscribedspaces = async (
   page = 1,
 ): Promise<TSubscribedspacesResponse> => {
   const { data } = await axiosInstance
-    .get(`/api/sharedspaces/subscribed?sort=${sort}&page=${page}`);
+    .get(`/api/sharedspaces/subscribed`, {
+      params: {
+        sort,
+        page,
+      },
+    });
 
   return data;
 };
