@@ -5,11 +5,7 @@ import { handleRetry } from "Lib/utilFunction";
 import { useParams } from "react-router-dom";
 import { TJoinRequest } from "Typings/types";
 
-export type UseJoinRequestReturnType = {
-  data: TJoinRequest[],
-};
-
-export function useJoinRequest(): UseJoinRequestReturnType {
+export function useJoinRequest() {
   const { url: _url } = useParams();
 
   const {
@@ -31,5 +27,5 @@ export function useJoinRequest(): UseJoinRequestReturnType {
 
   return {
     data,
-  };
+  } as const;
 }
