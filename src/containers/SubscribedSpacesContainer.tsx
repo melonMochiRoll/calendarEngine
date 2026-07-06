@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useSubscribedspace } from 'Hooks/queries/useSubscribedspaces';
 import SubscribedSpacesResult from 'Components/subscribedspaces/SubscribedspacesResult';
@@ -66,8 +66,7 @@ const SubscribedSpacesContainer: FC = () => {
           <SubscribedSpacesNull />}
         <SubscribedSpacesPagination
           currentPage={currentPage}
-          currentPageGroupCount={subscribedspaceData.currentPageGroupCount}
-          hasNextPageGroup={subscribedspaceData.hasNextPageGroup}
+          totalCount={subscribedspaceData.totalCount}
           goToPage={goToPage} />
       </Main>
     </Background>

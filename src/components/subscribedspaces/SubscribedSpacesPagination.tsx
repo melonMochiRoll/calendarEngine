@@ -5,26 +5,33 @@ import ArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 interface SubscribedSpacesPaginationProps {
   currentPage: number,
-  currentPageGroupCount: number,
-  hasNextPageGroup: boolean,
+  totalCount: number,
   goToPage: (page: number) => void,
 };
 
 const SubscribedSpacesPagination: FC<SubscribedSpacesPaginationProps> = ({
   currentPage,
-  currentPageGroupCount,
-  hasNextPageGroup,
+  totalCount,
   goToPage,
 }) => {
-  const pages = Array.from({ length: Math.ceil(currentPageGroupCount / 7) }, (_, idx) => idx + 1);
-  const currentPageGroup = Math.floor((currentPage - 1) / 10);
+  const ITEM_PER_PAGES = 7
+  const PAGES_MAXLENGTH = 10;
+  const totalPages = Math.ceil(totalCount / ITEM_PER_PAGES);
+
+  const firstPage = Math.floor((currentPage - 1) / PAGES_MAXLENGTH) * PAGES_MAXLENGTH + 1;
+  const lastPage = Math.min(firstPage + PAGES_MAXLENGTH - 1, totalPages);
+
+  const pages = Array.from(
+    { length: Math.max(0, lastPage - firstPage + 1) },
+    (_, idx) => firstPage + idx
+  );
 
   return (
     <Nav>
       {
-        currentPageGroup > 0 &&
+        firstPage > 1 &&
         <PageButton
-          onClick={() => goToPage(currentPageGroup * 10 - 9)}>
+          onClick={() => goToPage(firstPage - 1)}>
           <ArrowLeftIcon fontSize='small' />
         </PageButton>
       }
@@ -41,9 +48,9 @@ const SubscribedSpacesPagination: FC<SubscribedSpacesPaginationProps> = ({
         })
       }
       {
-        hasNextPageGroup &&
+        totalPages > lastPage &&
         <PageButton
-          onClick={() => goToPage((currentPageGroup + 1) * 10 + 1)}>
+          onClick={() => goToPage(lastPage + 1)}>
           <ArrowRightIcon fontSize='small' />
         </PageButton>
       }
