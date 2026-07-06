@@ -4,11 +4,10 @@ import { GET_SUBSCRIBED_SPACES_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
 import { TSubscribedspacesResponse } from "Typings/types";
 
-export type UseSubscribedspaceReturnType = {
-  data: TSubscribedspacesResponse,
-};
-
-export function useSubscribedspace(sort: string, page: number): UseSubscribedspaceReturnType {
+export function useSubscribedspace(
+  sort: string,
+  page: number,
+) {
   const {
     data,
     isLoading,
@@ -26,5 +25,5 @@ export function useSubscribedspace(sort: string, page: number): UseSubscribedspa
   if (error) throw error;
   if (data === null || data === undefined) throw new Error();
 
-  return { data };
+  return { data } as const;
 }
