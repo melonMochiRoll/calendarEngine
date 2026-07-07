@@ -1,10 +1,15 @@
+import { TInvitePayload } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getInvites = async (
-  page: number,
-) => {
+  beforeInviteId?: string,
+): Promise<TInvitePayload> => {
   const { data } = await axiosInstance
-    .get(`api/invites?page=${page}`);
+    .get(`api/invites`, {
+      params: {
+        before: beforeInviteId,
+      },
+    });
 
   return data;
 };
