@@ -7,7 +7,7 @@ import SharedspaceInviteReceivedList from './SharedspaceInviteReceivedList';
 interface SharedspaceInviteReceivedMainProps {};
 
 const SharedspaceInviteReceivedMain: FC<SharedspaceInviteReceivedMainProps> = ({}) => {
-  const { data: invitesData, nextPage } = useInvites();
+  const { data: invitesData, loadMore } = useInvites();
 
   return (
     <>
@@ -15,7 +15,7 @@ const SharedspaceInviteReceivedMain: FC<SharedspaceInviteReceivedMainProps> = ({
         invitesData.invites.length ?
           <SharedspaceInviteReceivedList
             invitesData={invitesData}
-            nextPage={nextPage} />
+            loadMore={loadMore} />
           :
           <SharedspaceInviteReceivedInit />
       }

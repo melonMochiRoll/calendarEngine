@@ -11,12 +11,12 @@ import { useQueryClient } from '@tanstack/react-query';
 
 interface SharedspaceInviteReceivedListProp {
   invitesData: TInvitePayload,
-  nextPage: () => void,
+  loadMore: () => void,
 };
 
 const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
   invitesData,
-  nextPage,
+  loadMore,
 }) => {
   const qc = useQueryClient();
   const { invites, hasMoreData } = invitesData;
@@ -92,7 +92,7 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
       }
       {
         hasMoreData &&
-          <LoadMore onClick={() => nextPage()}>
+          <LoadMore onClick={loadMore}>
             Load more
           </LoadMore>
       }
