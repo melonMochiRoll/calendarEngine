@@ -7,12 +7,7 @@ import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { TChats } from "Typings/types";
 
-export type UseChatsReturnType = {
-  data: TChats,
-  loadMore: () => void,
-};
-
-export function useChats(): UseChatsReturnType {
+export function useChats() {
   const { url: _url } = useParams();
   const qc = useQueryClient();
 
@@ -47,5 +42,5 @@ export function useChats(): UseChatsReturnType {
   return {
     data,
     loadMore,
-  };
+  } as const;
 }

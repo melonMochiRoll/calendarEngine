@@ -5,11 +5,7 @@ import { getTodosByMonth } from "Src/api/todosApi";
 import { GET_TODOS_BY_MONTH_KEY } from "Src/constants/queryKeys";
 import { TTodoMap } from "Src/typings/types";
 
-export type UseTodosByMonthReturnType = {
-  data: TTodoMap,
-};
-
-export function useTodosByMonth(): UseTodosByMonthReturnType {
+export function useTodosByMonth() {
   const { url: _url } = useParams();
   const {
     calendarYear,
@@ -31,5 +27,5 @@ export function useTodosByMonth(): UseTodosByMonthReturnType {
   if (error) throw error;
   if (data === null || data === undefined) throw new Error();
 
-  return { data };
+  return { data } as const;
 }

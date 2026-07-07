@@ -5,11 +5,7 @@ import { handleRetry } from "Lib/utilFunction";
 import { useParams } from "react-router-dom";
 import { TSharedspaceMetaData } from "Typings/types";
 
-export type UseSharedspaceReturnType = {
-  data: TSharedspaceMetaData,
-};
-
-export function useSharedspace(): UseSharedspaceReturnType {
+export function useSharedspace() {
   const { url: _url } = useParams();
   const {
     data,
@@ -28,5 +24,5 @@ export function useSharedspace(): UseSharedspaceReturnType {
   if (error) throw error;
   if (data === null || data === undefined) throw new Error();
 
-  return { data };
+  return { data } as const;
 }
