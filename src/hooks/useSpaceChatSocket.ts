@@ -26,7 +26,7 @@ export function useSpaceChatSocket(queryKey: string) {
     pendingMessages,
   } = useSocket();
   const canShowNotify = useRef(false);
-  const { data: userData } = useUser({ suspense: true, throwOnError: true });
+  const { data: userData } = useUser();
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
 
   useEffect(() => {

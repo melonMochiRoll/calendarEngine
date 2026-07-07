@@ -14,7 +14,7 @@ import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 
 const ChatContainer: FC = () => {
   const { url } = useParams();
-  const { data: userData } = useUser({ suspense: true, throwOnError: true });
+  const { data: userData } = useUser();
 
   const { data: chatList, loadMore } = useChats();
 

@@ -9,7 +9,7 @@ interface RequireLoginProps {
 
 const RequireLogin: FC<RequireLoginProps> = ({ children }) => {
   const navigate = useNavigate();
-  const { data: userData } = useUser({ suspense: true, throwOnError: false });
+  const { data: userData } = useUser();
 
   useEffect(() => {
     if (!userData) {

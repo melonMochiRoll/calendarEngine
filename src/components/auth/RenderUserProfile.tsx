@@ -26,7 +26,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
-  const { data: userData } = useUser({ suspense: true, throwOnError: true });
+  const { data: userData } = useUser();
 
   const {
     anchorEl,

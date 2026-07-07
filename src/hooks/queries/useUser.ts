@@ -1,56 +1,28 @@
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getUser } from 'Api/usersApi';
 import { GET_USER_KEY } from 'Constants/queryKeys';
 import { handleRetry } from 'Lib/utilFunction';
 import { TUser } from 'Typings/types';
 
-type TypeSafeReturnType = {
-  data: TUser;
-};
-
-type FetchStateReturnType = {
-  data: TUser | undefined;
-  isLoading: boolean;
-  refetch: <TPageData>(
-    options?: RefetchOptions & RefetchQueryFilters<TPageData>,
-  ) => Promise<QueryObserverResult<TUser, unknown>>;
-};
-
-function useUser(options: { suspense: true, throwOnError: true }): TypeSafeReturnType;
-function useUser(options?: { suspense: boolean, throwOnError: boolean }): FetchStateReturnType;
-
-function useUser(options = { suspense: false, throwOnError: false }) {
-  const { suspense, throwOnError } = options;
-
+function useUser() {
   const {
     data,
-    refetch,
     isLoading,
     error,
   } = useQuery<TUser>({
     queryKey: [GET_USER_KEY],
     queryFn: () => getUser(),
     refetchOnWindowFocus: true,
-    suspense,
-    useErrorBoundary: throwOnError,
+    suspense: true,
+    useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([200], failureCount, error),
   });
 
-  if (suspense) {
-    if (isLoading) throw new Promise(() => {});
-    if (throwOnError && error) throw error;
-    if (throwOnError && (data === null || data === undefined)) throw new Error();
+  if (isLoading) throw new Promise(() => {});
+  if (error) throw error;
+  if (data === null || data === undefined) throw new Error();
 
-    return {
-      data,
-    };
-  }
-
-  return {
-    data,
-    refetch,
-    isLoading,
-  };
+  return { data } as const;
 }
 
 export default useUser;
