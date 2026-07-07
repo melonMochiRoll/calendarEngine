@@ -4,6 +4,7 @@ import { useAppSelector } from "../reduxHooks";
 import { getTodosByMonth } from "Src/api/todosApi";
 import { GET_TODOS_BY_MONTH_KEY } from "Src/constants/queryKeys";
 import { TTodoMap } from "Src/typings/types";
+import { handleRetry } from "Src/lib/utilFunction";
 
 export function useTodosByMonth() {
   const { url: _url } = useParams();
@@ -21,6 +22,7 @@ export function useTodosByMonth() {
     queryFn: () => getTodosByMonth(_url, calendarYear, calendarMonth),
     suspense: true,
     useErrorBoundary: true,
+    retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
   if (isLoading) throw new Promise(() => {});
