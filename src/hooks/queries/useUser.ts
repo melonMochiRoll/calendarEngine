@@ -15,7 +15,7 @@ function useUser() {
     refetchOnWindowFocus: true,
     suspense: true,
     useErrorBoundary: true,
-    retry: (failureCount, error) => handleRetry([200], failureCount, error),
+    retry: (failureCount, error) => handleRetry([ 200, 400, 401, 403 ], failureCount, error),
   });
 
   if (isLoading) throw new Promise(() => {});
