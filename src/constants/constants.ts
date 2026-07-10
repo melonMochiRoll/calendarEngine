@@ -34,3 +34,9 @@ export const SocketStatus = {
   CONNECTING: '연결 중',
   RECONNECTING: '연결 시도 중',
 };
+
+export const FriendshipTabs = {
+  LIST: '친구 목록',
+  REQUESTS: '받은 요청',
+  SEARCH: '친구 요청',
+};
