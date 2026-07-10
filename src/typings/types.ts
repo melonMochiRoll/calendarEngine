@@ -30,6 +30,7 @@ export const ModalName = {
   SHAREDSPACE_INVITE_RECEIVED: 'SHAREDSPACE_INVITE_RECEIVED',
   SHAREDSPACE_INVITE_SEND: 'SHAREDSPACE_INVITE_SEND',
   PROFILEIMAGE_UPDATER: 'PROFILEIMAGE_UPDATER',
+  FRIENDSHIPS: 'FRIENDSHIPS',
 } as const;
 
 export type TModalName = typeof ModalName[keyof typeof ModalName];
@@ -48,6 +49,7 @@ export type ModalPayload =
   | { name: typeof ModalName.SHAREDSPACE_INVITE_RECEIVED, props?: {} }
   | { name: typeof ModalName.SHAREDSPACE_INVITE_SEND, props?: {} }
   | { name: typeof ModalName.PROFILEIMAGE_UPDATER, props: ProfileImageUpdaterModalProps }
+  | { name: typeof ModalName.FRIENDSHIPS, props?: {} }
 ;
 
 export const RoleDictionary = {
