@@ -273,3 +273,16 @@ export type TAccessTokenPayload = {
 export type TChatToServer = typeof ChatToServer[keyof typeof ChatToServer];
 
 export type TErrorType = typeof ERROR_TYPE[keyof typeof ERROR_TYPE];
+
+export type TFriendshipResponse = {
+  friendships: TFriendship[],
+  totalCount: number,
+};
+
+export type TFriendship = {
+  RequesterId: string,
+  email: string,
+  nickname: string,
+  status: string,
+  ProfileImage: string,
+};
