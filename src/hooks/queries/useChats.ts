@@ -37,7 +37,7 @@ export function useChats() {
         chats: [ ...prev?.chats || [], ...moreChats.chats ],
       };
     });
-  }, 300), []);
+  }, 300), [data]);
 
   return {
     data,
