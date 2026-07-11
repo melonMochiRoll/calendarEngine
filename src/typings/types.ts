@@ -276,7 +276,7 @@ export type TErrorType = typeof ERROR_TYPE[keyof typeof ERROR_TYPE];
 
 export type TFriendshipResponse = {
   friendships: TFriendship[],
-  totalCount: number,
+  hasMoreData: boolean,
 };
 
 export type TFriendship = {
