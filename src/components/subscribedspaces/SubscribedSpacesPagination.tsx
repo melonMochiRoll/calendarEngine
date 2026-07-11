@@ -14,7 +14,7 @@ const SubscribedSpacesPagination: FC<SubscribedSpacesPaginationProps> = ({
   totalCount,
   goToPage,
 }) => {
-  const ITEM_PER_PAGES = 7
+  const ITEM_PER_PAGES = 7;
   const PAGES_MAXLENGTH = 10;
   const totalPages = Math.ceil(totalCount / ITEM_PER_PAGES);
 
