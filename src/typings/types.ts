@@ -280,6 +280,7 @@ export type TFriendshipResponse = {
 };
 
 export type TFriendship = {
+  id: string,
   RequesterId: string,
   email: string,
   nickname: string,
