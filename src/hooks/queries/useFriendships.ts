@@ -32,7 +32,7 @@ export function useFriendships() {
       if (!prev) return;
 
       return {
-        friendships: [ ...prev.friendships || [], ...moreFriendship.chats ],
+        friendships: [ ...prev.friendships || [], ...moreFriendship.friendships ],
         hasMoreData: moreFriendship.hasMoreData,
       };
     });
