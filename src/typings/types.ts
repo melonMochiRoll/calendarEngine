@@ -279,6 +279,11 @@ export type TFriendshipResponse = {
   hasMoreData: boolean,
 };
 
+export type TFriendshipRequestsResponse = {
+  friendshipRequests: TFriendship[],
+  hasMoreData: boolean,
+};
+
 export type TFriendship = {
   id: string,
   RequesterId: string,
