@@ -1,9 +1,9 @@
-import { TFriendshipRequestsResponse } from "Src/typings/types";
+import { TFriendshipRequestsResponse, TFriendshipResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getFriendships = async (
   beforeFriendshipId?: string,
-) => {
+): Promise<TFriendshipResponse> => {
   const { data } = await axiosInstance
     .get(`/api/friendships`, {
       params: {
