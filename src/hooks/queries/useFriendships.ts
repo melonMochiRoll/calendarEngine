@@ -26,7 +26,7 @@ export function useFriendships() {
   if (data === null || data === undefined) throw new Error();
 
   const loadMore = useCallback(async () => {
-    const moreFriendship = await getFriendships(data.friendships[data.friendships.length-1].RequesterId);
+    const moreFriendship = await getFriendships(data.friendships[data.friendships.length-1].id);
 
     qc.setQueryData<TFriendshipResponse>([GET_FRIENDSHIPS], (prev) => {
       if (!prev) return;
