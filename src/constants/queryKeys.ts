@@ -8,6 +8,7 @@ export const GET_SHAREDSPACE_CHATS_KEY = 'getSharedspaceChats';
 export const GET_SHAREDSPACE_MEMBERS_KEY = 'getSharedspaceMembers';
 export const GET_INVITES_KEY = 'getInvites';
 export const GET_FRIENDSHIPS = 'getFriendships';
+export const GET_FRIENDSHIP_REQUESTS_KEY = 'getFriendshipRequests';
 
 export const GET_CHATSPACE_CHATS_KEY = 'getChatspaceChats';
 export const GET_CHATSPACE_MEMBERS_KEY = 'getChatspaceMembers';
