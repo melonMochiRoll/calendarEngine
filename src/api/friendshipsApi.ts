@@ -27,6 +27,13 @@ export const getFriendshipRequests = async (
   return data;
 };
 
+export const sendFriendship = async (RequesteeId: string) => {
+  await axiosInstance
+    .post(`/api/friendships`, {
+      RequesteeId,
+    });
+};
+
 export const acceptFriendship = async (RequesterId: string) => {
   await axiosInstance
     .post(`/api/friendships/accept`, {
