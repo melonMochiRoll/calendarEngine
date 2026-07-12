@@ -47,3 +47,12 @@ export const rejectFriendship = async (RequesterId: string) => {
       RequesterId,
     });
 };
+
+export const deleteFriendship = async (RequesterId: string) => {
+  await axiosInstance
+    .delete(`/api/friendships`, {
+      params: {
+        target: RequesterId,
+      },
+    });
+};
