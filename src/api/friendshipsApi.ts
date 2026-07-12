@@ -33,3 +33,10 @@ export const acceptFriendship = async (RequesterId: string) => {
       RequesterId,
     });
 };
+
+export const rejectFriendship = async (RequesterId: string) => {
+  await axiosInstance
+    .post(`/api/friendships/reject`, {
+      RequesterId,
+    });
+};
