@@ -293,7 +293,7 @@ export type TFriendship = {
   ProfileImage: string,
 };
 
-export type TFriendshipSearchUser = {
+export type TSearchUserForFriendship = {
   id: string,
   email: string,
   nickname: string,
@@ -303,7 +303,7 @@ export type TFriendshipSearchUser = {
   },
 };
 
-export type TFriendshipSearchUsersResponse = {
-  users: TFriendshipSearchUser[],
+export type TSearchUsersForFriendshipResponse = {
+  users: TSearchUserForFriendship[],
   hasMoreData: boolean,
 };
