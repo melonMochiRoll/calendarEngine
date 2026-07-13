@@ -1,4 +1,4 @@
-import { TFriendshipRequestsResponse, TFriendshipResponse } from "Src/typings/types";
+import { TFriendshipRequestsResponse, TFriendshipResponse, TSearchUsersForFriendshipResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 import { before } from "lodash";
 
@@ -61,7 +61,11 @@ export const deleteFriendship = async (RequesterId: string) => {
 export const searchUsers = async (
   query: string,
   beforeUserId?: string,
-) => {
+): Promise<TSearchUsersForFriendshipResponse> => {
+  if (!query) {
+    return { users: [], hasMoreData: false };
+  }
+
   const { data } = await axiosInstance
     .get(`/api/friendships/search`, {
       params: {
