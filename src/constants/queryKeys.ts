@@ -15,3 +15,4 @@ export const GET_CHATSPACE_MEMBERS_KEY = 'getChatspaceMembers';
 
 export const SEARCH_TODOS_KEY = 'searchTodos';
 export const SEARCH_USERS_KEY = 'searchUsers';
+export const SEARCH_USERS_FOR_FRIENDSHIP_KEY = 'searchUsersForFriendship';
