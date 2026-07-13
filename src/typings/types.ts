@@ -292,3 +292,18 @@ export type TFriendship = {
   status: string,
   ProfileImage: string,
 };
+
+export type TFriendshipSearchUser = {
+  id: string,
+  email: string,
+  nickname: string,
+  ProfileImage: string,
+  permission: {
+    isFriendship: boolean,
+  },
+};
+
+export type TFriendshipSearchUsersResponse = {
+  users: TFriendshipSearchUser[],
+  hasMoreData: boolean,
+};
