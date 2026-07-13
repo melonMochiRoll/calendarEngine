@@ -50,12 +50,14 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
         isLoading ?
           <CircularProgress size={30} />
           :
-          isOwner && !isSent && !permission.isParticipant ?
-            <Button onClick={() => handleSendInvite()}>
-              초대
-            </Button>
-            :
-            <DisableButton>{label}</DisableButton>
+          (
+            isOwner && !isSent && !permission.isParticipant ?
+              <Button onClick={() => handleSendInvite()}>
+                초대
+              </Button>
+              :
+              <DisableButton>{label}</DisableButton>
+          )
       }
     </Item>
   );
