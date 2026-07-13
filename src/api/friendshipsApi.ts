@@ -1,5 +1,6 @@
 import { TFriendshipRequestsResponse, TFriendshipResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
+import { before } from "lodash";
 
 export const getFriendships = async (
   beforeFriendshipId?: string,
@@ -55,4 +56,19 @@ export const deleteFriendship = async (RequesterId: string) => {
         target: RequesterId,
       },
     });
+};
+
+export const searchUsers = async (
+  query: string,
+  beforeUserId?: string,
+) => {
+  const { data } = await axiosInstance
+    .get(`/api/friendships/search`, {
+      params: {
+        query,
+        before: beforeUserId,
+      },
+    });
+
+  return data;
 };
