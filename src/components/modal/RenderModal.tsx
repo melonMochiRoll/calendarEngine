@@ -18,6 +18,7 @@ export const modals = {
   [ModalName.SHAREDSPACE_INVITE_SEND]: React.lazy(() => import('Components/modal/sharedspaceInviteSend/SharedspaceInviteSendModal')),
   [ModalName.SHAREDSPACE_INVITE_RECEIVED]: React.lazy(() => import('Components/modal/sharedspaceInviteReceived/SharedspaceInviteReceivedModal')),
   [ModalName.PROFILEIMAGE_UPDATER]: React.lazy(() => import('Src/components/modal/profileImageUpdater/ProfileImageUpdaterModal')),
+  [ModalName.FRIENDSHIPS]: React.lazy(() => import('Src/components/modal/friendships/FriendshipsModal')),
 };
 
 const RenderModal: FC = () => {

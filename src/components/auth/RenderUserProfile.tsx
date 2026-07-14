@@ -19,6 +19,7 @@ import { ModalName } from 'Src/typings/types';
 import ImageIcon from '@mui/icons-material/Image';
 import { toast } from 'react-toastify';
 import { clearAccessToken } from 'Src/features/accessTokenSlice';
+import GroupIcon from '@mui/icons-material/Group';
 
 interface RenderUserProfileProps {};
 
@@ -90,6 +91,12 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
                   sx={{ gap: '5px' }}>
                   <MailIcon />
                   <span>받은 초대</span>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => dispatch(openModal({ name: ModalName.FRIENDSHIPS }))}
+                  sx={{ gap: '5px' }}>
+                  <GroupIcon />
+                  <span>친구 목록</span>
                 </MenuItem>
                 <MenuItem
                   onClick={() => onLogout()}
