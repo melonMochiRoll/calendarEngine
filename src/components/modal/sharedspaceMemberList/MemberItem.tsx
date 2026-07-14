@@ -23,10 +23,10 @@ const MemberItem: FC<MemberItemProps> = ({
 }) => {
   const { url } = useParams();
   const qc = useQueryClient();
-  const [ isResponded, setIsResponded ] = useState('');
+  const [ isSent, setIsSent ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
   const { UserId, email, nickname, ProfileImage, RoleName } = item;
-  const label = isResponded || renderRole(RoleName);
+  const label = isSent || renderRole(RoleName);
 
   const {
     anchorEl,
@@ -44,9 +44,9 @@ const MemberItem: FC<MemberItemProps> = ({
     try {
       await updateSharedspaceMembers(url, UserId, role);
       await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
-      setIsResponded('요청 완료');
+      setIsSent('요청 완료');
     } catch (err) {
-      setIsResponded('요청 실패');
+      setIsSent('요청 실패');
     } finally {
       setIsLoading(false);
     }
@@ -62,9 +62,9 @@ const MemberItem: FC<MemberItemProps> = ({
     try {
       await updateSharedspaceOwner(url, UserId);
       await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
-      setIsResponded('요청 완료');
+      setIsSent('요청 완료');
     } catch (err) {
-      setIsResponded('요청 실패');
+      setIsSent('요청 실패');
     } finally {
       setIsLoading(false);
     }
@@ -80,9 +80,9 @@ const MemberItem: FC<MemberItemProps> = ({
     try {
       await deleteSharedspaceMembers(url, UserId);
       await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
-      setIsResponded('요청 완료');
+      setIsSent('요청 완료');
     } catch (err) {
-      setIsResponded('요청 실패');
+      setIsSent('요청 실패');
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +103,7 @@ const MemberItem: FC<MemberItemProps> = ({
         isLoading ?
           <CircularProgress size={30} />
           :
-          isOwner && !isResponded ?
+          isOwner && !isSent ?
             <Button onClick={(e) => {
               e.stopPropagation();
               onOpen(e);
