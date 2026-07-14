@@ -108,16 +108,15 @@ const ItemPrivate = styled.div`
 `;
 
 const ItemTitle = styled.div`
-  width: 45%;
+  width: 50%;
   margin: 0;
   font-size: 28px;
 `;
 
 const ItemOwner = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 25%;
+  width: 20%;
   font-size: 20px;
   text-align: center;
   cursor: pointer;
