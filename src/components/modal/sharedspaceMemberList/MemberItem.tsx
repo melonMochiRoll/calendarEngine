@@ -55,7 +55,6 @@ const MemberItem: FC<MemberItemProps> = ({
   const handleUpdateOwner = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     if (!url) return;
 
-    e.stopPropagation();
     setIsLoading(true);
     onClose(e);
     
@@ -73,7 +72,6 @@ const MemberItem: FC<MemberItemProps> = ({
   const handleDeleteMember = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     if (!url) return;
 
-    e.stopPropagation();
     setIsLoading(true);
     onClose(e);
 
