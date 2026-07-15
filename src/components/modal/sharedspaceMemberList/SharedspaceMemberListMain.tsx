@@ -21,7 +21,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
               key={member.UserId}
               item={member}
               isOwner={spaceData.permission.isOwner}
-              isUser={userData.id === member.UserId} />
+              isMe={userData.id === member.UserId} />
           );
         })}
         {membersData.hasMoreData &&
