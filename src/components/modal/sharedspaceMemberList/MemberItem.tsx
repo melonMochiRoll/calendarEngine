@@ -10,7 +10,10 @@ import { renderRole } from 'Lib/utilFunction';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_MEMBERS_KEY } from 'Src/constants/queryKeys';
 import { useParams } from 'react-router-dom';
-import { muiMenuDarkModeSx } from 'Src/constants/notices';
+import { alreadyRequest, defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Src/constants/notices';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { sendFriendship } from 'Src/api/friendshipsApi';
 
 interface MemberItemProps {
   item: TSpaceMembers,
@@ -85,6 +88,33 @@ const MemberItem: FC<MemberItemProps> = ({
       setIsLoading(false);
     }
   };
+
+  const handleSendFriendship = async (
+    e: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    RequesteeId: string,
+  ) => {
+    setIsLoading(true);
+    onClose(e);
+
+    try {
+      await sendFriendship(RequesteeId);
+      setIsSent('요청 완료');
+    } catch (err) {
+      let message = waitingMessage;
+
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 409) {
+          message = alreadyRequest;
+        }
+        
+        setIsSent('요청 실패');
+      }
+
+      toast.error(message, defaultToastOption);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   return (
     <Item>
@@ -124,19 +154,38 @@ const MemberItem: FC<MemberItemProps> = ({
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           sx={muiMenuDarkModeSx}>
-            <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.MEMBER)}>
-              <span>{RoleDictionary.MEMBER}</span>
-            </MenuItem>
-            <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.VIEWER)}>
-              <span>{RoleDictionary.VIEWER}</span>
-            </MenuItem>
-          <Divider />
-          <MenuItem onClick={handleUpdateOwner}>
-            <span>{`${RoleDictionary.OWNER} 변경`}</span>
-          </MenuItem>
-          <MenuItem onClick={handleDeleteMember}>
-            <span>권한 삭제</span>
-          </MenuItem>
+          {
+            RoleName !== SharedspaceMembersRoles.OWNER ?
+              <>
+                <MenuItem onClick={(e) => handleSendFriendship(e, UserId)}>
+                  <span>친구 추가</span>
+                </MenuItem>
+                <Divider />
+                {
+                  RoleName !== SharedspaceMembersRoles.MEMBER &&
+                    <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.MEMBER)}>
+                      <span>{RoleDictionary.MEMBER}</span>
+                    </MenuItem>
+                }
+                {
+                  RoleName !== SharedspaceMembersRoles.VIEWER &&
+                    <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.VIEWER)}>
+                      <span>{RoleDictionary.VIEWER}</span>
+                    </MenuItem>
+                }
+                <Divider />
+                <MenuItem onClick={handleUpdateOwner}>
+                  <span>{`${RoleDictionary.OWNER} 변경`}</span>
+                </MenuItem>
+                <MenuItem onClick={handleDeleteMember}>
+                  <span>권한 삭제</span>
+                </MenuItem>
+              </>
+              :
+              <MenuItem onClick={(e) => handleSendFriendship(e, UserId)}>
+                <span>친구 추가</span>
+              </MenuItem>
+          }
         </Menu>
       }
     </Item>
