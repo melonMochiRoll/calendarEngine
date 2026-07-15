@@ -154,38 +154,34 @@ const MemberItem: FC<MemberItemProps> = ({
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           sx={muiMenuDarkModeSx}>
-          {
-            RoleName !== SharedspaceMembersRoles.OWNER ?
-              <>
-                <MenuItem onClick={(e) => handleSendFriendship(e, UserId)}>
-                  <span>친구 추가</span>
-                </MenuItem>
-                <Divider />
-                {
-                  RoleName !== SharedspaceMembersRoles.MEMBER &&
-                    <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.MEMBER)}>
-                      <span>{RoleDictionary.MEMBER}</span>
-                    </MenuItem>
-                }
-                {
-                  RoleName !== SharedspaceMembersRoles.VIEWER &&
-                    <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.VIEWER)}>
-                      <span>{RoleDictionary.VIEWER}</span>
-                    </MenuItem>
-                }
-                <Divider />
-                <MenuItem onClick={handleUpdateOwner}>
-                  <span>{`${RoleDictionary.OWNER} 변경`}</span>
-                </MenuItem>
-                <MenuItem onClick={handleDeleteMember}>
-                  <span>권한 삭제</span>
-                </MenuItem>
-              </>
-              :
-              <MenuItem onClick={(e) => handleSendFriendship(e, UserId)}>
-                <span>친구 추가</span>
-              </MenuItem>
-          }
+            <MenuItem onClick={(e) => handleSendFriendship(e, UserId)}>
+              <span>친구 추가</span>
+            </MenuItem>
+            {
+              RoleName !== SharedspaceMembersRoles.OWNER &&
+                <>
+                  <Divider />
+                  {
+                    RoleName !== SharedspaceMembersRoles.MEMBER &&
+                      <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.MEMBER)}>
+                        <span>{`${RoleDictionary.MEMBER}로 등급 변경`}</span>
+                      </MenuItem>
+                  }
+                  {
+                    RoleName !== SharedspaceMembersRoles.VIEWER &&
+                      <MenuItem onClick={(e) => handleUpdateMemberRole(e, SharedspaceMembersRoles.VIEWER)}>
+                        <span>{`${RoleDictionary.VIEWER}로 등급 변경`}</span>
+                      </MenuItem>
+                  }
+                  <Divider />
+                  <MenuItem onClick={handleUpdateOwner}>
+                    <span>{`${RoleDictionary.OWNER} 변경`}</span>
+                  </MenuItem>
+                  <MenuItem onClick={handleDeleteMember}>
+                    <span>권한 삭제</span>
+                  </MenuItem>
+                </>
+            }
         </Menu>
       }
     </Item>
