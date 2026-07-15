@@ -10,6 +10,7 @@ import { TChatPayload, TChats } from 'Typings/types';
 import { throttle } from 'lodash';
 import { useQueryClient } from '@tanstack/react-query';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
+import useUser from 'Src/hooks/queries/useUser';
 
 interface ChatListProps {
   chatList: TChats,
@@ -50,6 +51,8 @@ const ChatList: FC<ChatListProps> = ({
 }) => {
   const localTimeZone = dayjs.tz.guess();
   const qc = useQueryClient();
+
+  const { data: userData } = useUser();
 
   const onScroll = throttle(() => {
     if (scrollbarRef.current) {
@@ -97,6 +100,7 @@ const ChatList: FC<ChatListProps> = ({
                 <Chat
                   key={chat.id}
                   chat={chat}
+                  isMe={chat.SenderId === userData.id}
                   updateSharedspaceChat={updateSharedspaceChat}
                   deleteSharedspaceChat={deleteSharedspaceChat}
                   deleteSharedspaceChatImage={deleteSharedspaceChatImage} />
@@ -108,6 +112,7 @@ const ChatList: FC<ChatListProps> = ({
           return <Chat
             key={chat.id}
             chat={chat}
+            isMe={chat.SenderId === userData.id}
             updateSharedspaceChat={updateSharedspaceChat}
             deleteSharedspaceChat={deleteSharedspaceChat}
             deleteSharedspaceChatImage={deleteSharedspaceChatImage} />;

@@ -5,8 +5,8 @@ import ProfileAvatar from 'Src/components/ProfileAvatar';
 import dayjs from 'dayjs';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import useMenu from 'Hooks/utils/useMenu';
-import { defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Constants/notices';
-import { CircularProgress, Menu, MenuItem } from '@mui/material';
+import { alreadyRequest, defaultToastOption, muiMenuDarkModeSx, waitingMessage } from 'Constants/notices';
+import { CircularProgress, Divider, Menu, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import { useParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,9 +16,12 @@ import ChatImage from './ChatImage';
 import RetryIcon from '@mui/icons-material/Replay';
 import CrossIcon from '@mui/icons-material/Clear';
 import { toast } from 'react-toastify';
+import { sendFriendship } from 'Src/api/friendshipsApi';
+import { AxiosError } from 'axios';
 
 interface ChatProps {
   chat: TChatPayload,
+  isMe: boolean,
   updateSharedspaceChat: (url: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
   deleteSharedspaceChat: (url: string | undefined, ChatId: string) => void,
   deleteSharedspaceChatImage: (url: string | undefined, ChatId: string, ImageId: string) => void,
@@ -26,6 +29,7 @@ interface ChatProps {
 
 const Chat: FC<ChatProps> = ({
   chat,
+  isMe,
   updateSharedspaceChat,
   deleteSharedspaceChat,
   deleteSharedspaceChatImage,
@@ -47,6 +51,27 @@ const Chat: FC<ChatProps> = ({
   const isPending = chat._status === ChatStatus.PENDING;
   const isError = chat._status === ChatStatus.ERROR;
   const isEditable = !isPending && !isError && chat.permission.isSender;
+
+  const handleSendFriendship = async (
+    e: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    RequesteeId: string,
+  ) => {
+    onClose(e);
+
+    try {
+      await sendFriendship(RequesteeId);
+    } catch (err) {
+      let message = waitingMessage;
+
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 409) {
+          message = alreadyRequest;
+        }
+      }
+
+      toast.error(message, defaultToastOption);
+    }
+  };
 
   return (
     <Item hoverMenuId={hoverMenuId}>
@@ -103,7 +128,7 @@ const Chat: FC<ChatProps> = ({
           }
         </ContentWrapper>
       </ChatWrapper>
-      {isEditable &&
+      {
         <HoverMenu id={hoverMenuId}>
           <IconWrapper onClick={onOpen}>
             <MoreIcon fontSize='large' />
@@ -120,18 +145,30 @@ const Chat: FC<ChatProps> = ({
           anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
           transformOrigin={{ vertical: 'center', horizontal: 'right' }}
           sx={muiMenuDarkModeSx}>
-            <MenuItem
-              onClick={() => setIsEditMode(true)}
-              sx={{ gap: '5px', color: 'var(--gray-3)' }}>
-              <EditIcon />
-              <span>메시지 수정</span>
-            </MenuItem>
-            <MenuItem
-              onClick={() => deleteSharedspaceChat(url, chat.id)}
-              sx={{ gap: '5px', color: 'var(--red)' }}>
-              <DeleteIcon />
-              <span>메시지 삭제</span>
-            </MenuItem>
+            {
+              isEditable &&
+                <>
+                  <MenuItem
+                    onClick={() => setIsEditMode(true)}
+                    sx={{ gap: '5px', color: 'var(--gray-3)' }}>
+                    <EditIcon />
+                    <span>메시지 수정</span>
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => deleteSharedspaceChat(url, chat.id)}
+                    sx={{ gap: '5px', color: 'var(--red)' }}>
+                    <DeleteIcon />
+                    <span>메시지 삭제</span>
+                  </MenuItem>
+                </>
+            }
+            {isEditable && !isMe && <Divider />}
+            {
+              !isMe &&
+                <MenuItem onClick={(e) => handleSendFriendship(e, chat.SenderId)}>
+                  <span>친구 추가</span>
+                </MenuItem>
+            }
         </Menu>
       }
     </Item>
