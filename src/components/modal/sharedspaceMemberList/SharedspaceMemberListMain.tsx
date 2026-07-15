@@ -3,12 +3,14 @@ import styled from '@emotion/styled';
 import MemberItem from './MemberItem';
 import { useSharedspacemembers } from 'Src/hooks/queries/useSharedspacemembers';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
+import useUser from 'Src/hooks/queries/useUser';
 
 interface SharedspaceMemberListMainProps {};
 
 const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   const { data: membersData, loadMore } = useSharedspacemembers();
   const { data: spaceData } = useSharedspace();
+  const { data: userData } = useUser();
   
   return (
     <Main>
@@ -18,7 +20,8 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
             <MemberItem
               key={member.UserId}
               item={member}
-              isOwner={spaceData.permission.isOwner} />
+              isOwner={spaceData.permission.isOwner}
+              isUser={userData.id === member.UserId} />
           );
         })}
         {membersData.hasMoreData &&

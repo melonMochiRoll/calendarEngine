@@ -18,11 +18,13 @@ import { sendFriendship } from 'Src/api/friendshipsApi';
 interface MemberItemProps {
   item: TSpaceMembers,
   isOwner: boolean,
+  isUser: boolean,
 };
 
 const MemberItem: FC<MemberItemProps> = ({
   item,
   isOwner,
+  isUser,
 }) => {
   const { url } = useParams();
   const qc = useQueryClient();
@@ -131,7 +133,7 @@ const MemberItem: FC<MemberItemProps> = ({
         isLoading ?
           <CircularProgress size={30} />
           :
-          isOwner && !isSent ?
+          isOwner && !isSent && !isUser ?
             <Button onClick={(e) => {
               e.stopPropagation();
               onOpen(e);
