@@ -133,7 +133,7 @@ const MemberItem: FC<MemberItemProps> = ({
         isLoading ?
           <CircularProgress size={30} />
           :
-          isOwner && !isSent && !isUser ?
+          !isSent && !isUser ?
             <Button onClick={(e) => {
               e.stopPropagation();
               onOpen(e);
@@ -160,7 +160,7 @@ const MemberItem: FC<MemberItemProps> = ({
               <span>친구 추가</span>
             </MenuItem>
             {
-              RoleName !== SharedspaceMembersRoles.OWNER &&
+              isOwner &&
                 <>
                   <Divider />
                   {
