@@ -5,7 +5,7 @@ export const PATHS = {
   SHAREDSPACE: '/sharedspaces',
   SHAREDSPACE_VIEW: '/sharedspaces/view',
   SHAREDSPACE_CHAT: '/sharedspaces/chat',
-  CHATSPACE: '/chatspaces',
+  CHATROOM: '/chatrooms',
   JOINREQUEST_SENDER: '/joinrequest/sender',
   NOTFOUND: '/not-found',
   INTERNAL: '/internal',
