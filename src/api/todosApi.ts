@@ -2,16 +2,16 @@ import { TSearchTodosPayload } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getTodosByMonth = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   year: string,
   month: string,
 ) => {
-  if (!url) {
+  if (!SharedspaceId) {
     return;
   }
 
   const { data } = await axiosInstance
-    .get(`/api/sharedspaces/${url}/todos?date=${year}-${month}`);
+    .get(`/api/sharedspaces/${SharedspaceId}/todos?date=${year}-${month}`);
 
   return data;
 };
@@ -21,14 +21,14 @@ export const createTodo = async (
   date: string,
   startTime: string,
   endTime: string,
-  url: string | undefined,
+  SharedspaceId: string | undefined,
 ) => {
-  if (!url) {
+  if (!SharedspaceId) {
     return;
   }
 
   await axiosInstance
-    .post(`/api/sharedspaces/${url}/todos`, {
+    .post(`/api/sharedspaces/${SharedspaceId}/todos`, {
       description,
       date,
       startTime,
@@ -42,14 +42,14 @@ export const updateTodo = async (
   date: string,
   startTime: string,
   endTime: string,
-  url: string | undefined,
+  SharedspaceId: string | undefined,
 ) => {
-  if (!url) {
+  if (!SharedspaceId) {
     return;
   }
 
   await axiosInstance
-    .put(`/api/sharedspaces/${url}/todos`, {
+    .put(`/api/sharedspaces/${SharedspaceId}/todos`, {
       id,
       description,
       date,
@@ -60,27 +60,27 @@ export const updateTodo = async (
 
 export const deleteTodo = async (
   todoId: string,
-  url: string | undefined,
+  SharedspaceId: string | undefined,
 ) => {
-  if (!url) {
+  if (!SharedspaceId) {
     return;
   }
 
   await axiosInstance
-    .delete(`/api/sharedspaces/${url}/todos/${todoId}`);
+    .delete(`/api/sharedspaces/${SharedspaceId}/todos/${todoId}`);
 };
 
 export const searchTodos = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   query: string,
   beforeTodoId?: string,
 ): Promise<TSearchTodosPayload> => {
-  if (!query || !url) {
+  if (!query || !SharedspaceId) {
     return { todos: [], hasMoreData: false };
   }
   
   const { data } = await axiosInstance.get(
-    `/api/sharedspaces/${url}/todos/search`, {
+    `/api/sharedspaces/${SharedspaceId}/todos/search`, {
       params: {
         query,
         before: beforeTodoId,

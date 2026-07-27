@@ -11,20 +11,20 @@ import { AxiosError } from 'axios';
 interface JoinRequestSenderModalProps {};
 
 const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({}) => {
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const dispatch = useAppDispatch();
   const [ error, setError ] = useState('');
   
   const onSubmit = async (message: string) => {
     setError('');
 
-    if (!url) {
+    if (!SharedspaceId) {
       setError(checkURL);
       return;
     }
 
     try {
-      await createJoinRequest(url, message);
+      await createJoinRequest(SharedspaceId, message);
 
       toast.success(successMessage, {
         ...defaultToastOption,

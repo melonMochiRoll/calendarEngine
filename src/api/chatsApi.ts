@@ -2,15 +2,15 @@ import { TImageMetaData } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getSharedspaceChats = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   beforeChatId?: string,
 ) => {
-  if (!url) {
+  if (!SharedspaceId) {
     return;
   }
 
   const { data } = await axiosInstance
-    .get(`/api/sharedspaces/${url}/chats`, {
+    .get(`/api/sharedspaces/${SharedspaceId}/chats`, {
       params: {
         before: beforeChatId,
       },
@@ -20,15 +20,15 @@ export const getSharedspaceChats = async (
 };
 
 export const getChatspaceChats = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   beforeChatId?: string,
 ) => {
-  if (!url) {
+  if (!SharedspaceId) {
     return;
   }
 
   const { data } = await axiosInstance
-    .get(`/api/chatspaces/${url}/chats`, {
+    .get(`/api/chatspaces/${SharedspaceId}/chats`, {
       params: {
         before: beforeChatId,
       },
@@ -38,12 +38,12 @@ export const getChatspaceChats = async (
 };
 
 export const generatePresignedPutUrl = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   metaDatas: TImageMetaData[],
 ): Promise<Array<{ key: string, presignedUrl: string, contentType: string }>> => {
   const { data } = await axiosInstance
     .post(
-      `/api/space/${url}/chats/images/presigned-url`,
+      `/api/space/${SharedspaceId}/chats/images/presigned-url`,
       {
         metaDatas,
       },

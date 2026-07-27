@@ -6,7 +6,7 @@ import { handleRetry } from "Src/lib/utilFunction";
 import { TSharedspaceMembersResponse } from "Src/typings/types";
 
 export function useSharedspacemembers() {
-  const { url: _url } = useParams();
+  const { SharedspaceId: _SharedspaceId } = useParams();
   const qc = useQueryClient();
 
   const {
@@ -14,8 +14,8 @@ export function useSharedspacemembers() {
     isLoading,
     error,
   } = useQuery<TSharedspaceMembersResponse>({
-    queryKey: [GET_SHAREDSPACE_MEMBERS_KEY, _url],
-    queryFn: () => getSharedspaceMembers(_url),
+    queryKey: [GET_SHAREDSPACE_MEMBERS_KEY, _SharedspaceId],
+    queryFn: () => getSharedspaceMembers(_SharedspaceId),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
@@ -27,9 +27,9 @@ export function useSharedspacemembers() {
   if (data === null || data === undefined) throw new Error();
 
   const loadMore = async () => {
-    const moreMembers = await getSharedspaceMembers(_url, data.members[data.members.length-1].id);
+    const moreMembers = await getSharedspaceMembers(_SharedspaceId, data.members[data.members.length-1].id);
 
-    qc.setQueryData<TSharedspaceMembersResponse>([GET_SHAREDSPACE_MEMBERS_KEY, _url], (prev) => {
+    qc.setQueryData<TSharedspaceMembersResponse>([GET_SHAREDSPACE_MEMBERS_KEY, _SharedspaceId], (prev) => {
       if (!prev) return;
 
       return {

@@ -23,11 +23,11 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
   const [ isResponded, setIsResponded ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
 
-  const handleAcceptInvite = async (id: string, url: string) => {
+  const handleAcceptInvite = async (id: string, SharedspaceId: string) => {
     setIsLoading(true);
 
     try {
-      await acceptInvite(id, url);
+      await acceptInvite(id, SharedspaceId);
       setIsResponded('수락 완료');
       await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY]);
     } catch (err) {
@@ -37,11 +37,11 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
     }
   };
 
-  const handleDeclineInvite = async (id: string, url: string) => {
+  const handleDeclineInvite = async (id: string, SharedspaceId: string) => {
     setIsLoading(true);
 
     try {
-      await declineInvite(id, url);
+      await declineInvite(id, SharedspaceId);
       setIsResponded('거절 완료');
     } catch (err) {
       setIsResponded('요청 실패');
@@ -77,10 +77,10 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
                     <DisableButton>{isResponded}</DisableButton>
                     :
                     <>
-                      <IconWrapper onClick={() => handleAcceptInvite(invite.id, invite.url)}>
+                      <IconWrapper onClick={() => handleAcceptInvite(invite.id, invite.SharedspaceId)}>
                         <CheckIcon sx={{ color: 'var(--naver-green)' }} />
                       </IconWrapper>
-                      <IconWrapper onClick={() => handleDeclineInvite(invite.id, invite.url)}>
+                      <IconWrapper onClick={() => handleDeclineInvite(invite.id, invite.SharedspaceId)}>
                         <ClearIcon sx={{ color: 'var(--red)' }} />
                       </IconWrapper>
                     </>

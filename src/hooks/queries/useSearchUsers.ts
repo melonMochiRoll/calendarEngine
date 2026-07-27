@@ -7,7 +7,7 @@ import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 export function useSearchUsers(query: string) {
-  const { url: _url } = useParams();
+  const { SharedspaceId: _SharedspaceId } = useParams();
   const qc = useQueryClient();
   
   const {
@@ -15,8 +15,8 @@ export function useSearchUsers(query: string) {
     isLoading,
     error,
   } = useQuery<TSearchUsersResponse>({
-    queryKey: [SEARCH_USERS_KEY, _url, query],
-    queryFn: () => searchUsers(_url, query),
+    queryKey: [SEARCH_USERS_KEY, _SharedspaceId, query],
+    queryFn: () => searchUsers(_SharedspaceId, query),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
@@ -28,9 +28,9 @@ export function useSearchUsers(query: string) {
   if (data === null || data === undefined) throw new Error();
 
   const loadMore = useCallback(async () => {
-    const moreUsers = await searchUsers(_url, query, data.users[data.users.length-1].id);
+    const moreUsers = await searchUsers(_SharedspaceId, query, data.users[data.users.length-1].id);
 
-    qc.setQueryData<TSearchUsersResponse>([SEARCH_USERS_KEY, _url, query], (prev) => {
+    qc.setQueryData<TSearchUsersResponse>([SEARCH_USERS_KEY, _SharedspaceId, query], (prev) => {
       if (!prev) return;
 
       return {

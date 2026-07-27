@@ -27,7 +27,7 @@ export interface TodoDetailProps {
 const TodoDetail: FC<TodoDetailProps> = ({
   todo,
 }) => {
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
   const localTimeZone = dayjs.tz.guess();
@@ -43,24 +43,24 @@ const TodoDetail: FC<TodoDetailProps> = ({
     onClose,
   } = useMenu();
 
-  const onClickTodoDelete = async (todoId: string, url: string | undefined) => {
+  const onClickTodoDelete = async (todoId: string, SharedspaceId: string | undefined) => {
     try {
-      await deleteTodo(todoId, url);
+      await deleteTodo(todoId, SharedspaceId);
 
       toast.success(successMessage, {
         ...defaultToastOption,
       });
-      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
+      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, SharedspaceId, calendarYear, calendarMonth]);
       dispatch(closeModal());
     } catch (err) {
       setError(waitingMessage);
     }
   };
 
-  const openTodoUpdate = (todo: TTodoPayload, url: string | undefined) => {
+  const openTodoUpdate = (todo: TTodoPayload, SharedspaceId: string | undefined) => {
     dispatch(openModal({
       name: ModalName.TODO_UPDATE,
-      props: { todo, url },
+      props: { todo, SharedspaceId },
     }));
   };
   
@@ -85,11 +85,11 @@ const TodoDetail: FC<TodoDetailProps> = ({
               transformOrigin={{ vertical: 'top', horizontal: 'center' }}
               sx={muiMenuDarkModeSx}>
                 <MenuItem
-                  onClick={() => openTodoUpdate(todo, url)}>
+                  onClick={() => openTodoUpdate(todo, SharedspaceId)}>
                   <span>수정</span>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => onClickTodoDelete(todo.id, url)}>
+                  onClick={() => onClickTodoDelete(todo.id, SharedspaceId)}>
                   <span>삭제</span>
                 </MenuItem>
             </Menu>

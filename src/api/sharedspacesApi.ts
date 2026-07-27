@@ -2,13 +2,13 @@ import { TSharedspaceMembersResponse, TSharedspaceMembersRoles, TSubscribedspace
 import { axiosInstance } from "./axiosInstance";
 import axios from "axios";
 
-export const getSharedspace = async (url: string | undefined) => {
-  if (!url) {
+export const getSharedspace = async (SharedspaceId: string | undefined) => {
+  if (!SharedspaceId) {
     return;
   }
 
   const { data } = await axiosInstance
-    .get(`/api/sharedspaces/${url}/view`);
+    .get(`/api/sharedspaces/${SharedspaceId}/view`);
 
   return data;
 };
@@ -37,39 +37,39 @@ export const createSharedspace = async (): Promise<string> => {
 
 export const updateSharedspaceName = async (
   name: string,
-  url: string,
+  SharedspaceId: string,
 ) => {
   await axiosInstance
-    .patch(`api/sharedspaces/${url}/name`, {
+    .patch(`api/sharedspaces/${SharedspaceId}/name`, {
       name,
     });
 };
 
 export const updateSharedspaceOwner = async (
-  url: string,
+  SharedspaceId: string,
   UserId: string,
 ) => {
   await axiosInstance
-    .patch(`api/sharedspaces/${url}/owner`, {
+    .patch(`api/sharedspaces/${SharedspaceId}/owner`, {
       newOwnerId: UserId,
     });
 };
 
-export const deleteSharedspace = async (url: string) => {
+export const deleteSharedspace = async (SharedspaceId: string) => {
   await axiosInstance
-    .delete(`/api/sharedspaces/${url}`);
+    .delete(`/api/sharedspaces/${SharedspaceId}`);
 };
 
 export const getSharedspaceMembers = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   beforeUserId?: string,
 ): Promise<TSharedspaceMembersResponse> => {
-  if (!url) {
+  if (!SharedspaceId) {
     return { members: [], hasMoreData: false };
   }
   
   const { data } = await axiosInstance.get(
-    `/api/sharedspaces/${url}/members`, {
+    `/api/sharedspaces/${SharedspaceId}/members`, {
       params: {
         before: beforeUserId,
       },
@@ -80,33 +80,33 @@ export const getSharedspaceMembers = async (
 };
 
 export const updateSharedspaceMembers = async (
-  url: string,
+  SharedspaceId: string,
   UserId: string,
   RoleName: TSharedspaceMembersRoles,
 ) => {
   await axiosInstance
-    .patch(`/api/sharedspaces/${url}/members`, {
+    .patch(`/api/sharedspaces/${SharedspaceId}/members`, {
       UserId,
       RoleName,
     });
 };
 
 export const updateSharedspacePrivate = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   Private: boolean,
 ) => {
   await axiosInstance
-    .patch(`/api/sharedspaces/${url}/private`, {
+    .patch(`/api/sharedspaces/${SharedspaceId}/private`, {
       private: Private,
     });
 };
 
 export const deleteSharedspaceMembers = async (
-  url: string,
+  SharedspaceId: string,
   UserId: string,
 ) => {
   await axiosInstance
-    .delete(`/api/sharedspaces/${url}/members/${UserId}`);
+    .delete(`/api/sharedspaces/${SharedspaceId}/members/${UserId}`);
 };
 
 export const uploadImageToPresignedUrl = async (

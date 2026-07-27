@@ -16,12 +16,12 @@ import { GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
 
 export interface TodoUpdateProps {
   todo: TTodoPayload,
-  url: string | undefined,
+  SharedspaceId: string | undefined,
 };
 
 const TodoUpdate: FC<TodoUpdateProps> = ({
   todo,
-  url,
+  SharedspaceId,
 }) => {
   const timeZone = dayjs.tz.guess();
   const qc = useQueryClient();
@@ -82,7 +82,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     date: string,
     start: typeof startTime,
     end: typeof endTime,
-    url: string | undefined,
+    SharedspaceId: string | undefined,
   ) => {
     setError('');
 
@@ -114,9 +114,9 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     }
 
     try {
-      await updateTodo(todoId, newDescription, date, startTimeFormat, endTimeFormat, url);
+      await updateTodo(todoId, newDescription, date, startTimeFormat, endTimeFormat, SharedspaceId);
 
-      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
+      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, SharedspaceId, calendarYear, calendarMonth]);
       dispatch(clearModal());
       toast.success(successMessage, {
         ...defaultToastOption,
@@ -199,7 +199,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
                   todo.date,
                   startTime,
                   endTime,
-                  url,
+                  SharedspaceId,
                 );
               }}>
               수정

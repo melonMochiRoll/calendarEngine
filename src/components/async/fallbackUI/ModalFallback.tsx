@@ -16,7 +16,7 @@ interface ModalFallbackProps {
 const ModalFallback: FC<ModalFallbackProps> = ({
   errorProps,
 }) => {
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
   const { error, resetErrorBoundary } = errorProps;
@@ -46,7 +46,7 @@ const ModalFallback: FC<ModalFallbackProps> = ({
         <MenuButton
           type='button'
           bgColor='var(--naver-green)'
-          onClick={() => navigate(`${PATHS.SHAREDSPACE}/view/${url}`)}>
+          onClick={() => navigate(`${PATHS.SHAREDSPACE}/view/${SharedspaceId}`)}>
             <HomeIcon />
             스페이스 홈으로
         </MenuButton>

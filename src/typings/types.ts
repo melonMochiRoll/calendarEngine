@@ -118,7 +118,6 @@ export type TSharedspace = {
   updatedAt: string,
   deletedAt: string | null,
   OwnerId: number,
-  url: string,
 };
 
 export type TSharedspaceMetaData = TSharedspace & {
@@ -129,7 +128,7 @@ export type TSharedspaceMetaData = TSharedspace & {
   },
 };
 
-export type TSubscribedspace = Pick<TSharedspace, 'name' | 'url' | 'private'> & {
+export type TSubscribedspace = Pick<TSharedspace, 'id' | 'name' | 'private'> & {
   Owner: Pick<TUser, 'email' | 'nickname' | 'ProfileImage'>,
   permission: {
     isOwner: boolean,
@@ -253,8 +252,8 @@ export type TImageMetaData = {
 export type TInvite = {
   id: string,
   createdAt: string,
+  SharedspaceId: string,
   SharedspaceName: string,
-  url: string,
   Owner: Pick<TUser, 'email' | 'nickname' | 'ProfileImage'>,
 };
 

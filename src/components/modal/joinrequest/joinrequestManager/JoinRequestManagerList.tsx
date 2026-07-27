@@ -6,8 +6,8 @@ import { TJoinRequestsResponse } from 'Src/typings/types';
 interface JoinRequestManagerListProps {
   joinRequestsData: TJoinRequestsResponse,
   loadMore: () => void,
-  onResolveMenuClick: (url: string | undefined, id: string, roleName: string) => Promise<void>,
-  onRejectMenuClick: (url: string | undefined, id: string) => Promise<void>,
+  onResolveMenuClick: (SharedspaceId: string | undefined, id: string, roleName: string) => Promise<void>,
+  onRejectMenuClick: (SharedspaceId: string | undefined, id: string) => Promise<void>,
 };
 
 const JoinRequestManagerList: FC<JoinRequestManagerListProps> = ({

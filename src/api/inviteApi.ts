@@ -15,14 +15,14 @@ export const getInvites = async (
 };
 
 export const sendInvite = async (
-  url: string,
+  SharedspaceId: string,
   inviteeEmail: string,
 ) => {
   await axiosInstance
     .post(
       `api/invites`,
       {
-        url,
+        SharedspaceId,
         inviteeEmail,
       }
     );
@@ -30,28 +30,28 @@ export const sendInvite = async (
 
 export const acceptInvite = async (
   id: string,
-  url: string,
+  SharedspaceId: string,
 ) => {
   await axiosInstance
     .post(
       `api/invites/accept`,
       {
         id,
-        url,
+        SharedspaceId,
       }
     );
 };
 
 export const declineInvite = async (
   id: string,
-  url: string,
+  SharedspaceId: string,
 ) => {
   await axiosInstance
     .post(
       `api/invites/decline`,
       {
         id,
-        url,
+        SharedspaceId,
       },
     );
 };

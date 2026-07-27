@@ -7,7 +7,7 @@ import { PATHS } from 'Src/constants/paths';
 
 const StaticMenus: FC = () => {
   const navigate = useNavigate();
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const location = useLocation();
   const pageName = location.pathname.split('/')[2];
 
@@ -15,13 +15,13 @@ const StaticMenus: FC = () => {
     <>
       <IconButton
         active={pageName === 'view'}
-        onClick={() => navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`)}>
+        onClick={() => navigate(`${PATHS.SHAREDSPACE_VIEW}/${SharedspaceId}`)}>
         <CalendarIcon />
         <span>캘린더</span>
       </IconButton>
       <IconButton
         active={pageName === 'chat'}
-        onClick={() => navigate(`${PATHS.SHAREDSPACE_CHAT}/${url}`)}>
+        onClick={() => navigate(`${PATHS.SHAREDSPACE_CHAT}/${SharedspaceId}`)}>
         <ChatIcon />
         <span>채팅</span>
       </IconButton>

@@ -15,18 +15,18 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
   user,
   isOwner,
 }) => {
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isSent, setIsSent ] = useState('');
   const { email, nickname, ProfileImage, permission } = user;
   const label = isSent || '이미 속한 유저';
 
   const handleSendInvite = async () => {
-    if (!url) return;
+    if (!SharedspaceId) return;
     setIsLoading(true);
 
     try {
-      await sendInvite(url, email);
+      await sendInvite(SharedspaceId, email);
       setIsSent('초대 요청 보냄');
     } catch (err) {
       setIsSent('이미 요청 보냄');

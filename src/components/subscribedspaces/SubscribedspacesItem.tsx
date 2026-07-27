@@ -14,7 +14,7 @@ import ProfileAvatar from '../ProfileAvatar';
 
 interface TSubscribedspacesItemProps {
   space: TSubscribedspace,
-  onDeleteSharedspace: (url: string) => Promise<void>,
+  onDeleteSharedspace: (SharedspaceId: string) => Promise<void>,
 };
 
 const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
@@ -22,7 +22,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
   onDeleteSharedspace,
 }) => {
   const navigate = useNavigate();
-  const { name, url, private: privateBool, Owner, permission } = space;
+  const { id, name, private: privateBool, Owner, permission } = space;
 
   const {
     anchorEl,
@@ -41,7 +41,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
   
   return (
     <Item
-      onClick={() => navigate(`/sharedspaces/view/${url}`)}>
+      onClick={() => navigate(`/sharedspaces/view/${id}`)}>
       <ItemPrivate>{privateBool ? <LockIcon /> : <UnlockIcon />}</ItemPrivate>
       <ItemTitle>{name}</ItemTitle>
       <ItemOwner>
@@ -68,7 +68,7 @@ const SubscribedspacesItem: FC<TSubscribedspacesItemProps> = ({
           transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           sx={{ ...muiMenuDarkModeSx, marginTop: '10px' }}>
             <MenuItem
-              onClick={(e) => onClickDelete(e, url)}
+              onClick={(e) => onClickDelete(e, id)}
               sx={{ gap: '5px' }}>
               <DeleteIcon />
               <span>삭제</span>

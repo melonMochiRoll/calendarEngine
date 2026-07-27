@@ -14,7 +14,7 @@ import { Menu, MenuItem } from '@mui/material';
 interface SharedspaceManagerMainProps {};
 
 const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const qc = useQueryClient();
 
   const { data: spaceData } = useSharedspace();
@@ -28,12 +28,12 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
   } = useMenu();
 
   const handleUpdateSharedspacePrivate = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, Private: boolean) => {
-    if (!url) return;
+    if (!SharedspaceId) return;
     onClose(e);
 
     try {
-      await updateSharedspacePrivate(url, Private);
-      await qc.refetchQueries([GET_SHAREDSPACE_KEY, url]);
+      await updateSharedspacePrivate(SharedspaceId, Private);
+      await qc.refetchQueries([GET_SHAREDSPACE_KEY, SharedspaceId]);
     } catch (err) {
       setError(waitingMessage);
     }

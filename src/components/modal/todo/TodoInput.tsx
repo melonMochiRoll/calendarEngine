@@ -21,7 +21,7 @@ const TodoInput: FC<TodoInputProps> = ({}) => {
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
 
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const { todoTime } = useAppSelector(state => state.todoTime);
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
 
@@ -76,7 +76,7 @@ const TodoInput: FC<TodoInputProps> = ({}) => {
     todoTime: string,
     start: typeof startTime,
     end: typeof endTime,
-    url: string | undefined,
+    SharedspaceId: string | undefined,
   ) => {
     setErrorMessage('');
 
@@ -108,9 +108,9 @@ const TodoInput: FC<TodoInputProps> = ({}) => {
     }
 
     try {
-      await createTodo(description, todoTime, startTimeFormat, endTimeFormat, url);
+      await createTodo(description, todoTime, startTimeFormat, endTimeFormat, SharedspaceId);
 
-      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, url, calendarYear, calendarMonth]);
+      await qc.refetchQueries([GET_TODOS_BY_MONTH_KEY, SharedspaceId, calendarYear, calendarMonth]);
       dispatch(closeModal());
       toast.success(successMessage, {
         ...defaultToastOption,
@@ -192,7 +192,7 @@ const TodoInput: FC<TodoInputProps> = ({}) => {
                   todoTime,
                   startTime,
                   endTime,
-                  url,
+                  SharedspaceId,
                 );
               }}>
               공유

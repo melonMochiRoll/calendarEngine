@@ -7,7 +7,7 @@ import { TTodoMap } from "Src/typings/types";
 import { handleRetry } from "Src/lib/utilFunction";
 
 export function useTodosByMonth() {
-  const { url: _url } = useParams();
+  const { SharedspaceId: _SharedspaceId } = useParams();
   const {
     calendarYear,
     calendarMonth,
@@ -18,8 +18,8 @@ export function useTodosByMonth() {
     isLoading,
     error,
   } = useQuery<TTodoMap>({
-    queryKey: [GET_TODOS_BY_MONTH_KEY, _url, calendarYear, calendarMonth],
-    queryFn: () => getTodosByMonth(_url, calendarYear, calendarMonth),
+    queryKey: [GET_TODOS_BY_MONTH_KEY, _SharedspaceId, calendarYear, calendarMonth],
+    queryFn: () => getTodosByMonth(_SharedspaceId, calendarYear, calendarMonth),
     suspense: true,
     useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),

@@ -29,13 +29,13 @@ const MainRouter = createBrowserRouter([
           {
             element: <SharedspacesLayout />,
             children: [
-              { path: 'view/:url', element: <SharedspacesViewPage /> },
-              { path: 'chat/:url', element: <SharedspacesChatPage /> },
+              { path: 'view/:SharedspaceId', element: <SharedspacesViewPage /> },
+              { path: 'chat/:SharedspaceId', element: <SharedspacesChatPage /> },
             ],
           }
         ],
       },
-      { path: `${PATHS.JOINREQUEST_SENDER}/:url`, element: <JoinRequestSenderPage /> },
+      { path: `${PATHS.JOINREQUEST_SENDER}/:SharedspaceId`, element: <JoinRequestSenderPage /> },
       { path: PATHS.NOTFOUND, element: <NotFoundPage /> },
       { path: PATHS.INTERNAL, element: <InternalServerErrorPage /> },
       { path: '*', element: <NotFoundPage /> }

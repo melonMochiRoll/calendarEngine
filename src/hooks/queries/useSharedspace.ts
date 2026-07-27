@@ -6,14 +6,14 @@ import { useParams } from "react-router-dom";
 import { TSharedspaceMetaData } from "Typings/types";
 
 export function useSharedspace() {
-  const { url: _url } = useParams();
+  const { SharedspaceId: _SharedspaceId } = useParams();
   const {
     data,
     isLoading,
     error,
   } = useQuery<TSharedspaceMetaData>({
-    queryKey: [GET_SHAREDSPACE_KEY, _url],
-    queryFn: () => getSharedspace(_url),
+    queryKey: [GET_SHAREDSPACE_KEY, _SharedspaceId],
+    queryFn: () => getSharedspace(_SharedspaceId),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,

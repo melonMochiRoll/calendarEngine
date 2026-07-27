@@ -26,7 +26,7 @@ const MemberItem: FC<MemberItemProps> = ({
   isOwner,
   isMe,
 }) => {
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const qc = useQueryClient();
   const [ isSent, setIsSent ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
@@ -41,14 +41,14 @@ const MemberItem: FC<MemberItemProps> = ({
   } = useMenu();
 
   const handleUpdateMemberRole = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, role: TSharedspaceMembersRoles) => {
-    if (!url) return;
+    if (!SharedspaceId) return;
     
     setIsLoading(true);
     onClose(e);
 
     try {
-      await updateSharedspaceMembers(url, UserId, role);
-      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
+      await updateSharedspaceMembers(SharedspaceId, UserId, role);
+      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId]);
       setIsSent('요청 완료');
     } catch (err) {
       setIsSent('요청 실패');
@@ -58,14 +58,14 @@ const MemberItem: FC<MemberItemProps> = ({
   };
 
   const handleUpdateOwner = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    if (!url) return;
+    if (!SharedspaceId) return;
 
     setIsLoading(true);
     onClose(e);
     
     try {
-      await updateSharedspaceOwner(url, UserId);
-      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
+      await updateSharedspaceOwner(SharedspaceId, UserId);
+      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId]);
       setIsSent('요청 완료');
     } catch (err) {
       setIsSent('요청 실패');
@@ -75,14 +75,14 @@ const MemberItem: FC<MemberItemProps> = ({
   };
 
   const handleDeleteMember = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    if (!url) return;
+    if (!SharedspaceId) return;
 
     setIsLoading(true);
     onClose(e);
 
     try {
-      await deleteSharedspaceMembers(url, UserId);
-      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, url]);
+      await deleteSharedspaceMembers(SharedspaceId, UserId);
+      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId]);
       setIsSent('요청 완료');
     } catch (err) {
       setIsSent('요청 실패');

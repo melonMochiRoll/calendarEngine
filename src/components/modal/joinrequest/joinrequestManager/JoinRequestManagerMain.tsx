@@ -17,14 +17,14 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
   const { data: joinRequestsData, loadMore } = useJoinRequest();
 
   const onResolveMenuClick = async (
-    url: string | undefined,
+    SharedspaceId: string | undefined,
     id: string,
     roleName: string,
   ) => {
     try {
-      await resolveJoinRequest(url, id, roleName);
+      await resolveJoinRequest(SharedspaceId, id, roleName);
 
-      await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
+      await qc.refetchQueries([GET_JOINREQUEST_KEY, SharedspaceId]);
       toast.success(successMessage, {
         ...defaultToastOption,
       });
@@ -34,13 +34,13 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
   };
 
   const onRejectMenuClick = async (
-    url: string | undefined,
+    SharedspaceId: string | undefined,
     id: string,
   ) => {
     try {
-      await rejectJoinRequest(url, id);
+      await rejectJoinRequest(SharedspaceId, id);
       
-      await qc.refetchQueries([GET_JOINREQUEST_KEY, url]);
+      await qc.refetchQueries([GET_JOINREQUEST_KEY, SharedspaceId]);
       toast.success(successMessage, {
         ...defaultToastOption,
       });

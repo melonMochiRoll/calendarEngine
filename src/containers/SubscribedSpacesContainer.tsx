@@ -24,8 +24,8 @@ const SubscribedSpacesContainer: FC = () => {
 
   const onCreateSharedspace = async () => {
     try {
-      const url = await createSharedspace();
-      navigate(`${PATHS.SHAREDSPACE_VIEW}/${url}`);
+      const SharedspaceId = await createSharedspace();
+      navigate(`${PATHS.SHAREDSPACE_VIEW}/${SharedspaceId}`);
     } catch (err) {
       toast.error(waitingMessage, {
         ...defaultToastOption,
@@ -33,9 +33,9 @@ const SubscribedSpacesContainer: FC = () => {
     }
   };
 
-  const onDeleteSharedspace = async (url: string) => {
+  const onDeleteSharedspace = async (SharedspaceId: string) => {
     try {
-      await deleteSharedspace(url);
+      await deleteSharedspace(SharedspaceId);
       await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY, sort, currentPage]);
     } catch (err) {
       toast.error(waitingMessage, {

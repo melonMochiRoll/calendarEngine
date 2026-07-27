@@ -23,8 +23,8 @@ const resolveMenuOption = [
 
 interface JoinRequestItemProps {
   request: TJoinRequest;
-  onResolveMenuClick: (url: string | undefined, id: string, roleName: string) => Promise<void>;
-  onRejectMenuClick: (url: string | undefined, id: string) => Promise<void>;
+  onResolveMenuClick: (SharedspaceId: string | undefined, id: string, roleName: string) => Promise<void>;
+  onRejectMenuClick: (SharedspaceId: string | undefined, id: string) => Promise<void>;
 };
 
 const JoinRequestItem: FC<JoinRequestItemProps> = ({
@@ -33,7 +33,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
   onRejectMenuClick,
 }) => {
   const dispatch = useAppDispatch();
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const { id, message, Requestor } = request;
 
   const {
@@ -81,7 +81,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
                 <MenuItem
                   key={option.text}
                   onClick={(e) => {
-                    onResolveMenuClick(url, id, option.roleName);
+                    onResolveMenuClick(SharedspaceId, id, option.roleName);
                     onClose(e);
                   }}>
                   <span>{option.text}</span>
@@ -92,7 +92,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
           <Divider />
             <MenuItem
               onClick={(e) => {
-                onRejectMenuClick(url, id);
+                onRejectMenuClick(SharedspaceId, id);
                 onClose(e);
               }}>
               <span>거절</span>

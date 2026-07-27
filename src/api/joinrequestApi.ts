@@ -2,15 +2,15 @@ import { TJoinRequestsResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getJoinRequest = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   beforeJoinRequestId?: string,
 ): Promise<TJoinRequestsResponse> => {
-  if (!url) {
+  if (!SharedspaceId) {
     return { joinRequests: [], hasMoreData: false };
   }
 
   const { data } = await axiosInstance
-    .get(`api/sharedspaces/${url}/joinrequest`, {
+    .get(`api/sharedspaces/${SharedspaceId}/joinrequest`, {
       params: {
         before: beforeJoinRequestId,
       },
@@ -20,38 +20,38 @@ export const getJoinRequest = async (
 };
 
 export const createJoinRequest = async (
-  url: string,
+  SharedspaceId: string,
   message: string,
 ) => {
   await axiosInstance
-    .post(`api/sharedspaces/${url}/joinrequest`, {
+    .post(`api/sharedspaces/${SharedspaceId}/joinrequest`, {
       message,
     });
 };
 
 export const resolveJoinRequest = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   id: string,
   RoleName: string,
 ) => {
-  if (!url) {
+  if (!SharedspaceId) {
     return;
   }
 
   await axiosInstance
-    .post(`api/sharedspaces/${url}/joinrequest/${id}/resolve`, {
+    .post(`api/sharedspaces/${SharedspaceId}/joinrequest/${id}/resolve`, {
       RoleName,
     });
 };
 
 export const rejectJoinRequest = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   id: string,
 ) => {
-  if (!url) {
+  if (!SharedspaceId) {
     return;
   }
 
   await axiosInstance
-    .post(`api/sharedspaces/${url}/joinrequest/${id}`);
+    .post(`api/sharedspaces/${SharedspaceId}/joinrequest/${id}`);
 };

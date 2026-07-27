@@ -6,7 +6,7 @@ import { handleRetry } from "Src/lib/utilFunction";
 import { TChatspaceMembersResponse } from "Src/typings/types";
 
 export function useChatspacemembers() {
-  const { url: _url } = useParams();
+  const { SharedspaceId: _SharedspaceId } = useParams();
   const qc = useQueryClient();
 
   const {
@@ -14,8 +14,8 @@ export function useChatspacemembers() {
     isLoading,
     error,
   } = useQuery<TChatspaceMembersResponse>({
-    queryKey: [GET_CHATSPACE_MEMBERS_KEY, _url],
-    queryFn: () => getChatspaceMembers(_url),
+    queryKey: [GET_CHATSPACE_MEMBERS_KEY, _SharedspaceId],
+    queryFn: () => getChatspaceMembers(_SharedspaceId),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
@@ -27,9 +27,9 @@ export function useChatspacemembers() {
   if (data === null || data === undefined) throw new Error();
 
   const loadMore = async () => {
-    const moreMembers = await getChatspaceMembers(_url, data.members[data.members.length-1].id);
+    const moreMembers = await getChatspaceMembers(_SharedspaceId, data.members[data.members.length-1].id);
 
-    qc.setQueryData<TChatspaceMembersResponse>([GET_CHATSPACE_MEMBERS_KEY, _url], (prev) => {
+    qc.setQueryData<TChatspaceMembersResponse>([GET_CHATSPACE_MEMBERS_KEY, _SharedspaceId], (prev) => {
       if (!prev) return;
 
       return {

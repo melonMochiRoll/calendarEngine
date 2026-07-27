@@ -8,15 +8,15 @@ import { handleRetry } from "Lib/utilFunction";
 
 export function useSearchTodos(query: string) {
   const qc = useQueryClient();
-  const { url: _url } = useParams();
+  const { SharedspaceId: _SharedspaceId } = useParams();
 
   const {
     data,
     isLoading,
     error,
   } = useQuery<TSearchTodosPayload>({
-    queryKey: [SEARCH_TODOS_KEY, _url, query],
-    queryFn: () => searchTodos(_url, query),
+    queryKey: [SEARCH_TODOS_KEY, _SharedspaceId, query],
+    queryFn: () => searchTodos(_SharedspaceId, query),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
@@ -28,9 +28,9 @@ export function useSearchTodos(query: string) {
   if (data === null || data === undefined) throw new Error();
 
   const loadMore = useCallback(async () => {
-    const moreTodos = await searchTodos(_url, query, data.todos[data.todos.length-1].id);
+    const moreTodos = await searchTodos(_SharedspaceId, query, data.todos[data.todos.length-1].id);
 
-    qc.setQueryData<TSearchTodosPayload>([SEARCH_TODOS_KEY, _url], (prev) => {
+    qc.setQueryData<TSearchTodosPayload>([SEARCH_TODOS_KEY, _SharedspaceId], (prev) => {
       if (!prev) return;
 
       return {

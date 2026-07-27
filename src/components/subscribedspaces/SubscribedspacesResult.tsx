@@ -5,7 +5,7 @@ import SubscribedspacesItem from './SubscribedspacesItem';
 
 interface SubscribedSpacesResultProps {
   spaces: TSubscribedspace[];
-  onDeleteSharedspace: (url: string) => Promise<void>;
+  onDeleteSharedspace: (SharedspaceId: string) => Promise<void>;
 };
 
 const SubscribedSpacesResult: FC<SubscribedSpacesResultProps> = ({
@@ -18,7 +18,7 @@ const SubscribedSpacesResult: FC<SubscribedSpacesResultProps> = ({
         spaces.map((space) => {
           return (
             <SubscribedspacesItem
-              key={space.url}
+              key={space.id}
               space={space}
               onDeleteSharedspace={onDeleteSharedspace} />
           );

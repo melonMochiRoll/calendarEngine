@@ -11,21 +11,21 @@ import { PATHS } from 'Constants/paths';
 import { AxiosError } from 'axios';
 
 const JoinRequestSenderContainer: FC = () => {
-  const { url } = useParams();
+  const { SharedspaceId } = useParams();
   const navigate = useNavigate();
   const [ message, onChangeMessage ] = useInput('');
   const [ error, setError ] = useState('');
   
-  const onSubmit = async (url: string | undefined, message: string) => {
+  const onSubmit = async (SharedspaceId: string | undefined, message: string) => {
     setError('');
 
-    if (!url) {
+    if (!SharedspaceId) {
       setError(checkURL);
       return;
     }
 
     try {
-      await createJoinRequest(url, message);
+      await createJoinRequest(SharedspaceId, message);
 
       toast.success(successMessage, {
         ...defaultToastOption,
@@ -58,7 +58,7 @@ const JoinRequestSenderContainer: FC = () => {
           <Buttons>
             <TextButton
               type='button'
-              onClick={() => onSubmit(url, message)}>
+              onClick={() => onSubmit(SharedspaceId, message)}>
                 전송
             </TextButton>
             <TextButton
