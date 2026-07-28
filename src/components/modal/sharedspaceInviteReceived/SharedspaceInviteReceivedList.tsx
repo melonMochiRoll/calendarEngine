@@ -37,11 +37,11 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
     }
   };
 
-  const handleDeclineInvite = async (id: string, SharedspaceId: string) => {
+  const handleDeclineInvite = async (id: string) => {
     setIsLoading(true);
 
     try {
-      await declineInvite(id, SharedspaceId);
+      await declineInvite(id);
       setIsResponded('거절 완료');
     } catch (err) {
       setIsResponded('요청 실패');
@@ -80,7 +80,7 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
                       <IconWrapper onClick={() => handleAcceptInvite(invite.id, invite.SharedspaceId)}>
                         <CheckIcon sx={{ color: 'var(--naver-green)' }} />
                       </IconWrapper>
-                      <IconWrapper onClick={() => handleDeclineInvite(invite.id, invite.SharedspaceId)}>
+                      <IconWrapper onClick={() => handleDeclineInvite(invite.id)}>
                         <ClearIcon sx={{ color: 'var(--red)' }} />
                       </IconWrapper>
                     </>

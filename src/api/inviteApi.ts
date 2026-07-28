@@ -42,16 +42,12 @@ export const acceptInvite = async (
     );
 };
 
-export const declineInvite = async (
-  id: string,
-  SharedspaceId: string,
-) => {
+export const declineInvite = async (id: string) => {
   await axiosInstance
     .post(
       `api/invites/decline`,
       {
         id,
-        SharedspaceId,
       },
     );
 };
