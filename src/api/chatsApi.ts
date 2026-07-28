@@ -2,15 +2,15 @@ import { TImageMetaData } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getSharedspaceChats = async (
-  SharedspaceId: string | undefined,
+  ChatRoomId: string | undefined,
   beforeChatId?: string,
 ) => {
-  if (!SharedspaceId) {
+  if (!ChatRoomId) {
     return;
   }
 
   const { data } = await axiosInstance
-    .get(`/api/sharedspaces/${SharedspaceId}/chats`, {
+    .get(`/api/sharedspaces/chatrooms/${ChatRoomId}/chats`, {
       params: {
         before: beforeChatId,
       },
