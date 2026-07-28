@@ -13,7 +13,7 @@ import { useSpaceChatSocket } from 'Src/hooks/useSpaceChatSocket';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 
 const ChatContainer: FC = () => {
-  const { SharedspaceId } = useParams();
+  const { ChatRoomId } = useParams();
   const { data: userData } = useUser();
 
   const { data: chatList, loadMore } = useChats();
@@ -67,8 +67,8 @@ const ChatContainer: FC = () => {
     setPreviews(prev => [ ...prev, ...newPreviews ]);
   };
 
-  const onSubmit = useCallback((SharedspaceId: string | undefined, content: string, images: File[], previews: string[]) => {
-    sendSharedspaceChat(SharedspaceId, content, images, previews);
+  const onSubmit = useCallback((ChatRoomId: string | undefined, content: string, images: File[], previews: string[]) => {
+    sendSharedspaceChat(ChatRoomId, content, images, previews);
 
     scrollbarRef?.current?.scrollTo(0, 0);
     setChat('');
@@ -94,7 +94,7 @@ const ChatContainer: FC = () => {
         {
           userData ?
             <ChatFooter
-              onSubmit={() => onSubmit(SharedspaceId, chat, images, previews)}
+              onSubmit={() => onSubmit(ChatRoomId, chat, images, previews)}
               chat={chat}
               onChangeChat={onChangeChat}
               onChangeImageFiles={onChangeImageFiles} />

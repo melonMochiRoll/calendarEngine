@@ -22,9 +22,9 @@ import { AxiosError } from 'axios';
 interface ChatProps {
   chat: TChatPayload,
   isMe: boolean,
-  updateSharedspaceChat: (SharedspaceId: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
-  deleteSharedspaceChat: (SharedspaceId: string | undefined, ChatId: string) => void,
-  deleteSharedspaceChatImage: (SharedspaceId: string | undefined, ChatId: string, ImageId: string) => void,
+  updateSharedspaceChat: (ChatRoomId: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
+  deleteSharedspaceChat: (ChatRoomId: string | undefined, ChatId: string) => void,
+  deleteSharedspaceChatImage: (ChatRoomId: string | undefined, ChatId: string, ImageId: string) => void,
 };
 
 const Chat: FC<ChatProps> = ({
@@ -34,7 +34,7 @@ const Chat: FC<ChatProps> = ({
   deleteSharedspaceChat,
   deleteSharedspaceChatImage,
 }) => {
-  const { SharedspaceId } = useParams();
+  const { ChatRoomId } = useParams();
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ newContent, onChangeNewContent ] = useInput(chat.content);
   const localTimeZone = dayjs.tz.guess();
@@ -107,7 +107,7 @@ const Chat: FC<ChatProps> = ({
               onChangeContent={onChangeNewContent}
               onSubmit={e => {
                 e.preventDefault();
-                updateSharedspaceChat(SharedspaceId, chat.id, chat.content, newContent);
+                updateSharedspaceChat(ChatRoomId, chat.id, chat.content, newContent);
                 setIsEditMode(false);
               }} /> :
             <Content>{chat.content}</Content>
@@ -121,7 +121,7 @@ const Chat: FC<ChatProps> = ({
                       key={image.id}
                       image={image}
                       isSender={chat.permission.isSender}
-                      deleteImage={() => deleteSharedspaceChatImage(SharedspaceId, chat.id, image.id)} />
+                      deleteImage={() => deleteSharedspaceChatImage(ChatRoomId, chat.id, image.id)} />
                   })
                 }
               </Images>
@@ -155,7 +155,7 @@ const Chat: FC<ChatProps> = ({
                     <span>메시지 수정</span>
                   </MenuItem>
                   <MenuItem
-                    onClick={() => deleteSharedspaceChat(SharedspaceId, chat.id)}
+                    onClick={() => deleteSharedspaceChat(ChatRoomId, chat.id)}
                     sx={{ gap: '5px', color: 'var(--red)' }}>
                     <DeleteIcon />
                     <span>메시지 삭제</span>

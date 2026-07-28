@@ -29,9 +29,9 @@ interface ChatListProps {
     profileImage: string,
   } | null>>,
   canShowNotify: React.MutableRefObject<boolean>,
-  updateSharedspaceChat: (SharedspaceId: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
-  deleteSharedspaceChat: (SharedspaceId: string | undefined, ChatId: string) => void,
-  deleteSharedspaceChatImage: (SharedspaceId: string | undefined, ChatId: string, ImageId: string) => void,
+  updateSharedspaceChat: (ChatRoomId: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
+  deleteSharedspaceChat: (ChatRoomId: string | undefined, ChatId: string) => void,
+  deleteSharedspaceChatImage: (ChatRoomId: string | undefined, ChatId: string, ImageId: string) => void,
   loadMore: () => void,
   deleteFile: (idx: number) => void,
 };

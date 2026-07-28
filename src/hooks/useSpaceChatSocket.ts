@@ -17,7 +17,7 @@ import { generatePresignedPutUrl } from "Src/api/chatsApi";
 
 export function useSpaceChatSocket(queryKey: string) {
   const navigate = useNavigate();
-  const { SharedspaceId: _SharedspaceId } = useParams();
+  const { ChatRoomId: _ChatRoomId } = useParams();
   const qc = useQueryClient();
   const {
     socketRef,
@@ -30,11 +30,11 @@ export function useSpaceChatSocket(queryKey: string) {
   const [ showNewChat, setShowNewChat ] = useState<{ chat: string, email: string, nickname: string, profileImage: string } | null>(null);
 
   useEffect(() => {
-    if (!_SharedspaceId || !socketRef.current) return;
+    if (!_ChatRoomId || !socketRef.current) return;
 
     const socket = socketRef.current;
 
-    socket.emit(ChatToServer.JOIN_ROOM, _SharedspaceId);
+    socket.emit(ChatToServer.JOIN_ROOM, _ChatRoomId);
     socket.on(ChatToClient.CHAT_CREATED, onChatCreated);
     socket.on(ChatToClient.CHAT_UPDATED, onChatUpdated);
     socket.on(ChatToClient.CHAT_DELETED, onChatDeleted);
@@ -42,14 +42,14 @@ export function useSpaceChatSocket(queryKey: string) {
     socket.on(ChatToClient.CHAT_ERROR, onChatError);
     
     return () => {
-      socket.emit(ChatToServer.LEAVE_ROOM, _SharedspaceId);
+      socket.emit(ChatToServer.LEAVE_ROOM, _ChatRoomId);
       socket.off(ChatToClient.CHAT_CREATED, onChatCreated);
       socket.off(ChatToClient.CHAT_UPDATED, onChatUpdated);
       socket.off(ChatToClient.CHAT_DELETED, onChatDeleted);
       socket.off(ChatToClient.CHAT_IMAGE_DELETED, onChatImageDeleted);
       socket.off(ChatToClient.CHAT_ERROR, onChatError);
     };
-  }, [_SharedspaceId]);
+  }, [_ChatRoomId]);
 
   const emit = async (
     event: TChatToServer,
@@ -68,7 +68,7 @@ export function useSpaceChatSocket(queryKey: string) {
       if (!pending) return;
 
       if (pending.retryCount > 3) {
-        qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+        qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
           if (!prev) return;
 
           const chats = prev?.chats.map(chat => {
@@ -107,14 +107,14 @@ export function useSpaceChatSocket(queryKey: string) {
   };
 
   const sendSharedspaceChat = async (
-    SharedspaceId: string | undefined,
+    ChatRoomId: string | undefined,
     content: string,
     images: File[],
     previews: string[]
   ) => {
     content = content.trim();
 
-    if (!SharedspaceId || (!content && !images.length)) {
+    if (!ChatRoomId || (!content && !images.length)) {
       return;
     }
 
@@ -133,7 +133,7 @@ export function useSpaceChatSocket(queryKey: string) {
       metaDatas.push({ id, fileName: image.name, fileSize: image.size, contentType: image.type });
     }
 
-    qc.setQueryData<TChats>([queryKey, SharedspaceId], (prev) => {
+    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
       const now = dayjs().toISOString();
 
       const tempChat = {
@@ -154,11 +154,11 @@ export function useSpaceChatSocket(queryKey: string) {
         _status: ChatStatus.PENDING,
         _imageFiles: images,
         _retryAction: () => {
-          deleteErrorChat(SharedspaceId, tempChatId);
-          sendSharedspaceChat(SharedspaceId, content, images, previews);
+          deleteErrorChat(ChatRoomId, tempChatId);
+          sendSharedspaceChat(ChatRoomId, content, images, previews);
         },
         _clearAction: () => {
-          deleteErrorChat(SharedspaceId, tempChatId);
+          deleteErrorChat(ChatRoomId, tempChatId);
           tempImages.forEach(image => URL.revokeObjectURL(image?._tempPath || ''));
         },
       };
@@ -172,7 +172,7 @@ export function useSpaceChatSocket(queryKey: string) {
     try {
       const payload = {
         ChatId: tempChatId,
-        SharedspaceId,
+        ChatRoomId,
         content,
         imageIds,
         imageKeys: [] as string[],
@@ -183,7 +183,7 @@ export function useSpaceChatSocket(queryKey: string) {
       }
 
       if (images.length) {
-        const presignedUrls = await generatePresignedPutUrl(SharedspaceId, metaDatas);
+        const presignedUrls = await generatePresignedPutUrl(ChatRoomId, metaDatas);
 
         const imageKeys = presignedUrls.map(item => item.key);
 
@@ -195,7 +195,7 @@ export function useSpaceChatSocket(queryKey: string) {
 
       emit(ChatToServer.SEND_CHAT, payload, tempChatId);
     } catch (err) {
-      qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
         const chats = prev?.chats.map(chat => {
@@ -214,7 +214,7 @@ export function useSpaceChatSocket(queryKey: string) {
   };
 
   const updateSharedspaceChat = useCallback(async (
-    SharedspaceId: string | undefined,
+    ChatRoomId: string | undefined,
     id: string,
     oldContent: string,
     newContent: string,
@@ -223,13 +223,13 @@ export function useSpaceChatSocket(queryKey: string) {
 
     if (
       oldContent === newContent ||
-      !SharedspaceId ||
+      !ChatRoomId ||
       !newContent
     ) {
       return;
     }
 
-    qc.setQueryData<TChats>([queryKey, SharedspaceId], (prev) => {
+    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -240,10 +240,10 @@ export function useSpaceChatSocket(queryKey: string) {
             _oldContent: oldContent,
             _status: ChatStatus.PENDING,
             _retryAction: () => {
-              updateSharedspaceChat(SharedspaceId, id, oldContent, newContent);
+              updateSharedspaceChat(ChatRoomId, id, oldContent, newContent);
             },
             _clearAction: () => {
-              resetErrorChat(SharedspaceId, id);
+              resetErrorChat(ChatRoomId, id);
             },
           };
         }
@@ -261,9 +261,9 @@ export function useSpaceChatSocket(queryKey: string) {
         await refreshToken();
       }
 
-      emit(ChatToServer.UPDATE_CHAT, { SharedspaceId, ChatId: id, content: newContent }, id);
+      emit(ChatToServer.UPDATE_CHAT, { ChatRoomId, ChatId: id, content: newContent }, id);
     } catch (err) {
-      qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
         const chats = prev?.chats.map(chat => {
@@ -282,12 +282,12 @@ export function useSpaceChatSocket(queryKey: string) {
   }, []);
 
   const deleteSharedspaceChat = useCallback(async (
-    SharedspaceId: string | undefined,
+    ChatRoomId: string | undefined,
     id: string,
   ) => {
-    if (!SharedspaceId) return;
+    if (!ChatRoomId) return;
 
-    qc.setQueryData<TChats>([queryKey, SharedspaceId], (prev) => {
+    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -296,10 +296,10 @@ export function useSpaceChatSocket(queryKey: string) {
             ...chat,
             _status: ChatStatus.PENDING,
             _retryAction: () => {
-              deleteSharedspaceChat(SharedspaceId, id);
+              deleteSharedspaceChat(ChatRoomId, id);
             },
             _clearAction: () => {
-              resetErrorChat(SharedspaceId, id);
+              resetErrorChat(ChatRoomId, id);
             },
           };
         }
@@ -317,9 +317,9 @@ export function useSpaceChatSocket(queryKey: string) {
         await refreshToken();
       }
 
-      emit(ChatToServer.DELETE_CHAT, { SharedspaceId, ChatId: id }, id);
+      emit(ChatToServer.DELETE_CHAT, { ChatRoomId, ChatId: id }, id);
     } catch (err) {
-      qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
         const chats = prev?.chats.map(chat => {
@@ -338,13 +338,13 @@ export function useSpaceChatSocket(queryKey: string) {
   }, []);
 
   const deleteSharedspaceChatImage = useCallback(async (
-    SharedspaceId: string | undefined,
+    ChatRoomId: string | undefined,
     ChatId: string,
     ImageId: string,
   ) => {
-    if (!SharedspaceId) return;
+    if (!ChatRoomId) return;
 
-    qc.setQueryData<TChats>([queryKey, SharedspaceId], (prev) => {
+    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -353,10 +353,10 @@ export function useSpaceChatSocket(queryKey: string) {
             ...chat,
             _status: ChatStatus.PENDING,
             _retryAction: () => {
-              deleteSharedspaceChatImage(SharedspaceId, ChatId, ImageId);
+              deleteSharedspaceChatImage(ChatRoomId, ChatId, ImageId);
             },
             _clearAction: () => {
-              resetErrorChat(SharedspaceId, ChatId);
+              resetErrorChat(ChatRoomId, ChatId);
             },
           };
         }
@@ -374,9 +374,9 @@ export function useSpaceChatSocket(queryKey: string) {
         await refreshToken();
       }
 
-      emit(ChatToServer.DELETE_CHAT_IMAGE, { SharedspaceId, ChatId, ImageId }, ChatId);
+      emit(ChatToServer.DELETE_CHAT_IMAGE, { ChatRoomId, ChatId, ImageId }, ChatId);
     } catch (err) {
-      qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
         const chats = prev?.chats.map(chat => {
@@ -396,7 +396,7 @@ export function useSpaceChatSocket(queryKey: string) {
 
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
-      qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
         const chats = prev.chats.map(chat => {
@@ -415,7 +415,7 @@ export function useSpaceChatSocket(queryKey: string) {
         };
       });
     } else {
-      qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
         return {
@@ -436,7 +436,7 @@ export function useSpaceChatSocket(queryKey: string) {
   };
 
   const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt' | 'permission'>) => {
-    qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+    qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map((chat) => {
@@ -460,7 +460,7 @@ export function useSpaceChatSocket(queryKey: string) {
   };
 
   const onChatDeleted = (data: Pick<TChatPayload, 'id'>) => {
-    qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+    qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
       if (!prev) return;
 
       const idx = prev.chats.findIndex(chat => chat.id === data.id);
@@ -480,7 +480,7 @@ export function useSpaceChatSocket(queryKey: string) {
   const onChatImageDeleted = (data: { ChatId: string, ImageId: string }) => {
     const { ChatId, ImageId } = data;
 
-    qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+    qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map(chat => {
@@ -525,7 +525,7 @@ export function useSpaceChatSocket(queryKey: string) {
     }
 
     if (type === ERROR_TYPE.BAD_REQUEST_ERROR) {
-      const data = qc.getQueryData<TChats>([queryKey, _SharedspaceId]);
+      const data = qc.getQueryData<TChats>([queryKey, _ChatRoomId]);
       
       if (data) {
         const chatIdx = data.chats.findIndex(chat => chat.id === ChatId);
@@ -536,7 +536,7 @@ export function useSpaceChatSocket(queryKey: string) {
       }
     }
 
-    qc.setQueryData<TChats>([queryKey, _SharedspaceId], (prev) => {
+    qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
       if (!prev) return;
 
       const chats = prev?.chats.map(chat => {
@@ -557,8 +557,8 @@ export function useSpaceChatSocket(queryKey: string) {
     });
   };
 
-  const deleteErrorChat = (SharedspaceId: string | undefined, ChatId: string) => {
-    qc.setQueryData<TChats>([queryKey, SharedspaceId], (prev) => {
+  const deleteErrorChat = (ChatRoomId: string | undefined, ChatId: string) => {
+    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
 
       const idx = prev.chats.findIndex(chat => chat.id === ChatId);
@@ -574,8 +574,8 @@ export function useSpaceChatSocket(queryKey: string) {
     });
   };
 
-  const resetErrorChat = (SharedspaceId: string | undefined, ChatId: string) => {
-    qc.setQueryData<TChats>([queryKey, SharedspaceId], (prev) => {
+  const resetErrorChat = (ChatRoomId: string | undefined, ChatId: string) => {
+    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
 
       const chats = prev.chats.map(chat => {
