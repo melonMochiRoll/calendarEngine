@@ -30,7 +30,7 @@ const MainRouter = createBrowserRouter([
             element: <SharedspacesLayout />,
             children: [
               { path: 'view/:SharedspaceId', element: <SharedspacesViewPage /> },
-              { path: 'chat/:SharedspaceId', element: <SharedspacesChatPage /> },
+              { path: 'chat/:SharedspaceId/:ChatRoomId', element: <SharedspacesChatPage /> },
             ],
           }
         ],
