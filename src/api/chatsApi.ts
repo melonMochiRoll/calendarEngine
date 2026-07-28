@@ -19,7 +19,7 @@ export const getSharedspaceChats = async (
   return data;
 };
 
-export const getChatspaceChats = async (
+export const getDmChats = async (
   ChatRoomId: string | undefined,
   beforeChatId?: string,
 ) => {
