@@ -8,14 +8,34 @@ import MailIcon from '@mui/icons-material/Mail';
 import MailReadIcon from '@mui/icons-material/MarkEmailRead';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
+import ChatIcon from '@mui/icons-material/Chat';
+import { useNavigate, useParams } from 'react-router-dom';
+import { PATHS } from 'Src/constants/paths';
 
 const DynamicMenus: FC = () => {
+  const navigate = useNavigate();
+  const { SharedspaceId, ChatRoomId } = useParams();
   const dispatch = useAppDispatch();
   const { data: spaceData } = useSharedspace();
   const { permission } = spaceData;
 
   return (
     <>
+      {
+        spaceData.SharedspaceChatRooms.map((chatroom) => {
+          const path = `${PATHS.SHAREDSPACE_CHAT}/${SharedspaceId}/${chatroom.id}`;
+
+          return (
+            <IconButton
+              key={chatroom.id}
+              active={ChatRoomId === chatroom.id}
+              onClick={() => navigate(path)}>
+              <ChatIcon />
+              <span>{chatroom.name}</span>
+            </IconButton>
+          );
+        })
+      }
       {
         permission.isOwner &&
         <IconButton onClick={() => dispatch(openModal({ name: ModalName.SHAREDSPACEMANAGER }))}>
@@ -50,7 +70,7 @@ const DynamicMenus: FC = () => {
 
 export default DynamicMenus;
 
-const IconButton = styled.div<{ active?: string }>`
+const IconButton = styled.div<{ active?: boolean }>`
   display: flex;
   align-items: center;
   height: 35px;

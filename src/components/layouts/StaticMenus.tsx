@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import ChatIcon from '@mui/icons-material/Chat';
 import CalendarIcon from '@mui/icons-material/CalendarMonth';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PATHS } from 'Src/constants/paths';
@@ -18,12 +17,6 @@ const StaticMenus: FC = () => {
         onClick={() => navigate(`${PATHS.SHAREDSPACE_VIEW}/${SharedspaceId}`)}>
         <CalendarIcon />
         <span>캘린더</span>
-      </IconButton>
-      <IconButton
-        active={pageName === 'chat'}
-        onClick={() => navigate(`${PATHS.SHAREDSPACE_CHAT}/${SharedspaceId}`)}>
-        <ChatIcon />
-        <span>채팅</span>
       </IconButton>
     </>
   );
