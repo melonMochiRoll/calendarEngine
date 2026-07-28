@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { TChats } from "Typings/types";
 
 export function useChats() {
-  const { SharedspaceId: _SharedspaceId } = useParams();
+  const { ChatRoomId: _ChatRoomId } = useParams();
   const qc = useQueryClient();
 
   const {
@@ -16,8 +16,8 @@ export function useChats() {
     isLoading,
     error,
   } = useQuery<TChats>({
-    queryKey: [GET_SHAREDSPACE_CHATS_KEY, _SharedspaceId],
-    queryFn: () => getSharedspaceChats(_SharedspaceId),
+    queryKey: [GET_SHAREDSPACE_CHATS_KEY, _ChatRoomId],
+    queryFn: () => getSharedspaceChats(_ChatRoomId),
     refetchOnWindowFocus: false,
     suspense: true,
     useErrorBoundary: true,
@@ -29,9 +29,9 @@ export function useChats() {
   if (data === null || data === undefined) throw new Error();
 
   const loadMore = useCallback(debounce(async () => {
-    const moreChats = await getSharedspaceChats(_SharedspaceId, data.chats[data.chats.length-1].id);
+    const moreChats = await getSharedspaceChats(_ChatRoomId, data.chats[data.chats.length-1].id);
 
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _SharedspaceId], (prev) => {
+    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _ChatRoomId], (prev) => {
       return {
         ...moreChats,
         chats: [ ...prev?.chats || [], ...moreChats.chats ],
