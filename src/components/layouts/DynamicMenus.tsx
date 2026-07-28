@@ -22,19 +22,29 @@ const DynamicMenus: FC = () => {
   return (
     <>
       {
-        spaceData.SharedspaceChatRooms.map((chatroom) => {
-          const path = `${PATHS.SHAREDSPACE_CHAT}/${SharedspaceId}/${chatroom.id}`;
+        spaceData.SharedspaceChatRooms.length &&
+          <>
+            <DividerWithTitle>
+              <span>채팅 채널</span>
+              <Divider />
+            </DividerWithTitle>
+            {
+              spaceData.SharedspaceChatRooms.map((chatroom) => {
+                const path = `${PATHS.SHAREDSPACE_CHAT}/${SharedspaceId}/${chatroom.id}`;
 
-          return (
-            <IconButton
-              key={chatroom.id}
-              active={ChatRoomId === chatroom.id}
-              onClick={() => navigate(path)}>
-              <ChatIcon />
-              <span>{chatroom.name}</span>
-            </IconButton>
-          );
-        })
+                return (
+                  <IconButton
+                    key={chatroom.id}
+                    active={ChatRoomId === chatroom.id}
+                    onClick={() => navigate(path)}>
+                    <ChatIcon />
+                    <span>{chatroom.name}</span>
+                  </IconButton>
+                );
+              })
+            }
+            <Divider />
+          </>
       }
       {
         permission.isOwner &&
@@ -94,4 +104,22 @@ const IconButton = styled.div<{ active?: boolean }>`
     color: var(--white);
     background-color: rgba(255, 255, 255, 0.2);
   }
+`;
+
+const DividerWithTitle = styled.div`
+  display: flex;
+  align-items: center;
+  
+  span {
+    width: 30%;
+    flex-shrink: 0;
+    color: var(--gray-5);
+    font-size: 14px;
+  }
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: var(--gray-7);
 `;
