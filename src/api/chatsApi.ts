@@ -20,15 +20,15 @@ export const getSharedspaceChats = async (
 };
 
 export const getChatspaceChats = async (
-  SharedspaceId: string | undefined,
+  ChatRoomId: string | undefined,
   beforeChatId?: string,
 ) => {
-  if (!SharedspaceId) {
+  if (!ChatRoomId) {
     return;
   }
 
   const { data } = await axiosInstance
-    .get(`/api/chatspaces/${SharedspaceId}/chats`, {
+    .get(`/api/dm/chatrooms/${ChatRoomId}/chats`, {
       params: {
         before: beforeChatId,
       },
