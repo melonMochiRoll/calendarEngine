@@ -115,9 +115,8 @@ export type TSharedspace = {
   name: string,
   private: boolean,
   createdAt: string,
-  updatedAt: string,
-  deletedAt: string | null,
   OwnerId: number,
+  SharedspaceChatRooms: { id: string, name: string }[],
 };
 
 export type TSharedspaceMetaData = TSharedspace & {
