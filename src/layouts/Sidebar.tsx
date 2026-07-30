@@ -35,7 +35,7 @@ const Nav = styled.nav`
   padding: 10px;
   border-right: 2px solid var(--black);
   background-color: var(--dark-gray);
-  gap: 20px;
+  gap: 10px;
   z-index: 1;
 `;
 
