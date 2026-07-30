@@ -28,6 +28,8 @@ export const checkURL = 'URL을 확인해주세요';
 
 export const alreadyRequest = '이미 요청을 보냈습니다.';
 
+export const requiredFieldMessage = '필수 항목입니다.';
+
 export const defaultToastOption: ToastOptions = {
   position: 'top-center',
   autoClose: 5000,
