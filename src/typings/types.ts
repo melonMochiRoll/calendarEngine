@@ -2,6 +2,7 @@ import { ImageViewerProps } from "Components/modal/imageViewer/ImageViewer";
 import { JoinRequestDetailProps } from "Components/modal/joinrequest/joinrequestManager/JoinRequestDetail";
 import { TodoDetailProps } from "Components/modal/todo/TodoDetail";
 import { TodoUpdateProps } from "Components/modal/todo/TodoUpdate";
+import { ChatRoomCreaterModalProps } from "Src/components/modal/chatroom/chatroomCreater/ChatRoomCreaterModal";
 import { ProfileImageUpdaterModalProps } from "Src/components/modal/profileImageUpdater/ProfileImageUpdaterModal";
 import { ChatToServer, ERROR_TYPE, SocketStatus } from "Src/constants/constants";
 
@@ -31,6 +32,7 @@ export const ModalName = {
   SHAREDSPACE_INVITE_SEND: 'SHAREDSPACE_INVITE_SEND',
   PROFILEIMAGE_UPDATER: 'PROFILEIMAGE_UPDATER',
   FRIENDSHIPS: 'FRIENDSHIPS',
+  CHATROOM_CREATER: 'CHATROOM_CREATER',
 } as const;
 
 export type TModalName = typeof ModalName[keyof typeof ModalName];
@@ -50,6 +52,7 @@ export type ModalPayload =
   | { name: typeof ModalName.SHAREDSPACE_INVITE_SEND, props?: {} }
   | { name: typeof ModalName.PROFILEIMAGE_UPDATER, props: ProfileImageUpdaterModalProps }
   | { name: typeof ModalName.FRIENDSHIPS, props?: {} }
+  | { name: typeof ModalName.CHATROOM_CREATER, props: ChatRoomCreaterModalProps }
 ;
 
 export const RoleDictionary = {
