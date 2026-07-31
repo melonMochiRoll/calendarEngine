@@ -9,3 +9,15 @@ export const createSharedspaceChatRoom = async (
       name,
     });
 };
+
+export const updateSharedspaceChatRoomName = async (
+  SharedspaceId: String,
+  ChatRoomId: string,
+  name: string,
+) => {
+  await axiosInstance
+    .patch(`/api/sharedspaces/${SharedspaceId}/chatrooms/name`, {
+      ChatRoomId,
+      name,
+    });
+};
