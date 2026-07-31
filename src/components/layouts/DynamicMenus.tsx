@@ -11,6 +11,7 @@ import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 import ChatIcon from '@mui/icons-material/Chat';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PATHS } from 'Src/constants/paths';
+import AddIcon from '@mui/icons-material/AddRounded';
 
 const DynamicMenus: FC = () => {
   const navigate = useNavigate();
@@ -21,13 +22,18 @@ const DynamicMenus: FC = () => {
 
   return (
     <>
+      <GroupDivider>
+        <span>채팅 채널</span>
+        <AddIcon onClick={() => {
+          dispatch(openModal({
+            name: ModalName.CHATROOM_CREATER,
+            props: { SharedspaceId: spaceData.id },
+          }));
+        }} />
+      </GroupDivider>
       {
         spaceData.SharedspaceChatRooms.length &&
-          <>
-            <DividerWithTitle>
-              <span>채팅 채널</span>
-              <Divider />
-            </DividerWithTitle>
+          <ButtonGroup>
             {
               spaceData.SharedspaceChatRooms.map((chatroom) => {
                 const path = `${PATHS.SHAREDSPACE_CHAT}/${SharedspaceId}/${chatroom.id}`;
@@ -43,8 +49,7 @@ const DynamicMenus: FC = () => {
                 );
               })
             }
-            <Divider />
-          </>
+          </ButtonGroup>
       }
       {
         permission.isOwner &&
@@ -106,20 +111,28 @@ const IconButton = styled.div<{ active?: boolean }>`
   }
 `;
 
-const DividerWithTitle = styled.div`
+const GroupDivider = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 5px;
+  gap: 10px;
   
   span {
-    width: 30%;
     flex-shrink: 0;
     color: var(--gray-5);
     font-size: 14px;
   }
+
+  svg {
+    color: var(--gray-5);
+    cursor: pointer;
+  }
 `;
 
-const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: var(--gray-7);
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+  gap: 10px;
 `;
