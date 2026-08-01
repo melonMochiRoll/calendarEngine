@@ -20,6 +20,7 @@ export const modals = {
   [ModalName.PROFILEIMAGE_UPDATER]: React.lazy(() => import('Src/components/modal/profileImageUpdater/ProfileImageUpdaterModal')),
   [ModalName.FRIENDSHIPS]: React.lazy(() => import('Src/components/modal/friendships/FriendshipsModal')),
   [ModalName.CHATROOM_CREATER]: React.lazy(() => import('Src/components/modal/chatroom/chatroomCreater/ChatRoomCreaterModal')),
+  [ModalName.CHATROOM_UPDATER]: React.lazy(() => import('Src/components/modal/chatroom/chatroomUpdater/ChatRoomUpdaterModal')),
 };
 
 const RenderModal: FC = () => {
