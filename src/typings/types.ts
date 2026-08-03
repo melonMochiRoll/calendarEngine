@@ -3,6 +3,7 @@ import { JoinRequestDetailProps } from "Components/modal/joinrequest/joinrequest
 import { TodoDetailProps } from "Components/modal/todo/TodoDetail";
 import { TodoUpdateProps } from "Components/modal/todo/TodoUpdate";
 import { ChatRoomCreaterModalProps } from "Src/components/modal/chatroom/chatroomCreater/ChatRoomCreaterModal";
+import { ChatRoomDeleterModalProps } from "Src/components/modal/chatroom/chatroomDeleter/ChatRoomDeleterModal";
 import { ChatRoomUpdaterModalProps } from "Src/components/modal/chatroom/chatroomUpdater/ChatRoomUpdaterModal";
 import { ProfileImageUpdaterModalProps } from "Src/components/modal/profileImageUpdater/ProfileImageUpdaterModal";
 import { ChatToServer, ERROR_TYPE, SocketStatus } from "Src/constants/constants";
@@ -35,6 +36,7 @@ export const ModalName = {
   FRIENDSHIPS: 'FRIENDSHIPS',
   CHATROOM_CREATER: 'CHATROOM_CREATER',
   CHATROOM_UPDATER: 'CHATROOM_UPDATER',
+  CHATROOM_DELETER: 'CHATROOM_DELETER',
 } as const;
 
 export type TModalName = typeof ModalName[keyof typeof ModalName];
@@ -56,6 +58,7 @@ export type ModalPayload =
   | { name: typeof ModalName.FRIENDSHIPS, props?: {} }
   | { name: typeof ModalName.CHATROOM_CREATER, props: ChatRoomCreaterModalProps }
   | { name: typeof ModalName.CHATROOM_UPDATER, props: ChatRoomUpdaterModalProps }
+  | { name: typeof ModalName.CHATROOM_DELETER, props: ChatRoomDeleterModalProps }
 ;
 
 export const RoleDictionary = {

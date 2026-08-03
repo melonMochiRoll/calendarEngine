@@ -21,6 +21,7 @@ export const modals = {
   [ModalName.FRIENDSHIPS]: React.lazy(() => import('Src/components/modal/friendships/FriendshipsModal')),
   [ModalName.CHATROOM_CREATER]: React.lazy(() => import('Src/components/modal/chatroom/chatroomCreater/ChatRoomCreaterModal')),
   [ModalName.CHATROOM_UPDATER]: React.lazy(() => import('Src/components/modal/chatroom/chatroomUpdater/ChatRoomUpdaterModal')),
+  [ModalName.CHATROOM_DELETER]: React.lazy(() => import('Src/components/modal/chatroom/chatroomDeleter/ChatRoomDeleterModal')),
 };
 
 const RenderModal: FC = () => {
