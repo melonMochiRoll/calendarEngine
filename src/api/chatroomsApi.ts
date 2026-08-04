@@ -16,8 +16,7 @@ export const updateSharedspaceChatRoomName = async (
   name: string,
 ) => {
   await axiosInstance
-    .patch(`/api/sharedspaces/${SharedspaceId}/chatrooms/name`, {
-      ChatRoomId,
+    .patch(`/api/sharedspaces/${SharedspaceId}/chatrooms/${ChatRoomId}/name`, {
       name,
     });
 };
