@@ -26,9 +26,5 @@ export const deleteSharedspaceChatRoom = async (
   ChatRoomId: string,
 ) => {
   await axiosInstance
-    .delete(`/api/sharedspaces/${SharedspaceId}/chatrooms`, {
-      params: {
-        ChatRoomId,
-      },
-    })
+    .delete(`/api/sharedspaces/${SharedspaceId}/chatrooms/${ChatRoomId}`);
 };
