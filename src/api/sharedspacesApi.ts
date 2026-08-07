@@ -101,7 +101,7 @@ export const updateSharedspacePrivate = async (
     });
 };
 
-export const deleteSharedspaceMembers = async (
+export const kickSharedspace = async (
   SharedspaceId: string,
   UserId: string,
 ) => {

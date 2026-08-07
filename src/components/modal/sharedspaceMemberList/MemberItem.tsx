@@ -4,7 +4,7 @@ import useMenu from 'Hooks/utils/useMenu';
 import { CircularProgress, Divider, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { RoleDictionary, SharedspaceMembersRoles, TSpaceMembers, TSharedspaceMembersRoles } from 'Typings/types';
-import { deleteSharedspaceMembers, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
+import { kickSharedspace, updateSharedspaceMembers, updateSharedspaceOwner } from 'Api/sharedspacesApi';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { renderRole } from 'Lib/utilFunction';
 import { useQueryClient } from '@tanstack/react-query';
@@ -81,7 +81,7 @@ const MemberItem: FC<MemberItemProps> = ({
     onClose(e);
 
     try {
-      await deleteSharedspaceMembers(SharedspaceId, UserId);
+      await kickSharedspace(SharedspaceId, UserId);
       await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId]);
       setIsSent('요청 완료');
     } catch (err) {
