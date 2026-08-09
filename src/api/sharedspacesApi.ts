@@ -79,7 +79,7 @@ export const getSharedspaceMembers = async (
   return data;
 };
 
-export const updateSharedspaceMembers = async (
+export const updateSharedspaceMember = async (
   SharedspaceId: string,
   UserId: string,
   RoleName: TSharedspaceMembersRoles,
