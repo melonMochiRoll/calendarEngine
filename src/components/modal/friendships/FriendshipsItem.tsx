@@ -62,7 +62,7 @@ const FriendshipsItem: FC<FriendshipsItemProps> = ({
         <InfoNickname>{nickname}</InfoNickname>
         <InfoEmail>{email}</InfoEmail>
       </InfoWrapper>
-        <Button onClick={onOpen}>
+        <Button onClick={onOpen} disabled={isLoading}>
           {isLoading ? <CircularProgress size={30} /> : <MoreHorizIcon fontSize='large' />}
         </Button>
       {
@@ -124,11 +124,14 @@ const InfoEmail = styled.span`
   color: var(--gray-6);
 `;
 
-const Button = styled.div`
+const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  color: var(--white);
+  border: none;
   border-radius: 12px;
+  background-color: transparent;
   cursor: pointer;
   transition: all 0.1s linear;
 
