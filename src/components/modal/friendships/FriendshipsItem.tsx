@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { CircularProgress, Menu, MenuItem } from '@mui/material';
@@ -20,6 +20,7 @@ const FriendshipsItem: FC<FriendshipsItemProps> = ({
 }) => {
   const qc = useQueryClient();
   const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const { email, nickname, ProfileImage, RequesterId } = friendship;
 
   const {
@@ -33,7 +34,10 @@ const FriendshipsItem: FC<FriendshipsItemProps> = ({
     e: React.MouseEvent<HTMLLIElement, MouseEvent>,
     RequesterId: string,
   ) => {
+    if (isSubmitting.current) return;
     onClose(e);
+
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
@@ -42,6 +46,7 @@ const FriendshipsItem: FC<FriendshipsItemProps> = ({
     } catch (err) {
       toast.error(waitingMessage, defaultToastOption);
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
