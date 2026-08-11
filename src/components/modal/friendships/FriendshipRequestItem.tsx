@@ -135,11 +135,13 @@ const ButtonWrapper = styled.div`
   gap: 12px;
 `;
 
-const Button = styled.div`
+const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  border: none;
   border-radius: 12px;
+  background-color: transparent;
   cursor: pointer;
   transition: all 0.1s linear;
 
