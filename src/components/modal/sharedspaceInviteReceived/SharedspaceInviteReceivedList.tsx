@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import CheckIcon from '@mui/icons-material/CheckRounded';
 import ClearIcon from '@mui/icons-material/ClearRounded';
@@ -22,8 +22,12 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
   const { invites, hasMoreData } = invitesData;
   const [ isResponded, setIsResponded ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
 
   const handleAcceptInvite = async (id: string, SharedspaceId: string) => {
+    if (isSubmitting.current) return;
+
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
@@ -33,11 +37,15 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
     } catch (err) {
       setIsResponded('요청 실패');
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
 
   const handleDeclineInvite = async (id: string) => {
+    if (isSubmitting.current) return;
+    
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
@@ -46,6 +54,7 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
     } catch (err) {
       setIsResponded('요청 실패');
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
