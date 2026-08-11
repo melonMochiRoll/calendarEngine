@@ -62,14 +62,9 @@ const FriendshipsItem: FC<FriendshipsItemProps> = ({
         <InfoNickname>{nickname}</InfoNickname>
         <InfoEmail>{email}</InfoEmail>
       </InfoWrapper>
-      {
-        isLoading ?
-          <CircularProgress size={30} />
-          :
-          <Button onClick={onOpen}>
-            <MoreHorizIcon fontSize='large' />
-          </Button>
-      }
+        <Button onClick={onOpen}>
+          {isLoading ? <CircularProgress size={30} /> : <MoreHorizIcon fontSize='large' />}
+        </Button>
       {
         anchorEl &&
         <Menu
