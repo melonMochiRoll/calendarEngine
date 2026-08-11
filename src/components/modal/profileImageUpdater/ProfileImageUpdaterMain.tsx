@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import gravatar from 'gravatar';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
@@ -12,6 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { GET_USER_KEY } from 'Src/constants/queryKeys';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { closeModal } from 'Src/features/modalSlice';
+import { CircularProgress } from '@mui/material';
 
 interface ProfileImageUpdaterMain {
   nickname: string,
@@ -28,6 +29,8 @@ const ProfileImageUpdaterMain: FC<ProfileImageUpdaterMain> = ({
   const dispatch = useAppDispatch();
   const [ image, setImage ] = useState<File>();
   const [ preview, setPreview ] = useState<string>('');
+  const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const src = ProfileImage ? ProfileImage : gravatar.url(email, { s: '25px', d: 'retro' });
 
   const onChangeImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +57,10 @@ const ProfileImageUpdaterMain: FC<ProfileImageUpdaterMain> = ({
     image: File | undefined,
   ) => {
     e.preventDefault();
-    if (!image) return;
+    if (!image || isSubmitting.current) return;
+
+    isSubmitting.current = true;
+    setIsLoading(true);
 
     const tempImageId = uuidv7();
 
@@ -74,6 +80,9 @@ const ProfileImageUpdaterMain: FC<ProfileImageUpdaterMain> = ({
       dispatch(closeModal());
     } catch (err) {
       toast.error(waitingMessage, defaultToastOption);
+    } finally {
+      isSubmitting.current = false;
+      setIsLoading(false);
     }
   };
 
@@ -120,8 +129,8 @@ const ProfileImageUpdaterMain: FC<ProfileImageUpdaterMain> = ({
             accept='image/*' />
         </FileBox>
         <ButtonBox>
-          <SubmitButton type='submit'>
-              제출
+          <SubmitButton type='submit' disabled={isLoading}>
+            {isLoading ? <CircularProgress size={15} /> : '제출'}
           </SubmitButton>
         </ButtonBox>
       </Form>
