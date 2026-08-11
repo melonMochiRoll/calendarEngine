@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { TFriendship } from 'Src/typings/types';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
@@ -20,9 +20,13 @@ const FriendshipRequestItem: FC<FriendshipRequestItemProps> = ({
 }) => {
   const qc = useQueryClient();
   const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const { email, nickname, ProfileImage, RequesterId } = friendshipRequest;
 
   const handleAcceptFriendship = async (RequesterId: string) => {
+    if (isSubmitting.current) return;
+
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
@@ -31,11 +35,15 @@ const FriendshipRequestItem: FC<FriendshipRequestItemProps> = ({
     } catch (err) {
       toast.error(waitingMessage, defaultToastOption);
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
 
   const handleRejectFriendship = async (RequesterId: string) => {
+    if (isSubmitting.current) return;
+
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
@@ -44,6 +52,7 @@ const FriendshipRequestItem: FC<FriendshipRequestItemProps> = ({
     } catch (err) {
       toast.error(waitingMessage, defaultToastOption);
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
