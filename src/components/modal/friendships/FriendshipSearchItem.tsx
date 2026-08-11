@@ -59,22 +59,21 @@ const FriendshipSearchItem: FC<FriendshipSearchItemProps> = ({
         <InfoEmail>{email}</InfoEmail>
       </InfoWrapper>
       {isSent && <DisableButton>요청 보냄</DisableButton>}
+      {isFriendship && <DisableButton>친구 상태</DisableButton>}
       {
-        !isSent && (
-          isFriendship ?
-            <DisableButton>친구 상태</DisableButton>
-            :
-            <Button onClick={() => handleSendFriendship(id)} disabled={isLoading}>
-              {
-                isLoading ?
-                  <CircularProgress size={30} />
-                  :
-                  <>
-                    <GroupAddIcon fontSize='large' />
-                    친구 요청
-                  </>
-              }
-            </Button>)
+        !isSent && !isFriendship && (
+          <Button onClick={() => handleSendFriendship(id)} disabled={isLoading}>
+            {
+              isLoading ?
+                <CircularProgress size={30} />
+                :
+                <>
+                  <GroupAddIcon fontSize='large' />
+                  친구 요청
+                </>
+            }
+          </Button>
+        )
       }
     </Item>
   );
