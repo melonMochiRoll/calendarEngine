@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
@@ -17,16 +17,19 @@ const FriendshipSearchItem: FC<FriendshipSearchItemProps> = ({
   user,
 }) => {
   const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const [ isSent, setIsSent ] = useState(false);
   const { id, email, nickname, ProfileImage, permission } = user;
   const { isFriendship } = permission;
 
   const handleSendFriendship = async (RequesteeId: string) => {
+    if (isSubmitting.current) return;
+
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
       await sendFriendship(RequesteeId);
-      setIsSent(true);
     } catch (err) {
       let message = waitingMessage;
 
@@ -34,12 +37,12 @@ const FriendshipSearchItem: FC<FriendshipSearchItemProps> = ({
         if (err.response?.status === 409) {
           message = alreadyRequest;
         }
-        
-        setIsSent(true);
       }
 
       toast.error(message, defaultToastOption);
     } finally {
+      setIsSent(true);
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
@@ -56,15 +59,21 @@ const FriendshipSearchItem: FC<FriendshipSearchItemProps> = ({
         <InfoEmail>{email}</InfoEmail>
       </InfoWrapper>
       {isSent && <DisableButton>요청 보냄</DisableButton>}
-      {isLoading && <CircularProgress size={30} />}
       {
-        (!isSent && !isLoading) && (
+        !isSent && (
           isFriendship ?
             <DisableButton>친구 상태</DisableButton>
             :
-            <Button onClick={() => handleSendFriendship(id)}>
-              <GroupAddIcon fontSize='large' />
-              친구 요청
+            <Button onClick={() => handleSendFriendship(id)} disabled={isLoading}>
+              {
+                isLoading ?
+                  <CircularProgress size={30} />
+                  :
+                  <>
+                    <GroupAddIcon fontSize='large' />
+                    친구 요청
+                  </>
+              }
             </Button>)
       }
     </Item>
@@ -111,13 +120,16 @@ const InfoEmail = styled.span`
   color: var(--gray-6);
 `;
 
-const Button = styled.div`
+const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 180px;
+  color: var(--white);
   font-size: 16px;
+  border: none;
   border-radius: 12px;
+  background-color: transparent;
   cursor: pointer;
   gap: 7px;
   transition: all 0.1s linear;
