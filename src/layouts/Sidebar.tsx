@@ -30,7 +30,7 @@ const Nav = styled.nav`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 250px;
+  width: 300px;
   height: 100%;
   padding: 10px;
   border-right: 2px solid var(--black);
