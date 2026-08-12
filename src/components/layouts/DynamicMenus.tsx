@@ -12,6 +12,9 @@ import ChatIcon from '@mui/icons-material/Chat';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PATHS } from 'Src/constants/paths';
 import AddIcon from '@mui/icons-material/AddRounded';
+import useMenu from 'Src/hooks/utils/useMenu';
+import { Menu, MenuItem } from '@mui/material';
+import { muiMenuDarkModeSx } from 'Src/constants/notices';
 
 const DynamicMenus: FC = () => {
   const navigate = useNavigate();
@@ -19,6 +22,43 @@ const DynamicMenus: FC = () => {
   const dispatch = useAppDispatch();
   const { data: spaceData } = useSharedspace();
   const { permission } = spaceData;
+
+  const {
+    anchorEl,
+    open,
+    onOpen,
+    onClose,
+  } = useMenu();
+
+  const openChatRoomUpdateModal = (
+    SharedspaceId: string,
+    ChatRoomId: string,
+    prevName: string,
+  ) => {
+    dispatch(openModal({
+      name: ModalName.CHATROOM_UPDATER,
+      props: {
+        SharedspaceId,
+        ChatRoomId,
+        prevName,
+      },
+    }));
+  };
+
+  const openChatRoomDeleteModal = (
+    SharedspaceId: string,
+    ChatRoomId: string,
+    ChatRoomName: string,
+  ) => {
+    dispatch(openModal({
+      name: ModalName.CHATROOM_DELETER,
+      props: {
+        SharedspaceId,
+        ChatRoomId,
+        ChatRoomName,
+      },
+    }));
+  };
 
   return (
     <>
@@ -39,13 +79,41 @@ const DynamicMenus: FC = () => {
                 const path = `${PATHS.SHAREDSPACE_CHAT}/${SharedspaceId}/${chatroom.id}`;
 
                 return (
-                  <IconButton
-                    key={chatroom.id}
-                    active={ChatRoomId === chatroom.id}
-                    onClick={() => navigate(path)}>
-                    <ChatIcon />
-                    <span>{chatroom.name}</span>
-                  </IconButton>
+                  <>
+                    <IconButton
+                      key={chatroom.id}
+                      active={ChatRoomId === chatroom.id}
+                      onClick={() => navigate(path)}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        onOpen(e);
+                      }}>
+                      <ChatIcon />
+                      <span>{chatroom.name}</span>
+                    </IconButton>
+                    {
+                      anchorEl &&
+                        <Menu
+                          aria-labelledby='demo-positioned-button'
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClick={onClose}
+                          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                          transformOrigin={{ vertical: 'center', horizontal: 'center' }}
+                          sx={muiMenuDarkModeSx}>
+                          <MenuItem
+                            onClick={() => openChatRoomUpdateModal(spaceData.id, chatroom.id, chatroom.name)}
+                            sx={{ gap: '5px' }}>
+                            <span>채팅방 수정</span>
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => openChatRoomDeleteModal(spaceData.id, chatroom.id, chatroom.name)}
+                            sx={{ color: 'var(--red)', gap: '5px' }}>
+                            <span>채팅방 삭제</span>
+                          </MenuItem>
+                        </Menu>
+                    }
+                  </>
                 );
               })
             }
