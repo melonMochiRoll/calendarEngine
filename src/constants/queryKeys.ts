@@ -11,6 +11,7 @@ export const GET_FRIENDSHIPS = 'getFriendships';
 export const GET_FRIENDSHIP_REQUESTS_KEY = 'getFriendshipRequests';
 
 export const GET_DM_CHATS_KEY = 'getDmChats';
+export const GET_DM_CHATROOMS_KEY = 'getDmChatRooms';
 
 export const SEARCH_TODOS_KEY = 'searchTodos';
 export const SEARCH_USERS_KEY = 'searchUsers';
