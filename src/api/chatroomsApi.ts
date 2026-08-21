@@ -39,3 +39,10 @@ export const deleteSharedspaceChatRoom = async (
   await axiosInstance
     .delete(`/api/sharedspaces/${SharedspaceId}/chatrooms/${ChatRoomId}`);
 };
+
+export const createDmChatRoom = async (targetUserId: string) => {
+  await axiosInstance
+    .post(`/api/dms/chatrooms`, {
+      targetUserId,
+    });
+};
