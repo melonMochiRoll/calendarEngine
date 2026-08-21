@@ -1,5 +1,16 @@
 import { axiosInstance } from "./axiosInstance";
 
+export const getDmChatRooms = async (page?: number) => {
+  const { data } = await axiosInstance
+    .get(`/api/dms/chatrooms`, {
+      params: {
+        page,
+      },
+    });
+
+  return data;
+};
+
 export const createSharedspaceChatRoom = async (
   SharedspaceId: String,
   name: string,
