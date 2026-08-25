@@ -1,6 +1,6 @@
 import { axiosInstance } from "./axiosInstance";
 
-export const getDmChatRooms = async (page?: number) => {
+export const getDmChatRooms = async (page = 1) => {
   const { data } = await axiosInstance
     .get(`/api/dms/chatrooms`, {
       params: {
@@ -40,9 +40,11 @@ export const deleteSharedspaceChatRoom = async (
     .delete(`/api/sharedspaces/${SharedspaceId}/chatrooms/${ChatRoomId}`);
 };
 
-export const createDmChatRoom = async (targetUserId: string) => {
-  await axiosInstance
+export const createDmChatRoom = async (targetUserId: string): Promise<{ ChatRoomId: string }> => {
+  const { data } = await axiosInstance
     .post(`/api/dms/chatrooms`, {
       targetUserId,
     });
+  
+  return data;
 };
