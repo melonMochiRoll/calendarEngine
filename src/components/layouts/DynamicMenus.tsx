@@ -79,9 +79,8 @@ const DynamicMenus: FC = () => {
                 const path = `${PATHS.SHAREDSPACE_CHAT}/${SharedspaceId}/${chatroom.id}`;
 
                 return (
-                  <>
+                  <React.Fragment key={chatroom.id}>
                     <IconButton
-                      key={chatroom.id}
                       active={ChatRoomId === chatroom.id}
                       onClick={() => navigate(path)}
                       onContextMenu={(e) => {
@@ -113,7 +112,7 @@ const DynamicMenus: FC = () => {
                           </MenuItem>
                         </Menu>
                     }
-                  </>
+                  </React.Fragment>
                 );
               })
             }
