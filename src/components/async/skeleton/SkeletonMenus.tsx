@@ -16,7 +16,7 @@ const SkeletonMenus: FC<SkeletonMenusProps> = ({ length }) => {
               <Icon>
                 <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' variant='circular' width={35} height={35} />
               </Icon>
-              <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={40} height={30} />
+              <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={175} height={30} />
             </IconButton>
           );
         })
@@ -29,10 +29,9 @@ export default SkeletonMenus;
 
 const IconButton = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
   color: var(--white);
+  gap: 10px;
   cursor: pointer;
 
   span {
