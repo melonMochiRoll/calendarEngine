@@ -12,12 +12,12 @@ const Sidebar: FC = () => {
 
   return (
     <Nav>
-      <IconButton onClick={() => navigate(PATHS.SHAREDSPACE)}>
-        <HomeIcon />
-        <span>홈으로</span>
-      </IconButton>
-      <StaticMenus />
       <Suspense fallback={<SkeletonMenus length={3} />}>
+        <IconButton onClick={() => navigate(PATHS.SHAREDSPACE)}>
+          <HomeIcon />
+          <span>홈으로</span>
+        </IconButton>
+        <StaticMenus />
         <DynamicMenus />
       </Suspense>
     </Nav>
