@@ -40,3 +40,8 @@ export const FriendshipTabs = {
   REQUESTS: '받은 요청',
   SEARCH: '친구 요청',
 };
+
+export const CHATROOM_TYPE = {
+  DM: 'dm',
+  SPACE: 'space',
+};
