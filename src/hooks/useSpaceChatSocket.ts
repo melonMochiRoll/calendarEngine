@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import { defaultToastOption, needLogin, waitingMessage } from "Src/constants/notices";
 import { generatePresignedPutUrl } from "Src/api/chatsApi";
 
-export function useSpaceChatSocket(queryKey: string) {
+export function useSpaceChatSocket(queryKey: string, type: string) {
   const navigate = useNavigate();
   const { ChatRoomId: _ChatRoomId } = useParams();
   const qc = useQueryClient();
@@ -176,6 +176,7 @@ export function useSpaceChatSocket(queryKey: string) {
         content,
         imageIds,
         imageKeys: [] as string[],
+        type,
       };
 
       if (isTokenExpired()) {
