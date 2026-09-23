@@ -314,3 +314,15 @@ export type TSearchUsersForFriendshipResponse = {
   users: TSearchUserForFriendship[],
   hasMoreData: boolean,
 };
+
+export type TDmChatRoom = {
+  id: string,
+  name: string,
+  lastMessageAt: string,
+  previewUsers: Pick<TUser, 'id' | 'email' | 'nickname' | 'ProfileImage'>[],
+};
+
+export type TDmChatRoomResponse = {
+  chatRooms: TDmChatRoom[],
+  hasMoreData: boolean,
+};
