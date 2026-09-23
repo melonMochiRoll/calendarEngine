@@ -2,8 +2,6 @@ import React, { FC, useState } from 'react';
 import styled from '@emotion/styled';
 import { getCsrfToken, login, loginOAuth2Google, loginOAuth2Naver } from 'Api/authApi';
 import LoginForm from 'Components/auth/LoginForm';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_USER_KEY } from 'Constants/queryKeys';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from 'Constants/paths';
 import { defaultToastOption, waitingMessage } from 'Constants/notices';
@@ -16,7 +14,6 @@ import { setAccessToken } from 'Src/features/accessTokenSlice';
 interface LoginContainerProps {};
 
 const LoginContainer: FC<LoginContainerProps> = ({}) => {
-  const qc = useQueryClient();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [ errors, setErrors ] = useState({
@@ -61,10 +58,9 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
     }
 
     try {
-      const { accessToken, userData } = await login(email, password);
+      const accessToken = await login(email, password);
 
       dispatch(setAccessToken({ token: accessToken }));
-      qc.setQueryData([GET_USER_KEY], userData);
 
       const token = await getCsrfToken();
       dispatch(setCsrfToken({ token }));
