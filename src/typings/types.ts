@@ -326,3 +326,19 @@ export type TDmChatRoomResponse = {
   chatRooms: TDmChatRoom[],
   hasMoreData: boolean,
 };
+
+export type TChatRoomParticipant = {
+  id: string,
+  UserId: string,
+  RoomId: string,
+  createdAt: string,
+  email: string,
+  nickname: string,
+  ProfileImage: string,
+};
+
+export type TChatRoomParticipantsResponse = {
+  participants: TChatRoomParticipant[],
+  participantCount: number,
+  hasMoreData: boolean,
+};
