@@ -1,3 +1,4 @@
+import { TChatRoomParticipantsResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getDmChatRooms = async (page = 1) => {
@@ -5,6 +6,28 @@ export const getDmChatRooms = async (page = 1) => {
     .get(`/api/dms/chatrooms`, {
       params: {
         page,
+      },
+    });
+
+  return data;
+};
+
+export const getChatRoomParticipants = async (
+  ChatRoomId: string | undefined,
+  beforeParticipantId?: string,
+): Promise<TChatRoomParticipantsResponse> => {
+  if (!ChatRoomId) {
+    return {
+      participants: [],
+      participantCount: 0,
+      hasMoreData: false,
+    };
+  }
+
+  const { data } = await axiosInstance
+    .get(`/api/chatrooms/${ChatRoomId}/participants`, {
+      params: {
+        before: beforeParticipantId,
       },
     });
 
