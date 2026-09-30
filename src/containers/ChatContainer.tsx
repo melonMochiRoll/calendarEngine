@@ -9,7 +9,7 @@ import ChatFooter from 'Components/chat/ChatFooter';
 import ChatList from 'Components/chat/ChatList';
 import ChatDisableFooter from 'Src/components/chat/ChatDisableFooter';
 import useUser from 'Src/hooks/queries/useUser';
-import { useSpaceChatSocket } from 'Src/hooks/useSpaceChatSocket';
+import { useChatSocket } from 'Src/hooks/useChatSocket';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 import { CHATROOM_TYPE } from 'Src/constants/constants';
 
@@ -32,7 +32,7 @@ const ChatContainer: FC = () => {
     showNewChat,
     setShowNewChat,
     canShowNotify,
-  } = useSpaceChatSocket(GET_SHAREDSPACE_CHATS_KEY, CHATROOM_TYPE.SPACE);
+  } = useChatSocket(GET_SHAREDSPACE_CHATS_KEY, CHATROOM_TYPE.SPACE);
 
   const deleteFile = useCallback((idx: number) => {
     setImages(prev => [ ...prev.slice(0, idx), ...prev.slice(idx + 1, prev.length) ]);
