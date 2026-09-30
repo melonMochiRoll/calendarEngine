@@ -9,7 +9,12 @@ import { TFriendship } from 'Src/typings/types';
 import { toast } from 'react-toastify';
 import { deleteFriendship } from 'Src/api/friendshipsApi';
 import { useQueryClient } from '@tanstack/react-query';
-import { GET_FRIENDSHIPS } from 'Src/constants/queryKeys';
+import { GET_DM_CHATROOMS_KEY, GET_FRIENDSHIPS } from 'Src/constants/queryKeys';
+import { createDmChatRoom } from 'Src/api/chatroomsApi';
+import { useAppDispatch } from 'Src/hooks/reduxHooks';
+import { clearModal } from 'Src/features/modalSlice';
+import { useNavigate } from 'react-router-dom';
+import { PATHS } from 'Src/constants/paths';
 
 interface FriendshipsItemProps {
   friendship: TFriendship,
@@ -18,7 +23,9 @@ interface FriendshipsItemProps {
 const FriendshipsItem: FC<FriendshipsItemProps> = ({
   friendship,
 }) => {
+  const navigate = useNavigate();
   const qc = useQueryClient();
+  const dispatch = useAppDispatch();
   const [ isLoading, setIsLoading ] = useState(false);
   const isSubmitting = useRef(false);
   const { email, nickname, ProfileImage, RequesterId } = friendship;
@@ -29,6 +36,28 @@ const FriendshipsItem: FC<FriendshipsItemProps> = ({
     onOpen,
     onClose,
   } = useMenu();
+
+  const handleCreateDmChatRoom = async (
+    e: React.MouseEvent<HTMLLIElement, MouseEvent>,
+  ) => {
+    if (isSubmitting.current) return;
+    onClose(e);
+
+    isSubmitting.current = true;
+    setIsLoading(true);
+
+    try {
+      const response = await createDmChatRoom(RequesterId);
+      
+      navigate(`${PATHS.CHATROOM}/${response.ChatRoomId}`);
+    } catch (err) {
+      toast.error(waitingMessage, defaultToastOption);
+    } finally {
+      isSubmitting.current = false;
+      setIsLoading(false);
+      dispatch(clearModal());
+    }
+  };
 
   const handleDeleteFriendship = async (
     e: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -75,6 +104,9 @@ const FriendshipsItem: FC<FriendshipsItemProps> = ({
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           sx={muiMenuDarkModeSx}>
+            <MenuItem onClick={(e) => handleCreateDmChatRoom(e)}>
+              <span>DM</span>
+            </MenuItem>
             <MenuItem onClick={(e) => handleDeleteFriendship(e, RequesterId)}>
               <span>친구 삭제</span>
             </MenuItem>
