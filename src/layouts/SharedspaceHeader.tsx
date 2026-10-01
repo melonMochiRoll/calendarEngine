@@ -14,8 +14,6 @@ const SharedspaceHeader: FC<SharedspaceHeaderProps> = ({}) => {
   
   return (
     <Header>
-      <DirectMessageWrapper>
-      </DirectMessageWrapper>
       <SpaceInfoWrapper>
         <RenderSpaceTitle />
         <TextButton
@@ -40,12 +38,6 @@ const Header = styled.header`
   border-bottom: 1px solid var(--light-gray);
   background-color: var(--black);
   z-index: 1;
-`;
-
-const DirectMessageWrapper = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  width: 250px;
 `;
 
 const SpaceInfoWrapper = styled.div`
