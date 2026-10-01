@@ -18,7 +18,7 @@ const Block = styled.header`
   align-items: center;
   width: 100%;
   height: 50px;
-  padding: 10px 5%;
+  padding: 30px 0;
   border-bottom: 1px solid var(--light-gray);
   background-color: var(--black);
 `;
