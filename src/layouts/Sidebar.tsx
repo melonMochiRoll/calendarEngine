@@ -13,7 +13,7 @@ const Sidebar: FC = () => {
   return (
     <Nav>
       <Suspense fallback={<SkeletonMenus length={3} />}>
-        <IconButton onClick={() => navigate(PATHS.SHAREDSPACE)}>
+        <IconButton onClick={() => navigate(PATHS.HOME)}>
           <HomeIcon />
           <span>홈으로</span>
         </IconButton>
