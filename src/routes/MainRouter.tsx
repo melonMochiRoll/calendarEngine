@@ -6,7 +6,6 @@ const Layout = React.lazy(() => import('../layouts/Layout'));
 const MainPage = React.lazy(() => import('../pages/MainPage'));
 const LoginPage = React.lazy(() => import('../pages/LoginPage'));
 const JoinPage = React.lazy(() => import('../pages/JoinPage'));
-const SharedspacesPage = React.lazy(() => import('../pages/SharedspacesPage'));
 const SharedspacesLayout = React.lazy(() => import('../layouts/SharedspacesLayout'));
 const SharedspacesViewPage = React.lazy(() => import('../pages/SharedspacesViewPage'));
 const SharedspacesChatPage = React.lazy(() => import('../pages/SharedspacesChatPage'));
@@ -24,15 +23,10 @@ const MainRouter = createBrowserRouter([
       { path: PATHS.JOIN, element: <JoinPage /> },
       {
         path: PATHS.SHAREDSPACE,
+        element: <SharedspacesLayout />,
         children: [
-          { index: true, element: <SharedspacesPage /> },
-          {
-            element: <SharedspacesLayout />,
-            children: [
-              { path: 'view/:SharedspaceId', element: <SharedspacesViewPage /> },
-              { path: 'chat/:SharedspaceId/:ChatRoomId', element: <SharedspacesChatPage /> },
-            ],
-          }
+          { path: 'view/:SharedspaceId', element: <SharedspacesViewPage /> },
+          { path: 'chat/:SharedspaceId/:ChatRoomId', element: <SharedspacesChatPage /> },
         ],
       },
       { path: `${PATHS.JOINREQUEST_SENDER}/:SharedspaceId`, element: <JoinRequestSenderPage /> },
