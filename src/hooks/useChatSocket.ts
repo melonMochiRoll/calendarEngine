@@ -512,7 +512,7 @@ export function useChatSocket(queryKey: string, type: string) {
 
     if (type === ERROR_TYPE.UNAUTHORIZED_ERROR) {
       await logout();
-      qc.removeQueries([GET_USER_KEY]);
+      qc.removeQueries({ queryKey: [GET_USER_KEY] });
       toast.error(needLogin, defaultToastOption);
       return navigate(PATHS.LOGIN, { replace: true });
     }

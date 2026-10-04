@@ -22,7 +22,7 @@ const ChatRoomDeleterModal: FC<ChatRoomDeleterModalProps> = ({
 
   const handleDeleteChatRoom = async (SharedspaceId: string, ChatRoomId: string) => {
     await deleteSharedspaceChatRoom(SharedspaceId, ChatRoomId);
-    await qc.refetchQueries([GET_SHAREDSPACE_KEY, SharedspaceId]);
+    await qc.refetchQueries({ queryKey: [GET_SHAREDSPACE_KEY, SharedspaceId] });
     dispatch(closeModal());
   };
 

@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { TSearchUsersResponse } from "Typings/types";
 import { searchUsers } from "Api/usersApi";
 import { SEARCH_USERS_KEY } from "Constants/queryKeys";
@@ -10,22 +10,12 @@ export function useSearchUsers(query: string) {
   const { SharedspaceId: _SharedspaceId } = useParams();
   const qc = useQueryClient();
   
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery<TSearchUsersResponse>({
+  const { data } = useSuspenseQuery<TSearchUsersResponse>({
     queryKey: [SEARCH_USERS_KEY, _SharedspaceId, query],
     queryFn: () => searchUsers(_SharedspaceId, query),
     refetchOnWindowFocus: false,
-    suspense: true,
-    useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
-
-  if (isLoading) throw new Promise(() => {});
-  if (error) throw error;
-  if (data === null || data === undefined) throw new Error();
 
   const loadMore = useCallback(async () => {
     const moreUsers = await searchUsers(_SharedspaceId, query, data.users[data.users.length-1].id);

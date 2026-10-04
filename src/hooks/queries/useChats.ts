@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getSharedspaceChats } from "Src/api/chatsApi";
 import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
@@ -11,22 +11,12 @@ export function useChats() {
   const { ChatRoomId: _ChatRoomId } = useParams();
   const qc = useQueryClient();
 
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery<TChats>({
+  const { data } = useSuspenseQuery<TChats>({
     queryKey: [GET_SHAREDSPACE_CHATS_KEY, _ChatRoomId],
     queryFn: () => getSharedspaceChats(_ChatRoomId),
     refetchOnWindowFocus: false,
-    suspense: true,
-    useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
-
-  if (isLoading) throw new Promise(() => {});
-  if (error) throw error;
-  if (data === null || data === undefined) throw new Error();
 
   const loadMore = useCallback(debounce(async () => {
     const moreChats = await getSharedspaceChats(_ChatRoomId, data.chats[data.chats.length-1].id);

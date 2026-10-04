@@ -48,7 +48,7 @@ const MemberItem: FC<MemberItemProps> = ({
 
     try {
       await updateSharedspaceMember(SharedspaceId, UserId, role);
-      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId]);
+      await qc.refetchQueries({ queryKey: [GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId] });
       setIsSent('요청 완료');
     } catch (err) {
       setIsSent('요청 실패');
@@ -65,7 +65,7 @@ const MemberItem: FC<MemberItemProps> = ({
     
     try {
       await updateSharedspaceOwner(SharedspaceId, UserId);
-      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId]);
+      await qc.refetchQueries({ queryKey: [GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId] });
       setIsSent('요청 완료');
     } catch (err) {
       setIsSent('요청 실패');
@@ -82,7 +82,7 @@ const MemberItem: FC<MemberItemProps> = ({
 
     try {
       await kickSharedspace(SharedspaceId, UserId);
-      await qc.refetchQueries([GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId]);
+      await qc.refetchQueries({ queryKey: [GET_SHAREDSPACE_MEMBERS_KEY, SharedspaceId] });
       setIsSent('요청 완료');
     } catch (err) {
       setIsSent('요청 실패');

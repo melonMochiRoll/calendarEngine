@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getSharedspaceMembers } from "Src/api/sharedspacesApi";
 import { GET_SHAREDSPACE_MEMBERS_KEY } from "Src/constants/queryKeys";
@@ -9,22 +9,12 @@ export function useSharedspacemembers() {
   const { SharedspaceId: _SharedspaceId } = useParams();
   const qc = useQueryClient();
 
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery<TSharedspaceMembersResponse>({
+  const { data } = useSuspenseQuery<TSharedspaceMembersResponse>({
     queryKey: [GET_SHAREDSPACE_MEMBERS_KEY, _SharedspaceId],
     queryFn: () => getSharedspaceMembers(_SharedspaceId),
     refetchOnWindowFocus: false,
-    suspense: true,
-    useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
-
-  if (isLoading) throw new Promise(() => {});
-  if (error) throw error;
-  if (data === null || data === undefined) throw new Error();
 
   const loadMore = async () => {
     const moreMembers = await getSharedspaceMembers(_SharedspaceId, data.members[data.members.length-1].id);

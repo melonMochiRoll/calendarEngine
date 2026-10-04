@@ -24,7 +24,7 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
     try {
       await resolveJoinRequest(SharedspaceId, id, roleName);
 
-      await qc.refetchQueries([GET_JOINREQUEST_KEY, SharedspaceId]);
+      await qc.refetchQueries({ queryKey: [GET_JOINREQUEST_KEY, SharedspaceId] });
       toast.success(successMessage, {
         ...defaultToastOption,
       });
@@ -40,7 +40,7 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
     try {
       await rejectJoinRequest(SharedspaceId, id);
       
-      await qc.refetchQueries([GET_JOINREQUEST_KEY, SharedspaceId]);
+      await qc.refetchQueries({ queryKey: [GET_JOINREQUEST_KEY, SharedspaceId] });
       toast.success(successMessage, {
         ...defaultToastOption,
       });

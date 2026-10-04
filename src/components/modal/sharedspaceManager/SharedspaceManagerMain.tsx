@@ -33,7 +33,7 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
 
     try {
       await updateSharedspacePrivate(SharedspaceId, Private);
-      await qc.refetchQueries([GET_SHAREDSPACE_KEY, SharedspaceId]);
+      await qc.refetchQueries({ queryKey: [GET_SHAREDSPACE_KEY, SharedspaceId] });
     } catch (err) {
       setError(waitingMessage);
     }

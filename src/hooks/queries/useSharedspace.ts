@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { getSharedspace } from "Api/sharedspacesApi";
 import { GET_SHAREDSPACE_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
@@ -7,22 +7,12 @@ import { TSharedspaceMetaData } from "Typings/types";
 
 export function useSharedspace() {
   const { SharedspaceId: _SharedspaceId } = useParams();
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery<TSharedspaceMetaData>({
+  const { data } = useSuspenseQuery<TSharedspaceMetaData>({
     queryKey: [GET_SHAREDSPACE_KEY, _SharedspaceId],
     queryFn: () => getSharedspace(_SharedspaceId),
     refetchOnWindowFocus: false,
-    suspense: true,
-    useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
-
-  if (isLoading) throw new Promise(() => {});
-  if (error) throw error;
-  if (data === null || data === undefined) throw new Error();
 
   return { data } as const;
 }

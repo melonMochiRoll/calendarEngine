@@ -31,7 +31,7 @@ const FriendshipRequestItem: FC<FriendshipRequestItemProps> = ({
 
     try {
       await acceptFriendship(RequesterId);
-      await qc.refetchQueries([GET_FRIENDSHIP_REQUESTS_KEY]);
+      await qc.refetchQueries({ queryKey: [GET_FRIENDSHIP_REQUESTS_KEY] });
     } catch (err) {
       toast.error(waitingMessage, defaultToastOption);
     } finally {
@@ -48,7 +48,7 @@ const FriendshipRequestItem: FC<FriendshipRequestItemProps> = ({
 
     try {
       await rejectFriendship(RequesterId);
-      await qc.refetchQueries([GET_FRIENDSHIP_REQUESTS_KEY]);
+      await qc.refetchQueries({ queryKey: [GET_FRIENDSHIP_REQUESTS_KEY] });
     } catch (err) {
       toast.error(waitingMessage, defaultToastOption);
     } finally {

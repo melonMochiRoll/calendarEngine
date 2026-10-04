@@ -74,7 +74,7 @@ const ProfileImageUpdaterMain: FC<ProfileImageUpdaterMain> = ({
 
       await uploadImageToPresignedUrl(presignedUrl, image, contentType);
       await updateProfileImage(tempImageId, key);
-      await qc.refetchQueries([GET_USER_KEY]);
+      await qc.refetchQueries({ queryKey: [GET_USER_KEY] });
       
       toast.success(successMessage, defaultToastOption);
       dispatch(closeModal());

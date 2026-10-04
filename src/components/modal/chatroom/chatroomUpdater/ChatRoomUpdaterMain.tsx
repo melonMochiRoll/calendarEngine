@@ -42,7 +42,7 @@ const ChatRoomUpdaterMain: FC<ChatRoomUpdaterMainProps> = ({
       await updateSharedspaceChatRoomName(SharedspaceId, ChatRoomId, name);
 
       toast.success(successMessage, defaultToastOption);
-      await qc.refetchQueries([GET_SHAREDSPACE_KEY, SharedspaceId]);
+      await qc.refetchQueries({ queryKey: [GET_SHAREDSPACE_KEY, SharedspaceId] });
       dispatch(closeModal());
     } catch (err) {
       setError(waitingMessage);

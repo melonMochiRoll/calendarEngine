@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getJoinRequest } from "Api/joinrequestApi";
 import { GET_JOINREQUEST_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
@@ -9,22 +9,12 @@ export function useJoinRequest() {
   const { SharedspaceId: _SharedspaceId } = useParams();
   const qc = useQueryClient();
 
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery<TJoinRequestsResponse>({
+  const { data } = useSuspenseQuery<TJoinRequestsResponse>({
     queryKey: [GET_JOINREQUEST_KEY, _SharedspaceId],
     queryFn: () => getJoinRequest(_SharedspaceId),
     refetchOnWindowFocus: false,
-    suspense: true,
-    useErrorBoundary: true,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
-
-  if (isLoading) throw new Promise(() => {});
-  if (error) throw error;
-  if (data === null || data === undefined) throw new Error();
 
   const loadMore = async () => {
     const moreJoinRequests = await getJoinRequest(_SharedspaceId, data.joinRequests[data.joinRequests.length-1].id);

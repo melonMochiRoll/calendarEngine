@@ -71,7 +71,7 @@ const FriendshipsItem: FC<FriendshipsItemProps> = ({
 
     try {
       await deleteFriendship(RequesterId);
-      await qc.refetchQueries([GET_FRIENDSHIPS]);
+      await qc.refetchQueries({ queryKey: [GET_FRIENDSHIPS] });
     } catch (err) {
       toast.error(waitingMessage, defaultToastOption);
     } finally {

@@ -40,7 +40,7 @@ const RenderUserProfile: FC<RenderUserProfileProps> = ({}) => {
     try {
       await logout();
       dispatch(clearAccessToken());
-      qc.removeQueries([GET_USER_KEY]);
+      qc.removeQueries({ queryKey: [GET_USER_KEY] });
       navigate(PATHS.LOGIN);
     } catch (err) {
       toast.error(waitingMessage, defaultToastOption);

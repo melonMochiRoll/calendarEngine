@@ -36,7 +36,7 @@ const SubscribedSpacesContainer: FC = () => {
   const onDeleteSharedspace = async (SharedspaceId: string) => {
     try {
       await deleteSharedspace(SharedspaceId);
-      await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY, sort, currentPage]);
+      await qc.refetchQueries({ queryKey: [GET_SUBSCRIBED_SPACES_KEY, sort, currentPage] });
     } catch (err) {
       toast.error(waitingMessage, {
         ...defaultToastOption,

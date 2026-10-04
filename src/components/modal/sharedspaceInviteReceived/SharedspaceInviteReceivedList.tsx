@@ -33,7 +33,7 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
     try {
       await acceptInvite(id, SharedspaceId);
       setIsResponded('수락 완료');
-      await qc.refetchQueries([GET_SUBSCRIBED_SPACES_KEY]);
+      await qc.refetchQueries({ queryKey: [GET_SUBSCRIBED_SPACES_KEY] });
     } catch (err) {
       setIsResponded('요청 실패');
     } finally {

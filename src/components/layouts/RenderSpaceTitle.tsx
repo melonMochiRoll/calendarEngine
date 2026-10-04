@@ -20,7 +20,7 @@ const RenderSpaceTitle: FC = () => {
 
     try {
       await updateSharedspaceName(value, spaceData?.id);
-      await qc.refetchQueries([GET_SHAREDSPACE_KEY, spaceData?.id]);
+      await qc.refetchQueries({ queryKey: [GET_SHAREDSPACE_KEY, spaceData?.id] });
     } catch (err) {
       toast.error(waitingMessage, {
         ...defaultToastOption,
