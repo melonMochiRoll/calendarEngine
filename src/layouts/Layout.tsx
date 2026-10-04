@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import RenderModal from 'Components/modal/RenderModal';
@@ -12,6 +12,7 @@ import { setAccessToken } from 'Src/features/accessTokenSlice';
 import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
 
 const Layout: FC = () => {
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const [ accessTokenReady, setAccessTokenReady ] = useState(false);
   useCsrfToken();
@@ -31,7 +32,9 @@ const Layout: FC = () => {
   if (!accessTokenReady) return <LoadingPage />;
 
   return (
-    <ErrorBoundary fallbackRender={(props) => <GlobalErrorFallback errorProps={props} />}>
+    <ErrorBoundary
+      resetKeys={[location.pathname]}
+      fallbackRender={(props) => <GlobalErrorFallback errorProps={props} />}>
       <Outlet />
       <ToastContainer />
       <RenderModal />
