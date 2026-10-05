@@ -1,7 +1,7 @@
-import { TChatRoomParticipantsResponse } from "Src/typings/types";
+import { TChatRoomParticipantsResponse, TDmChatRoomResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
-export const getDmChatRooms = async (page = 1) => {
+export const getDmChatRooms = async (page = 1): Promise<TDmChatRoomResponse> => {
   const { data } = await axiosInstance
     .get(`/api/dms/chatrooms`, {
       params: {
