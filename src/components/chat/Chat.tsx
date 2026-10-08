@@ -147,7 +147,7 @@ const Chat: FC<ChatProps> = ({
           sx={muiMenuDarkModeSx}>
             {
               isEditable &&
-                <>
+                <div>
                   <MenuItem
                     onClick={() => setIsEditMode(true)}
                     sx={{ gap: '5px', color: 'var(--gray-3)' }}>
@@ -160,7 +160,7 @@ const Chat: FC<ChatProps> = ({
                     <DeleteIcon />
                     <span>메시지 삭제</span>
                   </MenuItem>
-                </>
+                </div>
             }
             {isEditable && !isMe && <Divider />}
             {
