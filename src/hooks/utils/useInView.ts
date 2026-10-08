@@ -8,7 +8,7 @@ export function useInView(
     rootMargin = '0px 0px 0px 0px',
   } = {},
 ) {
-  const targetRef = useRef(null);
+  const targetRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!enable || !targetRef.current) return;
