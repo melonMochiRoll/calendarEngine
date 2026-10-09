@@ -252,6 +252,7 @@ export type TImages = {
 };
 
 export type TImageMetaData = {
+  id: string,
   fileName: string,
   fileSize: number,
   contentType: string,
