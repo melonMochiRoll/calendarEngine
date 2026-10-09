@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { GET_USER_KEY } from "Constants/queryKeys";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -68,19 +68,30 @@ export function useChatSocket(queryKey: string, type: string) {
       if (!pending) return;
 
       if (pending.retryCount > 3) {
-        qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+        qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
           if (!prev) return;
 
-          const chats = prev?.chats.map(chat => {
-            if (chat.id === ChatId) {
-              return { ...chat, _status: ChatStatus.ERROR };
-            }
-            return chat;
+          const pages = prev.pages.map(page => {
+            const idx = page.chats.findIndex(chat => chat.id === ChatId);
+            if (idx === -1) return page;
+
+            const targetChat = page.chats[idx];
+            const chats = [ ...page.chats ];
+
+            chats[idx] = {
+              ...targetChat,
+              _status: ChatStatus.ERROR,
+            };
+
+            return {
+              chats,
+              hasMoreData: page.hasMoreData,
+            };
           });
 
           return {
-            chats,
-            hasMoreData: prev.hasMoreData,
+            pages,
+            pageParams: prev.pageParams,
           };
         });
         pendingMessages.current.delete(ChatId);
@@ -133,7 +144,9 @@ export function useChatSocket(queryKey: string, type: string) {
       metaDatas.push({ id, fileName: image.name, fileSize: image.size, contentType: image.type });
     }
 
-    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, ChatRoomId], (prev) => {
+      if (!prev) return;
+
       const now = dayjs().toISOString();
 
       const tempChat = {
@@ -163,9 +176,12 @@ export function useChatSocket(queryKey: string, type: string) {
         },
       };
 
+      const pages = [ ...prev.pages ];
+      pages[0].chats.unshift(tempChat);
+
       return {
-        chats: [ tempChat, ...prev?.chats || [] ],
-        hasMoreData: prev?.hasMoreData || false,
+        pages,
+        pageParams: prev.pageParams,
       };
     });
 
@@ -196,19 +212,30 @@ export function useChatSocket(queryKey: string, type: string) {
 
       emit(ChatToServer.SEND_CHAT, payload, tempChatId);
     } catch (err) {
-      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+      qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
-        const chats = prev?.chats.map(chat => {
-          if (chat.id === tempChatId) {
-            return { ...chat, _status: ChatStatus.ERROR };
-          }
-          return chat;
+        const pages = prev.pages.map(page => {
+          const idx = page.chats.findIndex(chat => chat.id === tempChatId);
+          if (idx === -1) return page;
+
+          const targetChat = page.chats[idx];
+          const chats = [ ...page.chats ];
+
+          chats[idx] = {
+            ...targetChat,
+            _status: ChatStatus.ERROR,
+          };
+
+          return {
+            chats,
+            hasMoreData: page.hasMoreData,
+          };
         });
 
         return {
-          chats,
-          hasMoreData: prev.hasMoreData,
+          pages,
+          pageParams: prev.pageParams,
         };
       });
     }
@@ -230,30 +257,38 @@ export function useChatSocket(queryKey: string, type: string) {
       return;
     }
 
-    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
 
-      const chats = prev.chats.map((chat) => {
-        if (chat.id === id) {
-          return {
-            ...chat,
-            content: newContent,
-            _oldContent: oldContent,
-            _status: ChatStatus.PENDING,
-            _retryAction: () => {
-              updateSharedspaceChat(ChatRoomId, id, oldContent, newContent);
-            },
-            _clearAction: () => {
-              resetErrorChat(ChatRoomId, id);
-            },
-          };
-        }
-        return chat;
+      const pages = prev.pages.map(page => {
+        const idx = page.chats.findIndex(chat => chat.id === id);
+        if (idx === -1) return page;
+        
+        const targetChat = page.chats[idx];
+        const chats = [ ...page.chats ];
+
+        chats[idx] = {
+          ...targetChat,
+          content: newContent,
+          _oldContent: oldContent,
+          _status: ChatStatus.PENDING,
+          _retryAction: () => {
+            updateSharedspaceChat(ChatRoomId, id, oldContent, newContent);
+          },
+          _clearAction: () => {
+            resetErrorChat(ChatRoomId, id);
+          },
+        };
+
+        return {
+          chats,
+          hasMoreData: page.hasMoreData
+        };
       });
 
       return {
-        chats,
-        hasMoreData: prev.hasMoreData,
+        pages,
+        pageParams: prev.pageParams,
       };
     });
 
@@ -264,19 +299,30 @@ export function useChatSocket(queryKey: string, type: string) {
 
       emit(ChatToServer.UPDATE_CHAT, { ChatRoomId, ChatId: id, content: newContent }, id);
     } catch (err) {
-      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+      qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
-        const chats = prev?.chats.map(chat => {
-          if (chat.id === id) {
-            return { ...chat, _status: ChatStatus.ERROR };
+        const pages = prev.pages.map(page => {
+          const idx = page.chats.findIndex(chat => chat.id === id);
+          if (idx === -1) return page;
+
+          const targetChat = page.chats[idx];
+          const chats = [ ...page.chats ];
+
+          chats[idx] = {
+            ...targetChat,
+            _status: ChatStatus.ERROR
           }
-          return chat;
+          
+          return {
+            ...page,
+            chats,
+          };
         });
 
         return {
-          chats,
-          hasMoreData: prev.hasMoreData,
+          pages,
+          pageParams: prev.pageParams,
         };
       });
     }
@@ -288,28 +334,35 @@ export function useChatSocket(queryKey: string, type: string) {
   ) => {
     if (!ChatRoomId) return;
 
-    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
 
-      const chats = prev.chats.map((chat) => {
-        if (chat.id === id) {
-          return {
-            ...chat,
-            _status: ChatStatus.PENDING,
-            _retryAction: () => {
-              deleteSharedspaceChat(ChatRoomId, id);
-            },
-            _clearAction: () => {
-              resetErrorChat(ChatRoomId, id);
-            },
-          };
-        }
-        return chat;
+      const pages = prev.pages.map(page => {
+        const idx = page.chats.findIndex(chat => chat.id === id);
+        if (idx === -1) return page;
+
+        const targetChat = page.chats[idx];
+        const chats = [ ...page.chats ];
+        chats[idx] = {
+          ...targetChat,
+          _status: ChatStatus.PENDING,
+          _retryAction: () => {
+            deleteSharedspaceChat(ChatRoomId, id);
+          },
+          _clearAction: () => {
+            resetErrorChat(ChatRoomId, id);
+          },
+        };
+
+        return {
+          chats,
+          hasMoreData: page.hasMoreData,
+        };
       });
 
       return {
-        chats,
-        hasMoreData: prev.hasMoreData,
+        pages,
+        pageParams: prev.pageParams,
       };
     });
 
@@ -320,19 +373,30 @@ export function useChatSocket(queryKey: string, type: string) {
 
       emit(ChatToServer.DELETE_CHAT, { ChatRoomId, ChatId: id }, id);
     } catch (err) {
-      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+      qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
-        const chats = prev?.chats.map(chat => {
-          if (chat.id === id) {
-            return { ...chat, _status: ChatStatus.ERROR };
+        const pages = prev.pages.map(page => {
+          const idx = page.chats.findIndex(chat => chat.id === id);
+          if (idx === -1) return page;
+
+          const targetChat = page.chats[idx];
+          const chats = [ ...page.chats ];
+
+          chats[idx] = {
+            ...targetChat,
+            _status: ChatStatus.ERROR
           }
-          return chat;
+          
+          return {
+            ...page,
+            chats,
+          };
         });
 
         return {
-          chats,
-          hasMoreData: prev.hasMoreData,
+          pages,
+          pageParams: prev.pageParams,
         };
       });
     }
@@ -345,28 +409,35 @@ export function useChatSocket(queryKey: string, type: string) {
   ) => {
     if (!ChatRoomId) return;
 
-    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
 
-      const chats = prev.chats.map((chat) => {
-        if (chat.id === ChatId) {
-          return {
-            ...chat,
-            _status: ChatStatus.PENDING,
-            _retryAction: () => {
-              deleteSharedspaceChatImage(ChatRoomId, ChatId, ImageId);
-            },
-            _clearAction: () => {
-              resetErrorChat(ChatRoomId, ChatId);
-            },
-          };
-        }
-        return chat;
+      const pages = prev.pages.map(page => {
+        const idx = page.chats.findIndex(chat => chat.id === ChatId);
+        if (idx === -1) return page;
+
+        const targetChat = page.chats[idx];
+        const chats = [ ...page.chats ];
+        chats[idx] = {
+          ...targetChat,
+          _status: ChatStatus.PENDING,
+          _retryAction: () => {
+            deleteSharedspaceChatImage(ChatRoomId, ChatId, ImageId);
+          },
+          _clearAction: () => {
+            resetErrorChat(ChatRoomId, ChatId);
+          },
+        };
+
+        return {
+          chats,
+          hasMoreData: page.hasMoreData,
+        };
       });
 
       return {
-        chats,
-        hasMoreData: prev.hasMoreData,
+        pages,
+        pageParams: prev.pageParams,
       };
     });
 
@@ -377,19 +448,30 @@ export function useChatSocket(queryKey: string, type: string) {
 
       emit(ChatToServer.DELETE_CHAT_IMAGE, { ChatRoomId, ChatId, ImageId }, ChatId);
     } catch (err) {
-      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+      qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
-        const chats = prev?.chats.map(chat => {
-          if (chat.id === ChatId) {
-            return { ...chat, _status: ChatStatus.ERROR };
+        const pages = prev.pages.map(page => {
+          const idx = page.chats.findIndex(chat => chat.id === ChatId);
+          if (idx === -1) return page;
+
+          const targetChat = page.chats[idx];
+          const chats = [ ...page.chats ];
+
+          chats[idx] = {
+            ...targetChat,
+            _status: ChatStatus.ERROR
           }
-          return chat;
+          
+          return {
+            ...page,
+            chats,
+          };
         });
 
         return {
-          chats,
-          hasMoreData: prev.hasMoreData,
+          pages,
+          pageParams: prev.pageParams,
         };
       });
     }
@@ -397,31 +479,42 @@ export function useChatSocket(queryKey: string, type: string) {
 
   const onChatCreated = (data: TChatPayload) => {
     if (data.permission.isSender) {
-      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+      qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
-        const chats = prev.chats.map(chat => {
-          if (chat.id === data.id) {
-            return {
-              ...data,
-              ChatImages: data.ChatImages.map((image, idx) => Object.assign(image, { _tempPath: chat.ChatImages[idx]._tempPath })),
-            };
-          }
-          return chat;
+        const pages = prev.pages.map(page => {
+          const idx = page.chats.findIndex(chat => chat.id === data.id);
+          if (idx === -1) return page;
+          
+          const targetChat = page.chats[idx];
+          const chats = [ ...page.chats ];
+
+          chats[idx] = {
+            ...data,
+            ChatImages: data.ChatImages.map((image, i) => Object.assign(image, { _tempPath: targetChat.ChatImages[i]._tempPath })),
+          };
+
+          return {
+            chats,
+            hasMoreData: page.hasMoreData,
+          };
         });
 
         return {
-          chats,
-          hasMoreData: prev.hasMoreData,
+          pages,
+          pageParams: prev.pageParams,
         };
       });
     } else {
-      qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+      qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
         if (!prev) return;
 
+        const pages = [ ...prev.pages ];
+        pages[0].chats.unshift(data);
+
         return {
-          chats: [ data, ...prev.chats ],
-          hasMoreData: prev.hasMoreData,
+          pages,
+          pageParams: prev.pageParams,
         };
       });
     }
@@ -437,43 +530,55 @@ export function useChatSocket(queryKey: string, type: string) {
   };
 
   const onChatUpdated = (data: Pick<TChatPayload, 'id' | 'content' | 'updatedAt' | 'permission'>) => {
-    qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
       if (!prev) return;
 
-      const chats = prev.chats.map((chat) => {
-        if (chat.id === data.id) {
-          const { _status, _retryAction, _clearAction, ...rest } = chat;
+      const pages = prev.pages.map(page => {
+        const idx = page.chats.findIndex(chat => chat.id === data.id);
+        if (idx === -1) return page;
 
-          return {
-            ...rest,
-            content: data.content,
-            updatedAt: data.updatedAt,
-          };
-        }
-        return chat;
+        const { _status, _retryAction, _clearAction, ...rest } = page.chats[idx];
+        const chats = [ ...page.chats ];
+
+        chats[idx] = {
+          ...rest,
+          content: data.content,
+          updatedAt: data.updatedAt,
+        };
+
+        return {
+          chats,
+          hasMoreData: page.hasMoreData,
+        };
       });
 
       return {
-        chats,
-        hasMoreData: prev.hasMoreData,
+        pages,
+        pageParams: prev.pageParams,
       };
     });
   };
 
   const onChatDeleted = (data: Pick<TChatPayload, 'id'>) => {
-    qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
       if (!prev) return;
 
-      const idx = prev.chats.findIndex(chat => chat.id === data.id);
+      const pages = prev.pages.map(page => {
+        const idx = page.chats.findIndex(chat => chat.id === data.id);
+        if (idx === -1) return page;
 
-      if (idx < 0) return;
+        const head = page.chats.slice(0, idx);
+        const tail = page.chats.slice(idx + 1, page.chats.length);
 
-      const head = prev.chats.slice(0, idx);
-      const tail = prev.chats.slice(idx + 1, prev.chats.length);
+        return {
+          chats: [ ...head, ...tail ],
+          hasMoreData: page.hasMoreData,
+        };
+      });
 
       return {
-        chats: [ ...head, ...tail ],
-        hasMoreData: prev.hasMoreData,
+        pages,
+        pageParams: prev.pageParams,
       };
     });
   };
@@ -481,28 +586,35 @@ export function useChatSocket(queryKey: string, type: string) {
   const onChatImageDeleted = (data: { ChatId: string, ImageId: string }) => {
     const { ChatId, ImageId } = data;
 
-    qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
       if (!prev) return;
 
-      const chats = prev.chats.map(chat => {
-        if (chat.id === ChatId) {
-          const { _status, _retryAction, _clearAction, ...rest } = chat;
+      const pages = prev.pages.map(page => {
+        const idx = page.chats.findIndex(chat => chat.id === ChatId);
+        if (idx === -1) return page;
 
-          const imageIdx = chat.ChatImages.findIndex(image => image.id === ImageId);
-          const imagesHead = chat.ChatImages.slice(0, imageIdx);
-          const imagesTail = chat.ChatImages.slice(imageIdx + 1, chat.ChatImages.length);
+        const targetChat = page.chats[idx];
+        const { _status, _retryAction, _clearAction, ...rest } = targetChat;
+        const chats = [ ...page.chats ];
 
-          return {
-            ...rest,
-            ChatImages: [ ...imagesHead, ...imagesTail ],
-          };
-        }
-        return chat;
+        const imageIdx = targetChat.ChatImages.findIndex(image => image.id === ImageId);
+        const imagesHead = targetChat.ChatImages.slice(0, imageIdx);
+        const imagesTail = targetChat.ChatImages.slice(imageIdx + 1, targetChat.ChatImages.length);
+        
+        chats[idx] = {
+          ...rest,
+          ChatImages: [ ...imagesHead, ...imagesTail ],
+        };
+
+        return {
+          chats,
+          hasMoreData: page.hasMoreData,
+        };
       });
 
       return {
-        chats,
-        hasMoreData: prev.hasMoreData,
+        pages,
+        pageParams: prev.pageParams,
       };
     });
   };
@@ -537,62 +649,85 @@ export function useChatSocket(queryKey: string, type: string) {
       }
     }
 
-    qc.setQueryData<TChats>([queryKey, _ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
       if (!prev) return;
+      
+      const pages = prev.pages.map(page => {
+        const idx = page.chats.findIndex(chat => chat.id === ChatId);
+        if (idx === -1) return page;
 
-      const chats = prev?.chats.map(chat => {
-        if (chat.id === ChatId) {
-          return {
-            ...chat,
-            _status: ChatStatus.ERROR,
-            content: chat?._oldContent || chat.content,
-          };
-        }
-        return chat;
+        const targetChat = page.chats[idx];
+        const chats = [ ...page.chats ];
+
+        chats[idx] = {
+          ...targetChat,
+          _status: ChatStatus.ERROR,
+          content: targetChat?._oldContent || targetChat.content,
+        };
+
+        return {
+          chats,
+          hasMoreData: page.hasMoreData,
+        };
       });
 
       return {
-        chats,
-        hasMoreData: prev.hasMoreData,
+        pages,
+        pageParams: prev.pageParams,
       };
     });
   };
 
   const deleteErrorChat = (ChatRoomId: string | undefined, ChatId: string) => {
-    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
 
-      const idx = prev.chats.findIndex(chat => chat.id === ChatId);
+      const pages = prev.pages.map(page => {
+        const idx = page.chats.findIndex(chat => chat.id === ChatId);
+        if (idx === -1) return page;
 
-      if (idx < 0) return;
+        const head = page.chats.slice(0, idx);
+        const tail = page.chats.slice(idx + 1, page.chats.length);
 
-      const rest = [ ...prev.chats.slice(0, idx), ...prev.chats.slice(idx + 1, prev.chats.length) ];
+        return {
+          chats: [ ...head, ...tail ],
+          hasMoreData: page.hasMoreData,
+        };
+      });
 
       return {
-        ...prev,
-        chats: rest || [], 
+        pages,
+        pageParams: prev.pageParams,
       };
     });
   };
 
   const resetErrorChat = (ChatRoomId: string | undefined, ChatId: string) => {
-    qc.setQueryData<TChats>([queryKey, ChatRoomId], (prev) => {
+    qc.setQueryData<InfiniteData<TChats>>([queryKey, ChatRoomId], (prev) => {
       if (!prev) return;
+      
+      const pages = prev.pages.map(page => {
+        const idx = page.chats.findIndex(chat => chat.id === ChatId);
+        if (idx === -1) return page;
 
-      const chats = prev.chats.map(chat => {
-        if (chat.id === ChatId) {
-          const { _status, ...rest } = chat;
-          return {
-            ...rest,
-            content: chat?._oldContent || chat.content,
-          };
-        }
-        return chat;
+        const targetChat = page.chats[idx];
+        const { _status, ...rest } = targetChat;
+        const chats = [ ...page.chats ];
+
+        chats[idx] = {
+          ...rest,
+          content: targetChat?._oldContent || targetChat.content,
+        };
+
+        return {
+          chats,
+          hasMoreData: page.hasMoreData,
+        };
       });
 
       return {
-        chats,
-        hasMoreData: prev.hasMoreData,
+        pages,
+        pageParams: prev.pageParams,
       };
     });
   };

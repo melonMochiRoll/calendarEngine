@@ -1,10 +1,10 @@
-import React, { FC, useCallback, useRef, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import styled from '@emotion/styled';
 import { useChats } from 'Hooks/queries/useChats';
 import { useParams } from 'react-router-dom';
 import useInput from 'Hooks/utils/useInput';
 import { toast } from 'react-toastify';
-import { defaultToastOption, imageTooLargeMessage, tooManyImagesMessage, waitingMessage } from 'Constants/notices';
+import { defaultToastOption, imageTooLargeMessage, tooManyImagesMessage } from 'Constants/notices';
 import ChatFooter from 'Components/chat/ChatFooter';
 import ChatList from 'Components/chat/ChatList';
 import ChatDisableFooter from 'Src/components/chat/ChatDisableFooter';
@@ -12,14 +12,36 @@ import useUser from 'Src/hooks/queries/useUser';
 import { useChatSocket } from 'Src/hooks/useChatSocket';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 import { CHATROOM_TYPE } from 'Src/constants/constants';
+import { useInView } from 'Src/hooks/utils/useInView';
 
 const ChatContainer: FC = () => {
   const { ChatRoomId } = useParams();
   const { data: userData } = useUser();
 
-  const { data: chatList, loadMore } = useChats();
+  const {
+    data: chatListData,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useChats();
 
-  const scrollbarRef = useRef<HTMLUListElement>(null);
+  const sentinelRef = useInView(() => {
+    fetchNextPage();
+    canShowNotify.current = true;
+  }, {
+    enable: hasNextPage && !isFetchingNextPage && !isFetchNextPageError,
+    rootMargin: '0px 0px 100px 0px',
+  });
+
+  const bottomRef = useInView(() => {
+    canShowNotify.current = false;
+    setShowNewChat(null);
+  }, {
+    enable: true,
+    rootMargin: '100px 0px 0px 0px',
+  });
+
   const [ chat, onChangeChat, setChat ] = useInput('');
   const [ images, setImages ] = useState<File[]>([]);
   const [ previews, setPreviews ] = useState<string[]>([]);
@@ -71,11 +93,13 @@ const ChatContainer: FC = () => {
   const onSubmit = useCallback((ChatRoomId: string | undefined, content: string, images: File[], previews: string[]) => {
     sendSharedspaceChat(ChatRoomId, content, images, previews);
 
-    scrollbarRef?.current?.scrollTo(0, 0);
+    bottomRef?.current?.scrollIntoView({ block: 'end', behavior: 'instant' });
     setChat('');
     setImages([]);
     setPreviews([]);
   }, [sendSharedspaceChat]);
+
+  const chatList = chatListData.pages.flatMap(page => page.chats);
 
   return (
     <ChatBlock>
@@ -83,14 +107,14 @@ const ChatContainer: FC = () => {
         <ChatList
           chatList={chatList}
           previews={previews}
-          scrollbarRef={scrollbarRef}
+          sentinelRef={sentinelRef}
+          bottomRef={bottomRef}
+          hasNextPage={hasNextPage}
           showNewChat={showNewChat}
-          setShowNewChat={setShowNewChat}
           canShowNotify={canShowNotify}
           updateSharedspaceChat={updateSharedspaceChat}
           deleteSharedspaceChat={deleteSharedspaceChat}
           deleteSharedspaceChatImage={deleteSharedspaceChatImage}
-          loadMore={loadMore}
           deleteFile={deleteFile} />
         {
           userData ?

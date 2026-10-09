@@ -6,92 +6,59 @@ import DateSeparator from 'Components/chat/DateSeparator';
 import NewChatNotifier from 'Components/chat/NewChatNotifier';
 import ImagePreviewer from 'Components/chat/ImagePreviewer';
 import { formatDate } from 'Lib/utilFunction';
-import { TChatPayload, TChats } from 'Typings/types';
-import { throttle } from 'lodash';
-import { useQueryClient } from '@tanstack/react-query';
-import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
+import { TChatPayload } from 'Typings/types';
 import useUser from 'Src/hooks/queries/useUser';
 
 interface ChatListProps {
-  chatList: TChats,
+  chatList: TChatPayload[],
   previews: string[],
-  scrollbarRef: React.RefObject<HTMLUListElement>,
+  sentinelRef: React.MutableRefObject<HTMLDivElement | null>,
+  bottomRef: React.MutableRefObject<HTMLDivElement | null>,
+  hasNextPage: boolean,
   showNewChat: {
     chat: string,
     email: string,
     nickname: string,
     profileImage: string,
   } | null,
-  setShowNewChat: React.Dispatch<React.SetStateAction<{
-    chat: string,
-    email: string,
-    nickname: string,
-    profileImage: string,
-  } | null>>,
   canShowNotify: React.MutableRefObject<boolean>,
   updateSharedspaceChat: (ChatRoomId: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
   deleteSharedspaceChat: (ChatRoomId: string | undefined, ChatId: string) => void,
   deleteSharedspaceChatImage: (ChatRoomId: string | undefined, ChatId: string, ImageId: string) => void,
-  loadMore: () => void,
   deleteFile: (idx: number) => void,
 };
 
 const ChatList: FC<ChatListProps> = ({
   chatList,
   previews,
-  scrollbarRef,
+  sentinelRef,
+  bottomRef,
+  hasNextPage,
   showNewChat,
-  setShowNewChat,
   canShowNotify,
   updateSharedspaceChat,
   deleteSharedspaceChat,
   deleteSharedspaceChatImage,
-  loadMore,
   deleteFile,
 }) => {
   const localTimeZone = dayjs.tz.guess();
-  const qc = useQueryClient();
-
   const { data: userData } = useUser();
 
-  const onScroll = throttle(() => {
-    if (scrollbarRef.current) {
-      const isTop = scrollbarRef.current.scrollHeight - 100 < scrollbarRef.current.clientHeight - scrollbarRef.current.scrollTop;
-
-      if (isTop && chatList.hasMoreData) {
-        loadMore();
-        scrollbarRef?.current?.scrollTo(0, -200);
-      }
-
-      const newChatNoticeBorder = (0 - scrollbarRef.current.scrollTop) > scrollbarRef.current.clientHeight / 2;
-      if (newChatNoticeBorder && !canShowNotify.current) {
-        canShowNotify.current = true;
-      }
-
-      const isBottom = scrollbarRef.current.scrollTop > -100;
-      if (isBottom && canShowNotify.current) {
-        canShowNotify.current = false;
-        setShowNewChat(null);
-      }
-    }
-  }, 300);
-
   return (
-    <List
-      ref={scrollbarRef}
-      onScroll={onScroll}>
+    <List>
+      <SentinelDiv ref={bottomRef} />
       {canShowNotify.current && showNewChat &&
         <NewChatNotifier
           newChat={showNewChat}
-          onClick={() => scrollbarRef?.current?.scrollTo(0, 0)} />}
+          onClick={() => bottomRef.current?.scrollIntoView({ block: 'end', behavior: 'instant' })} />}
       {Boolean(previews.length) &&
         <ImagePreviewer
           previews={previews}
           deleteFile={deleteFile} />}
-      {chatList.chats.length ?
-        chatList.chats.map((chat: TChatPayload, idx: number) => {
-          const isLastChat = idx >= chatList.chats.length - 1 && !chatList.hasMoreData;
-          const isDateBoundary = idx < chatList.chats.length - 1 && (dayjs(chat.createdAt).tz(localTimeZone).format('DD') !== dayjs(chatList.chats[idx + 1].createdAt).tz(localTimeZone).format('DD'));
+      {chatList.length ?
+        chatList.map((chat: TChatPayload, idx: number) => {
+          const isLastChat = idx >= chatList.length - 1 && !hasNextPage;
+          const isDateBoundary = idx < chatList.length - 1 && (dayjs(chat.createdAt).tz(localTimeZone).format('DD') !== dayjs(chatList[idx + 1].createdAt).tz(localTimeZone).format('DD'));
           const hasDateSeparator = isLastChat || isDateBoundary;
 
           if (hasDateSeparator) {
@@ -119,6 +86,7 @@ const ChatList: FC<ChatListProps> = ({
         })
         :
         <FirstChatNotice>첫 메시지를 전송해보세요</FirstChatNotice>}
+        <SentinelDiv ref={sentinelRef} />
     </List>
   );
 };
@@ -143,4 +111,9 @@ const FirstChatNotice = styled.span`
   color: var(--white);
   text-align: center;
   padding-bottom: 50px;
+`;
+
+const SentinelDiv = styled.div`
+  height: 1px;
+  flex-shrink: 0;
 `;

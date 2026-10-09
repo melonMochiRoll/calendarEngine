@@ -1,36 +1,32 @@
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { getSharedspaceChats } from "Src/api/chatsApi";
 import { GET_SHAREDSPACE_CHATS_KEY } from "Constants/queryKeys";
 import { handleRetry } from "Lib/utilFunction";
-import { debounce } from "lodash";
-import { useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { TChats } from "Typings/types";
 
 export function useChats() {
   const { ChatRoomId: _ChatRoomId } = useParams();
-  const qc = useQueryClient();
 
-  const { data } = useSuspenseQuery<TChats>({
+  const {
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useSuspenseInfiniteQuery({
     queryKey: [GET_SHAREDSPACE_CHATS_KEY, _ChatRoomId],
-    queryFn: () => getSharedspaceChats(_ChatRoomId),
+    queryFn: ({ pageParam }) => getSharedspaceChats(_ChatRoomId, pageParam),
+    initialPageParam: '',
+    getNextPageParam: (lastPage) => lastPage.hasMoreData ? lastPage.chats[lastPage.chats.length-1].id : undefined,
     refetchOnWindowFocus: false,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
-  const loadMore = useCallback(debounce(async () => {
-    const moreChats = await getSharedspaceChats(_ChatRoomId, data.chats[data.chats.length-1].id);
-
-    qc.setQueryData<TChats>([GET_SHAREDSPACE_CHATS_KEY, _ChatRoomId], (prev) => {
-      return {
-        ...moreChats,
-        chats: [ ...prev?.chats || [], ...moreChats.chats ],
-      };
-    });
-  }, 300), [data]);
-
   return {
     data,
-    loadMore,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
   } as const;
 }
