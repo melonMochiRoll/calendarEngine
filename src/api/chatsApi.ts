@@ -1,12 +1,15 @@
-import { TImageMetaData } from "Src/typings/types";
+import { TChats, TImageMetaData } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getSharedspaceChats = async (
   ChatRoomId: string | undefined,
   beforeChatId?: string,
-) => {
+): Promise<TChats> => {
   if (!ChatRoomId) {
-    return;
+    return {
+      chats: [],
+      hasMoreData: false,
+    };
   }
 
   const { data } = await axiosInstance
