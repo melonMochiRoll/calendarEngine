@@ -41,12 +41,12 @@ export const getDmChats = async (
 };
 
 export const generatePresignedPutUrl = async (
-  SharedspaceId: string | undefined,
+  ChatRoomId: string | undefined,
   metaDatas: TImageMetaData[],
 ): Promise<Array<{ key: string, presignedUrl: string, contentType: string }>> => {
   const { data } = await axiosInstance
     .post(
-      `/api/space/${SharedspaceId}/chats/images/presigned-url`,
+      `/api/chatrooms/${ChatRoomId}/presigned-url`,
       {
         metaDatas,
       },
