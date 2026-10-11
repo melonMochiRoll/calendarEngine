@@ -122,7 +122,6 @@ const ListHeader = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: 0 20%;
   border-bottom: 1px solid var(--light-gray);
 `;
 

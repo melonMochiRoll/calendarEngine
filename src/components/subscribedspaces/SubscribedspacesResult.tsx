@@ -35,6 +35,6 @@ const List = styled.ul`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: 0 20% 2% 20%;
+  padding: 0 0 2% 0;
   margin: 0;
 `;
