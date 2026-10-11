@@ -46,7 +46,7 @@ const SharedspaceFallback: FC<SharedspaceFallbackProps> = ({
               type='button'
               bgColor='var(--naver-green)'
               onClick={() => {
-                navigate(PATHS.SHAREDSPACE);
+                navigate(PATHS.HOME);
                 resetErrorBoundary();
               }}>
                 <HomeIcon />
