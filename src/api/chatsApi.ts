@@ -25,9 +25,12 @@ export const getSharedspaceChats = async (
 export const getDmChats = async (
   ChatRoomId: string | undefined,
   beforeChatId?: string,
-) => {
+): Promise<TChats> => {
   if (!ChatRoomId) {
-    return;
+    return {
+      chats: [],
+      hasMoreData: false,
+    };
   }
 
   const { data } = await axiosInstance
