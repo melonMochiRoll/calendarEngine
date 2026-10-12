@@ -2,7 +2,7 @@ import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
 import SubscribedSpacesContainer from 'Containers/SubscribedSpacesContainer';
 import { ErrorBoundary } from 'react-error-boundary';
-import SharedspaceFallback from 'Src/components/async/fallbackUI/SharedspaceFallback';
+import CommonFallback from 'Src/components/async/fallbackUI/CommonFallback';
 import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
 import Header from 'Src/layouts/Header';
 import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
@@ -13,7 +13,7 @@ const SharedspacesPage: FC = () => {
       <Suspense fallback={<SkeletonHeader />}>
         <Header />
       </Suspense>
-      <ErrorBoundary fallbackRender={(props) => <SharedspaceFallback errorProps={props} />}>
+      <ErrorBoundary fallbackRender={(props) => <CommonFallback errorProps={props} />}>
         <Suspense fallback={<LoadingPage />}>
           <SubscribedSpacesContainer />
         </Suspense>

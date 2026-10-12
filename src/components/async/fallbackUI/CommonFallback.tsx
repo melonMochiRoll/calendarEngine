@@ -8,11 +8,11 @@ import { FallbackProps, useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 
-interface SharedspaceFallbackProps {
+interface CommonFallbackFallbackProps {
   errorProps: FallbackProps,
 };
 
-const SharedspaceFallback: FC<SharedspaceFallbackProps> = ({
+const CommonFallback: FC<CommonFallbackFallbackProps> = ({
   errorProps,
 }) => {
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ const SharedspaceFallback: FC<SharedspaceFallbackProps> = ({
   );
 };
 
-export default SharedspaceFallback;
+export default CommonFallback;
 
 const Background = styled.div`
   display: flex;

@@ -2,11 +2,11 @@ import React, { FC, Suspense } from 'react';
 import ChatContainer from 'Containers/ChatContainer';
 import { ErrorBoundary } from 'react-error-boundary';
 import SkeletonChatList from 'Src/components/async/skeleton/SkeletonChatList';
-import SharedspaceFallback from 'Src/components/async/fallbackUI/SharedspaceFallback';
+import CommonFallback from 'Src/components/async/fallbackUI/CommonFallback';
 
 const SharedspacesChatPage: FC = () => {
   return (
-    <ErrorBoundary fallbackRender={(props) => <SharedspaceFallback errorProps={props} />}>
+    <ErrorBoundary fallbackRender={(props) => <CommonFallback errorProps={props} />}>
       <Suspense fallback={<SkeletonChatList />}>
         <ChatContainer />
       </Suspense>
