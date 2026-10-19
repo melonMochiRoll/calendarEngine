@@ -19,7 +19,6 @@ export const getChatRoomParticipants = async (
   if (!ChatRoomId) {
     return {
       participants: [],
-      participantCount: 0,
       hasMoreData: false,
     };
   }

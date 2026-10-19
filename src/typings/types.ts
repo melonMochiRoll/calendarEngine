@@ -340,6 +340,5 @@ export type TChatRoomParticipant = {
 
 export type TChatRoomParticipantsResponse = {
   participants: TChatRoomParticipant[],
-  participantCount: number,
   hasMoreData: boolean,
 };
