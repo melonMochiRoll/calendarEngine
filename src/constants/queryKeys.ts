@@ -10,6 +10,7 @@ export const GET_INVITES_KEY = 'getInvites';
 export const GET_FRIENDSHIPS = 'getFriendships';
 export const GET_FRIENDSHIP_REQUESTS_KEY = 'getFriendshipRequests';
 export const GET_CHATROOM_PARTICIPANTS_KEY = 'getChatRoomParticipants';
+export const GET_CHATROOM_PARTICIPANT_COUNT_KEY = 'getChatRoomParticipantCount';
 
 export const GET_DM_CHATS_KEY = 'getDmChats';
 export const GET_DM_CHATROOMS_KEY = 'getDmChatRooms';
