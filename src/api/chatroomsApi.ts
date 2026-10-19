@@ -1,5 +1,6 @@
 import { TChatRoomParticipantsResponse, TDmChatRoomResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
+import { checkURL } from "Src/constants/notices";
 
 export const getDmChatRooms = async (beforeLastMessageAt?: string): Promise<TDmChatRoomResponse> => {
   const { data } = await axiosInstance
@@ -29,6 +30,19 @@ export const getChatRoomParticipants = async (
         before: beforeParticipantId,
       },
     });
+
+  return data;
+};
+
+export const getChatRoomParticipantCount = async (
+  ChatRoomId: string | undefined,
+): Promise<number> => {
+  if (!ChatRoomId) {
+    throw new Error(checkURL);
+  }
+
+  const { data } = await axiosInstance
+    .get(`/api/chatrooms/${ChatRoomId}/participants/count`);
 
   return data;
 };
