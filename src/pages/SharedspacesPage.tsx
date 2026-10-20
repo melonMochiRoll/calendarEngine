@@ -4,28 +4,15 @@ import SubscribedSpacesContainer from 'Containers/SubscribedSpacesContainer';
 import { ErrorBoundary } from 'react-error-boundary';
 import CommonFallback from 'Src/components/async/fallbackUI/CommonFallback';
 import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
-import Header from 'Src/layouts/Header';
-import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
 
 const SharedspacesPage: FC = () => {
   return (
-    <Block>
-      <Suspense fallback={<SkeletonHeader />}>
-        <Header />
+    <ErrorBoundary fallbackRender={(props) => <CommonFallback errorProps={props} />}>
+      <Suspense fallback={<LoadingPage />}>
+        <SubscribedSpacesContainer />
       </Suspense>
-      <ErrorBoundary fallbackRender={(props) => <CommonFallback errorProps={props} />}>
-        <Suspense fallback={<LoadingPage />}>
-          <SubscribedSpacesContainer />
-        </Suspense>
-      </ErrorBoundary>
-    </Block>
+    </ErrorBoundary>
   );
 };
 
 export default SharedspacesPage;
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-`;
