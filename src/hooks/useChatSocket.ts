@@ -638,15 +638,7 @@ export function useChatSocket(queryKey: string, type: string) {
     }
 
     if (type === ERROR_TYPE.BAD_REQUEST_ERROR) {
-      const data = qc.getQueryData<TChats>([queryKey, _ChatRoomId]);
-      
-      if (data) {
-        const chatIdx = data.chats.findIndex(chat => chat.id === ChatId);
-
-        if (chatIdx >= 0 && data.chats[chatIdx]._clearAction) {
-          toast.error(waitingMessage, defaultToastOption);
-        }
-      }
+      toast.error(waitingMessage, defaultToastOption);
     }
 
     qc.setQueryData<InfiniteData<TChats>>([queryKey, _ChatRoomId], (prev) => {
