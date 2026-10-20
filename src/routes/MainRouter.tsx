@@ -7,8 +7,10 @@ const MainPage = React.lazy(() => import('../pages/MainPage'));
 const LoginPage = React.lazy(() => import('../pages/LoginPage'));
 const JoinPage = React.lazy(() => import('../pages/JoinPage'));
 const SharedspacesLayout = React.lazy(() => import('../layouts/SharedspacesLayout'));
+const SharedspacesPage = React.lazy(() => import('../pages/SharedspacesPage'));
 const SharedspacesViewPage = React.lazy(() => import('../pages/SharedspacesViewPage'));
 const SharedspacesChatPage = React.lazy(() => import('../pages/SharedspacesChatPage'));
+const DmChatPage = React.lazy(() => import('../pages/DmChatPage'));
 const JoinRequestSenderPage = React.lazy(() => import('../pages/JoinRequestSenderPage'));
 const NotFoundPage = React.lazy(() => import('../pages/errorPage/NotFoundPage'));
 const InternalServerErrorPage = React.lazy(() => import('../pages/errorPage/InternalServerErrorPage'));
@@ -18,7 +20,14 @@ const MainRouter = createBrowserRouter([
     path: PATHS.HOME,
     element: <Layout />,
     children: [
-      { index: true, element: <MainPage /> },
+      {
+        path: '',
+        element: <MainPage />,
+        children: [
+          { index: true, element: <SharedspacesPage /> },
+          { path: `${PATHS.CHATROOM}/:ChatRoomId`, element: <DmChatPage /> }
+        ],
+      },
       { path: PATHS.LOGIN, element: <LoginPage /> },
       { path: PATHS.JOIN, element: <JoinPage /> },
       {
