@@ -104,18 +104,20 @@ const ChatContainer: FC = () => {
   return (
     <ChatBlock>
       <ChatWrapper>
-        <ChatList
-          chatList={chatList}
-          previews={previews}
-          sentinelRef={sentinelRef}
-          bottomRef={bottomRef}
-          hasNextPage={hasNextPage}
-          showNewChat={showNewChat}
-          canShowNotify={canShowNotify}
-          updateSharedspaceChat={updateSharedspaceChat}
-          deleteSharedspaceChat={deleteSharedspaceChat}
-          deleteSharedspaceChatImage={deleteSharedspaceChatImage}
-          deleteFile={deleteFile} />
+        <List>
+          <ChatList
+            chatList={chatList}
+            previews={previews}
+            sentinelRef={sentinelRef}
+            bottomRef={bottomRef}
+            hasNextPage={hasNextPage}
+            showNewChat={showNewChat}
+            canShowNotify={canShowNotify}
+            updateSharedspaceChat={updateSharedspaceChat}
+            deleteSharedspaceChat={deleteSharedspaceChat}
+            deleteSharedspaceChatImage={deleteSharedspaceChatImage}
+            deleteFile={deleteFile} />
+        </List>
         {
           userData ?
             <ChatFooter
@@ -148,4 +150,16 @@ const ChatWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: var(--dark-gray);
+`;
+
+const List = styled.ul`
+  display: flex;
+  flex-direction: column-reverse;
+  width: 100%;
+  height: 80%;
+  padding: 0;
+  padding-bottom: 30px;
+  margin: 0;
+  gap: 20px;
+  overflow-y: scroll;
 `;

@@ -45,7 +45,7 @@ const ChatList: FC<ChatListProps> = ({
   const { data: userData } = useUser();
 
   return (
-    <List>
+    <>
       <SentinelDiv ref={bottomRef} />
       {canShowNotify.current && showNewChat &&
         <NewChatNotifier
@@ -87,23 +87,11 @@ const ChatList: FC<ChatListProps> = ({
         :
         <FirstChatNotice>첫 메시지를 전송해보세요</FirstChatNotice>}
         <SentinelDiv ref={sentinelRef} />
-    </List>
+    </>
   );
 };
 
 export default memo(ChatList);
-
-const List = styled.ul`
-  display: flex;
-  flex-direction: column-reverse;
-  width: 100%;
-  height: 80%;
-  padding: 0;
-  padding-bottom: 30px;
-  margin: 0;
-  gap: 20px;
-  overflow-y: scroll;
-`;
 
 const FirstChatNotice = styled.span`
   font-size: 18px;
