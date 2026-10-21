@@ -13,9 +13,9 @@ const Header: FC = () => {
       <div>
         {_ChatRoomId &&
           <DirectMessageWrapper>
-            <IconButton onClick={() => navigate(-1)}>
+            <IconButton onClick={() => navigate('/')}>
               <ArrowIcon />
-              <span>뒤로</span>
+              <span>홈으로</span>
             </IconButton>
           </DirectMessageWrapper>
         }
