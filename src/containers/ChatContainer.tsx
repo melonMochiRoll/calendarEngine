@@ -13,6 +13,8 @@ import { useChatSocket } from 'Src/hooks/useChatSocket';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 import { CHATROOM_TYPE } from 'Src/constants/constants';
 import { useInView } from 'Src/hooks/utils/useInView';
+import NewChatNotifier from 'Src/components/chat/NewChatNotifier';
+import ImagePreviewer from 'Src/components/chat/ImagePreviewer';
 
 const ChatContainer: FC = () => {
   const { ChatRoomId } = useParams();
@@ -105,18 +107,22 @@ const ChatContainer: FC = () => {
     <ChatBlock>
       <ChatWrapper>
         <List>
+          {canShowNotify.current && showNewChat &&
+            <NewChatNotifier
+              newChat={showNewChat}
+              onClick={() => bottomRef.current?.scrollIntoView({ block: 'end', behavior: 'instant' })} />}
+          {Boolean(previews.length) &&
+            <ImagePreviewer
+              previews={previews}
+              deleteFile={deleteFile} />}
           <ChatList
             chatList={chatList}
-            previews={previews}
             sentinelRef={sentinelRef}
             bottomRef={bottomRef}
             hasNextPage={hasNextPage}
-            showNewChat={showNewChat}
-            canShowNotify={canShowNotify}
             updateSharedspaceChat={updateSharedspaceChat}
             deleteSharedspaceChat={deleteSharedspaceChat}
-            deleteSharedspaceChatImage={deleteSharedspaceChatImage}
-            deleteFile={deleteFile} />
+            deleteSharedspaceChatImage={deleteSharedspaceChatImage} />
         </List>
         {
           userData ?

@@ -11,35 +11,22 @@ import useUser from 'Src/hooks/queries/useUser';
 
 interface ChatListProps {
   chatList: TChatPayload[],
-  previews: string[],
   sentinelRef: React.MutableRefObject<HTMLDivElement | null>,
   bottomRef: React.MutableRefObject<HTMLDivElement | null>,
   hasNextPage: boolean,
-  showNewChat: {
-    chat: string,
-    email: string,
-    nickname: string,
-    profileImage: string,
-  } | null,
-  canShowNotify: React.MutableRefObject<boolean>,
   updateSharedspaceChat: (ChatRoomId: string | undefined, ChatId: string, oldContent: string, newContent: string) => void,
   deleteSharedspaceChat: (ChatRoomId: string | undefined, ChatId: string) => void,
   deleteSharedspaceChatImage: (ChatRoomId: string | undefined, ChatId: string, ImageId: string) => void,
-  deleteFile: (idx: number) => void,
 };
 
 const ChatList: FC<ChatListProps> = ({
   chatList,
-  previews,
   sentinelRef,
   bottomRef,
   hasNextPage,
-  showNewChat,
-  canShowNotify,
   updateSharedspaceChat,
   deleteSharedspaceChat,
   deleteSharedspaceChatImage,
-  deleteFile,
 }) => {
   const localTimeZone = dayjs.tz.guess();
   const { data: userData } = useUser();
@@ -47,14 +34,6 @@ const ChatList: FC<ChatListProps> = ({
   return (
     <>
       <SentinelDiv ref={bottomRef} />
-      {canShowNotify.current && showNewChat &&
-        <NewChatNotifier
-          newChat={showNewChat}
-          onClick={() => bottomRef.current?.scrollIntoView({ block: 'end', behavior: 'instant' })} />}
-      {Boolean(previews.length) &&
-        <ImagePreviewer
-          previews={previews}
-          deleteFile={deleteFile} />}
       {chatList.length ?
         chatList.map((chat: TChatPayload, idx: number) => {
           const isLastChat = idx >= chatList.length - 1 && !hasNextPage;
