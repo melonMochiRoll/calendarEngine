@@ -10,6 +10,9 @@ import { SocketStatus } from 'Src/constants/constants';
 import NetworkIcon from '@mui/icons-material/RssFeedRounded';
 import NetworkCheckIcon from '@mui/icons-material/NetworkCheckRounded';
 import { useAppSelector } from 'Src/hooks/reduxHooks';
+import useUser from 'Src/hooks/queries/useUser';
+import { useParams } from 'react-router-dom';
+import ChatDisableFooter from './ChatDisableFooter';
 
 interface ChatFooterProps {
   onSubmit: () => void,
@@ -25,6 +28,11 @@ const ChatFooter: FC<ChatFooterProps> = ({
   onChangeImageFiles,
 }) => {
   const { socketStatus } = useAppSelector(state => state.socketStatus);
+  const { data: userData } = useUser();
+
+  if (!userData) {
+    return <ChatDisableFooter />;
+  }
 
   const {
     anchorEl,

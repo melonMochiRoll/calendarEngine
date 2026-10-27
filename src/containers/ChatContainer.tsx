@@ -7,8 +7,6 @@ import { toast } from 'react-toastify';
 import { defaultToastOption, imageTooLargeMessage, tooManyImagesMessage } from 'Constants/notices';
 import ChatFooter from 'Components/chat/ChatFooter';
 import ChatList from 'Components/chat/ChatList';
-import ChatDisableFooter from 'Src/components/chat/ChatDisableFooter';
-import useUser from 'Src/hooks/queries/useUser';
 import { useChatSocket } from 'Src/hooks/useChatSocket';
 import { GET_SHAREDSPACE_CHATS_KEY } from 'Src/constants/queryKeys';
 import { CHATROOM_TYPE } from 'Src/constants/constants';
@@ -18,7 +16,6 @@ import ImagePreviewer from 'Src/components/chat/ImagePreviewer';
 
 const ChatContainer: FC = () => {
   const { ChatRoomId } = useParams();
-  const { data: userData } = useUser();
 
   const {
     data: chatListData,
@@ -124,16 +121,11 @@ const ChatContainer: FC = () => {
             deleteSharedspaceChat={deleteSharedspaceChat}
             deleteSharedspaceChatImage={deleteSharedspaceChatImage} />
         </List>
-        {
-          userData ?
-            <ChatFooter
-              onSubmit={() => onSubmit(ChatRoomId, chat, images, previews)}
-              chat={chat}
-              onChangeChat={onChangeChat}
-              onChangeImageFiles={onChangeImageFiles} />
-              :
-              <ChatDisableFooter />
-        }
+        <ChatFooter
+          onSubmit={() => onSubmit(ChatRoomId, chat, images, previews)}
+          chat={chat}
+          onChangeChat={onChangeChat}
+          onChangeImageFiles={onChangeImageFiles} />
       </ChatWrapper>
     </ChatBlock>
   );
