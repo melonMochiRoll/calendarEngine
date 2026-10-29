@@ -5,6 +5,7 @@ import { ModalName } from 'Typings/types';
 import { closeModal } from 'Src/features/modalSlice';
 import { ErrorBoundary } from 'react-error-boundary';
 import ModalFallback from '../async/fallbackUI/ModalFallback';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 
 export const modals = {
   [ModalName.SEARCH]: React.lazy(() => import('Components/modal/search/SearchModal')),
@@ -29,10 +30,12 @@ export const modals = {
 const RenderModal: FC = () => {
   const dispatch = useAppDispatch();
   const modalStack = useAppSelector(state => state.modal);
+  const { reset } = useQueryErrorResetBoundary();
 
   if (!modalStack.length) return null;
 
   function onClose() {
+    reset();
     dispatch(closeModal());
   }
 
@@ -46,7 +49,9 @@ const RenderModal: FC = () => {
           zIndex={100 + idx}
           isBottom={!idx}
           onClick={onClose}>
-          <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
+          <ErrorBoundary
+            onReset={reset}
+            fallbackRender={(props) => <ModalFallback errorProps={props} />}>
             <ModalComponent { ...modal.props } />
           </ErrorBoundary>
         </Backdrop>
