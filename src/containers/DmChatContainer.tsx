@@ -10,7 +10,6 @@ import { useChatSocket } from 'Src/hooks/useChatSocket';
 import { GET_DM_CHATS_KEY } from 'Src/constants/queryKeys';
 import ChatList from 'Src/components/chat/ChatList';
 import ChatFooter from 'Src/components/chat/ChatFooter';
-import ChatDisableFooter from 'Src/components/chat/ChatDisableFooter';
 import { CHATROOM_TYPE } from 'Src/constants/constants';
 import { useInView } from 'Src/hooks/utils/useInView';
 import NewChatNotifier from 'Src/components/chat/NewChatNotifier';
@@ -124,16 +123,11 @@ const DmChatContainer: FC = () => {
             deleteSharedspaceChat={deleteSharedspaceChat}
             deleteSharedspaceChatImage={deleteSharedspaceChatImage} />
         </List>
-        {
-          userData ?
-            <ChatFooter
-              onSubmit={() => onSubmit(ChatRoomId, chat, images, previews)}
-              chat={chat}
-              onChangeChat={onChangeChat}
-              onChangeImageFiles={onChangeImageFiles} />
-              :
-              <ChatDisableFooter />
-        }
+        <ChatFooter
+          onSubmit={() => onSubmit(ChatRoomId, chat, images, previews)}
+          chat={chat}
+          onChangeChat={onChangeChat}
+          onChangeImageFiles={onChangeImageFiles} />
       </ChatWrapper>
     </ChatBlock>
   );
