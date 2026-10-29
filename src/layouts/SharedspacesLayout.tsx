@@ -6,6 +6,8 @@ import TodoContainer from 'Containers/TodoContainer';
 import Sidebar from 'Src/layouts/Sidebar';
 import SharedspaceHeader from 'Src/layouts/SharedspaceHeader';
 import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
+import { ErrorBoundary } from 'react-error-boundary';
+import CommonFallback from 'Src/components/async/fallbackUI/CommonFallback';
 
 interface SharedspacesLayoutProps {};
 
@@ -18,7 +20,9 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
         </Suspense>
         <ContentWrapper>
           <Sidebar />
-          <Outlet />
+          <ErrorBoundary fallbackRender={(props) => <CommonFallback errorProps={props} />}>
+            <Outlet />
+          </ErrorBoundary>
           <Drawer>
             <TodoContainer />
           </Drawer>
