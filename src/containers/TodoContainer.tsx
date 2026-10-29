@@ -7,10 +7,15 @@ import LoadingCircular from 'Src/components/async/skeleton/LoadingCircular';
 import TodoInit from 'Src/components/todo/TodoInit';
 import { ErrorBoundary } from 'react-error-boundary';
 import TodoFallback from 'Src/components/async/fallbackUI/TodoFallback';
+import { useLocation } from 'react-router-dom';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 
 interface TodoContainerProps {};
 
 const TodoContainer: FC<TodoContainerProps> = ({}) => {
+  const location = useLocation();
+  const { reset } = useQueryErrorResetBoundary();
+
   const { todoTime } = useAppSelector(state => state.todoTime);
   const [ year, month, date ] = todoTime.split('-');
   
@@ -20,7 +25,10 @@ const TodoContainer: FC<TodoContainerProps> = ({}) => {
         todoTime ?
           <Block>
             <Title>{`${year}년 ${month}월 ${date}일`}</Title>
-            <ErrorBoundary fallbackRender={(props) => <TodoFallback errorProps={props} />}>
+            <ErrorBoundary
+              onReset={reset}
+              resetKeys={[location.pathname]}
+              fallbackRender={(props) => <TodoFallback errorProps={props} />}>
               <Suspense fallback={<LoadingCircular />}>
                 <TodoHeader />
                 <TodoList />

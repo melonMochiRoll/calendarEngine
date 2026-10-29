@@ -1,6 +1,6 @@
 import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Drawer from 'Components/common/Drawer';
 import TodoContainer from 'Containers/TodoContainer';
 import Sidebar from 'Src/layouts/Sidebar';
@@ -8,10 +8,14 @@ import SharedspaceHeader from 'Src/layouts/SharedspaceHeader';
 import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
 import { ErrorBoundary } from 'react-error-boundary';
 import CommonFallback from 'Src/components/async/fallbackUI/CommonFallback';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 
 interface SharedspacesLayoutProps {};
 
 const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
+  const location = useLocation();
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
     <Block>
       <PageWrapper>
@@ -20,7 +24,10 @@ const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
         </Suspense>
         <ContentWrapper>
           <Sidebar />
-          <ErrorBoundary fallbackRender={(props) => <CommonFallback errorProps={props} />}>
+          <ErrorBoundary
+            onReset={reset}
+            resetKeys={[location.pathname]}
+            fallbackRender={(props) => <CommonFallback errorProps={props} />}>
             <Outlet />
           </ErrorBoundary>
           <Drawer>
