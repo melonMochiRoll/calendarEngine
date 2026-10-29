@@ -7,9 +7,11 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import SkeletonDmChatRoomList from 'Src/components/async/skeleton/SkeletonDmChatRoomList';
 import DmChatRoomListFallback from 'Src/components/async/fallbackUI/DmChatRoomListFallback';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 
 const MainPage: FC = () => {
   const location = useLocation();
+  const { reset } = useQueryErrorResetBoundary();
 
   return (
     <Block>
@@ -17,7 +19,10 @@ const MainPage: FC = () => {
         <Header />
       </Suspense>
       <ContentWrapper>
-        <ErrorBoundary resetKeys={[location.pathname]} fallbackRender={(props) => <DmChatRoomListFallback errorProps={props} />}>
+        <ErrorBoundary
+          onReset={reset}
+          resetKeys={[location.pathname]}
+          fallbackRender={(props) => <DmChatRoomListFallback errorProps={props} />}>
           <DmChatRoomsUl>
             <Suspense fallback={<SkeletonDmChatRoomList />}>
               <DmChatRoomList />

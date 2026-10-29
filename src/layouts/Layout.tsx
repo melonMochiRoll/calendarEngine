@@ -10,10 +10,12 @@ import { refreshAuthToken } from 'Src/api/authApi';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { setAccessToken } from 'Src/features/accessTokenSlice';
 import LoadingPage from 'Src/components/async/skeleton/LoadingPage';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 
 const Layout: FC = () => {
   const location = useLocation();
   const dispatch = useAppDispatch();
+  const { reset } = useQueryErrorResetBoundary();
   const [ accessTokenReady, setAccessTokenReady ] = useState(false);
   useCsrfToken();
 
@@ -33,6 +35,7 @@ const Layout: FC = () => {
 
   return (
     <ErrorBoundary
+      onReset={reset}
       resetKeys={[location.pathname]}
       fallbackRender={(props) => <GlobalErrorFallback errorProps={props} />}>
       <Outlet />
