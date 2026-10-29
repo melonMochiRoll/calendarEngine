@@ -1,8 +1,6 @@
 import React, { FC, Suspense, useState } from 'react';
 import styled from '@emotion/styled';
-import { ErrorBoundary } from 'react-error-boundary';
 import ModalLoadingCircular from 'Src/components/async/skeleton/ModalLoadingCircular';
-import ModalFallback from 'Src/components/async/fallbackUI/ModalFallback';
 import { useDebounce } from 'Src/hooks/utils/useDebounce';
 import SharedspaceInviteHeader from './SharedspaceInviteSendHeader';
 import SharedspaceInviteMain from './SharedspaceInviteSendMain';
@@ -18,11 +16,9 @@ const SharedspaceInviteModal: FC<SharedspaceInviteModalProps> = () => {
       <SharedspaceInviteHeader
         query={query} 
         setQuery={setQuery} />
-      <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
-        <Suspense fallback={<ModalLoadingCircular />}>
-          <SharedspaceInviteMain query={debouncedQuery} />
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<ModalLoadingCircular />}>
+        <SharedspaceInviteMain query={debouncedQuery} />
+      </Suspense>
     </Block>
   );
 };

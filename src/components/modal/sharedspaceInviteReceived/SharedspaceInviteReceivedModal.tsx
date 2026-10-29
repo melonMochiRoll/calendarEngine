@@ -3,8 +3,6 @@ import styled from '@emotion/styled';
 import SharedspaceInviteReceivedHeader from './SharedspaceInviteReceivedHeader';
 import ModalLoadingCircular from 'Src/components/async/skeleton/ModalLoadingCircular';
 import SharedspaceInviteReceivedMain from './SharedspaceInviteReceivedMain';
-import { ErrorBoundary } from 'react-error-boundary';
-import ModalFallback from 'Src/components/async/fallbackUI/ModalFallback';
 
 interface SharedspaceInviteReceivedModalProps {};
 
@@ -12,11 +10,9 @@ const SharedspaceInviteReceivedModal: FC<SharedspaceInviteReceivedModalProps> = 
   return (
     <Block onClick={e => e.stopPropagation()}>
       <SharedspaceInviteReceivedHeader />
-      <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
-        <Suspense fallback={<ModalLoadingCircular />}>
-          <SharedspaceInviteReceivedMain />
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<ModalLoadingCircular />}>
+        <SharedspaceInviteReceivedMain />
+      </Suspense>
     </Block>
   );
 };

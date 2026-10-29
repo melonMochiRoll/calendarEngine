@@ -1,9 +1,7 @@
 import React, { FC, Suspense, useState } from 'react';
 import styled from '@emotion/styled';
 import SearchMain from './SearchMain';
-import { ErrorBoundary } from 'react-error-boundary';
 import ModalLoadingCircular from 'Src/components/async/skeleton/ModalLoadingCircular';
-import ModalFallback from 'Src/components/async/fallbackUI/ModalFallback';
 import SearchHeader from './SearchHeader';
 import { useDebounce } from 'Src/hooks/utils/useDebounce';
 
@@ -18,11 +16,9 @@ const SearchModal: FC<SearchModalProps> = ({}) => {
       <SearchHeader
         query={query} 
         setQuery={setQuery} />
-      <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
-        <Suspense fallback={<ModalLoadingCircular />}>
-          <SearchMain query={debouncedQuery}/>
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<ModalLoadingCircular />}>
+        <SearchMain query={debouncedQuery}/>
+      </Suspense>
     </Block>
   );
 };

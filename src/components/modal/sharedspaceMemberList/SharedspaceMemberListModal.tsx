@@ -1,9 +1,7 @@
 import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
 import SharedspaceMemberListMain from './SharedspaceMemberListMain';
-import { ErrorBoundary } from 'react-error-boundary';
 import ModalLoadingCircular from 'Src/components/async/skeleton/ModalLoadingCircular';
-import ModalFallback from 'Src/components/async/fallbackUI/ModalFallback';
 import SharedspaceMemberListHeader from './SharedspaceMemberListHeader';
 
 interface SharedspaceMemberListModalProps {};
@@ -12,11 +10,9 @@ const SharedspaceMemberListModal: FC<SharedspaceMemberListModalProps> = ({}) => 
   return (
     <Block onClick={e => e.stopPropagation()}>
       <SharedspaceMemberListHeader />
-      <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
-        <Suspense fallback={<ModalLoadingCircular />}>
-          <SharedspaceMemberListMain />
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<ModalLoadingCircular />}>
+        <SharedspaceMemberListMain />
+      </Suspense>
     </Block>
   );
 };

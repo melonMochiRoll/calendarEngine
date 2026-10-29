@@ -1,9 +1,7 @@
 import React, { FC, Suspense } from 'react';
 import styled from '@emotion/styled';
 import JoinRequestManagerMain from './JoinRequestManagerMain';
-import { ErrorBoundary } from 'react-error-boundary';
 import ModalLoadingCircular from 'Src/components/async/skeleton/ModalLoadingCircular';
-import ModalFallback from 'Src/components/async/fallbackUI/ModalFallback';
 import JoinRequestManagerHeader from './JoinRequestManagerHeader';
 
 interface JoinRequestManagerModalProps {};
@@ -12,11 +10,9 @@ const JoinRequestManagerModal: FC<JoinRequestManagerModalProps> = ({}) => {
   return (
     <Block onClick={e => e.stopPropagation()}>
       <JoinRequestManagerHeader />
-      <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
-        <Suspense fallback={<ModalLoadingCircular />}>
-          <JoinRequestManagerMain />
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<ModalLoadingCircular />}>
+        <JoinRequestManagerMain />
+      </Suspense>
     </Block>
   );
 };

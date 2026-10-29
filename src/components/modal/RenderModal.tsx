@@ -3,6 +3,8 @@ import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import { ModalName } from 'Typings/types';
 import { closeModal } from 'Src/features/modalSlice';
+import { ErrorBoundary } from 'react-error-boundary';
+import ModalFallback from '../async/fallbackUI/ModalFallback';
 
 export const modals = {
   [ModalName.SEARCH]: React.lazy(() => import('Components/modal/search/SearchModal')),
@@ -44,7 +46,9 @@ const RenderModal: FC = () => {
           zIndex={100 + idx}
           isBottom={!idx}
           onClick={onClose}>
-          <ModalComponent { ...modal.props } />
+          <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
+            <ModalComponent { ...modal.props } />
+          </ErrorBoundary>
         </Backdrop>
       );
     })

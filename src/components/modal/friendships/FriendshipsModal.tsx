@@ -2,8 +2,6 @@ import React, { FC, Suspense, useState } from 'react';
 import styled from '@emotion/styled';
 import FriendshipsHeader from './FriendshipsHeader';
 import FriendshipsMain from './FriendshipsMain';
-import { ErrorBoundary } from 'react-error-boundary';
-import ModalFallback from 'Src/components/async/fallbackUI/ModalFallback';
 import ModalLoadingCircular from 'Src/components/async/skeleton/ModalLoadingCircular';
 import { FriendshipTabs } from 'Src/constants/constants';
 
@@ -25,11 +23,9 @@ const FriendshipsModal: FC = () => {
         tabs={tabs}
         currentTab={currentTab}
         switchTab={switchTab} />
-      <ErrorBoundary fallbackRender={(props) => <ModalFallback errorProps={props} />}>
-        <Suspense fallback={<ModalLoadingCircular />}>
-          <FriendshipsMain currentTab={currentTab} />
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<ModalLoadingCircular />}>
+        <FriendshipsMain currentTab={currentTab} />
+      </Suspense>
     </Block>
   );
 };
