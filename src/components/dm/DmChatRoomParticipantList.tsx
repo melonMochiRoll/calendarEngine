@@ -11,7 +11,7 @@ import { CircularProgress } from '@mui/material';
 
 const DmChatRoomParticipantList: FC = () => {
   const { data: userData } = useUser();
-  const { data: useFriendshipsData } = useFriendships();
+  const { data: friendshipsData } = useFriendships();
 
   const {
     data: participantsData,
@@ -27,6 +27,7 @@ const DmChatRoomParticipantList: FC = () => {
   });
 
   const participants = participantsData.pages.flatMap(page => page.participants);
+  const friendships = friendshipsData.pages.flatMap(page => page.friendships);
 
   return (
     <ParticipantSection>
@@ -35,7 +36,7 @@ const DmChatRoomParticipantList: FC = () => {
         {
           participants.map((participant) => {
             const isMe = userData.id === participant.UserId;
-            const isFriend = !isMe && useFriendshipsData.friendships.some(friendship => friendship.RequesterId === participant.UserId);
+            const isFriend = !isMe && friendships.some(friendship => friendship.RequesterId === participant.UserId);
 
             return (
               <DmChatRoomParticipantItem
