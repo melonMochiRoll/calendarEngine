@@ -30,11 +30,6 @@ const TodoFallback: FC<TodoFallbackProps> = ({ errorProps }) => {
     return <></>;
   }
 
-  function refetch() {
-    resetErrorBoundary();
-    reset();
-  }
-
   return (
     <Block>
       <NoticeBox>
@@ -45,7 +40,7 @@ const TodoFallback: FC<TodoFallbackProps> = ({ errorProps }) => {
             bgColor='var(--naver-green)'
             onClick={() => {
               navigate(PATHS.SHAREDSPACE);
-              resetErrorBoundary();
+              reset();
             }}>
               <HomeIcon />
               홈으로
@@ -53,7 +48,7 @@ const TodoFallback: FC<TodoFallbackProps> = ({ errorProps }) => {
           <MenuButton
             type='button'
             bgColor='var(--red)'
-            onClick={() => refetch()}>
+            onClick={() => reset()}>
               <RefreshIcon />
               재시도
           </MenuButton>

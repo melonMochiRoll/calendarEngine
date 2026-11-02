@@ -24,16 +24,11 @@ const DmChatRoomListFallback: FC<DmChatRoomListFallbackFallbackProps> = ({ error
     return <></>;
   }
 
-  function refetch() {
-    resetErrorBoundary();
-    reset();
-  }
-
   return (
     <Block>
       <Notice>문제가 발생했습니다.</Notice>
       <Notice>잠시후 다시 시도해 주세요</Notice>
-      <Button onClick={() => refetch()}>
+      <Button onClick={() => reset()}>
         <RefreshIcon />
       </Button>
     </Block>

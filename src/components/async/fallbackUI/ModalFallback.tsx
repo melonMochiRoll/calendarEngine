@@ -33,11 +33,6 @@ const ModalFallback: FC<ModalFallbackProps> = ({
     return <></>;
   }
 
-  function refetch() {
-    resetErrorBoundary();
-    reset();
-  }
-
   return (
     <Main>
       <ErrorIcon sx={ErrorInlineStyle} />
@@ -53,7 +48,7 @@ const ModalFallback: FC<ModalFallbackProps> = ({
         <MenuButton
           type='button'
           bgColor='var(--red)'
-          onClick={() => refetch()}>
+          onClick={() => reset()}>
             <RefreshIcon />
             재시도
         </MenuButton>

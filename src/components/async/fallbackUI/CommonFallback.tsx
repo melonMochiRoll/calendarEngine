@@ -31,11 +31,6 @@ const CommonFallback: FC<CommonFallbackFallbackProps> = ({
     return <></>;
   }
 
-  function refetch() {
-    resetErrorBoundary();
-    reset();
-  }
-
   return (
     <Background>
       <Block>
@@ -47,7 +42,7 @@ const CommonFallback: FC<CommonFallbackFallbackProps> = ({
               bgColor='var(--naver-green)'
               onClick={() => {
                 navigate(PATHS.HOME);
-                resetErrorBoundary();
+                reset();
               }}>
                 <HomeIcon />
                 홈으로
@@ -55,7 +50,7 @@ const CommonFallback: FC<CommonFallbackFallbackProps> = ({
             <MenuButton
               type='button'
               bgColor='var(--red)'
-              onClick={() => refetch()}>
+              onClick={() => reset()}>
                 <RefreshIcon />
                 재시도
             </MenuButton>
