@@ -7,6 +7,7 @@ import DmChatRoomParticipantItem from './DmChatRoomParticipantItem';
 import { useInView } from 'Src/hooks/utils/useInView';
 import DmChatRoomParticipantCount from './DmChatRoomParticipantCount';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { CircularProgress } from '@mui/material';
 
 const DmChatRoomParticipantList: FC = () => {
   const { data: userData } = useUser();
@@ -46,6 +47,7 @@ const DmChatRoomParticipantList: FC = () => {
             );
           })
         }
+        {isFetchingNextPage && <CircularProgress size={35} />}
         <SentinelDiv ref={sentinelRef} />
         {
           isFetchNextPageError &&
@@ -71,6 +73,9 @@ const ParticipantSection = styled.section`
 `;
 
 const ParticipantUl = styled.ul`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0;
   padding: 0;
 `;
