@@ -1,34 +1,29 @@
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { getFriendshipRequests } from "Src/api/friendshipsApi";
 import { GET_FRIENDSHIP_REQUESTS_KEY } from "Src/constants/queryKeys";
 import { handleRetry } from "Src/lib/utilFunction";
-import { TFriendshipRequestsResponse } from "Src/typings/types";
 
 export function useFriendshipRequests() {
-  const qc = useQueryClient();
-
-  const { data } = useSuspenseQuery<TFriendshipRequestsResponse>({
+  const {
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useSuspenseInfiniteQuery({
     queryKey: [GET_FRIENDSHIP_REQUESTS_KEY],
     queryFn: () => getFriendshipRequests(),
+    initialPageParam: '',
+    getNextPageParam: (lastPage) => lastPage.hasMoreData ? lastPage.friendshipRequests[lastPage.friendshipRequests.length-1].id : undefined,
     refetchOnWindowFocus: false,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
-  const loadMore = async () => {
-    const moreFriendshipRequests = await getFriendshipRequests(data.friendshipRequests[data.friendshipRequests.length-1].id);
-
-    qc.setQueryData<TFriendshipRequestsResponse>([GET_FRIENDSHIP_REQUESTS_KEY], (prev) => {
-      if (!prev) return;
-
-      return {
-        friendshipRequests: [ ...prev.friendshipRequests || [], ...moreFriendshipRequests.friendshipRequests ],
-        hasMoreData: moreFriendshipRequests.hasMoreData,
-      };
-    });
-  };
-
   return {
     data,
-    loadMore,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
   } as const;
 }

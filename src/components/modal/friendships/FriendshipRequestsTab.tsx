@@ -4,8 +4,15 @@ import { useFriendshipRequests } from 'Src/hooks/queries/useFriendshipRequests';
 import FriendshipRequestItem from './FriendshipRequestItem';
 
 const FriendshipRequestsTab: FC = () => {
-  const { data: friendshipRequestsData, loadMore } = useFriendshipRequests();
-  const { friendshipRequests, hasMoreData } = friendshipRequestsData;
+  const {
+    data: friendshipRequestsData,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useFriendshipRequests();
+
+  const friendshipRequests = friendshipRequestsData.pages.flatMap(page => page.friendshipRequests);
 
   return (
     <List>
@@ -19,8 +26,8 @@ const FriendshipRequestsTab: FC = () => {
         })
       }
       {
-        hasMoreData ?
-          <LoadMore onClick={loadMore}>
+        hasNextPage ?
+          <LoadMore onClick={() => fetchNextPage()}>
             Load More
           </LoadMore>
           :
