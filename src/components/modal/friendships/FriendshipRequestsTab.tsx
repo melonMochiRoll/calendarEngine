@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { useFriendshipRequests } from 'Src/hooks/queries/useFriendshipRequests';
 import FriendshipRequestItem from './FriendshipRequestItem';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { CircularProgress } from '@mui/material';
 
 const FriendshipRequestsTab: FC = () => {
   const {
@@ -27,14 +28,16 @@ const FriendshipRequestsTab: FC = () => {
         })
       }
       {
-        hasNextPage ?
-          <LoadMore onClick={() => fetchNextPage()}>
-            Load More
-          </LoadMore>
-          :
-          <DisableLoadMore>
-            목록 없음
-          </DisableLoadMore>
+        isFetchingNextPage ?
+          <CircularProgress size={35} /> :
+          hasNextPage ?
+            <LoadMore onClick={() => fetchNextPage()}>
+              Load More
+            </LoadMore>
+            :
+            <DisableLoadMore>
+              목록 없음
+            </DisableLoadMore>
       }
       {
         isFetchNextPageError &&
