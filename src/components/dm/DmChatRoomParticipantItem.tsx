@@ -16,14 +16,12 @@ interface DmChatRoomParticipantsItemProps {
   participant: TChatRoomParticipant,
   UserId: string,
   isMe: boolean,
-  isFriend: boolean,
 };
 
 const DmChatRoomParticipantItem: FC<DmChatRoomParticipantsItemProps> = ({
   participant,
   UserId,
   isMe,
-  isFriend,
 }) => {
   const navigate = useNavigate();
   const isSubmitting = useRef(false);
@@ -102,12 +100,9 @@ const DmChatRoomParticipantItem: FC<DmChatRoomParticipantsItemProps> = ({
             <MenuItem onClick={(e) => handleCreateDmChatRoom(e, participant.UserId)}>
               <span>DM</span>
             </MenuItem>
-            {
-              !isFriend &&
-                <MenuItem onClick={() => handleSendFriendship(UserId)}>
-                  <span>친구 요청</span>
-                </MenuItem>
-            }
+            <MenuItem onClick={() => handleSendFriendship(UserId)}>
+              <span>친구 요청</span>
+            </MenuItem>
         </Menu>
       }
     </ParticipantLi>

@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { useChatRoomParticipants } from 'Src/hooks/queries/useChatRoomParticipants';
-import { useFriendships } from 'Src/hooks/queries/useFriendships';
 import useUser from 'Src/hooks/queries/useUser';
 import DmChatRoomParticipantItem from './DmChatRoomParticipantItem';
 import { useInView } from 'Src/hooks/utils/useInView';
@@ -11,7 +10,6 @@ import { CircularProgress } from '@mui/material';
 
 const DmChatRoomParticipantList: FC = () => {
   const { data: userData } = useUser();
-  const { data: friendshipsData } = useFriendships();
 
   const {
     data: participantsData,
@@ -27,7 +25,6 @@ const DmChatRoomParticipantList: FC = () => {
   });
 
   const participants = participantsData.pages.flatMap(page => page.participants);
-  const friendships = friendshipsData.pages.flatMap(page => page.friendships);
 
   return (
     <ParticipantSection>
@@ -36,15 +33,13 @@ const DmChatRoomParticipantList: FC = () => {
         {
           participants.map((participant) => {
             const isMe = userData.id === participant.UserId;
-            const isFriend = !isMe && friendships.some(friendship => friendship.RequesterId === participant.UserId);
 
             return (
               <DmChatRoomParticipantItem
                 key={participant.id} 
                 participant={participant}
                 UserId={userData.id}
-                isMe={isMe}
-                isFriend={isFriend} />
+                isMe={isMe} />
             );
           })
         }
