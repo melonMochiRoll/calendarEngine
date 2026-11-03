@@ -29,15 +29,11 @@ const FriendshipRequestsTab: FC = () => {
       }
       {
         isFetchingNextPage ?
-          <CircularProgress size={35} /> :
-          hasNextPage ?
-            <LoadMore onClick={() => fetchNextPage()}>
-              Load More
-            </LoadMore>
-            :
-            <DisableLoadMore>
-              목록 없음
-            </DisableLoadMore>
+          <CircularProgress size={35} />
+          :
+          <LoadMore disabled={!hasNextPage} onClick={() => fetchNextPage()}>
+            {hasNextPage ? 'Load More' : '목록 없음'}
+          </LoadMore>
       }
       {
         isFetchNextPageError &&
@@ -71,28 +67,19 @@ const LoadMore = styled.button`
   font-weight: 600;
   padding: 10px 15px;
   margin: 30px 0;
-  color: var(--white);
+  color: ${({disabled}) => disabled ? 'var(--gray-7)' : 'var(--white)'};
   border: 1px solid var(--light-gray);
   border-radius: 5px;
   background-color: var(--black);
-  cursor: pointer;
+  cursor: ${({disabled}) => disabled ? 'auto' : 'pointer'};
   transition: all 0.1s linear;
 
-  &:hover {
-    background-color: var(--red);
-    border-color: var(--red);
-  }
-`;
-
-const DisableLoadMore = styled.button`
-  font-size: 24px;
-  font-weight: 600;
-  padding: 10px 15px;
-  margin: 30px 0;
-  color: var(--gray-7);
-  border: 1px solid var(--light-gray);
-  border-radius: 5px;
-  background-color: var(--black);
+  ${({disabled}) => !disabled && `
+    &:hover {
+      background-color: var(--red);
+      border-color: var(--red);
+    }
+  `}
 `;
 
 const ErrorDiv = styled.div`
