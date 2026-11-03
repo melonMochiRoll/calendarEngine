@@ -1,4 +1,4 @@
-import React, { FC, useRef } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import ProfileAvatar from '../ProfileAvatar';
 import useMenu from 'Src/hooks/utils/useMenu';
@@ -100,7 +100,7 @@ const DmChatRoomParticipantItem: FC<DmChatRoomParticipantsItemProps> = ({
             <MenuItem onClick={(e) => handleCreateDmChatRoom(e, participant.UserId)}>
               <span>DM</span>
             </MenuItem>
-            <MenuItem onClick={() => handleSendFriendship(UserId)}>
+            <MenuItem onClick={() => handleSendFriendship(participant.UserId)}>
               <span>친구 요청</span>
             </MenuItem>
         </Menu>
