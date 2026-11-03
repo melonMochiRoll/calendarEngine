@@ -38,7 +38,6 @@ const DmChatRoomParticipantList: FC = () => {
               <DmChatRoomParticipantItem
                 key={participant.id} 
                 participant={participant}
-                UserId={userData.id}
                 isMe={isMe} />
             );
           })

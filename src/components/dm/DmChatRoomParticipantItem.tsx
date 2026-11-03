@@ -14,13 +14,11 @@ import { AxiosError } from 'axios';
 
 interface DmChatRoomParticipantsItemProps {
   participant: TChatRoomParticipant,
-  UserId: string,
   isMe: boolean,
 };
 
 const DmChatRoomParticipantItem: FC<DmChatRoomParticipantsItemProps> = ({
   participant,
-  UserId,
   isMe,
 }) => {
   const navigate = useNavigate();
