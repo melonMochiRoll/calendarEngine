@@ -23,6 +23,7 @@ const DmChatRoomParticipantItem: FC<DmChatRoomParticipantsItemProps> = ({
 }) => {
   const navigate = useNavigate();
   const isSubmitting = useRef(false);
+  const [ isSent, setIsSent ] = useState(false);
 
   const {
     anchorEl,
@@ -70,6 +71,7 @@ const DmChatRoomParticipantItem: FC<DmChatRoomParticipantsItemProps> = ({
       toast.error(message, defaultToastOption);
     } finally {
       isSubmitting.current = false;
+      setIsSent(true);
     }
   };
 
@@ -98,8 +100,8 @@ const DmChatRoomParticipantItem: FC<DmChatRoomParticipantsItemProps> = ({
             <MenuItem onClick={(e) => handleCreateDmChatRoom(e, participant.UserId)}>
               <span>DM</span>
             </MenuItem>
-            <MenuItem onClick={() => handleSendFriendship(participant.UserId)}>
-              <span>친구 요청</span>
+            <MenuItem disabled={isSent} onClick={() => handleSendFriendship(participant.UserId)}>
+              <span>{isSent ? '요청 보냄' : '친구 요청'}</span>
             </MenuItem>
         </Menu>
       }
