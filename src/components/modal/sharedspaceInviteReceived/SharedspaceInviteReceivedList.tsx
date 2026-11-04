@@ -8,6 +8,7 @@ import { TInvite } from 'Src/typings/types';
 import { acceptInvite, declineInvite } from 'Src/api/inviteApi';
 import { GET_SUBSCRIBED_SPACES_KEY } from 'Src/constants/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface SharedspaceInviteReceivedListProp {
   invites: TInvite[],
@@ -108,6 +109,15 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
           <LoadMore disabled={!hasNextPage} onClick={() => fetchNextPage()}>
             {hasNextPage ? 'Load More' : '목록 없음'}
           </LoadMore>
+      }
+      {
+        isFetchNextPageError &&
+          <ErrorDiv>
+            <ErrorSpan>문제가 발생했습니다.</ErrorSpan>
+            <RetryButton onClick={() => fetchNextPage()}>
+              <RefreshIcon />
+            </RetryButton>
+          </ErrorDiv>
       }
     </List>
   );
@@ -228,4 +238,32 @@ const DisableButton = styled.div`
   align-items: center;
   font-size: 20px;
   color: #828282;
+`;
+
+const ErrorDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 35px 0;
+  gap: 10px;
+`;
+
+const ErrorSpan = styled.span`
+  color: var(--gray-6);
+  font-size: 14px;
+`;
+
+const RetryButton = styled.button`
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  cursor: pointer;
+
+  svg {
+    font-size: 45px;
+    color: var(--gray-6);
+
+    &:hover {
+      color: var(--gray-4);
+    }
+  }
 `;
