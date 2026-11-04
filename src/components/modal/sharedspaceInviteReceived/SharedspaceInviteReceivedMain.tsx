@@ -24,7 +24,9 @@ const SharedspaceInviteReceivedMain: FC<SharedspaceInviteReceivedMainProps> = ({
           <SharedspaceInviteReceivedList
             invites={invites}
             hasNextPage={hasNextPage}
-            fetchNextPage={fetchNextPage} />
+            fetchNextPage={fetchNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            isFetchNextPageError={isFetchNextPageError} />
           :
           <SharedspaceInviteReceivedInit />
       }

@@ -13,12 +13,16 @@ interface SharedspaceInviteReceivedListProp {
   invites: TInvite[],
   hasNextPage: boolean,
   fetchNextPage: () => void,
+  isFetchingNextPage: boolean,
+  isFetchNextPageError: boolean,
 };
 
 const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
   invites,
   hasNextPage,
   fetchNextPage,
+  isFetchingNextPage,
+  isFetchNextPageError,
 }) => {
   const qc = useQueryClient();
   const [ isResponded, setIsResponded ] = useState('');
