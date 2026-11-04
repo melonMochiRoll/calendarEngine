@@ -102,9 +102,11 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
         })
       }
       {
-        hasNextPage &&
-          <LoadMore onClick={() => fetchNextPage}>
-            Load more
+        isFetchingNextPage ?
+          <CircularProgress size={35} />
+          :
+          <LoadMore disabled={!hasNextPage} onClick={() => fetchNextPage()}>
+            {hasNextPage ? 'Load More' : '목록 없음'}
           </LoadMore>
       }
     </List>
