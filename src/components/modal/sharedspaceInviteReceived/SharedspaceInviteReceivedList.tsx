@@ -4,22 +4,23 @@ import CheckIcon from '@mui/icons-material/CheckRounded';
 import ClearIcon from '@mui/icons-material/ClearRounded';
 import { CircularProgress } from '@mui/material';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
-import { TInvitePayload } from 'Src/typings/types';
+import { TInvite } from 'Src/typings/types';
 import { acceptInvite, declineInvite } from 'Src/api/inviteApi';
 import { GET_SUBSCRIBED_SPACES_KEY } from 'Src/constants/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface SharedspaceInviteReceivedListProp {
-  invitesData: TInvitePayload,
-  loadMore: () => void,
+  invites: TInvite[],
+  hasNextPage: boolean,
+  fetchNextPage: () => void,
 };
 
 const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
-  invitesData,
-  loadMore,
+  invites,
+  hasNextPage,
+  fetchNextPage,
 }) => {
   const qc = useQueryClient();
-  const { invites, hasMoreData } = invitesData;
   const [ isResponded, setIsResponded ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
   const isSubmitting = useRef(false);
@@ -97,8 +98,8 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
         })
       }
       {
-        hasMoreData &&
-          <LoadMore onClick={loadMore}>
+        hasNextPage &&
+          <LoadMore onClick={() => fetchNextPage}>
             Load more
           </LoadMore>
       }
