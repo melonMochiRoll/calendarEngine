@@ -84,18 +84,20 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
                 </OwnerInfo>
               </Left>
               <Right>
-                {isLoading && <CircularProgress size={30}/>}
-                {isResponded && <DisableButton>{isResponded}</DisableButton>}
                 {
-                  !isLoading && !isResponded &&
-                    <>
-                      <IconWrapper onClick={() => handleAcceptInvite(invite.id, invite.SharedspaceId)}>
-                        <CheckIcon sx={{ color: 'var(--naver-green)' }} />
-                      </IconWrapper>
-                      <IconWrapper onClick={() => handleDeclineInvite(invite.id)}>
-                        <ClearIcon sx={{ color: 'var(--red)' }} />
-                      </IconWrapper>
-                    </>
+                  isLoading ?
+                    <CircularProgress size={30} /> :
+                    isResponded ?
+                      <DisableButton>{isResponded}</DisableButton>
+                      :
+                      <>
+                        <IconWrapper onClick={() => handleAcceptInvite(invite.id, invite.SharedspaceId)}>
+                          <CheckIcon sx={{ color: 'var(--naver-green)' }} />
+                        </IconWrapper>
+                        <IconWrapper onClick={() => handleDeclineInvite(invite.id)}>
+                          <ClearIcon sx={{ color: 'var(--red)' }} />
+                        </IconWrapper>
+                      </>
                 }
               </Right>
             </Item>
