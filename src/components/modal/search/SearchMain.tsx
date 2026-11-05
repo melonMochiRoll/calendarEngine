@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import SearchResult from './SearchResult';
 import SearchIcon from '@mui/icons-material/SearchRounded';
 import { useSearchTodos } from 'Hooks/queries/useSearchTodos';
+import { useInView } from 'Src/hooks/utils/useInView';
 
 interface SearchMainProps {
   query: string,
@@ -17,6 +18,11 @@ const SearchMain: FC<SearchMainProps> = ({ query }) => {
     isFetchNextPageError,
   } = useSearchTodos(query);
 
+  const sentinelRef = useInView(() => fetchNextPage(), {
+    enable: hasNextPage && !isFetchingNextPage && !isFetchNextPageError,
+    rootMargin: '100px 0px 0px 0px',
+  });
+
   const todos = todosData.pages.flatMap(page => page.todos);
   
   return (
@@ -26,6 +32,7 @@ const SearchMain: FC<SearchMainProps> = ({ query }) => {
         <SearchResult
           query={query}
           todos={todos}
+          sentinelRef={sentinelRef}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}

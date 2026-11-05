@@ -12,6 +12,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface SharedspaceInviteReceivedListProp {
   invites: TInvite[],
+  sentinelRef: React.MutableRefObject<HTMLDivElement | null>,
   hasNextPage: boolean,
   fetchNextPage: () => void,
   isFetchingNextPage: boolean,
@@ -20,6 +21,7 @@ interface SharedspaceInviteReceivedListProp {
 
 const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
   invites,
+  sentinelRef,
   hasNextPage,
   fetchNextPage,
   isFetchingNextPage,
@@ -104,14 +106,8 @@ const SharedspaceInviteReceivedList: FC<SharedspaceInviteReceivedListProp> = ({
           );
         })
       }
-      {
-        isFetchingNextPage ?
-          <CircularProgress size={35} />
-          :
-          <LoadMore disabled={!hasNextPage} onClick={() => fetchNextPage()}>
-            {hasNextPage ? 'Load More' : '목록 없음'}
-          </LoadMore>
-      }
+      {isFetchingNextPage && <CircularProgress size={35} />}
+      <SentinelDiv ref={sentinelRef} />
       {
         isFetchNextPageError &&
           <ErrorDiv>
@@ -216,24 +212,9 @@ const IconWrapper = styled.div`
   }
 `;
 
-const LoadMore = styled.button<{ disabled: boolean }>`
-  font-size: 24px;
-  font-weight: 600;
-  padding: 10px 15px;
-  margin: 20px 0;
-  color: ${({disabled}) => disabled ? 'var(--gray-7)' : 'var(--white)'};
-  border: 1px solid var(--light-gray);
-  border-radius: 5px;
-  background-color: var(--black);
-  cursor: ${({disabled}) => disabled ? 'auto' : 'pointer'};
-  transition: all 0.1s linear;
-
-  ${({disabled}) => !disabled && `
-    &:hover {
-      background-color: var(--red);
-      border-color: var(--red);
-    }
-  `}
+const SentinelDiv = styled.div`
+  height: 1px;
+  flex-shrink: 0;
 `;
 
 const DisableButton = styled.div`

@@ -11,6 +11,7 @@ import { CircularProgress } from '@mui/material';
 interface SearchResultProps {
   query: string,
   todos: TSearchTodosItem[],
+  sentinelRef: React.MutableRefObject<HTMLDivElement | null>,
   fetchNextPage: () => void,
   hasNextPage: boolean,
   isFetchingNextPage: boolean,
@@ -20,6 +21,7 @@ interface SearchResultProps {
 const SearchResult: FC<SearchResultProps> = ({
   query,
   todos,
+  sentinelRef,
   fetchNextPage,
   hasNextPage,
   isFetchingNextPage,
@@ -49,14 +51,8 @@ const SearchResult: FC<SearchResultProps> = ({
               );
             })
           }
-          {
-            isFetchingNextPage ?
-              <CircularProgress size={35} />
-              :
-              <LoadMore disabled={!hasNextPage} onClick={() => fetchNextPage()}>
-                {hasNextPage ? 'Load More' : '목록 없음'}
-              </LoadMore>
-          }
+          {isFetchingNextPage && <CircularProgress size={35} />}
+          <SentinelDiv ref={sentinelRef} />
         </TodoList>
         :
         <>
@@ -135,20 +131,7 @@ const NotFoundMessage = styled.span`
   font-weight: 600;
 `;
 
-const LoadMore = styled.button`
-  font-size: 24px;
-  font-weight: 600;
-  padding: 10px 15px;
-  margin: 20px 0;
-  color: var(--white);
-  border: 1px solid var(--light-gray);
-  border-radius: 5px;
-  background-color: var(--black);
-  cursor: pointer;
-  transition: all 0.1s linear;
-
-  &:hover {
-    background-color: var(--red);
-    border-color: var(--red);
-  }
+const SentinelDiv = styled.div`
+  height: 1px;
+  flex-shrink: 0;
 `;

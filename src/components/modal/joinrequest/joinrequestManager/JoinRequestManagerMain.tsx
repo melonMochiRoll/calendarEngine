@@ -8,6 +8,7 @@ import { defaultToastOption, successMessage, waitingMessage } from 'Constants/no
 import { useQueryClient } from '@tanstack/react-query';
 import ThreeDotIcon from '@mui/icons-material/PendingOutlined';
 import JoinRequestManagerList from './JoinRequestManagerList';
+import { useInView } from 'Src/hooks/utils/useInView';
 
 interface JoinRequestManagerMainProps {};
 
@@ -55,6 +56,11 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
     }
   };
 
+  const sentinelRef = useInView(() => fetchNextPage(), {
+    enable: hasNextPage && !isFetchingNextPage && !isFetchNextPageError,
+    rootMargin: '100px 0px 0px 0px',
+  });
+
   const joinRequests = joinRequestsData.pages.flatMap(page => page.joinRequests);
 
   return (
@@ -64,6 +70,7 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
         joinRequests.length ?
           <JoinRequestManagerList
             joinRequests={joinRequests}
+            sentinelRef={sentinelRef}
             hasNextPage={hasNextPage}
             fetchNextPage={fetchNextPage}
             isFetchingNextPage={isFetchingNextPage}
