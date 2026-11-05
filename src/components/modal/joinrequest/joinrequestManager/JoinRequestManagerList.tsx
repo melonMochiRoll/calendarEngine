@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import JoinRequestItem from './JoinRequestItem';
 import { TJoinRequest } from 'Src/typings/types';
 import { CircularProgress } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface JoinRequestManagerListProps {
   joinRequests: TJoinRequest[],
@@ -42,6 +43,15 @@ const JoinRequestManagerList: FC<JoinRequestManagerListProps> = ({
             {hasNextPage ? 'Load More' : '목록 없음'}
           </LoadMore>
       }
+      {
+        isFetchNextPageError &&
+          <ErrorDiv>
+            <ErrorSpan>문제가 발생했습니다.</ErrorSpan>
+            <RetryButton onClick={() => fetchNextPage()}>
+              <RefreshIcon />
+            </RetryButton>
+          </ErrorDiv>
+      }
     </List>
   );
 };
@@ -75,5 +85,33 @@ const LoadMore = styled.button`
   &:hover {
     background-color: var(--red);
     border-color: var(--red);
+  }
+`;
+
+const ErrorDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 35px 0;
+  gap: 10px;
+`;
+
+const ErrorSpan = styled.span`
+  color: var(--gray-6);
+  font-size: 14px;
+`;
+
+const RetryButton = styled.button`
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  cursor: pointer;
+
+  svg {
+    font-size: 45px;
+    color: var(--gray-6);
+
+    &:hover {
+      color: var(--gray-4);
+    }
   }
 `;
