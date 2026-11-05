@@ -51,7 +51,7 @@ const DmChatRoomList: FC = () => {
           )
         })
       }
-      <div ref={sentinelRef} />
+      <SentinelDiv ref={sentinelRef} />
       {
         isFetchNextPageError &&
         <ErrorDiv>
@@ -121,4 +121,9 @@ const RetryButton = styled.button`
       color: var(--gray-4);
     }
   }
+`;
+
+const SentinelDiv = styled.div`
+  height: 1px;
+  flex-shrink: 0;
 `;
