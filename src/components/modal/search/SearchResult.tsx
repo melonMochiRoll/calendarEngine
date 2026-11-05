@@ -6,6 +6,7 @@ import { closeModal } from 'Features/modalSlice';
 import { setCalendarTime } from 'Features/calendarTimeSlice';
 import { setTodoTime } from 'Features/todoTimeSlice';
 import { TSearchTodosItem } from 'Src/typings/types';
+import { CircularProgress } from '@mui/material';
 
 interface SearchResultProps {
   query: string,
@@ -49,9 +50,11 @@ const SearchResult: FC<SearchResultProps> = ({
             })
           }
           {
-            hasNextPage &&
-              <LoadMore onClick={() => fetchNextPage()}>
-                Load More
+            isFetchingNextPage ?
+              <CircularProgress size={35} />
+              :
+              <LoadMore disabled={!hasNextPage} onClick={() => fetchNextPage()}>
+                {hasNextPage ? 'Load More' : '목록 없음'}
               </LoadMore>
           }
         </TodoList>
