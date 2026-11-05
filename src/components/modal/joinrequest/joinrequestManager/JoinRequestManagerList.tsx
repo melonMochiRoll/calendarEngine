@@ -1,23 +1,27 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import JoinRequestItem from './JoinRequestItem';
-import { TJoinRequestsResponse } from 'Src/typings/types';
+import { TJoinRequest } from 'Src/typings/types';
 
 interface JoinRequestManagerListProps {
-  joinRequestsData: TJoinRequestsResponse,
-  loadMore: () => void,
+  joinRequests: TJoinRequest[],
+  hasNextPage: boolean,
+  fetchNextPage: () => void,
+  isFetchingNextPage: boolean,
+  isFetchNextPageError: boolean,
   onResolveMenuClick: (SharedspaceId: string | undefined, id: string, roleName: string) => Promise<void>,
   onRejectMenuClick: (SharedspaceId: string | undefined, id: string) => Promise<void>,
 };
 
 const JoinRequestManagerList: FC<JoinRequestManagerListProps> = ({
-  joinRequestsData,
-  loadMore,
+  joinRequests,
+  hasNextPage,
+  fetchNextPage,
+  isFetchingNextPage,
+  isFetchNextPageError,
   onResolveMenuClick,
   onRejectMenuClick,
 }) => {
-  const { joinRequests, hasMoreData } = joinRequestsData;
-
   return (
     <List>
       {joinRequests.map((request) => {
@@ -30,8 +34,8 @@ const JoinRequestManagerList: FC<JoinRequestManagerListProps> = ({
         );
       })}
       {
-        hasMoreData &&
-          <LoadMore onClick={loadMore}>
+        hasNextPage &&
+          <LoadMore onClick={() => fetchNextPage()}>
             Load more
           </LoadMore>
       }

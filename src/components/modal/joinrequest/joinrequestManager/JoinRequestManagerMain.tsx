@@ -14,7 +14,13 @@ interface JoinRequestManagerMainProps {};
 const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
   const qc = useQueryClient();
   const [ error, setError ] = useState('');
-  const { data: joinRequestsData, loadMore } = useJoinRequest();
+  const {
+    data: joinRequestsData,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useJoinRequest();
 
   const onResolveMenuClick = async (
     SharedspaceId: string | undefined,
@@ -49,14 +55,19 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
     }
   };
 
+  const joinRequests = joinRequestsData.pages.flatMap(page => page.joinRequests);
+
   return (
     <Main>
       {error && <ErrorSpan>{error}</ErrorSpan>}
       {
-        joinRequestsData?.joinRequests.length ?
+        joinRequests.length ?
           <JoinRequestManagerList
-            joinRequestsData={joinRequestsData}
-            loadMore={loadMore}
+            joinRequests={joinRequests}
+            hasNextPage={hasNextPage}
+            fetchNextPage={fetchNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            isFetchNextPageError={isFetchNextPageError}
             onResolveMenuClick={onResolveMenuClick} 
             onRejectMenuClick={onRejectMenuClick} />
           :
