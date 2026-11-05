@@ -5,21 +5,26 @@ import { useAppDispatch } from 'Hooks/reduxHooks';
 import { closeModal } from 'Features/modalSlice';
 import { setCalendarTime } from 'Features/calendarTimeSlice';
 import { setTodoTime } from 'Features/todoTimeSlice';
-import { TSearchTodosPayload } from 'Src/typings/types';
+import { TSearchTodosItem } from 'Src/typings/types';
 
 interface SearchResultProps {
   query: string,
-  todosData: TSearchTodosPayload,
-  loadMore: () => void,
+  todos: TSearchTodosItem[],
+  fetchNextPage: () => void,
+  hasNextPage: boolean,
+  isFetchingNextPage: boolean,
+  isFetchNextPageError: boolean,
 }; 
 
 const SearchResult: FC<SearchResultProps> = ({
   query,
-  todosData,
-  loadMore,
+  todos,
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
+  isFetchNextPageError,
 }) => {
   const dispatch = useAppDispatch();
-  const { todos, hasMoreData } = todosData;
 
   const onClickTodo = (date: string) => {
     dispatch(setCalendarTime(date));
@@ -44,12 +49,13 @@ const SearchResult: FC<SearchResultProps> = ({
             })
           }
           {
-            hasMoreData &&
-            <LoadMore onClick={loadMore}>
-              Load More
-            </LoadMore>
+            hasNextPage &&
+              <LoadMore onClick={() => fetchNextPage()}>
+                Load More
+              </LoadMore>
           }
-        </TodoList> :
+        </TodoList>
+        :
         <>
           <ErrorIcon sx={ErrorInlineStyle} />
           <NotFoundMessage>{`"${query}" 에 대한 검색 결과가 없습니다.`}</NotFoundMessage>

@@ -9,7 +9,15 @@ interface SearchMainProps {
 };
 
 const SearchMain: FC<SearchMainProps> = ({ query }) => {
-  const { data: todosData, loadMore } = useSearchTodos(query);
+  const {
+    data: todosData,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useSearchTodos(query);
+
+  const todos = todosData.pages.flatMap(page => page.todos);
   
   return (
     <Main>
@@ -17,8 +25,11 @@ const SearchMain: FC<SearchMainProps> = ({ query }) => {
       query ?
         <SearchResult
           query={query}
-          todosData={todosData}
-          loadMore={loadMore} />
+          todos={todos}
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          isFetchNextPageError={isFetchNextPageError} />
         :
         <SearchIcon sx={{ color: 'var(--light-gray)', fontSize: '250px' }} />
     }
