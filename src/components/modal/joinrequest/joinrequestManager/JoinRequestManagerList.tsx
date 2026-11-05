@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import JoinRequestItem from './JoinRequestItem';
 import { TJoinRequest } from 'Src/typings/types';
+import { CircularProgress } from '@mui/material';
 
 interface JoinRequestManagerListProps {
   joinRequests: TJoinRequest[],
@@ -34,9 +35,11 @@ const JoinRequestManagerList: FC<JoinRequestManagerListProps> = ({
         );
       })}
       {
-        hasNextPage &&
-          <LoadMore onClick={() => fetchNextPage()}>
-            Load more
+        isFetchingNextPage ?
+          <CircularProgress size={35} />
+          :
+          <LoadMore disabled={!hasNextPage} onClick={() => fetchNextPage()}>
+            {hasNextPage ? 'Load More' : '목록 없음'}
           </LoadMore>
       }
     </List>
