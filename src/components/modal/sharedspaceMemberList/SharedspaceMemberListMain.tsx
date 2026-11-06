@@ -5,6 +5,7 @@ import { useSharedspacemembers } from 'Src/hooks/queries/useSharedspacemembers';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 import useUser from 'Src/hooks/queries/useUser';
 import { useInView } from 'Src/hooks/utils/useInView';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface SharedspaceMemberListMainProps {};
 
@@ -39,6 +40,15 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
           );
         })}
         <SentinelDiv ref={sentinelRef} />
+        {
+          isFetchNextPageError &&
+          <ErrorDiv>
+            <ErrorSpan>문제가 발생했습니다.</ErrorSpan>
+            <RetryButton onClick={() => fetchNextPage()}>
+              <RefreshIcon />
+            </RetryButton>
+          </ErrorDiv>
+        }
       </List>
     </Main>
   );
@@ -66,12 +76,35 @@ const List = styled.ul`
   overflow-y: auto;
 `;
 
-const ErrorSpan = styled.span`
-  font-size: 16px;
-  color: var(--red);
-`;
-
 const SentinelDiv = styled.div`
   height: 1px;
   flex-shrink: 0;
+`;
+
+const ErrorDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 35px 0;
+  gap: 10px;
+`;
+
+const ErrorSpan = styled.span`
+  color: var(--gray-6);
+  font-size: 14px;
+`;
+
+const RetryButton = styled.button`
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  cursor: pointer;
+
+  svg {
+    font-size: 45px;
+    color: var(--gray-6);
+
+    &:hover {
+      color: var(--gray-4);
+    }
+  }
 `;
