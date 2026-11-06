@@ -10,8 +10,16 @@ interface SharedspaceInviteMainProps {
 };
 
 const SharedspaceInviteMain: FC<SharedspaceInviteMainProps> = ({ query }) => {
-  const { data: searchUsersData, loadMore } = useSearchUsers(query);
+  const {
+    data: searchUsersData,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useSearchUsers(query);
   const { data: spaceData } = useSharedspace();
+
+  const searchUsers = searchUsersData.pages.flatMap(page => page.users);
 
   return (
     <Main>
@@ -20,8 +28,11 @@ const SharedspaceInviteMain: FC<SharedspaceInviteMainProps> = ({ query }) => {
         <SharedspaceInviteUserList
           query={query}
           isOwner={spaceData.permission.isOwner}
-          searchUsersData={searchUsersData}
-          loadMore={loadMore} />
+          searchUsers={searchUsers}
+          fetchNextPage={fetchNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          hasNextPage={hasNextPage}
+          isFetchNextPageError={isFetchNextPageError} />
         :
         <SearchIcon sx={{ color: 'var(--light-gray)', fontSize: '250px' }} />
     }

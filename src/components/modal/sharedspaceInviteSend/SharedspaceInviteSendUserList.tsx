@@ -2,29 +2,33 @@ import React, { FC, memo } from 'react';
 import styled from '@emotion/styled';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import SharedspaceInviteUserItem from './SharedspaceInviteSendUserItem';
-import { TSearchUsersResponse } from 'Src/typings/types';
+import { TSearchUser } from 'Src/typings/types';
 
 interface SharedspaceInviteUserListProps {
   query: string,
   isOwner: boolean,
-  searchUsersData: TSearchUsersResponse,
-  loadMore: () => void,
+  searchUsers: TSearchUser[],
+  fetchNextPage: () => void,
+  isFetchingNextPage: boolean,
+  hasNextPage: boolean,
+  isFetchNextPageError: boolean,
 }
 
 const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
   query,
   isOwner,
-  searchUsersData,
-  loadMore,
+  searchUsers,
+  fetchNextPage,
+  isFetchingNextPage,
+  hasNextPage,
+  isFetchNextPageError,
 }) => {
-  const { users, hasMoreData } = searchUsersData;
-
   return (
     <>
-      {users.length ?
+      {searchUsers.length ?
         <UserList>
           {
-            users.map((user) => {
+            searchUsers.map((user) => {
               return (
                 <SharedspaceInviteUserItem
                   key={user.email}
@@ -33,8 +37,8 @@ const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
               );
             })
           }
-          {hasMoreData &&
-            <LoadMore onClick={loadMore}>
+          {hasNextPage &&
+            <LoadMore onClick={() => fetchNextPage()}>
               Load More
             </LoadMore>
           }
