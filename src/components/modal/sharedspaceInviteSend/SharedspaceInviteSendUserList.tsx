@@ -8,6 +8,7 @@ interface SharedspaceInviteUserListProps {
   query: string,
   isOwner: boolean,
   searchUsers: TSearchUser[],
+  sentinelRef: React.MutableRefObject<HTMLDivElement | null>,
   fetchNextPage: () => void,
   isFetchingNextPage: boolean,
   hasNextPage: boolean,
@@ -18,6 +19,7 @@ const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
   query,
   isOwner,
   searchUsers,
+  sentinelRef,
   fetchNextPage,
   isFetchingNextPage,
   hasNextPage,
@@ -37,11 +39,7 @@ const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
               );
             })
           }
-          {hasNextPage &&
-            <LoadMore onClick={() => fetchNextPage()}>
-              Load More
-            </LoadMore>
-          }
+          <SentinelDiv ref={sentinelRef} />
         </UserList>
         :
         <NotFoundBlock>
@@ -65,24 +63,6 @@ const UserList = styled.ul`
   margin: 0;
 `;
 
-const LoadMore = styled.button`
-  font-size: 24px;
-  font-weight: 600;
-  padding: 10px 15px;
-  margin: 20px 0;
-  color: var(--white);
-  border: 1px solid var(--light-gray);
-  border-radius: 5px;
-  background-color: var(--black);
-  cursor: pointer;
-  transition: all 0.1s linear;
-
-  &:hover {
-    background-color: var(--red);
-    border-color: var(--red);
-  }
-`;
-
 const NotFoundBlock = styled.div`
   display: flex;
   flex-direction: column;
@@ -102,4 +82,9 @@ const NotFoundMessage = styled.span`
   color: var(--white);
   font-size: 20px;
   font-weight: 600;
+`;
+
+const SentinelDiv = styled.div`
+  height: 1px;
+  flex-shrink: 0;
 `;
