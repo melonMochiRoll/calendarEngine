@@ -4,6 +4,7 @@ import MemberItem from './MemberItem';
 import { useSharedspacemembers } from 'Src/hooks/queries/useSharedspacemembers';
 import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 import useUser from 'Src/hooks/queries/useUser';
+import { useInView } from 'Src/hooks/utils/useInView';
 
 interface SharedspaceMemberListMainProps {};
 
@@ -17,6 +18,11 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
   } = useSharedspacemembers();
   const { data: spaceData } = useSharedspace();
   const { data: userData } = useUser();
+
+  const sentinelRef = useInView(() => fetchNextPage(), {
+    enable: hasNextPage && !isFetchingNextPage && !isFetchNextPageError,
+    rootMargin: '100px 0px 0px 0px',
+  });
 
   const members = membersData.pages.flatMap(page => page.members);
   
@@ -32,11 +38,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
               isMe={userData.id === member.UserId} />
           );
         })}
-        {hasNextPage &&
-          <LoadMore onClick={() => fetchNextPage()}>
-            Load More
-          </LoadMore>
-        }
+        <SentinelDiv ref={sentinelRef} />
       </List>
     </Main>
   );
@@ -69,20 +71,7 @@ const ErrorSpan = styled.span`
   color: var(--red);
 `;
 
-const LoadMore = styled.button`
-  font-size: 24px;
-  font-weight: 600;
-  padding: 10px 15px;
-  margin: 20px 0;
-  color: var(--white);
-  border: 1px solid var(--light-gray);
-  border-radius: 5px;
-  background-color: var(--black);
-  cursor: pointer;
-  transition: all 0.1s linear;
-
-  &:hover {
-    background-color: var(--red);
-    border-color: var(--red);
-  }
+const SentinelDiv = styled.div`
+  height: 1px;
+  flex-shrink: 0;
 `;
