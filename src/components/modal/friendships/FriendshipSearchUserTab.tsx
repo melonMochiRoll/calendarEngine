@@ -5,6 +5,7 @@ import { useSearchUsersForFriendship } from 'Src/hooks/queries/useSearchUsersFor
 import FriendshipSearchItem from './FriendshipSearchItem';
 import { useInView } from 'Src/hooks/utils/useInView';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { CircularProgress } from '@mui/material';
 
 const FriendshipSearchUserTab: FC = () => {
   const [ query, setQuery ] = useState('');
@@ -43,6 +44,7 @@ const FriendshipSearchUserTab: FC = () => {
             );
           })
         }
+        {isFetchingNextPage && <CircularProgress size={35} />}
         <SentinelDiv ref={sentinelRef} />
         {
           isFetchNextPageError &&
