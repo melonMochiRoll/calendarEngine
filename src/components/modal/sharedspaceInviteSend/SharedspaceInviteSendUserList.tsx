@@ -4,6 +4,7 @@ import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import SharedspaceInviteUserItem from './SharedspaceInviteSendUserItem';
 import { TSearchUser } from 'Src/typings/types';
 import { CircularProgress } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface SharedspaceInviteUserListProps {
   query: string,
@@ -42,6 +43,15 @@ const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
           }
           {isFetchingNextPage && <CircularProgress size={35} />}
           <SentinelDiv ref={sentinelRef} />
+          {
+            isFetchNextPageError &&
+            <ErrorDiv>
+              <ErrorSpan>문제가 발생했습니다.</ErrorSpan>
+              <RetryButton onClick={() => fetchNextPage()}>
+                <RefreshIcon />
+              </RetryButton>
+            </ErrorDiv>
+          }
         </UserList>
         :
         <NotFoundBlock>
@@ -89,4 +99,32 @@ const NotFoundMessage = styled.span`
 const SentinelDiv = styled.div`
   height: 1px;
   flex-shrink: 0;
+`;
+
+const ErrorDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 35px 0;
+  gap: 10px;
+`;
+
+const ErrorSpan = styled.span`
+  color: var(--gray-6);
+  font-size: 14px;
+`;
+
+const RetryButton = styled.button`
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  cursor: pointer;
+
+  svg {
+    font-size: 45px;
+    color: var(--gray-6);
+
+    &:hover {
+      color: var(--gray-4);
+    }
+  }
 `;
