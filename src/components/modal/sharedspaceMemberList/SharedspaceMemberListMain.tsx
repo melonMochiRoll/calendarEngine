@@ -6,6 +6,7 @@ import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 import useUser from 'Src/hooks/queries/useUser';
 import { useInView } from 'Src/hooks/utils/useInView';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { CircularProgress } from '@mui/material';
 
 interface SharedspaceMemberListMainProps {};
 
@@ -39,6 +40,7 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
               isMe={userData.id === member.UserId} />
           );
         })}
+        {isFetchingNextPage && <CircularProgress size={35} />}
         <SentinelDiv ref={sentinelRef} />
         {
           isFetchNextPageError &&
