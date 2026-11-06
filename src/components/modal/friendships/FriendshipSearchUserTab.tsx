@@ -4,6 +4,7 @@ import { useDebounce } from 'Src/hooks/utils/useDebounce';
 import { useSearchUsersForFriendship } from 'Src/hooks/queries/useSearchUsersForFriendship';
 import FriendshipSearchItem from './FriendshipSearchItem';
 import { useInView } from 'Src/hooks/utils/useInView';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 const FriendshipSearchUserTab: FC = () => {
   const [ query, setQuery ] = useState('');
@@ -43,6 +44,15 @@ const FriendshipSearchUserTab: FC = () => {
           })
         }
         <SentinelDiv ref={sentinelRef} />
+        {
+          isFetchNextPageError &&
+            <ErrorDiv>
+              <ErrorSpan>문제가 발생했습니다.</ErrorSpan>
+              <RetryButton onClick={() => fetchNextPage()}>
+                <RefreshIcon />
+              </RetryButton>
+            </ErrorDiv>
+        }
       </List>
     </>
   );
@@ -76,4 +86,32 @@ const List = styled.ul`
 const SentinelDiv = styled.div`
   height: 1px;
   flex-shrink: 0;
+`;
+
+const ErrorDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 35px 0;
+  gap: 10px;
+`;
+
+const ErrorSpan = styled.span`
+  color: var(--gray-6);
+  font-size: 14px;
+`;
+
+const RetryButton = styled.button`
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  cursor: pointer;
+
+  svg {
+    font-size: 45px;
+    color: var(--gray-6);
+
+    &:hover {
+      color: var(--gray-4);
+    }
+  }
 `;
