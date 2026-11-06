@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import SharedspaceInviteUserItem from './SharedspaceInviteSendUserItem';
 import { TSearchUser } from 'Src/typings/types';
+import { CircularProgress } from '@mui/material';
 
 interface SharedspaceInviteUserListProps {
   query: string,
@@ -39,6 +40,7 @@ const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
               );
             })
           }
+          {isFetchingNextPage && <CircularProgress size={35} />}
           <SentinelDiv ref={sentinelRef} />
         </UserList>
         :
