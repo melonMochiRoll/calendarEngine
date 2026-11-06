@@ -8,14 +8,22 @@ import useUser from 'Src/hooks/queries/useUser';
 interface SharedspaceMemberListMainProps {};
 
 const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
-  const { data: membersData, loadMore } = useSharedspacemembers();
+  const {
+    data: membersData,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useSharedspacemembers();
   const { data: spaceData } = useSharedspace();
   const { data: userData } = useUser();
+
+  const members = membersData.pages.flatMap(page => page.members);
   
   return (
     <Main>
       <List>
-        {membersData.members.map((member) => {
+        {members.map((member) => {
           return (
             <MemberItem
               key={member.UserId}
@@ -24,8 +32,8 @@ const SharedspaceMemberListMain: FC<SharedspaceMemberListMainProps> = ({}) => {
               isMe={userData.id === member.UserId} />
           );
         })}
-        {membersData.hasMoreData &&
-          <LoadMore onClick={loadMore}>
+        {hasNextPage &&
+          <LoadMore onClick={() => fetchNextPage()}>
             Load More
           </LoadMore>
         }
