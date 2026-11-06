@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { useDebounce } from 'Src/hooks/utils/useDebounce';
 import { useSearchUsersForFriendship } from 'Src/hooks/queries/useSearchUsersForFriendship';
 import FriendshipSearchItem from './FriendshipSearchItem';
+import { useInView } from 'Src/hooks/utils/useInView';
 
 const FriendshipSearchUserTab: FC = () => {
   const [ query, setQuery ] = useState('');
@@ -15,6 +16,11 @@ const FriendshipSearchUserTab: FC = () => {
     hasNextPage,
     isFetchNextPageError,
   } = useSearchUsersForFriendship(debouncedQuery);
+
+  const sentinelRef = useInView(() => fetchNextPage(), {
+    enable: hasNextPage && !isFetchingNextPage && !isFetchNextPageError,
+    rootMargin: '100px 0px 0px 0px',
+  });
 
   const users = searchUsersData.pages.flatMap(page => page.users);
 
@@ -36,16 +42,7 @@ const FriendshipSearchUserTab: FC = () => {
             );
           })
         }
-        {
-          hasNextPage ?
-            <LoadMore onClick={() => fetchNextPage()}>
-              Load More
-            </LoadMore>
-            :
-            <DisableLoadMore>
-              목록 없음
-            </DisableLoadMore>
-        }
+        <SentinelDiv ref={sentinelRef} />
       </List>
     </>
   );
@@ -76,31 +73,7 @@ const List = styled.ul`
   overflow-y: auto;
 `;
 
-const LoadMore = styled.button`
-  font-size: 24px;
-  font-weight: 600;
-  padding: 10px 15px;
-  margin: 30px 0;
-  color: var(--white);
-  border: 1px solid var(--light-gray);
-  border-radius: 5px;
-  background-color: var(--black);
-  cursor: pointer;
-  transition: all 0.1s linear;
-
-  &:hover {
-    background-color: var(--red);
-    border-color: var(--red);
-  }
-`;
-
-const DisableLoadMore = styled.button`
-  font-size: 24px;
-  font-weight: 600;
-  padding: 10px 15px;
-  margin: 30px 0;
-  color: var(--gray-7);
-  border: 1px solid var(--light-gray);
-  border-radius: 5px;
-  background-color: var(--black);
+const SentinelDiv = styled.div`
+  height: 1px;
+  flex-shrink: 0;
 `;
