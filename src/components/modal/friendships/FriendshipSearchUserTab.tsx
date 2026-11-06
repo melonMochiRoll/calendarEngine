@@ -8,8 +8,15 @@ const FriendshipSearchUserTab: FC = () => {
   const [ query, setQuery ] = useState('');
   const debouncedQuery = useDebounce(query, 500);
 
-  const { data: searchUsersData, loadMore } = useSearchUsersForFriendship(debouncedQuery);
-  const { users, hasMoreData } = searchUsersData;
+  const {
+    data: searchUsersData,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useSearchUsersForFriendship(debouncedQuery);
+
+  const users = searchUsersData.pages.flatMap(page => page.users);
 
   return (
     <>
@@ -30,8 +37,8 @@ const FriendshipSearchUserTab: FC = () => {
           })
         }
         {
-          hasMoreData ?
-            <LoadMore onClick={loadMore}>
+          hasNextPage ?
+            <LoadMore onClick={() => fetchNextPage()}>
               Load More
             </LoadMore>
             :

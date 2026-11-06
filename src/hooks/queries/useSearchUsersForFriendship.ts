@@ -1,35 +1,29 @@
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { useCallback } from "react";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { searchUsers } from "Src/api/friendshipsApi";
 import { SEARCH_USERS_FOR_FRIENDSHIP_KEY } from "Src/constants/queryKeys";
 import { handleRetry } from "Src/lib/utilFunction";
-import { TSearchUsersForFriendshipResponse } from "Src/typings/types";
 
 export function useSearchUsersForFriendship(query: string) {
-  const qc = useQueryClient();
-
-  const { data } = useSuspenseQuery<TSearchUsersForFriendshipResponse>({
+  const {
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+  } = useSuspenseInfiniteQuery({
     queryKey: [SEARCH_USERS_FOR_FRIENDSHIP_KEY, query],
     queryFn: () => searchUsers(query),
+    initialPageParam: '',
+    getNextPageParam: (lastPage) => lastPage.hasMoreData ? lastPage.users[lastPage.users.length-1].id : undefined,
     refetchOnWindowFocus: false,
     retry: (failureCount, error) => handleRetry([ 400, 401, 403, 404 ], failureCount, error),
   });
 
-  const loadMore = useCallback(async () => {
-    const moreUsers = await searchUsers(query, data.users[data.users.length-1].id);
-
-    qc.setQueryData<TSearchUsersForFriendshipResponse>([SEARCH_USERS_FOR_FRIENDSHIP_KEY, query], (prev) => {
-      if (!prev) return;
-
-      return {
-        users: [ ...prev.users, ...moreUsers.users ],
-        hasMoreData: moreUsers.hasMoreData,
-      };
-    });
-  }, [data, query]);
-
   return {
     data,
-    loadMore,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isFetchNextPageError,
   } as const;
 };
