@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { closeModal } from 'Src/features/modalSlice';
@@ -22,6 +22,7 @@ const ConfirmModal: FC<ConfirmModalProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const [ error, setError ] = useState('');
 
   const ConfirmButtonBgColor = {
@@ -30,6 +31,9 @@ const ConfirmModal: FC<ConfirmModalProps> = ({
   };
 
   const handleConfirm = async (onConfirm: () => Promise<void>) => {
+    if (isSubmitting.current) return;
+
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
@@ -37,6 +41,7 @@ const ConfirmModal: FC<ConfirmModalProps> = ({
     } catch (err) {
       setError(waitingMessage);
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
