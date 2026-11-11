@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { closeModal } from 'Src/features/modalSlice';
@@ -18,17 +18,20 @@ const ChatRoomCreaterMain: FC<ChatRoomCreaterMainProps> = ({ SharedspaceId }) =>
   const dispatch = useAppDispatch();
   const [ name, setName ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const [ error, setError ] = useState('');
 
   const onSubmit = async (
     SharedspaceId: string,
     name: string,
   ) => {
+    if (isSubmitting.current) return;
     if (!name) {
       setError(requiredFieldMessage);
       return;
     }
 
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
@@ -40,6 +43,7 @@ const ChatRoomCreaterMain: FC<ChatRoomCreaterMainProps> = ({ SharedspaceId }) =>
     } catch (err) {
       setError(waitingMessage);
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };

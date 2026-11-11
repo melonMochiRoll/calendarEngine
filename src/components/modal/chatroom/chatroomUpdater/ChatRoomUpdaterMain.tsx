@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAppDispatch } from 'Src/hooks/reduxHooks';
@@ -24,6 +24,7 @@ const ChatRoomUpdaterMain: FC<ChatRoomUpdaterMainProps> = ({
   const dispatch = useAppDispatch();
   const [ name, setName ] = useState(prevName);
   const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const [ error, setError ] = useState('');
 
   const onSubmit = async (
@@ -32,10 +33,11 @@ const ChatRoomUpdaterMain: FC<ChatRoomUpdaterMainProps> = ({
     prevName: string,
     name: string,
   ) => {
-    if (prevName === name) {
+    if (isSubmitting.current || prevName === name) {
       return;
     }
 
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
@@ -47,6 +49,7 @@ const ChatRoomUpdaterMain: FC<ChatRoomUpdaterMainProps> = ({
     } catch (err) {
       setError(waitingMessage);
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
