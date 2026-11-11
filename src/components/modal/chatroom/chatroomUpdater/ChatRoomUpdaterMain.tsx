@@ -74,7 +74,8 @@ const ChatRoomUpdaterMain: FC<ChatRoomUpdaterMainProps> = ({
         </Button>
         <Button
           onClick={() => onSubmit(SharedspaceId, ChatRoomId, prevName, name)}
-          bgColor='var(--google-blue)'>
+          bgColor='var(--google-blue)'
+          disabled={isLoading}>
             {
             isLoading ?
               <CircularProgress size={25} sx={{ color: 'var(--white)' }}/> :

@@ -68,7 +68,8 @@ const ChatRoomCreaterMain: FC<ChatRoomCreaterMainProps> = ({ SharedspaceId }) =>
         </Button>
         <Button
           onClick={() => onSubmit(SharedspaceId, name)}
-          bgColor='var(--google-blue)'>
+          bgColor='var(--google-blue)'
+          disabled={isLoading}>
             {
             isLoading ?
               <CircularProgress size={25} sx={{ color: 'var(--white)' }}/> :

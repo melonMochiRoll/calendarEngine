@@ -62,7 +62,8 @@ const ConfirmModal: FC<ConfirmModalProps> = ({
         </Button>
         <Button
           onClick={() => handleConfirm(onConfirm)}
-          bgColor={ConfirmButtonBgColor[variant]}>
+          bgColor={ConfirmButtonBgColor[variant]}
+          disabled={isLoading}>
             {
             isLoading ?
               <CircularProgress size={25} sx={{ color: 'var(--white)' }}/> :
