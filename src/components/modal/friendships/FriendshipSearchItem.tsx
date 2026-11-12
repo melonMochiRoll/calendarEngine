@@ -58,12 +58,14 @@ const FriendshipSearchItem: FC<FriendshipSearchItemProps> = ({
         <InfoNickname>{nickname}</InfoNickname>
         <InfoEmail>{email}</InfoEmail>
       </InfoWrapper>
-      {isSent && <DisableButton>요청 보냄</DisableButton>}
-      {isFriendship && <DisableButton>친구 상태</DisableButton>}
-      {
-        !isSent && !isFriendship && (
-          <Button onClick={() => handleSendFriendship(id)} disabled={isLoading}>
-            {
+      <Button
+        onClick={() => handleSendFriendship(id)}
+        disabled={isFriendship || isSent || isLoading}>
+        {
+          isFriendship ? 
+            '친구 상태' :
+            isSent ?
+              '요청 보냄' :
               isLoading ?
                 <CircularProgress size={30} />
                 :
@@ -71,10 +73,8 @@ const FriendshipSearchItem: FC<FriendshipSearchItemProps> = ({
                   <GroupAddIcon fontSize='large' />
                   친구 요청
                 </>
-            }
-          </Button>
-        )
-      }
+        }
+      </Button>
     </Item>
   );
 };
@@ -136,13 +136,4 @@ const Button = styled.button`
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
-`;
-
-const DisableButton = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 180px;
-  font-size: 20px;
-  color: var(--gray-6);
 `;
