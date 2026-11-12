@@ -65,7 +65,7 @@ const LoginContainer: FC<LoginContainerProps> = ({}) => {
       const token = await getCsrfToken();
       dispatch(setCsrfToken({ token }));
       
-      navigate(PATHS.SHAREDSPACE);
+      navigate(PATHS.HOME);
     } catch (err) {
       setErrors({
         email: err instanceof AxiosError ? err?.response?.data.message : waitingMessage,
