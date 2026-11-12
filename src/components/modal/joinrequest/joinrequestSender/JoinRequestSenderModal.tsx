@@ -26,9 +26,7 @@ const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({}) => {
     try {
       await createJoinRequest(SharedspaceId, message);
 
-      toast.success(successMessage, {
-        ...defaultToastOption,
-      });
+      toast.success(successMessage, defaultToastOption);
       dispatch(closeModal());
     } catch (err) {
       setError(err instanceof AxiosError ? err?.response?.data.message : waitingMessage);
