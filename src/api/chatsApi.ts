@@ -1,10 +1,10 @@
-import { TChats, TImageMetaData } from "Src/typings/types";
+import { TChatResponse, TImageMetaData } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getSharedspaceChats = async (
   ChatRoomId: string | undefined,
   beforeChatId?: string,
-): Promise<TChats> => {
+): Promise<TChatResponse> => {
   if (!ChatRoomId) {
     return {
       chats: [],
@@ -25,7 +25,7 @@ export const getSharedspaceChats = async (
 export const getDmChats = async (
   ChatRoomId: string | undefined,
   beforeChatId?: string,
-): Promise<TChats> => {
+): Promise<TChatResponse> => {
   if (!ChatRoomId) {
     return {
       chats: [],

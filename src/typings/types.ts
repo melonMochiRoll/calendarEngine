@@ -240,7 +240,7 @@ export const ChatStatus = {
 
 export type TChatStatus = typeof ChatStatus[keyof typeof ChatStatus];
 
-export type TChats = {
+export type TChatResponse = {
   chats: TChatPayload[],
   hasMoreData: boolean,
 };
