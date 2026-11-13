@@ -6,14 +6,17 @@ import { useAppDispatch } from 'Src/hooks/reduxHooks';
 import { closeModal } from 'Src/features/modalSlice';
 import MailIcon from '@mui/icons-material/MarkEmailRead';
 import CloseIcon from '@mui/icons-material/CloseRounded';
+import { CircularProgress } from '@mui/material';
 
 interface JoinRequestSenderMainProps {
   onSubmit: (message: string) => Promise<void>,
+  isLoading: boolean,
   error: string,
 };
 
 const JoinRequestSenderMain: FC<JoinRequestSenderMainProps> = ({
   onSubmit,
+  isLoading,
   error,
 }) => {
   const dispatch = useAppDispatch();
@@ -44,10 +47,11 @@ const JoinRequestSenderMain: FC<JoinRequestSenderMainProps> = ({
         <Buttons>
           <TextButton
             type='button'
+            disabled={isLoading}
             onClick={() => {
               onSubmit(message);
             }}>
-              전송
+              {isLoading ? <CircularProgress size={20} />  : '전송'}
           </TextButton>
         </Buttons>
       </Footer>

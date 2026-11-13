@@ -13,9 +13,11 @@ interface JoinRequestSenderModalProps {};
 const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({}) => {
   const { SharedspaceId } = useParams();
   const dispatch = useAppDispatch();
+  const [ isLoading, setIsLoading ] = useState(false);
   const [ error, setError ] = useState('');
   
   const onSubmit = async (message: string) => {
+    setIsLoading(true);
     setError('');
 
     if (!SharedspaceId) {
@@ -30,12 +32,15 @@ const JoinRequestSenderModal: FC<JoinRequestSenderModalProps> = ({}) => {
       dispatch(closeModal());
     } catch (err) {
       setError(err instanceof AxiosError ? err?.response?.data.message : waitingMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <JoinRequestSenderMain
       onSubmit={onSubmit}
+      isLoading={isLoading}
       error={error} />
   );
 };
