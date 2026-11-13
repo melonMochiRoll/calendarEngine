@@ -12,7 +12,7 @@ const GlobalErrorFallback: FC<GlobalErrorFallbackProps> = ({ errorProps }) => {
   let destination = PATHS.INTERNAL;
 
   if (status === 400) {
-    destination = PATHS.SHAREDSPACE;
+    destination = PATHS.HOME;
   }
 
   if (status === 401) {
