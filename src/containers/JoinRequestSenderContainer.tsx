@@ -9,14 +9,17 @@ import { createJoinRequest } from 'Api/joinrequestApi';
 import { toast } from 'react-toastify';
 import { PATHS } from 'Constants/paths';
 import { AxiosError } from 'axios';
+import { CircularProgress } from '@mui/material';
 
 const JoinRequestSenderContainer: FC = () => {
   const { SharedspaceId } = useParams();
   const navigate = useNavigate();
   const [ message, onChangeMessage ] = useInput('');
+  const [ isLoading, setIsLoading ] = useState(false);
   const [ error, setError ] = useState('');
   
   const onSubmit = async (SharedspaceId: string | undefined, message: string) => {
+    setIsLoading(true);
     setError('');
 
     if (!SharedspaceId) {
@@ -33,6 +36,8 @@ const JoinRequestSenderContainer: FC = () => {
       navigate(PATHS.SHAREDSPACE);
     } catch (err) {
       setError(err instanceof AxiosError ? err?.response?.data?.message : waitingMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,8 +63,9 @@ const JoinRequestSenderContainer: FC = () => {
           <Buttons>
             <TextButton
               type='button'
+              disabled={isLoading}
               onClick={() => onSubmit(SharedspaceId, message)}>
-                전송
+                {isLoading ? <CircularProgress size={20} /> : '전송'}
             </TextButton>
             <TextButton
               type='button'
