@@ -266,7 +266,7 @@ export type TInvite = {
   Owner: Pick<TUser, 'email' | 'nickname' | 'ProfileImage'>,
 };
 
-export type TInvitePayload = {
+export type TInviteResponse = {
   invites: TInvite[],
   hasMoreData: boolean,
 };

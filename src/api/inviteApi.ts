@@ -1,9 +1,9 @@
-import { TInvitePayload } from "Src/typings/types";
+import { TInviteResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getInvites = async (
   beforeInviteId?: string,
-): Promise<TInvitePayload> => {
+): Promise<TInviteResponse> => {
   const { data } = await axiosInstance
     .get(`api/invites`, {
       params: {
