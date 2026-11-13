@@ -114,7 +114,7 @@ export type TSearchTodosItem = {
   endTime: string,
 };
 
-export type TSearchTodosPayload = {
+export type TSearchTodoResponse = {
   todos: TSearchTodosItem[],
   hasMoreData: boolean,
 };

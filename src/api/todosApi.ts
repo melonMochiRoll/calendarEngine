@@ -1,4 +1,4 @@
-import { TSearchTodosPayload } from "Src/typings/types";
+import { TSearchTodoResponse } from "Src/typings/types";
 import { axiosInstance } from "./axiosInstance";
 
 export const getTodosByMonth = async (
@@ -74,7 +74,7 @@ export const searchTodos = async (
   SharedspaceId: string | undefined,
   query: string,
   beforeTodoId?: string,
-): Promise<TSearchTodosPayload> => {
+): Promise<TSearchTodoResponse> => {
   if (!query || !SharedspaceId) {
     return { todos: [], hasMoreData: false };
   }
