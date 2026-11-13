@@ -33,7 +33,7 @@ const JoinRequestSenderContainer: FC = () => {
       toast.success(successMessage, {
         ...defaultToastOption,
       });
-      navigate(PATHS.SHAREDSPACE);
+      navigate(PATHS.HOME);
     } catch (err) {
       setError(err instanceof AxiosError ? err?.response?.data?.message : waitingMessage);
     } finally {
