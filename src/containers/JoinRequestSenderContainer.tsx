@@ -70,7 +70,7 @@ const JoinRequestSenderContainer: FC = () => {
             <TextButton
               type='button'
               onClick={() => {
-                navigate(PATHS.SHAREDSPACE);
+                navigate(PATHS.HOME);
               }}>
                 홈으로
             </TextButton>
