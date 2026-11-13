@@ -20,9 +20,9 @@ const GlobalErrorFallback: FC<GlobalErrorFallbackProps> = ({ errorProps }) => {
   }
 
   if (status === 403) {
-    destination = error?.response?.data?.metaData?.spaceUrl ?
-      `${PATHS.JOINREQUEST_SENDER}/${error?.response?.data?.metaData?.spaceUrl}` :
-      PATHS.SHAREDSPACE;
+    destination = error?.response?.data?.metaData?.SharedspaceId ?
+      `${PATHS.JOINREQUEST_SENDER}/${error?.response?.data?.metaData?.SharedspaceId}` :
+      PATHS.HOME;
   }
 
   if (status === 404) {
