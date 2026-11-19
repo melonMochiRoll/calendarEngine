@@ -71,7 +71,6 @@ const JoinRequestManagerMain: FC<JoinRequestManagerMainProps> = ({}) => {
           <JoinRequestManagerList
             joinRequests={joinRequests}
             sentinelRef={sentinelRef}
-            hasNextPage={hasNextPage}
             fetchNextPage={fetchNextPage}
             isFetchingNextPage={isFetchingNextPage}
             isFetchNextPageError={isFetchNextPageError}

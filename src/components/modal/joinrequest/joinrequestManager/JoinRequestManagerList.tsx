@@ -8,7 +8,6 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 interface JoinRequestManagerListProps {
   joinRequests: TJoinRequest[],
   sentinelRef: React.MutableRefObject<HTMLDivElement | null>,
-  hasNextPage: boolean,
   fetchNextPage: () => void,
   isFetchingNextPage: boolean,
   isFetchNextPageError: boolean,
@@ -19,7 +18,6 @@ interface JoinRequestManagerListProps {
 const JoinRequestManagerList: FC<JoinRequestManagerListProps> = ({
   joinRequests,
   sentinelRef,
-  hasNextPage,
   fetchNextPage,
   isFetchingNextPage,
   isFetchNextPageError,
