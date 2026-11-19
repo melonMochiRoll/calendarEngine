@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import useMenu from 'Hooks/utils/useMenu';
-import { Divider, Menu, MenuItem } from '@mui/material';
+import { CircularProgress, Divider, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { ModalName, RoleDictionary, SharedspaceMembersRoles, TJoinRequest } from 'Typings/types';
 import { useParams } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { useAppDispatch } from 'Hooks/reduxHooks';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { openModal } from 'Features/modalSlice';
 import { muiMenuDarkModeSx } from 'Src/constants/notices';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const resolveMenuOption = [
   {
@@ -34,6 +35,8 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { SharedspaceId } = useParams();
+  const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const { id, message, Requestor } = request;
 
   const {
@@ -49,6 +52,20 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
       props: { request },
     }));
   };
+
+  const withLoading = async (task: () => Promise<void>) => {
+    if (isSubmitting.current) return;
+
+    setIsLoading(true);
+    isSubmitting.current = true;
+
+    try {
+      await task();
+    } finally {
+      isSubmitting.current = false;
+      setIsLoading(false);
+    }
+  };
   
   return (
     <Item onClick={() => openJoinRequestDetail(request)}>
@@ -61,9 +78,8 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
         <Nickname>{Requestor.nickname}</Nickname>
         <Email>{Requestor.email}</Email>
       </Center>
-      <Right onClick={onOpen}>
-        <CurrentOption>메뉴</CurrentOption>
-        <ArrowDropDownIcon fontSize='large' />
+      <Right onClick={onOpen} disabled={isLoading}>
+        {isLoading ? <CircularProgress size={30} /> : <MoreHorizIcon fontSize='large' />}
       </Right>
       {
         anchorEl &&
@@ -81,7 +97,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
                 <MenuItem
                   key={option.text}
                   onClick={(e) => {
-                    onResolveMenuClick(SharedspaceId, id, option.roleName);
+                    withLoading(() => onResolveMenuClick(SharedspaceId, id, option.roleName));
                     onClose(e);
                   }}>
                   <span>{option.text}</span>
@@ -92,7 +108,7 @@ const JoinRequestItem: FC<JoinRequestItemProps> = ({
           <Divider />
             <MenuItem
               onClick={(e) => {
-                onRejectMenuClick(SharedspaceId, id);
+                withLoading(() => onRejectMenuClick(SharedspaceId, id))
                 onClose(e);
               }}>
               <span>거절</span>
@@ -150,11 +166,13 @@ const Message = styled.span`
   text-overflow: ellipsis;
 `;
 
-const Right = styled.div`
+const Right = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 20%;
+  border: none;
+  background-color: transparent;
   cursor: pointer;
 
   &:hover {
