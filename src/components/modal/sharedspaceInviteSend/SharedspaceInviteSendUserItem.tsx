@@ -8,18 +8,15 @@ import { CircularProgress } from '@mui/material';
 
 interface SharedspaceInviteUserItemProps {
   user: TSearchUser,
-  isOwner: boolean,
 };
 
 const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
   user,
-  isOwner,
 }) => {
   const { SharedspaceId } = useParams();
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isSent, setIsSent ] = useState('');
-  const { email, nickname, ProfileImage, permission } = user;
-  const label = isSent || '이미 속한 유저';
+  const { email, nickname, ProfileImage } = user;
 
   const handleSendInvite = async () => {
     if (!SharedspaceId) return;

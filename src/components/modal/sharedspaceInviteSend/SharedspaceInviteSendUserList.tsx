@@ -8,23 +8,19 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface SharedspaceInviteUserListProps {
   query: string,
-  isOwner: boolean,
   searchUsers: TSearchUser[],
   sentinelRef: React.MutableRefObject<HTMLDivElement | null>,
   fetchNextPage: () => void,
   isFetchingNextPage: boolean,
-  hasNextPage: boolean,
   isFetchNextPageError: boolean,
 }
 
 const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
   query,
-  isOwner,
   searchUsers,
   sentinelRef,
   fetchNextPage,
   isFetchingNextPage,
-  hasNextPage,
   isFetchNextPageError,
 }) => {
   return (
@@ -36,8 +32,7 @@ const SharedspaceInviteUserList: FC<SharedspaceInviteUserListProps> = ({
               return (
                 <SharedspaceInviteUserItem
                   key={user.email}
-                  user={user}
-                  isOwner={isOwner} />
+                  user={user} />
               );
             })
           }

@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import styled from '@emotion/styled';
 import { useSearchUsers } from 'Src/hooks/queries/useSearchUsers';
 import SharedspaceInviteUserList from './SharedspaceInviteSendUserList';
-import { useSharedspace } from 'Src/hooks/queries/useSharedspace';
 import SearchIcon from '@mui/icons-material/SearchRounded';
 import { useInView } from 'Src/hooks/utils/useInView';
 
@@ -18,7 +17,6 @@ const SharedspaceInviteMain: FC<SharedspaceInviteMainProps> = ({ query }) => {
     hasNextPage,
     isFetchNextPageError,
   } = useSearchUsers(query);
-  const { data: spaceData } = useSharedspace();
 
   const sentinelRef = useInView(() => fetchNextPage(), {
     enable: hasNextPage && !isFetchingNextPage && !isFetchNextPageError,
@@ -33,12 +31,10 @@ const SharedspaceInviteMain: FC<SharedspaceInviteMainProps> = ({ query }) => {
       query ?
         <SharedspaceInviteUserList
           query={query}
-          isOwner={spaceData.permission.isOwner}
           searchUsers={searchUsers}
           sentinelRef={sentinelRef}
           fetchNextPage={fetchNextPage}
           isFetchingNextPage={isFetchingNextPage}
-          hasNextPage={hasNextPage}
           isFetchNextPageError={isFetchNextPageError} />
         :
         <SearchIcon sx={{ color: 'var(--light-gray)', fontSize: '250px' }} />
