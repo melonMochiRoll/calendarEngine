@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import ProfileAvatar from 'Src/components/ProfileAvatar';
 import { TSearchUser } from 'Src/typings/types';
@@ -15,11 +15,14 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
 }) => {
   const { SharedspaceId } = useParams();
   const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const [ isSent, setIsSent ] = useState('');
   const { email, nickname, ProfileImage } = user;
 
   const handleSendInvite = async () => {
-    if (!SharedspaceId) return;
+    if (!SharedspaceId || isSubmitting.current) return;
+
+    isSubmitting.current = true;
     setIsLoading(true);
 
     try {
@@ -28,6 +31,7 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
     } catch (err) {
       setIsSent('이미 요청 보냄');
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
