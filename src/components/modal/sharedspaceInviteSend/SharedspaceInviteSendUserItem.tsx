@@ -50,14 +50,11 @@ const SharedspaceInviteUserItem: FC<SharedspaceInviteUserItemProps> = ({
         isLoading ?
           <CircularProgress size={30} />
           :
-          (
-            isOwner && !isSent && !permission.isParticipant ?
-              <Button onClick={() => handleSendInvite()}>
-                초대
-              </Button>
-              :
-              <DisableButton>{label}</DisableButton>
-          )
+          <Button
+            onClick={() => handleSendInvite()}
+            disabled={isLoading || Boolean(isSent)}>
+            {isSent ? isSent : '초대'}
+          </Button>
       }
     </Item>
   );
@@ -111,12 +108,14 @@ const DisableButton = styled.div`
   color: #828282;
 `;
 
-const Button = styled.div`
+const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 20%;
   font-size: 20px;
+  border: none;
+  background-color: transparent;
   cursor: pointer;
 
   &:hover {
