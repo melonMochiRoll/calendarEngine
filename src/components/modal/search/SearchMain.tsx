@@ -33,10 +33,7 @@ const SearchMain: FC<SearchMainProps> = ({ query }) => {
           query={query}
           todos={todos}
           sentinelRef={sentinelRef}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-          isFetchNextPageError={isFetchNextPageError} />
+          isFetchingNextPage={isFetchingNextPage} />
         :
         <SearchIcon sx={{ color: 'var(--light-gray)', fontSize: '250px' }} />
     }

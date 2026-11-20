@@ -12,20 +12,14 @@ interface SearchResultProps {
   query: string,
   todos: TSearchTodosItem[],
   sentinelRef: React.MutableRefObject<HTMLDivElement | null>,
-  fetchNextPage: () => void,
-  hasNextPage: boolean,
   isFetchingNextPage: boolean,
-  isFetchNextPageError: boolean,
 }; 
 
 const SearchResult: FC<SearchResultProps> = ({
   query,
   todos,
   sentinelRef,
-  fetchNextPage,
-  hasNextPage,
   isFetchingNextPage,
-  isFetchNextPageError,
 }) => {
   const dispatch = useAppDispatch();
 
