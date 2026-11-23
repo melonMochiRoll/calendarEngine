@@ -9,13 +9,14 @@ import { muiMenuDarkModeSx, waitingMessage } from 'Constants/notices';
 import ShieldIcon from '@mui/icons-material/VerifiedUser';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import useMenu from 'Hooks/utils/useMenu';
-import { Menu, MenuItem } from '@mui/material';
+import { CircularProgress, Menu, MenuItem } from '@mui/material';
 
 interface SharedspaceManagerMainProps {};
 
 const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
   const { SharedspaceId } = useParams();
   const qc = useQueryClient();
+  const [ isLoading, setIsLoading ] = useState(false);
 
   const { data: spaceData } = useSharedspace();
   const [ error, setError ] = useState('');
@@ -48,11 +49,16 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
         </Top>
         <Bottom>
           <Span>이 스페이스를</Span>
-          <PrivateSwitch
-            onClick={onOpen}>
-            {spaceData.private ? '권한이 있는 유저' : '모든 유저'}
-            <ArrowDropDownIcon fontSize='large' />
-          </PrivateSwitch>
+          {isLoading ?
+            <CircularProgress size={30} />
+            :
+            <PrivateSwitch
+              onClick={onOpen}
+              disabled={isLoading}>
+              {spaceData.private ? '권한이 있는 유저' : '모든 유저'}
+              <ArrowDropDownIcon fontSize='large' />
+            </PrivateSwitch>
+          }
           {
             anchorEl &&
             <Menu
@@ -126,7 +132,7 @@ const Bottom = styled.div`
   padding: 0 5%;
 `;
 
-const PrivateSwitch = styled.div`
+const PrivateSwitch = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -134,7 +140,9 @@ const PrivateSwitch = styled.div`
   font-size: 24px;
   font-weight: 500;
   padding-bottom: 2px;
+  border: none;
   border-bottom: 1px solid var(--white);
+  background-color: transparent;
   cursor: pointer;
 `;
 
