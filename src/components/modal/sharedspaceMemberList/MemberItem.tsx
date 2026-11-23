@@ -133,18 +133,15 @@ const MemberItem: FC<MemberItemProps> = ({
         isLoading ?
           <CircularProgress size={30} />
           :
-          !isSent && !isMe ?
-            <Button onClick={(e) => {
+          <Button
+            disabled={isMe || isLoading}
+            onClick={(e) => {
               e.stopPropagation();
               onOpen(e);
             }}>
-              <CurrentOption>{label}</CurrentOption>
-              <ArrowDropDownIcon fontSize='large' />
-            </Button>
-            :
-            <DisableButton>
-              <CurrentOption>{label}</CurrentOption>
-            </DisableButton>
+            <CurrentOption>{label}</CurrentOption>
+            <ArrowDropDownIcon fontSize='large' />
+          </Button>
       }
       {
         anchorEl &&
@@ -237,11 +234,13 @@ const DisableButton = styled.div`
   color: #828282;
 `;
 
-const Button = styled.div`
+const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 20%;
+  border: none;
+  background-color: transparent;
   cursor: pointer;
 
   &:hover {
