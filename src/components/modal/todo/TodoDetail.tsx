@@ -47,9 +47,7 @@ const TodoDetail: FC<TodoDetailProps> = ({
     try {
       await deleteTodo(todoId, SharedspaceId);
 
-      toast.success(successMessage, {
-        ...defaultToastOption,
-      });
+      toast.success(successMessage, defaultToastOption);
       await qc.refetchQueries({ queryKey: [GET_TODOS_BY_MONTH_KEY, SharedspaceId, calendarYear, calendarMonth] });
       dispatch(closeModal());
     } catch (err) {
