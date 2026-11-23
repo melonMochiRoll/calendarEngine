@@ -4,6 +4,7 @@ import { useSearchUsers } from 'Src/hooks/queries/useSearchUsers';
 import SharedspaceInviteUserList from './SharedspaceInviteSendUserList';
 import SearchIcon from '@mui/icons-material/SearchRounded';
 import { useInView } from 'Src/hooks/utils/useInView';
+import useUser from 'Src/hooks/queries/useUser';
 
 interface SharedspaceInviteMainProps {
   query: string,
@@ -17,13 +18,16 @@ const SharedspaceInviteMain: FC<SharedspaceInviteMainProps> = ({ query }) => {
     hasNextPage,
     isFetchNextPageError,
   } = useSearchUsers(query);
+  const { data: userData } = useUser();
 
   const sentinelRef = useInView(() => fetchNextPage(), {
     enable: hasNextPage && !isFetchingNextPage && !isFetchNextPageError,
     rootMargin: '100px 0px 0px 0px',
   });
 
-  const searchUsers = searchUsersData.pages.flatMap(page => page.users);
+  const searchUsers = searchUsersData.pages
+    .flatMap(page => page.users)
+    .filter(users => users.id !== userData.id);
 
   return (
     <Main>
