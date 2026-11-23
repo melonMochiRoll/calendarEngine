@@ -39,10 +39,6 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
     }
   };
 
-  const renderPrivateText = (status: boolean) => {
-    return status ? '권한이 있는 유저' : '모든 유저';
-  };
-
   return (
     <Main>
       <PrivateDiv>
@@ -54,7 +50,7 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
           <Span>이 스페이스를</Span>
           <PrivateSwitch
             onClick={onOpen}>
-            {renderPrivateText(spaceData.private)}
+            {spaceData.private ? '권한이 있는 유저' : '모든 유저'}
             <ArrowDropDownIcon fontSize='large' />
           </PrivateSwitch>
           {
@@ -71,7 +67,7 @@ const SharedspaceManagerMain: FC<SharedspaceManagerMainProps> = ({}) => {
                 <MenuItem
                   onClick={(e) => handleUpdateSharedspacePrivate(e, !spaceData.private)}
                   sx={{ fontSize: '20px', fontWeight: '500' }}>
-                  <span>{renderPrivateText(!spaceData.private)}</span>
+                  <span>{!spaceData.private ? '권한이 있는 유저' : '모든 유저'}</span>
                 </MenuItem>
               }
             </Menu>
