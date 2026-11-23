@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import useMenu from 'Hooks/utils/useMenu';
 import { CircularProgress, Divider, Menu, MenuItem } from '@mui/material';
@@ -30,6 +30,7 @@ const MemberItem: FC<MemberItemProps> = ({
   const qc = useQueryClient();
   const [ isSent, setIsSent ] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
   const { UserId, email, nickname, ProfileImage, RoleName } = item;
   const label = isSent || renderRole(RoleName);
 
@@ -41,8 +42,9 @@ const MemberItem: FC<MemberItemProps> = ({
   } = useMenu();
 
   const handleUpdateMemberRole = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>, role: TSharedspaceMembersRoles) => {
-    if (!SharedspaceId) return;
+    if (!SharedspaceId || isSubmitting.current) return;
     
+    isSubmitting.current = true;
     setIsLoading(true);
     onClose(e);
 
@@ -53,13 +55,15 @@ const MemberItem: FC<MemberItemProps> = ({
     } catch (err) {
       setIsSent('요청 실패');
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
 
   const handleUpdateOwner = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    if (!SharedspaceId) return;
+    if (!SharedspaceId || isSubmitting.current) return;
 
+    isSubmitting.current = true;
     setIsLoading(true);
     onClose(e);
     
@@ -70,13 +74,15 @@ const MemberItem: FC<MemberItemProps> = ({
     } catch (err) {
       setIsSent('요청 실패');
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
 
   const handleDeleteMember = async (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    if (!SharedspaceId) return;
+    if (!SharedspaceId || isSubmitting.current) return;
 
+    isSubmitting.current = true;
     setIsLoading(true);
     onClose(e);
 
@@ -87,6 +93,7 @@ const MemberItem: FC<MemberItemProps> = ({
     } catch (err) {
       setIsSent('요청 실패');
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
@@ -95,6 +102,9 @@ const MemberItem: FC<MemberItemProps> = ({
     e: React.MouseEvent<HTMLLIElement, MouseEvent>,
     RequesteeId: string,
   ) => {
+    if (isSubmitting.current) return;
+    
+    isSubmitting.current = true;
     setIsLoading(true);
     onClose(e);
 
@@ -114,6 +124,7 @@ const MemberItem: FC<MemberItemProps> = ({
 
       toast.error(message, defaultToastOption);
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
