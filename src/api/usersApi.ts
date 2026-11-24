@@ -31,16 +31,16 @@ export const createUser = async (email: string, nickname: string, password: stri
 };
 
 export const searchUsers = async (
-  url: string | undefined,
+  SharedspaceId: string | undefined,
   query: string,
   beforeUserId?: string,
 ): Promise<TSearchUsersResponse> => {
-  if (!url || !query) {
+  if (!SharedspaceId || !query) {
     return { users: [], hasMoreData: false }
   }
   
   const { data } = await axiosInstance
-    .get(`/api/sharedspaces/${url}/users/search`, {
+    .get(`/api/sharedspaces/${SharedspaceId}/users/search`, {
       params: {
         query,
         before: beforeUserId,
