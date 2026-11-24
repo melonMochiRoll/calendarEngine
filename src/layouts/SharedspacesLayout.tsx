@@ -1,4 +1,4 @@
-import React, { FC, Suspense } from 'react';
+import React, { FC, Suspense, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Outlet, useLocation } from 'react-router-dom';
 import Drawer from 'Components/common/Drawer';
@@ -9,12 +9,21 @@ import SkeletonHeader from 'Src/components/async/skeleton/SkeletonHeader';
 import { ErrorBoundary } from 'react-error-boundary';
 import CommonFallback from 'Src/components/async/fallbackUI/CommonFallback';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query';
+import { useAppDispatch } from 'Src/hooks/reduxHooks';
+import { setTodoTime } from 'Src/features/todoTimeSlice';
 
 interface SharedspacesLayoutProps {};
 
 const SharedspacesLayout: FC<SharedspacesLayoutProps> = ({}) => {
   const location = useLocation();
   const { reset } = useQueryErrorResetBoundary();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(setTodoTime(''));
+    };
+  }, []);
 
   return (
     <Block>
