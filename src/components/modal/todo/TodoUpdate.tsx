@@ -126,9 +126,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
 
       await qc.refetchQueries({ queryKey: [GET_TODOS_BY_MONTH_KEY, SharedspaceId, calendarYear, calendarMonth] });
       dispatch(clearModal());
-      toast.success(successMessage, {
-        ...defaultToastOption,
-      });
+      toast.success(successMessage, defaultToastOption);
     } catch (err) {
       setError(waitingMessage);
     } finally {
