@@ -120,9 +120,7 @@ const TodoInput: FC<TodoInputProps> = ({}) => {
 
       await qc.refetchQueries({ queryKey: [GET_TODOS_BY_MONTH_KEY, SharedspaceId, calendarYear, calendarMonth] });
       dispatch(closeModal());
-      toast.success(successMessage, {
-        ...defaultToastOption,
-      });
+      toast.success(successMessage, defaultToastOption);
     } catch (err) {
       setErrorMessage(waitingMessage);
     } finally {
