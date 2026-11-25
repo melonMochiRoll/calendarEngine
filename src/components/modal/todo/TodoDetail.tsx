@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
 import { closeModal, openModal } from 'Features/modalSlice';
@@ -8,7 +8,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import PencilIcon from '@mui/icons-material/Create';
 import MenuIcon from '@mui/icons-material/MoreHoriz';
 import useMenu from 'Hooks/utils/useMenu';
-import { Menu, MenuItem } from '@mui/material';
+import { CircularProgress, Menu, MenuItem } from '@mui/material';
 import { deleteTodo } from 'Api/todosApi';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -31,6 +31,8 @@ const TodoDetail: FC<TodoDetailProps> = ({
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
   const localTimeZone = dayjs.tz.guess();
+  const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
 
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
   const { data: spaceData } = useSharedspace();
@@ -44,6 +46,11 @@ const TodoDetail: FC<TodoDetailProps> = ({
   } = useMenu();
 
   const onClickTodoDelete = async (todoId: string, SharedspaceId: string | undefined) => {
+    if (isSubmitting.current) return;
+
+    isSubmitting.current = true;
+    setIsLoading(true);
+
     try {
       await deleteTodo(todoId, SharedspaceId);
 
@@ -52,6 +59,9 @@ const TodoDetail: FC<TodoDetailProps> = ({
       dispatch(closeModal());
     } catch (err) {
       setError(waitingMessage);
+    } finally {
+      isSubmitting.current = false;
+      setIsLoading(false);
     }
   };
 
@@ -66,11 +76,15 @@ const TodoDetail: FC<TodoDetailProps> = ({
     <Block onClick={e => e.stopPropagation()}>
       <Header>
         <MenuWrapper>
-          {spaceData.permission.isMember &&
-            <MenuIcon
-              onClick={onOpen}
-              fontSize='large'
-              sx={{ color: 'var(--white)', cursor: 'pointer' }} />
+          {
+          isLoading ?
+            <CircularProgress size={25} />
+            :
+            spaceData.permission.isMember &&
+              <MenuIcon
+                onClick={onOpen}
+                fontSize='large'
+                sx={{ color: 'var(--white)', cursor: 'pointer' }} />
           }
           {
             anchorEl &&
