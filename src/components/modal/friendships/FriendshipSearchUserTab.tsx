@@ -6,6 +6,8 @@ import FriendshipSearchItem from './FriendshipSearchItem';
 import { useInView } from 'Src/hooks/utils/useInView';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { CircularProgress } from '@mui/material';
+import ErrorIcon from '@mui/icons-material/ErrorOutline';
+import SearchIcon from '@mui/icons-material/SearchRounded';
 
 const FriendshipSearchUserTab: FC = () => {
   const [ query, setQuery ] = useState('');
@@ -36,13 +38,26 @@ const FriendshipSearchUserTab: FC = () => {
         placeholder='이메일 혹은 닉네임 검색' />
       <List>
         {
-          users.map(user => {
-            return (
-              <FriendshipSearchItem
-                key={user.id}
-                user={user} />
-            );
-          })
+          debouncedQuery ?
+            users.length ?
+              <UserList>
+                {
+                  users.map(user => {
+                    return (
+                      <FriendshipSearchItem
+                        key={user.id}
+                        user={user} />
+                    );
+                  })
+                }
+              </UserList>
+              :
+              <>
+                <ErrorIcon sx={ErrorInlineStyle} />
+                <NotFoundMessage>{`"${query}" 에 대한 검색 결과가 없습니다.`}</NotFoundMessage>
+              </>
+            :
+            <SearchIcon sx={{ color: 'var(--light-gray)', fontSize: '200px' }} />
         }
         {isFetchingNextPage && <CircularProgress size={35} />}
         <SentinelDiv ref={sentinelRef} />
@@ -73,7 +88,16 @@ const Input = styled.input`
   outline: none;
 `;
 
-const List = styled.ul`
+const List = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
+
+const UserList = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -117,3 +141,15 @@ const RetryButton = styled.button`
     }
   }
 `;
+
+const NotFoundMessage = styled.span`
+  color: var(--white);
+  font-size: 20px;
+  font-weight: 600;
+`;
+
+const ErrorInlineStyle = {
+  color: 'var(--white)',
+  fontSize: '64px',
+  paddingBottom: '15px',
+};
