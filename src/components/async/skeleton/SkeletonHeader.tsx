@@ -7,25 +7,10 @@ interface SharedspaceHeaderHeaderProps {};
 const SkeletonHeader: FC<SharedspaceHeaderHeaderProps> = ({}) => {
   return (
     <Block>
-      <Left>
-        <FlexBox>
-          <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' variant='circular' width={35} height={35} />
-          <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={180} height={40} />
-        </FlexBox>
-        <FlexBox>
-          {
-            Array.from({ length : 6 }, (_, i) => i).map((it: number) => {
-              return (
-                <Skeleton key={it} sx={{ bgcolor: 'grey.800' }} animation='wave' variant='circular' width={35} height={35} />
-              );
-            })
-          }
-        </FlexBox>
-      </Left>
+      <Left></Left>
       <Right>
         <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' variant='circular' width={35} height={35} />
-        <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={150} height={40} />
-        <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={70} height={40} />
+        <Skeleton sx={{ bgcolor: 'grey.800' }} animation='wave' width={100} height={40} />
       </Right>
     </Block>
   );
@@ -37,7 +22,8 @@ const Block = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 5%;
+  height: 50px;
+  padding: 30px;
   border-bottom: 1px solid var(--light-gray);
   background-color: var(--black);
 `;
