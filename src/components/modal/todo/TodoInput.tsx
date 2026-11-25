@@ -186,15 +186,7 @@ const TodoInput: FC<TodoInputProps> = ({}) => {
           <Right>
             <TextButton
               type='button'
-              onClick={() => {
-                onSubmit(
-                  description,
-                  todoTime,
-                  startTime,
-                  endTime,
-                  SharedspaceId,
-                );
-              }}>
+              onClick={() => onSubmit(description, todoTime, startTime, endTime, SharedspaceId)}>
               공유
             </TextButton>
           </Right>
