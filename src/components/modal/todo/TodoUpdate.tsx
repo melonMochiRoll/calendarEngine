@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from 'Hooks/reduxHooks';
@@ -13,6 +13,7 @@ import { updateTodo } from 'Api/todosApi';
 import { toast } from 'react-toastify';
 import { TTodoPayload } from 'Typings/types';
 import { GET_TODOS_BY_MONTH_KEY } from 'Src/constants/queryKeys';
+import { CircularProgress } from '@mui/material';
 
 export interface TodoUpdateProps {
   todo: TTodoPayload,
@@ -27,6 +28,9 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
   const qc = useQueryClient();
   const dispatch = useAppDispatch();
   const { calendarYear, calendarMonth } = useAppSelector(state => state.calendarTime);
+
+  const [ isLoading, setIsLoading ] = useState(false);
+  const isSubmitting = useRef(false);
 
   const [ start_hour, start_minute ] = todo.startTime.split(':');
   const [ end_hour, end_minute ] = todo.endTime.split(':');
@@ -84,36 +88,40 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
     end: typeof endTime,
     SharedspaceId: string | undefined,
   ) => {
+    if (isSubmitting.current) return;
+
+    isSubmitting.current = true;
+    setIsLoading(true);
     setError('');
 
-    const trimmedStartTime = Object.values(start).map((value) => value.trim());
-    const trimmedEndTime = Object.values(end).map((value) => value.trim());
-    const trimmedDescription = newDescription.trim();
-
-    if (
-      trimmedStartTime.includes('') ||
-      trimmedEndTime.includes('') ||
-      !trimmedDescription
-    ) {
-      setError(checkContent);
-      return;
-    }
-
-    const startTimeFormat = `${trimmedStartTime[0].padStart(2, '0')}:${trimmedStartTime[1].padEnd(2, '0')}:00`;
-    const endTimeFormat = `${trimmedEndTime[0].padStart(2, '0')}:${trimmedEndTime[1].padEnd(2, '0')}:00`;
-    const dayjs_startTime = dayjs(startTimeFormat, 'HH:mm:ss').tz(timeZone);
-    const dayjs_endTime = dayjs(endTimeFormat === '00:00:00' ? '24:00:00' : endTimeFormat, 'HH:mm:ss').tz(timeZone);
-
-    if (
-      !dayjs_startTime.isValid() ||
-      !dayjs_endTime.isValid() ||
-      dayjs(dayjs_startTime).isSameOrAfter(dayjs_endTime)
-    ) {
-      setError(checkTimeFormat);
-      return;
-    }
-
     try {
+      const trimmedStartTime = Object.values(start).map((value) => value.trim());
+      const trimmedEndTime = Object.values(end).map((value) => value.trim());
+      const trimmedDescription = newDescription.trim();
+
+      if (
+        trimmedStartTime.includes('') ||
+        trimmedEndTime.includes('') ||
+        !trimmedDescription
+      ) {
+        setError(checkContent);
+        return;
+      }
+
+      const startTimeFormat = `${trimmedStartTime[0].padStart(2, '0')}:${trimmedStartTime[1].padEnd(2, '0')}:00`;
+      const endTimeFormat = `${trimmedEndTime[0].padStart(2, '0')}:${trimmedEndTime[1].padEnd(2, '0')}:00`;
+      const dayjs_startTime = dayjs(startTimeFormat, 'HH:mm:ss').tz(timeZone);
+      const dayjs_endTime = dayjs(endTimeFormat === '00:00:00' ? '24:00:00' : endTimeFormat, 'HH:mm:ss').tz(timeZone);
+
+      if (
+        !dayjs_startTime.isValid() ||
+        !dayjs_endTime.isValid() ||
+        dayjs(dayjs_startTime).isSameOrAfter(dayjs_endTime)
+      ) {
+        setError(checkTimeFormat);
+        return;
+      }
+
       await updateTodo(todoId, newDescription, date, startTimeFormat, endTimeFormat, SharedspaceId);
 
       await qc.refetchQueries({ queryKey: [GET_TODOS_BY_MONTH_KEY, SharedspaceId, calendarYear, calendarMonth] });
@@ -123,6 +131,9 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
       });
     } catch (err) {
       setError(waitingMessage);
+    } finally {
+      isSubmitting.current = false;
+      setIsLoading(false);
     }
   };
 
@@ -192,8 +203,9 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
           <Right>
             <TextButton
               type='button'
+              disabled={isLoading}
               onClick={() => onSubmit(todo.id, description, todo.date, startTime, endTime, SharedspaceId)}>
-              수정
+              {isLoading ? <CircularProgress size={25} /> : '수정'}
             </TextButton>
           </Right>
         </SubmitDiv>
