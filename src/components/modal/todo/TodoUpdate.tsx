@@ -192,16 +192,7 @@ const TodoUpdate: FC<TodoUpdateProps> = ({
           <Right>
             <TextButton
               type='button'
-              onClick={() => {
-                onSubmit(
-                  todo.id,
-                  description,
-                  todo.date,
-                  startTime,
-                  endTime,
-                  SharedspaceId,
-                );
-              }}>
+              onClick={() => onSubmit(todo.id, description, todo.date, startTime, endTime, SharedspaceId)}>
               수정
             </TextButton>
           </Right>
