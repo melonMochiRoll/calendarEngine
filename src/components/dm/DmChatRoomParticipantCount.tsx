@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
-import { useChatRoomParticipantCount } from 'Src/hooks/queries/useChatRoomParticipantCount';
 
-const DmChatRoomParticipantCount: FC = () => {
-  const { data: participantCount } = useChatRoomParticipantCount();
+interface DmChatRoomParticipantCountProps {
+  participantCount: number | null,
+};
 
+const DmChatRoomParticipantCount: FC<DmChatRoomParticipantCountProps> = ({ participantCount }) => {
   return (
     <Title>{`참가자 목록 - ${participantCount}`}</Title>
   );

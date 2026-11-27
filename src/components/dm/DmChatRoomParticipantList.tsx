@@ -28,7 +28,7 @@ const DmChatRoomParticipantList: FC = () => {
 
   return (
     <ParticipantSection>
-      <DmChatRoomParticipantCount />
+      <DmChatRoomParticipantCount participantCount={participantsData.pages[0].participantCount} />
       <ParticipantUl>
         {
           participants.map((participant) => {

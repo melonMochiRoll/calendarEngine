@@ -21,6 +21,7 @@ export const getChatRoomParticipants = async (
     return {
       participants: [],
       hasMoreData: false,
+      participantCount: null,
     };
   }
 
