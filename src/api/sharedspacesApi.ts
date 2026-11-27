@@ -65,7 +65,7 @@ export const getSharedspaceMembers = async (
   beforeUserId?: string,
 ): Promise<TSharedspaceMembersResponse> => {
   if (!SharedspaceId) {
-    return { members: [], hasMoreData: false };
+    return { members: [], hasMoreData: false, memberCount: 0 };
   }
   
   const { data } = await axiosInstance.get(
