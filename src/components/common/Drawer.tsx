@@ -38,8 +38,7 @@ const Block = styled.div<{ isShow: boolean }>`
   flex-shrink: 0;
   width: ${({isShow}) => isShow ? '450px' : '50px'};
   height: 100%;
-  padding-top: 10px;
-  padding-left: 10px;
+  padding: 10px 10px 0 10px;
   border: 1px solid var(--light-gray);
   background-color: var(--dark-gray);
   overflow: hidden;
