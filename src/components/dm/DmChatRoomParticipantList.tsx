@@ -4,7 +4,6 @@ import { useChatRoomParticipants } from 'Src/hooks/queries/useChatRoomParticipan
 import useUser from 'Src/hooks/queries/useUser';
 import DmChatRoomParticipantItem from './DmChatRoomParticipantItem';
 import { useInView } from 'Src/hooks/utils/useInView';
-import DmChatRoomParticipantCount from './DmChatRoomParticipantCount';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { CircularProgress } from '@mui/material';
 
@@ -28,7 +27,7 @@ const DmChatRoomParticipantList: FC = () => {
 
   return (
     <ParticipantSection>
-      <DmChatRoomParticipantCount participantCount={participantsData.pages[0].participantCount} />
+      <ParticipantCount>{`참가자 목록 - ${participantsData.pages[0].participantCount}`}</ParticipantCount>
       <ParticipantUl>
         {
           participants.map((participant) => {
@@ -73,6 +72,12 @@ const ParticipantUl = styled.ul`
   align-items: center;
   margin: 0;
   padding: 0;
+`;
+
+const ParticipantCount = styled.h2`
+  font-size: 18px;
+  color: var(--gray-4);
+  margin: 0;
 `;
 
 const SentinelDiv = styled.div`
